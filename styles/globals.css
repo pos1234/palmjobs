@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;500;800&display=swap');
+:root {
+    --color-primary: #25ced1;
+    --color-secondary: #0f1941;
+    --color-text: #e4e3e3;
+    --color-text-smoke: #7a7a7a;
+    --color-accent: #ff6d00;
+    --color-white: #fff;
+    --color-icons: #ebecec;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    overflow-x: hidden !important;
+    z-index: -300 !important;
+    font-family: Manrope, sans-serif !important;
+}
+.aos-init[data-aos][data-aos].aos-animate {
+    transform: unset;
+}
