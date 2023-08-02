@@ -1,14 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '@/lib/context';
 import { MiddleWare } from '@/lib/middleware';
-
+import Downshift from 'downshift';
+import dynamic from 'next/dynamic';
+const MyEditor = dynamic(() => import('./Edit'), {
+    ssr: false
+});
 const sendReset = () => {
     const router = useRouter();
     const [displayCertificate, setDisplayCertificate] = useState(false);
     const [displayEducation, setDisplayEducation] = useState(false);
     const [displayWorkHisotry, setDisplayWorkHistory] = useState(false);
-
+    const items = [{ value: 'react' }, { value: 'react-Native' }, { value: 'react.js' }, { value: 'Angular' }, { value: 'banana' }];
     const {
         firstLetter,
         headline,
@@ -74,9 +78,6 @@ const sendReset = () => {
         deleteEducation
     } = MiddleWare();
     const { loading, user, role } = useUser();
-    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsChecked(event.target.checked);
-    };
     const showCertificate = () => {
         setDisplayCertificate(!displayCertificate);
     };
@@ -111,10 +112,13 @@ const sendReset = () => {
         setCertificateIndex(index);
         setEditedCertificate(certificateArray[index]);
     };
+    const handleCheckboxChange = () => {
+        
+    };
+
     return (
         <>
-            {/*        <p>{user}</p>
-             */}{' '}
+            <MyEditor />
             {image ? (
                 <>
                     {' '}
@@ -127,7 +131,6 @@ const sendReset = () => {
                 </>
             ) : (
                 <>
-                    {' '}
                     <p
                         style={{
                             background: 'red',
@@ -399,7 +402,7 @@ const sendReset = () => {
                                     />
                                     <br />
                                     <br />
-                                    <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />{' '}
+                                    <input type="checkbox" checked={isChecked} onChange={handleCheckboxChange} />
                                     <span>i currently work here</span>
                                     <br />
                                     <br />
@@ -615,6 +618,50 @@ const sendReset = () => {
                     </tr>
                 </tbody>
             </table>
+            <Downshift
+                onChange={(selection) => alert(selection ? `You selected ${selection.value}` : 'Selection Cleared')}
+                itemToString={(item) => (item ? item.value : '')}
+            >
+                {({
+                    getInputProps,
+                    getItemProps,
+                    getLabelProps,
+                    getMenuProps,
+                    isOpen,
+                    inputValue,
+                    highlightedIndex,
+                    selectedItem,
+                    getRootProps
+                }) => (
+                    <div>
+                        <label {...getLabelProps()}>Enter a fruit</label>
+                        <div style={{ display: 'inline-block' }} {...getRootProps({}, { suppressRefError: true })}>
+                            <input {...getInputProps()} />
+                        </div>
+                        <ul {...getMenuProps()}>
+                            {isOpen
+                                ? items
+                                      .filter((item) => !inputValue || item.value.includes(inputValue))
+                                      .map((item, index) => (
+                                          <li
+                                              {...getItemProps({
+                                                  key: item.value,
+                                                  index,
+                                                  item,
+                                                  style: {
+                                                      backgroundColor: highlightedIndex === index ? 'lightgray' : 'white',
+                                                      fontWeight: selectedItem === item ? 'bold' : 'normal'
+                                                  }
+                                              })}
+                                          >
+                                              {item.value}
+                                          </li>
+                                      ))
+                                : null}
+                        </ul>
+                    </div>
+                )}
+            </Downshift>
         </>
     );
 };
