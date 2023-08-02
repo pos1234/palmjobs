@@ -19,6 +19,7 @@ const RegisterUi = () => {
                 defineRole(res.$id, 'candidate');
             })
             .then(() => sendEmailVerification(register.email, register.password));
+
         //console.log(login);
     };
     return (

@@ -2,17 +2,19 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '@/lib/context';
 import { MiddleWare } from '@/lib/middleware';
-import Downshift from 'downshift';
 import dynamic from 'next/dynamic';
 const MyEditor = dynamic(() => import('./Edit'), {
     ssr: false
 });
+interface Data {
+    word: string;
+}
 const sendReset = () => {
     const router = useRouter();
     const [displayCertificate, setDisplayCertificate] = useState(false);
     const [displayEducation, setDisplayEducation] = useState(false);
     const [displayWorkHisotry, setDisplayWorkHistory] = useState(false);
-    const items = [{ value: 'react' }, { value: 'react-Native' }, { value: 'react.js' }, { value: 'Angular' }, { value: 'banana' }];
+    const items: Data[] = [{ word: 'react' }, { word: 'react-Native' }, { word: 'react.js' }, { word: 'Angular' }, { word: 'banana' }];
     const {
         firstLetter,
         headline,
@@ -49,7 +51,8 @@ const sendReset = () => {
         updateProfilePicture,
         deleteProfilePicture,
         handleBio,
-        addSkills,
+/*         addSkills,
+ */        addSuggestedSkill,
         deleteSkill,
         certificateEdit,
         setCertificateEdit,
@@ -78,6 +81,26 @@ const sendReset = () => {
         deleteEducation
     } = MiddleWare();
     const { loading, user, role } = useUser();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [suggestions, setSuggestions] = useState<Data[]>([]);
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = event.target.value;
+        setSearchTerm(inputValue);
+
+        const filteredSuggestions = items.filter((data) => data.word.toLowerCase().includes(inputValue.toLowerCase()));
+        setSuggestions(filteredSuggestions);
+    };
+    const handleSuggestionClick = (suggestion: Data) => {
+        setSearchTerm('');
+        addSuggestedSkill(suggestion.word);
+        setSearchTerm('');
+        setSuggestions([]);
+    };
+    const clickMe = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        addSuggestedSkill(searchTerm);
+        setSearchTerm('');
+    };
     const showCertificate = () => {
         setDisplayCertificate(!displayCertificate);
     };
@@ -112,16 +135,18 @@ const sendReset = () => {
         setCertificateIndex(index);
         setEditedCertificate(certificateArray[index]);
     };
-    const handleCheckboxChange = () => {
-        
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setIsChecked(event.target.checked);
+    };
+    const handleEditorData = (data: any) => {
+        setWorkHistoryData({ ...workHistoryData, jobDescription: data });
+        //console.log(workHistoryData.jobDescription);
     };
 
     return (
         <>
-            <MyEditor />
             {image ? (
                 <>
-                    {' '}
                     <img src={image} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
                     <form onSubmit={updateProfilePicture}>
                         <input type="file" onChange={(e) => setFile(e.currentTarget.files)} />
@@ -162,22 +187,31 @@ const sendReset = () => {
                 <br />
                 <button type="submit">save bio</button>
             </form>
-            <form style={{ margin: '10%' }} onSubmit={addSkills}>
-                <input
-                    required
-                    value={skill}
+            <form style={{ margin: '10%' }} onSubmit={clickMe} /* onSubmit={addSkills} */>
+                <div>
+                    {/* value={skill}
                     type="text"
-                    onChange={(e: React.FormEvent<HTMLInputElement>) => setSkill(e.currentTarget.value)}
-                />
-                <br />
-                <br />
+                    onChange={(e: React.FormEvent<HTMLInputElement>) => setSkill(e.currentTarget.value)} */}
+                    <input type="text" placeholder="Search..." value={searchTerm} onChange={handleInputChange} />
+                    <ul>
+                        {suggestions &&
+                            suggestions.map((suggestion) => (
+                                <li
+                                    key={suggestion.word}
+                                    onClick={() => handleSuggestionClick(suggestion) /* () => handleSuggestionClick(suggestion) */}
+                                >
+                                    {suggestion.word}
+                                </li>
+                            ))}
+                    </ul>
+                </div>
                 <button type="submit">save skill</button>
             </form>
             {array.map((item, index) => (
                 <button style={{ marginRight: '10px' }} key={index}>
                     {item} <span onClick={() => deleteSkill(index)}>X</span>{' '}
                 </button>
-            ))}{' '}
+            ))}
             <br />
             {/* <button onClick={handleLogout}>logout</button> <br/><br/> */}
             <table>
@@ -433,11 +467,13 @@ const sendReset = () => {
                                     )}
                                     <br />
                                     <p>Description</p>
-                                    <textarea
+                                    <MyEditor onEditorData={handleEditorData} />
+                                    {/* <textarea
                                         value={workHistoryData.jobDescription}
                                         required
-                                        onChange={(e) => setWorkHistoryData({ ...workHistoryData, jobDescription: e.currentTarget.value })}
-                                    />
+                                                                                onChange={(e) => setWorkHistoryData({ ...workHistoryData, jobDescription: e.currentTarget.value })}
+
+                                    /> */}
                                     <br />
                                     <button type="submit">save certificate</button>
                                 </form>
@@ -498,14 +534,15 @@ const sendReset = () => {
                                         </div>
                                     )}
                                     <br />
-                                    <p>Description</p>
-                                    <textarea
+                                    <p>Descriptions</p>
+                                    {/* <MyEditor /> */}
+                                    {/* <textarea
                                         value={workHistoryData.jobDescription}
                                         required
                                         onChange={(e) => setWorkHistoryData({ ...workHistoryData, jobDescription: e.currentTarget.value })}
-                                    />
+                                    /> */}
                                     <br />
-                                    <button type="submit">save certificate</button>
+                                    <button type="submit">save certificates</button>
                                 </form>
                             )}
                         </td>
@@ -618,7 +655,7 @@ const sendReset = () => {
                     </tr>
                 </tbody>
             </table>
-            <Downshift
+            {/* <Downshift
                 onChange={(selection) => alert(selection ? `You selected ${selection.value}` : 'Selection Cleared')}
                 itemToString={(item) => (item ? item.value : '')}
             >
@@ -661,7 +698,7 @@ const sendReset = () => {
                         </ul>
                     </div>
                 )}
-            </Downshift>
+            </Downshift> */}
         </>
     );
 };

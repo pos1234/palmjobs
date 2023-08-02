@@ -88,14 +88,14 @@ export const MiddleWare = () => {
             const certificate = JSON.parse(res.documents[0].certificates) || [];
             const workhistory = JSON.parse(res.documents[0].workHistory) || [];
             const education = JSON.parse(res.documents[0].educations) || [];
-            setWorkHistoryArray(workhistory);
-            setCertificateArray(certificate);
-            setEducationArray(education);
-            setDocumentId(res.documents[0].$id);
-            setHeadline(res.documents[0].bioHeadline);
-            setDescription(res.documents[0].bioDescription);
-            setArray(res.documents[0].skills);
-            setProfilePictureId(res.documents[0].profilePictureId);
+            setWorkHistoryArray(workhistory || '');
+            setCertificateArray(certificate || '');
+            setEducationArray(education || '');
+            setDocumentId(res.documents[0].$id || '');
+            setHeadline(res.documents[0].bioHeadline || '');
+            setDescription(res.documents[0].bioDescription || '');
+            setArray(res.documents[0].skills || '');
+            setProfilePictureId(res.documents[0].profilePictureId || '');
         });
         const { href } = getProfilePicture(profilePictureId);
         profilePictureId && setImage(href);
@@ -107,11 +107,16 @@ export const MiddleWare = () => {
         const cleanedText = remove_linebreaks(description);
         const response = updateBio(headline, description, documentId);
     };
-    const addSkills = (e: React.FormEvent<HTMLElement>) => {
+   /*  const addSkills = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         array.push(skill);
         setSkill('');
         updateSkills(array, documentId);
+    }; */
+    const addSuggestedSkill = async (suggesteSkill: string) => {
+        array.push(suggesteSkill);
+        setSkill('');
+        await updateSkills(array, documentId);
     };
     const deleteSkill = (index: number) => {
         const newArray = array.filter((item, i) => i !== index);
@@ -127,19 +132,18 @@ export const MiddleWare = () => {
             console.log(href);
             href && setImage(href);
             updateProfileId(documentId, res.$id);
-            setProfilePictureId(res.$id)
+            setProfilePictureId(res.$id);
         });
     };
     const updateProfilePicture = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         console.log(profilePictureId);
-        
+
         const results = deleteProfileImage(profilePictureId);
-        results.then((rep)=>console.log(rep)
-        )
+        results.then((rep) => console.log(rep));
         const resultProfile = createProfilePicture(file[0]);
         resultProfile.then((res) => {
-            setProfilePictureId(res.$id)
+            setProfilePictureId(res.$id);
             const response = updateProfileId(documentId, res.$id);
             try {
                 const { href } = res && getProfilePicture(res.$id);
@@ -153,9 +157,9 @@ export const MiddleWare = () => {
     const deleteProfilePicture = () => {
         const results = deleteProfileImage(profilePictureId);
         const response = updateProfileId(documentId, '');
-        response.then((res)=>{
-            setImage('')
-        })
+        response.then((res) => {
+            setImage('');
+        });
     };
     const addCertificate = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
@@ -281,7 +285,8 @@ export const MiddleWare = () => {
         updateProfilePicture,
         deleteProfilePicture,
         handleBio,
-        addSkills,
+/*         addSkills,
+ */        addSuggestedSkill,
         deleteSkill,
         certificateEdit,
         setCertificateEdit,
@@ -310,4 +315,3 @@ export const MiddleWare = () => {
         deleteEducation
     };
 };
-  

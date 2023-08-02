@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { accountData, fetchJobs, applyToJobs, fetchAppliedJobs, alreadyApplied, saveJobs, alreadySaved } from '../lib/services';
+import { accountData, fetchJobs, applyToJobs, alreadyApplied, saveJobs, alreadySaved } from '../lib/services';
 import { PostedJob } from '@/lib/Interfaces';
 const JobDetails = (props: any) => {
     const handleApply = (jobId: string, employerId: string) => {

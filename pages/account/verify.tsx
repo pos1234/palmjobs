@@ -2,7 +2,7 @@ import { verfiyAccount } from '@/lib/services';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { NextPageContext } from 'next/types';
-interface myQueryParams {
+ interface myQueryParams {
     userId: string;
     secret: string;
 }
@@ -12,20 +12,27 @@ interface MyPageProps {
 export const getServerSideProps = async (context: NextPageContext) => {
     const { query } = context;
     const queryParams = {
-        userId: query.userId as string,
-        secret: query.secret as string
+        userId: query.userId,
+        secret: query.secret
     };
     return {
         props: {
             queryParams
         }
     };
-};
-const ConfirmAccount = ({ queryParams }: MyPageProps) => {
-    const userId = queryParams.userId.toString();
-    const secret = queryParams.secret.toString();
+}; 
+const ConfirmAccount = ( { queryParams }: MyPageProps ) => {
+     const userId = queryParams.userId;
+    const secret = queryParams.secret; 
+    console.log(secret);
     useEffect(() => {
-        verfiyAccount(userId, secret).then((res) => console.log(res));
+        console.log(typeof secret);
+
+        try {
+            verfiyAccount(userId, secret);
+        } catch (e) {
+            console.log(e);
+        }
     }, []);
     return (
         <>

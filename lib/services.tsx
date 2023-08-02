@@ -47,7 +47,7 @@ export const applyToJobs = (candidateId: string, jobId: string, employerId: stri
         jobId: jobId,
         employerId: employerId,
         candidateId: candidateId,
-        candidateDelete:false,
+        candidateDelete: false
     });
 };
 export const fetchAppliedJobIds = async () => {
@@ -65,24 +65,22 @@ export const fetchAppliedJobIds = async () => {
 }; */
 export const fetchAppliedJobsData = async (ids: string[]) => {
     const dataPromises = ids.map(async (id) => {
-      try {
-        // Fetch data from Appwrite for the given ID
-        const response = await databases.getDocument(DATABASE_ID,POSTED_JOBS, id);
-        return response;
-      } catch (error) {
-        console.error(`Error fetching data for ID ${id}:`, error);
-        return null;
-      }
+        try {
+            // Fetch data from Appwrite for the given ID
+            const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, id);
+            return response;
+        } catch (error) {
+            console.error(`Error fetching data for ID ${id}:`, error);
+            return null;
+        }
     });
-  
+
     // Wait for all promises to resolve and return the data
     return Promise.all(dataPromises);
-  };
-  export const getAppliedJobId = async (id:string) => {
+};
+export const getAppliedJobId = async (id: string) => {
     const userAccount = await account.get();
-    const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [
-        Query.equal('jobId', id),
-    ]);
+    const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('jobId', id)]);
     return results;
 };
 export const removeAppliedJobs = (id: string) => {
@@ -90,7 +88,7 @@ export const removeAppliedJobs = (id: string) => {
         candidateDelete: true
     };
     const results = databases.updateDocument(DATABASE_ID, APPLIED_JOBS, id, datas);
-    
+
     return results;
 };
 export const alreadyApplied = async (id: string, jobId: string) => {
@@ -110,7 +108,7 @@ export const saveJobs = (candidateId: string, jobId: string) => {
     const promise = databases.createDocument(DATABASE_ID, SAVED_JOBS, ID.unique(), {
         jobId: jobId,
         candidateId: candidateId,
-        deleted:false
+        deleted: false
     });
 };
 export const alreadySaved = async (id: string, jobId: string) => {
@@ -133,34 +131,28 @@ export const fetchSavedJobIds = async () => {
     ]);
     return results;
 };
-export const getSavedJobId = async (id:string) => {
+export const getSavedJobId = async (id: string) => {
     const userAccount = await account.get();
-    const results = databases.listDocuments(DATABASE_ID, SAVED_JOBS, [
-        Query.equal('jobId', id),
-    ]);
+    const results = databases.listDocuments(DATABASE_ID, SAVED_JOBS, [Query.equal('jobId', id)]);
     return results;
 };
 export const fetchSavedJobsData = async (ids: string[]) => {
     const dataPromises = ids.map(async (id) => {
-      try {
-        // Fetch data from Appwrite for the given ID
-        const response = await databases.getDocument(DATABASE_ID,POSTED_JOBS, id);
-        return response;
-      } catch (error) {
-        console.error(`Error fetching data for ID ${id}:`, error);
-        return null;
-      }
+        try {
+            // Fetch data from Appwrite for the given ID
+            const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, id);
+            return response;
+        } catch (error) {
+            console.error(`Error fetching data for ID ${id}:`, error);
+            return null;
+        }
     });
-  
+
     // Wait for all promises to resolve and return the data
     return Promise.all(dataPromises);
-  };
+};
 export const unSaveJobs = (id: string) => {
-    const datas = {
-        deleted: true
-    };
-    const results = databases.updateDocument(DATABASE_ID, SAVED_JOBS, id, datas);
-    
+    const results = databases.deleteDocument(DATABASE_ID, SAVED_JOBS, id);
     return results;
 };
 
@@ -176,7 +168,7 @@ export const defineRole = async (id: string, role: string) => {
         userId: id,
         userRole: role
     };
-    const createId = databases.createDocument(DATABASE_ID, CANDIDATE_DATA, ID.unique(), {
+    const createId = await databases.createDocument(DATABASE_ID, CANDIDATE_DATA, ID.unique(), {
         Id: id
     });
     const Role = await databases.createDocument(DATABASE_ID, USER_ROLE, ID.unique(), sendRole);
@@ -188,9 +180,13 @@ export const sendEmailVerification = async (email: string, password: string) => 
     await account.createVerification('http://localhost:3000/account/verify');
 };
 
-export const verfiyAccount = async (userId: string, secret: string) => {
-    const promise = account.updateVerification(userId, secret);
-    return promise;
+export const verfiyAccount = (userId: string, secret: string) => {
+    try {
+        const promise = userId && account.updateVerification(userId, secret);
+        return promise;
+    } catch (e) {
+        console.log(e);
+    }
 };
 export const sendRecovery = async (email: string) => {
     const promise = account.createRecovery(email, 'https://palmjobs.vercel.app/account/resetPassword');
