@@ -1,32 +1,58 @@
 import { useEffect, useState } from 'react';
-import { accountData, fetchJobs, applyToJobs, alreadyApplied, saveJobs, alreadySaved } from '../lib/services';
+import { /* accountData, */ getUserData, fetchJobs, applyToJobs, alreadyApplied, saveJobs, alreadySaved } from '../lib/services';
 import { PostedJob } from '@/lib/Interfaces';
+import { useUser } from '@/lib/context';
+import { useRouter } from 'next/router';
 const JobDetails = (props: any) => {
-    const handleApply = (jobId: string, employerId: string) => {
-        const checkJob = alreadyApplied(props.userId, jobId);
-        checkJob.then((res: any) => {
-            if (res.total == 0) {
-                console.log('not applied');
-                applyToJobs(props.userId, jobId, employerId);
-            } else {
-                console.log('already applied to this job');
+    const { loading, user, role } = useUser();
+    const [checkUser, setCheckUser] = useState(false);
+    const router = useRouter();
+    useEffect(() => {
+        try {
+            const cand = !(role == '' || role == 'candidate') ? true : false;
+            if ((!user && !loading) || cand) {
+                setCheckUser(true);
             }
-        });
+        } catch (e) {
+            console.log(e);
+        }
+    }, [user, loading, role]);
+
+    const handleApply = (jobId: string, employerId: string) => {
+        if (checkUser) {
+            router.push('/account/signIn');
+        } else {
+            router.push({
+                pathname: '/users/candidate/applyToJob',
+                query: { param1: jobId, param2: employerId }
+            });
+        }
     };
     const handleSaveJob = (jobId: string) => {
-        const checkSaved = alreadySaved(props.userId, jobId);
-        checkSaved.then((res: any) => {
-            if (res.total == 0) {
-                console.log('not saved');
-                saveJobs(props.userId, jobId);
-            } else {
-                console.log('already saved this job');
-            }
-        });
-        /* const userData:any = accountData();
-            candidateId = userData.$id;
-            console.log(candidateId); */
-        //const apply = saveJobs(candidateId,jobId)
+        if (checkUser) {
+            router.push('/account/signIn');
+        } else {
+            const checkJob = alreadyApplied(props.userId, jobId);
+            checkJob.then((res) => {
+                const checkSaved = alreadySaved(props.userId, jobId);
+                if (res.total == 0) {
+                    console.log(res);
+
+                    checkSaved.then((rem: any) => {
+                        if (rem.total == 0) {
+                            console.log('not saved');
+                            saveJobs(props.userId, jobId);
+                        } else {
+                            console.log('already saved this job');
+                        }
+                    });
+                }
+            });
+            /* router.push({
+                pathname: '/users/candidate/applyToJob',
+                query: { param1: jobId, param2: employerId }
+            }); */
+        }
     };
     return (
         <tr key={props.$id}>
@@ -39,7 +65,11 @@ const JobDetails = (props: any) => {
             <td style={{ border: '1px solid green' }}>{props.salary}</td>
             <td style={{ border: '1px solid green' }}>{props.stat}</td>
             <td>
-                <button onClick={() => handleApply(props.jobId, props.employerId)}>Apply</button>
+                {props.externalLink ? (
+                    <a href={props.externalLink}>link</a>
+                ) : (
+                    <button onClick={() => handleApply(props.jobId, props.employerId)}>Apply</button>
+                )}
             </td>
             <td>
                 <button onClick={() => handleSaveJob(props.jobId)}>save</button>
@@ -48,19 +78,34 @@ const JobDetails = (props: any) => {
     );
 };
 const Jobs = () => {
-    const userData: any = accountData();
+    const [userData, setUserData] = useState<any>();
+    /*     const userData: any = accountData;
+     */ useEffect(() => {
+        try {
+            const userInfo: any = getUserData();
+            userInfo.then((res: any) => setUserData(res));
+        } catch (e) {
+            console.log(e);
+        }
+    }, []);
     const jobs = fetchJobs();
-    // console.log(userData);
+
     return (
         <>
             <h1>this is the jobs page</h1>
+            {userData && (
+                <div>
+                    <h1>{userData.name}</h1>
+                    <h1>{userData.email}</h1>
+                </div>
+            )}
             <table style={{ marginLeft: '15%', marginTop: '5%', width: '80vw' }} border={1}>
                 <tbody>
                     {jobs &&
                         jobs.map((datas: PostedJob) => {
                             return (
                                 <JobDetails
-                                    userId={userData.$id}
+                                    userId={userData && userData.$id}
                                     companyName={datas.companyName}
                                     position={datas.jobTitle}
                                     location={datas.jobLocation}
@@ -70,7 +115,9 @@ const Jobs = () => {
                                     salary={datas.salaryRange}
                                     stat={datas.jobStatus}
                                     jobId={datas.$id}
+                                    externalLink={datas.externalLink}
                                     key={datas.$id}
+                                    employerId={datas.employerId}
                                 />
                             );
                         })}

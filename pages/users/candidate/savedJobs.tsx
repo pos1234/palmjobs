@@ -1,5 +1,5 @@
 import { Container, Row, Col, Button, InputGroup, Form } from 'react-bootstrap';
-import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId } from '../../../lib/services';
+import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds } from '../../../lib/services';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/lib/context';
 import { useRouter } from 'next/router';
@@ -23,7 +23,7 @@ const userCandidate = () => {
                     fetchSavedJobsData(savedJobId)
                         .then((responseData) => {
                             setSavedJobs(responseData);
-                            console.log(responseData);
+                            // console.log(responseData);
                         })
                         .catch((error) => {
                             console.error('Error fetching data from Appwrite:', error);
@@ -31,6 +31,16 @@ const userCandidate = () => {
                 }
             }
         });
+        /*  fetchSavedJobIds().then((res: any) => {
+            console.log(res.documents[0]);
+        });
+        fetchAppliedJobIds().then((res: any) => {
+            console.log(res.documents[0]);
+
+             for (let i = 0; i < res.documents.length; i++) {
+                unSaveJobs(res.documents[i].$id).then(() => {});
+            } 
+        }); */
     }, [savedJobId]);
     const removeSave = (id: string) => {
         getSavedJobId(id).then((res) => {
@@ -41,7 +51,7 @@ const userCandidate = () => {
                     fetchSavedJobsData(savedJobId)
                         .then((responseData) => {
                             setSavedJobs(responseData);
-                            console.log(responseData);
+                            // console.log(responseData);
                         })
                         .catch((error) => {
                             console.error('Error fetching data from Appwrite:', error);
@@ -50,7 +60,13 @@ const userCandidate = () => {
             });
         });
     };
-
+    const applJob = (id: string, employerId: string) => {
+        router.push({
+            pathname: '/users/candidate/applyToJob',
+            query: { param1: id, param2: employerId }
+        });
+        // console.log(id);
+    };
     return (
         <>
             <Container>
@@ -70,6 +86,9 @@ const userCandidate = () => {
                                         <td>{datas.jobLocation}</td>
                                         <td>
                                             <button onClick={() => removeSave(datas.$id)}>remove</button>
+                                        </td>
+                                        <td>
+                                            <button onClick={() => applJob(datas.$id, datas.employerId)}>apply</button>
                                         </td>
                                     </tr>
                                 );
