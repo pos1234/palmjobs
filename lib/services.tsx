@@ -204,6 +204,7 @@ export const fetchJobs = () => {
 export const getCandidateInfo = async () => {
     const userAccount = await account.get();
     const results = await databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', userAccount.$id)]);
+    console.log(results)
     return results;
 };
 

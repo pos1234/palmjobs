@@ -38,7 +38,7 @@ const applyToJob = () => {
     }, [query]);
     useEffect(() => {
         const applied = alreadyApplied(userData && userData.Id, jobId);
-        const resume = userData && getResume(userData.resumeId);
+        const resume = userData && userData.resumeId != null && getResume(userData.resumeId);
         resume &&
             resume.then((res: any) => {
                 setCurrentResume(res.name);
@@ -77,9 +77,10 @@ const applyToJob = () => {
                     getSavedJobId(jobId).then((rep) => {
                         console.log(rep);
 
-                        unSaveJobs( rep.documents[0].$id).then((rem) => {
-                            //console.log(rem);
-                        });
+                        rep.total != 0 &&
+                            unSaveJobs(rep.documents[0].$id).then((rem) => {
+                                //console.log(rem);
+                            });
                     });
                 });
             });
@@ -87,9 +88,10 @@ const applyToJob = () => {
 
         applyToJobs(userData.Id, jobId, employerId, cover, currentResumeId).then((res) => {
             getSavedJobId(jobId).then((res) => {
-                unSaveJobs(res.documents[0].$id).then((rem) => {
-                    console.log(rem);
-                });
+                res.total != 0 &&
+                    unSaveJobs(res.documents[0].$id).then((rem) => {
+                        console.log(rem);
+                    });
             });
         });
     };

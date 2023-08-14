@@ -92,7 +92,8 @@ const Jobs = () => {
 
     return (
         <>
-            <h1>this is the jobs page</h1>
+            <h1 className="text-red-500 font-bigW text-bigS leading-bigL">This is the jobs page</h1>
+            <p>hey</p>
             {userData && (
                 <div>
                     <h1>{userData.name}</h1>
