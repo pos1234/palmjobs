@@ -16,7 +16,14 @@ module.exports = {
                 textR: '#0E121D',
                 textW: '#FFFFFF',
                 lightGrey: '#141414B2',
-                skillColor: '#FFA06E26'
+                lightGreen: '#E5ECEC',
+                skillColor: '#FFA06E26',
+                fadedText: '#C4C4C4',
+                modalTitle: '#3B3B3B',
+                forBack: '#ffa06e0d',
+                darkBlue: '#141414B2'
+                /*                 darkBlue: '#141414'
+                 */
             },
             fontWeight: {
                 frhW: '700',
@@ -50,7 +57,8 @@ module.exports = {
                 midRS: '1.125rem',
                 smS: '1rem',
                 smRS: '1rem',
-                addS: '0.875rem'
+                addS: '0.875rem',
+                numS: '0.75rem'
             },
             lineHeight: {
                 frhL: '2.48rem',

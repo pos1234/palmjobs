@@ -1,4 +1,5 @@
 export interface PostedJob {
+    emailApplication: any;
     externalLink: any;
     employerId: any;
     companyName: String;

@@ -1,4 +1,3 @@
-import { Container, Row, Col, Button, InputGroup, Form } from 'react-bootstrap';
 import { fetchAppliedJobsData, getAppliedJobId, fetchAppliedJobIds, removeAppliedJobs, accountData } from '../../../lib/services';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/lib/context';
@@ -56,29 +55,27 @@ const userCandidate = () => {
 
     return (
         <>
-            <Container>
-                <table>
-                    <tbody>
-                        {appliedJobs &&
-                            appliedJobs.map((datas: any) => {
-                                return (
-                                    <tr key={datas.$id}>
-                                        <td>
-                                            {datas.companyName} <br />
-                                        </td>
-                                        <td>
-                                            <h1>{datas.jobTitle}</h1>
-                                        </td>
-                                        <td>{datas.jobLocation}</td>
-                                        <td>
-                                            <button onClick={() => removeApplied(datas.$id)}>remove</button>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                    </tbody>
-                </table>
-            </Container>
+            <table>
+                <tbody>
+                    {appliedJobs &&
+                        appliedJobs.map((datas: any) => {
+                            return (
+                                <tr key={datas.$id}>
+                                    <td>
+                                        {datas.companyName} <br />
+                                    </td>
+                                    <td>
+                                        <h1>{datas.jobTitle}</h1>
+                                    </td>
+                                    <td>{datas.jobLocation}</td>
+                                    <td>
+                                        <button onClick={() => removeApplied(datas.$id)}>remove</button>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                </tbody>
+            </table>
         </>
     );
 };

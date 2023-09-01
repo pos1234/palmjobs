@@ -1,4 +1,3 @@
-import { Container, Row, Col, Button, InputGroup, Form } from 'react-bootstrap';
 import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds } from '../../../lib/services';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/lib/context';
@@ -69,13 +68,12 @@ const userCandidate = () => {
     };
     return (
         <>
-            <Container>
-                <Navigation />
-                <table>
-                    <tbody>
-                        {savedJobs &&
-                            savedJobs.map((datas: any) => {
-                                return (
+            <table>
+                <tbody>
+                    {savedJobs &&
+                        savedJobs.map((datas: any) => {
+                            return (
+                                datas && (
                                     <tr key={datas.$id}>
                                         <td>
                                             {datas.companyName} <br />
@@ -91,11 +89,11 @@ const userCandidate = () => {
                                             <button onClick={() => applJob(datas.$id, datas.employerId)}>apply</button>
                                         </td>
                                     </tr>
-                                );
-                            })}
-                    </tbody>
-                </table>
-            </Container>
+                                )
+                            );
+                        })}
+                </tbody>
+            </table>
         </>
     );
 };

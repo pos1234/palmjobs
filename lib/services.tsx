@@ -12,6 +12,7 @@ const SAVED_JOBS = process.env.NEXT_PUBLIC_SAVED_JOBS || '';
 const USER_ROLE = process.env.NEXT_PUBLIC_USER_ROLE || '';
 const CANDIDATE_DATA = process.env.NEXT_PUBLIC_CANDIDATE_DATA || '';
 const COMPANY_DATA = process.env.NEXT_PUBLIC_COMPANY_DATA || '';
+const SHORT_LISTED = process.env.NEXT_PUBLIC_SHORT_LISTED || '';
 const IMAGE = process.env.NEXT_PUBLIC_IMAGE || '';
 const RESUME = process.env.NEXT_PUBLIC_FILE || '';
 
@@ -19,6 +20,11 @@ client
     .setEndpoint(ENDPOINT) // Your API Endpoint
     .setProject(PROJECT_ID);
 const storage = new Storage(client);
+// Go to OAuth provider login page
+export const googleSignIn = () => {
+    account.createOAuth2Session('google', 'http://localhost:3000/users/candidate/profile', 'http://localhost:3000/account/register');
+};
+
 // Jobs page
 const updateDocuments = async (id: string, datas: any) => {
     const roles = await getRole();
@@ -71,6 +77,26 @@ export const addLinkedInLink = (link: string, id: string) => {
         console.log(e);
     }
 };
+export const addSocials = (
+    phone: string,
+    /* place: string, */
+    linkedIn: string,
+    githubLink: string,
+    behanceLInk: string,
+    portfolioLink: string,
+    id: string
+) => {
+    const datas = {
+        phoneNumber: phone,
+        /* address:place, */
+        linkedIn: linkedIn,
+        github: githubLink,
+        behance: behanceLInk,
+        protfolio: portfolioLink
+    };
+
+    return updateDocuments(id, datas);
+};
 export const addWebsites = (webLink: string, id: string) => {
     const datas = {
         websiteLink: webLink
@@ -89,11 +115,52 @@ export const deleteWebsites = (id: string) => {
         console.log(e);
     }
 };
+export const addBehance = (webLink: string, id: string) => {
+    const datas = {
+        behance: webLink
+    };
+    console.log(id);
+
+    return updateDocuments(id, datas);
+};
+export const deleteBehance = (id: string) => {
+    const datas = {
+        behance: null
+    };
+    try {
+        return updateDocuments(id, datas);
+    } catch (e) {
+        console.log(e);
+    }
+};
+export const addPortfolio = (webLink: string, id: string) => {
+    const datas = {
+        protfolio: webLink
+    };
+    console.log(id);
+
+    return updateDocuments(id, datas);
+};
+export const deletePortfolio = (id: string) => {
+    const datas = {
+        protfolio: null
+    };
+    try {
+        return updateDocuments(id, datas);
+    } catch (e) {
+        console.log(e);
+    }
+};
+export const insertCoverLetter = (id: string, cover: any) => {
+    const datas = {
+        coverLetter: cover
+    };
+    updateDocuments(id, datas);
+};
 export const addSector = (sectors: string, id: string) => {
     const datas = {
         sector: sectors
     };
-    console.log(id);
 
     return updateDocuments(id, datas);
 };
@@ -201,10 +268,20 @@ export const fetchJobs = () => {
     }, []);
     return jobs;
 };
+export const checkEmailAppliation = (id: string) => {
+    const [jobs, setJobs] = useState('');
+    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('$id', id)]);
+
+    promise.then((res: any) => {
+        setJobs(res.documents[0].emailApplication);
+    });
+
+    return jobs;
+};
 export const getCandidateInfo = async () => {
     const userAccount = await account.get();
     const results = await databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', userAccount.$id)]);
-    console.log(results)
+    console.log(results);
     return results;
 };
 
@@ -221,6 +298,7 @@ export const applyToJobs = (candidateId: string, jobId: string, employerId: stri
     });
     return promise;
 };
+
 export const fetchAppliedJobIds = async () => {
     const userAccount = await account.get();
     const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [
@@ -424,6 +502,28 @@ export const uploadResume = (resume: any) => {
     const promise = storage.createFile(RESUME, ID.unique(), resume);
     return promise;
 };
+export const deleteResume = (fileId: string) => {
+    const promise = storage.deleteFile(RESUME, fileId);
+    return promise;
+};
+export const uploadSupportDoc = (resume: any) => {
+    const promise = storage.createFile(RESUME, ID.unique(), resume);
+    return promise;
+};
+export const getSupportDoc = (id: string) => {
+    const images = storage.getFile(RESUME, id);
+    return images;
+};
+export const deleteSupportDoc = (fileId: string) => {
+    const promise = storage.deleteFile(RESUME, fileId);
+    return promise;
+};
+export const updateSupportDocId = (id: string, resume: string) => {
+    const datas = {
+        supportingDocumentId: resume
+    };
+    return updateDocuments(id, datas);
+};
 /* export const createFile = (file: any) => {
     const promise = storage.createFile(FILE, ID.unique(), file);
     return promise;
@@ -447,12 +547,13 @@ export const getResume = (id: string) => {
     const images = storage.getFile(RESUME, id);
     return images;
 };
-export const updateResumeId = (resume: string, id: string) => {
+export const updateResumeId = (id: string, resume: string) => {
     const datas = {
         resumeId: resume
     };
     return updateDocuments(id, datas);
 };
+
 export const updateBio = (headline: string, description: string, id: string) => {
     const datas = {
         bioHeadline: headline,
@@ -511,34 +612,162 @@ export const updateEducation = async (education: string, id: string) => {
     }
 };
 
-/* export const postJob = (jobData,employerId)=>{
-  const stat = 'active';
-  const promise = databases.createDocument(DATABASE_ID, POSTED_JOBS,ID.unique(), {
-  jobTitle:jobData.jobTitle,
-  jobIndustry:jobData.jobIndustry,
-  requiredSkills:jobData.requiredSkills,
-  applicationDeadline:jobData.applicationDeadline,
-  jobStatus:stat,
-  employerId:employerId,
-  companyName:jobData.companyName,
-  jobLocation:jobData.jobLocation,
-  jobDescription:jobData.jobDescription,
-  prefferedGender:jobData.prefferedGender,
-  salaryRange:jobData.salaryRange
-});
-promise.then((res)=>console.log(res))
-} */
-
 //EMPLOYER
+export const postJobs = async (
+    title: string,
+    category: string,
+    openRoles: string,
+    location: string,
+    jobType: string,
+    reqExp: string,
+    skills: string,
+    salary: string,
+    jobDes: string,
+    deadline: string,
+    gender: string,
+    education: string,
+    email?: string,
+    link?: string
+) => {
+    const userAccount = await account.get();
+    const stat = 'Active';
+    const promise = databases.createDocument(DATABASE_ID, POSTED_JOBS, ID.unique(), {
+        jobTitle: title,
+        jobIndustry: category,
+        openPositions: openRoles,
+        jobLocation: location,
+        jobType: jobType,
+        expreienceLevel: reqExp,
+        requiredSkills: skills,
+        salaryRange: salary,
+        jobDescription: jobDes,
+        applicationDeadline: deadline,
+        prefferedGender: gender,
+        educationLevel: education,
+        emailApplication: email,
+        externalLink: link,
+        jobStatus: stat,
+        employerId: userAccount.$id,
+        companyName: userAccount.name,
+        datePosted: Date().toString()
+    });
+    return promise;
+};
 export const fetchPostedJobs = (id: string) => {
-    const [jobs, setJobs] = useState([]);
-    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('employerId', id)]);
-    useEffect(() => {
-        promise.then((res: any) => {
-            setJobs(res.documents);
-        });
-    }, []);
-    return jobs;
+    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
+        Query.equal('employerId', id),
+        Query.notEqual('jobStatus', 'Delete')
+    ]);
+    return promise;
+};
+export const fetchSinglePostedJobs = (id: string) => {
+    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('$id', id)]);
+    return promise;
+};
+export const updateJobs = (
+    id: string,
+    title: string,
+    category: string,
+    openRoles: string,
+    location: string,
+    jobType: string,
+    reqExp: string,
+    skills: string,
+    salary: string,
+    deadline: string,
+    gender: string,
+    education: string
+) => {
+    /*     databases.updateDocument('[DATABASE_ID]', '[COLLECTION_ID]', '[DOCUMENT_ID]');
+     */ const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
+        jobTitle: title,
+        jobIndustry: category,
+        openPositions: openRoles,
+        jobLocation: location,
+        jobType: jobType,
+        expreienceLevel: reqExp,
+        requiredSkills: skills,
+        salaryRange: salary,
+        applicationDeadline: deadline,
+        prefferedGender: gender,
+        educationLevel: education
+    });
+    return promise;
+};
+export const fetchActivePostedJobs = (id: string) => {
+    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('employerId', id), Query.equal('jobStatus', 'Active')]);
+    return promise;
+};
+export const fetchPausedPostedJobs = (id: string) => {
+    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('employerId', id), Query.equal('jobStatus', 'Pause')]);
+    return promise;
+};
+export const fetchClosedPostedJobs = (id: string) => {
+    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('employerId', id), Query.equal('jobStatus', 'Close')]);
+    return promise;
+};
+export const fetchAppliedCandidates = (id: string) => {
+    const promise = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('employerId', id)]);
+    return promise;
+};
+export const fetchAppliedCandidatesSingleJob = (empId: string, jobId: string) => {
+    const promise = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('employerId', empId), Query.equal('jobId', jobId)]);
+    return promise;
+};
+export const shortListedCandidate = (empId: string, jobId: string, candId: string) => {
+    const checker = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [
+        Query.equal('employerId', empId),
+        Query.equal('jobId', jobId),
+        Query.equal('candidateId', candId)
+    ]);
+    const promise = checker.then((res) => {
+        if (res.total == 0)
+            return databases.createDocument(DATABASE_ID, SHORT_LISTED, ID.unique(), {
+                jobId: jobId,
+                employerId: empId,
+                candidateId: candId
+            });
+        return null;
+    });
+    return promise;
+};
+export const deleteShortListedCandidate = (id: string) => {
+    const results = databases.deleteDocument(DATABASE_ID, SHORT_LISTED, id);
+    return results;
+};
+export const fetchShortListed = (empId: string, jobId: string) => {
+    const promise = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [
+        Query.equal('employerId', empId),
+        Query.equal('jobId', jobId),
+        Query.equal('interview', 'false')
+    ]);
+
+    return promise;
+};
+export const fetchInterview = (empId: string, jobId: string) => {
+    const promise = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [
+        Query.equal('employerId', empId),
+        Query.equal('jobId', jobId),
+        Query.equal('interview', 'true')
+    ]);
+    promise.then((res) => console.log(res.documents[0]));
+    return promise;
+};
+export const interviewStatus = (id: string, status: string, dates?: string) => {
+    const datas = {
+        interview: status,
+        interviewDate: dates || ''
+    };
+    const promise = databases.updateDocument(DATABASE_ID, SHORT_LISTED, id, datas);
+};
+/* interview */
+
+export const updateJobStatus = (id: string, stat: string) => {
+    const datas = {
+        jobStatus: stat
+    };
+    const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, datas);
+    return promise;
 };
 
 //CANDIDATE

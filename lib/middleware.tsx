@@ -1,4 +1,5 @@
 import {
+    addSocials,
     userInformation,
     getCandidateDocumentId,
     updateBio,
@@ -30,7 +31,17 @@ import {
     addSector,
     deleteSector,
     addWebsites,
-    deleteWebsites
+    deleteWebsites,
+    postJobs,
+    addBehance,
+    deleteBehance,
+    addPortfolio,
+    deletePortfolio,
+    updateSupportDocId,
+    uploadSupportDoc,
+    deleteResume,
+    deleteSupportDoc,
+    insertCoverLetter
 } from './services';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -65,12 +76,19 @@ export const MiddleWare = () => {
     const [editName, setEditName] = useState(false);
     const [linkedIn, setLinkedIn] = useState('');
     const [linked, setLinked] = useState('');
+    const [behance, setBehance] = useState('');
+    const [behan, setBehan] = useState('');
+    const [portfolio, setPortfolio] = useState('');
+    const [portf, setPortf] = useState('');
     const [phone, setPhone] = useState('');
     const [call, setCall] = useState('');
     const [location, setLocation] = useState('');
+    const [success, setSuccess] = useState('');
+    const [loadings, setLoadings] = useState(false);
     const [address, setAddress] = useState('');
     const [webLink, setWebLink] = useState('');
     const [website, setWebsite] = useState('');
+    const [locate, setLocate] = useState('');
     const [employee, setEmployee] = useState('');
     const [nEmployee, setNemployee] = useState('');
     const [sectorValue, setSectorValue] = useState('');
@@ -79,7 +97,12 @@ export const MiddleWare = () => {
     const [githubLink, setGithubLink] = useState('');
     const [resume, setResume] = useState<any>();
     const [resumeId, setResumeId] = useState('');
+    const [supportDocument, setSupportDocument] = useState<any>();
+    const [supportDocumentId, setSupportDocumentId] = useState('');
     const [inputResume, setInputResume] = useState(false);
+    const [inputSupportDoc, setInputSupportDoc] = useState(false);
+    const [coverLetter, setCoverLetter] = useState('');
+
     const [education, setEducation] = useState({
         educationLevel: '',
         fieldStudy: '',
@@ -165,10 +188,15 @@ export const MiddleWare = () => {
                 setDescription(res.documents[0].bioDescription || '');
                 setArray(res.documents[0].skills || '');
                 setProfilePictureId(res.documents[0].profilePictureId || '');
-                setLinkedIn(res.documents[0].linkedIn || '');
-                setPhone(res.documents[0].phoneNumber || '');
-                setGithub(res.documents[0].github || '');
+                setLinked(res.documents[0].linkedIn || '');
+                setBehan(res.documents[0].behance || '');
+                setPortfolio(res.documents[0].portfolio || '');
+                setCall(res.documents[0].phoneNumber || '');
+                /*                 setLocate(res.documents[0].address || '');
+                 */ setGithubLink(res.documents[0].github || '');
                 setResumeId(res.documents[0].resumeId || '');
+                setSupportDocumentId(res.documents[0].supportingDocumentId || '');
+                setCoverLetter(res.documents[0].coverLetter || '');
             }
             if (userRoles == 'employer') {
                 // console.log(res.documents[0].$id);
@@ -183,14 +211,30 @@ export const MiddleWare = () => {
             }
         });
         const { href } = getProfilePicture(profilePictureId);
+        console.log(profilePictureId);
+
         profilePictureId && setImage(href);
     }, [user]);
-
+    useEffect(() => {
+        const { href } = getProfilePicture(profilePictureId);
+        console.log(href);
+        profilePictureId && setImage(href);
+    }, [profilePictureId]);
     const handleBio = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-
+        setLoadings(true);
         const cleanedText = remove_linebreaks(description);
         const response = updateBio(headline, description, documentId);
+        response
+            .then((res) => {
+                setLoadings(false);
+                setSuccess('success');
+            })
+            .catch((error) => {
+                console.log(error);
+                setSuccess('failed');
+                setLoadings(false);
+            });
     };
     /*  const addSkills = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
@@ -208,40 +252,38 @@ export const MiddleWare = () => {
         setArray(newArray);
         updateSkills(newArray, documentId);
     };
-    const uploadProfilePicture = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        const results = createImage(file[0]);
-        results.then((res) => {
+    const handleCoverLetter = () => {
+        insertCoverLetter(documentId, coverLetter);
+    };
+    const uploadProfilePictures = (file: any) => {
+        const resultProfile = createImage(file);
+        resultProfile.then((res: any) => {
             console.log(res);
+
+            setProfilePictureId(res.$id);
+            const response = updateProfileId(documentId, res.$id);
+
             const { href } = res && getProfilePicture(res.$id);
             console.log(href);
             href && setImage(href);
-            updateProfileId(documentId, res.$id);
-            setProfilePictureId(res.$id);
         });
     };
-    const updateProfilePicture = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        console.log(profilePictureId);
-
+    const updateProfilePictures = (file: any) => {
         const results = deleteProfileImage(profilePictureId);
-        results.then((rep) => console.log(rep));
-        const resultProfile = createImage(file[0]);
-        resultProfile.then((res) => {
+        const resultProfile = createImage(file);
+        resultProfile.then((res: any) => {
             setProfilePictureId(res.$id);
             const response = updateProfileId(documentId, res.$id);
-            try {
-                const { href } = res && getProfilePicture(res.$id);
-                console.log(href);
-                href && setImage(href);
-            } catch (e) {
-                console.log(e);
-            }
+
+            const { href } = res && getProfilePicture(res.$id);
+            console.log(href);
+            href && setImage(href);
         });
     };
+
     const deleteProfilePicture = () => {
         const results = deleteProfileImage(profilePictureId);
-        const response = updateProfileId(documentId, '');
+        const response = results.then(() => updateProfileId(documentId, ''));
         response.then((res) => {
             setImage('');
         });
@@ -249,29 +291,48 @@ export const MiddleWare = () => {
     const addCertificate = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         certificateArray.push(certificateData);
-        console.log(certificateArray);
-
+        setLoadings(true);
         const result = updateCertificates(convertToString(certificateArray), documentId);
-        result.then((res: any) => {
-            const certificate = JSON.parse(res.certificates);
-            setCertificateArray(certificate);
-            setCertificateData({
-                name: '',
-                issuedBy: '',
-                year: ''
+        result
+            .then((res: any) => {
+                setLoadings(false);
+                setSuccess('success');
+                const certificate = JSON.parse(res.certificates);
+                setCertificateArray(certificate);
+                setCertificateData({
+                    name: '',
+                    issuedBy: '',
+                    year: ''
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+                setSuccess('failed');
+                setLoadings(false);
             });
-        });
     };
 
     const editCertificate: any = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
+        setLoadings(true);
         certificateArray[certificateIndex] = editedCertificate;
-        updateCertificates(convertToString(certificateArray), documentId);
-        setCertificateEdit(false);
+
+        const response = updateCertificates(convertToString(certificateArray), documentId);
+        response
+            .then((res) => {
+                setLoadings(false);
+                setSuccess('success');
+            })
+            .catch((error) => {
+                console.log(error);
+                setSuccess('failed');
+                setLoadings(false);
+            });
+        /* setCertificateEdit(false); */
     };
-    const deleteCertificate: any = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        certificateArray.splice(workIndex, 1);
+    const deleteCertificate: any = (index: number) => {
+        /*         e.preventDefault();
+         */ certificateArray.splice(certificateIndex, 1);
         updateCertificates(convertToString(certificateArray), documentId);
         setCertificateEdit(false);
     };
@@ -284,25 +345,34 @@ export const MiddleWare = () => {
     };
     const addProject = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
+        setLoadings(true);
         if (projectFile) {
             const resultProfile = createImage(projectFile[0]);
-            resultProfile.then((res) => {
-                const { href } = res && getProfilePicture(res.$id);
-                const toDate = updatedProjectData(projectData, res.$id);
-                projectsArray.push(toDate);
-                const result = updateProjects(convertToString(projectsArray), documentId);
-                result.then((res: any) => {
-                    const project = JSON.parse(res.projects);
-                    setProjectsArray(project);
-                    setProjectData({
-                        name: '',
-                        description: '',
-                        url: '',
-                        thumbnailId: ''
+            resultProfile
+                .then((res) => {
+                    /*                 const { href } = res && getProfilePicture(res.$id);
+                     */ const toDate = updatedProjectData(projectData, res.$id);
+                    projectsArray.push(toDate);
+                    const result = updateProjects(convertToString(projectsArray), documentId);
+                    result.then((res: any) => {
+                        setLoadings(false);
+                        setSuccess('success');
+                        const project = JSON.parse(res.projects);
+                        setProjectsArray(project);
+                        setProjectData({
+                            name: '',
+                            description: '',
+                            url: '',
+                            thumbnailId: ''
+                        });
+                        setProjectFile(null);
                     });
-                    setProjectFile(null);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setSuccess('failed');
+                    setLoadings(false);
                 });
-            });
         } else {
             projectsArray.push(projectData);
             const result = updateProjects(convertToString(projectsArray), documentId);
@@ -325,40 +395,59 @@ export const MiddleWare = () => {
         updateProjects(convertToString(projectsArray), documentId);
         setProjectEdit(false);
     };
-    const deleteProject: any = (e: React.FormEvent<HTMLElement>) => {
-        projectsArray.splice(projectIndex, 1);
+    const deleteProject = (index:number) => {
+      projectsArray.splice(index, 1);
+      console.log(projectsArray[index]);
+        
         updateProjects(convertToString(projectsArray), documentId);
-        setProjectEdit(false);
-    };
+/*         setProjectEdit(false);
+ */    };
     const addWorkHistory: any = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
+        setLoadings(true);
         workHistoryArray.push(workHistoryData);
-        console.log(workHistoryArray);
-
         const result = updateWorkHistory(convertToString(workHistoryArray), documentId);
-        result.then((res: any) => {
-            const work = JSON.parse(res.workHistory);
-            console.log(work);
-
-            setWorkHistoryArray(work);
-            setWorkHistoryData({
-                title: '',
-                companyName: '',
-                startDate: '',
-                endDate: '',
-                jobDescription: ''
+        result
+            .then((res: any) => {
+                setLoadings(false);
+                setWorkHistoryData({
+                    title: '',
+                    companyName: '',
+                    startDate: '',
+                    endDate: '',
+                    jobDescription: ''
+                });
+                setSuccess('success');
+                const work = JSON.parse(res.workHistory);
+                setWorkHistoryArray(work);
+            })
+            .catch((error) => {
+                console.log(error);
+                setSuccess('failed');
+                setLoadings(false);
             });
-        });
     };
     const editWorkHistory: any = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
+        setLoadings(true);
         workHistoryArray[workIndex] = editedWork;
-        updateWorkHistory(convertToString(workHistoryArray), documentId);
-        setWorkEdit(false);
+        const response = updateWorkHistory(convertToString(workHistoryArray), documentId);
+        response
+            .then((res) => {
+                setLoadings(false);
+                setSuccess('success');
+            })
+            .catch((error) => {
+                console.log(error);
+                setSuccess('failed');
+                setLoadings(false);
+            });
+        /*         setWorkEdit(false);
+         */
     };
-    const deleteWorkHistory: any = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        workHistoryArray.splice(workIndex, 1);
+    const deleteWorkHistory: any = (index: number) => {
+        /*         e.preventDefault();
+         */ workHistoryArray.splice(index, 1);
         updateWorkHistory(convertToString(workHistoryArray), documentId);
         setWorkEdit(false);
     };
@@ -366,27 +455,47 @@ export const MiddleWare = () => {
     const addEducation: any = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         educationArray.push(education);
+        setLoadings(true);
+
         const result = updateEducation(convertToString(educationArray), documentId);
-        result.then((res: any) => {
-            const educate = JSON.parse(res.educations);
-            setEducationArray(educate);
-            setEducation({
-                educationLevel: '',
-                fieldStudy: '',
-                university: '',
-                yearIssued: ''
+        result
+            .then((res: any) => {
+                setLoadings(false);
+                setSuccess('success');
+                const educate = JSON.parse(res.educations);
+                setEducationArray(educate);
+                setEducation({
+                    educationLevel: '',
+                    fieldStudy: '',
+                    university: '',
+                    yearIssued: ''
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+                setSuccess('failed');
+                setLoadings(false);
             });
-        });
     };
     const editEducations: any = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
+        setLoadings(true);
         educationArray[educationIndex] = EditedEducation;
-        updateEducation(convertToString(educationArray), documentId);
-        setEditEducation(false);
+        const result = updateEducation(convertToString(educationArray), documentId);
+        result
+            .then((res: any) => {
+                setLoadings(false);
+                setSuccess('success');
+            })
+            .catch((error) => {
+                console.log(error);
+                setSuccess('failed');
+                setLoadings(false);
+            });
+        /* setEditEducation(false); */
     };
-    const deleteEducation: any = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        educationArray.splice(educationIndex, 1);
+    const deleteEducation = (index: number) => {
+        educationArray.splice(index, 1);
         updateEducation(convertToString(educationArray), documentId);
         setEditEducation(false);
     };
@@ -398,12 +507,64 @@ export const MiddleWare = () => {
             router.reload();
         });
     };
+    const addBehan = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+
+        const updateLink = addBehance(behan, documentId);
+        updateLink &&
+            updateLink.then((res) => {
+                router.reload();
+            });
+    };
+    const deleteBehan = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+
+        const updateLink = deleteBehance(documentId);
+        updateLink &&
+            updateLink.then((res) => {
+                router.reload();
+            });
+    };
+    const addPortf = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+
+        const updateLink = addPortfolio(portf, documentId);
+        updateLink &&
+            updateLink.then((res) => {
+                router.reload();
+            });
+    };
+    const deletePortf = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+
+        const updateLink = deletePortfolio(documentId);
+        updateLink &&
+            updateLink.then((res) => {
+                router.reload();
+            });
+    };
     const addLinkedIn = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         const updateLink = addLinkedInLink(linked, documentId);
         updateLink &&
             updateLink.then((res) => {
                 router.reload();
+            });
+    };
+    const addSocialLink = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        setLoadings(true);
+        const updateLink = addSocials(call, /* locate, */ linked, githubLink, behan, portfolio, documentId);
+
+        updateLink
+            .then((res) => {
+                setLoadings(false);
+                setSuccess('success');
+            })
+            .catch((error) => {
+                console.log(error);
+                setSuccess('failed');
+                setLoadings(false);
             });
     };
     const deleteLinkedIn = (e: React.FormEvent<HTMLElement>) => {
@@ -510,6 +671,7 @@ export const MiddleWare = () => {
                 router.reload();
             });
     };
+
     const deleteGithub = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         const updateLink = deleteGithubLink(documentId);
@@ -518,17 +680,57 @@ export const MiddleWare = () => {
                 router.reload();
             });
     };
-    const addResume = (e: React.FormEvent<HTMLElement>) => {
+    const addResume = (file: any) => {
+        const resultResume = uploadResume(file);
+        resultResume.then((res: any) => {
+            const response = updateResumeId(documentId, res.$id);
+        });
+    };
+    const updateResume = (file: any) => {
+        const results = deleteResume(resumeId);
+        console.log(resumeId);
+
+        const resultResume = uploadResume(file);
+        resultResume.then((res: any) => {
+            setResumeId(res.$id);
+            const response = updateResumeId(documentId, res.$id);
+        });
+    };
+    const addSupportDocument = (file: any) => {
+        const resultResume = uploadResume(file);
+        resultResume.then((res: any) => {
+            const response = updateSupportDocId(documentId, res.$id);
+        });
+    };
+    const updateSupportDoc = (file: any) => {
+        const results = deleteSupportDoc(supportDocumentId);
+        console.log(resumeId);
+        const resultResume = uploadResume(file);
+        resultResume.then((res: any) => {
+            setSupportDocumentId(res.$id);
+            const response = updateSupportDocId(documentId, res.$id);
+        });
+    };
+    /*   const addSupportDocument = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-        if (resume) {
-            const resultResume = uploadResume(resume[0]);
+        if (supportDocument) {
+            const resultResume = uploadSupportDoc(supportDocument[0]);
             resultResume.then((res) => {
-                updateResumeId(res.$id, documentId);
-                setInputResume(false);
+                updateSupportDocId(res.$id, documentId);
+                setInputSupportDoc(false);
+                console.log(res);
             });
         }
-    };
+    }; */
     return {
+        locate,
+        setLocate,
+        success,
+        setSuccess,
+        loadings,
+        setLoadings,
+        addSocialLink,
+        updateSupportDoc,
         firstLetter,
         headline,
         setHeadline,
@@ -562,9 +764,8 @@ export const MiddleWare = () => {
         setWorkIndex,
         workEdit,
         setWorkEdit,
-        uploadProfilePicture,
-        updateProfilePicture,
         deleteProfilePicture,
+        uploadProfilePictures,
         handleBio,
         /*         addSkills,
          */ addSuggestedSkill,
@@ -630,7 +831,14 @@ export const MiddleWare = () => {
         deletePhone,
         addGithub,
         deleteGithub,
+        addSupportDocument,
+        supportDocument,
+        setSupportDocument,
+        supportDocumentId,
+        inputSupportDoc,
+        setInputSupportDoc,
         addResume,
+        updateResume,
         resume,
         setResume,
         resumeId,
@@ -659,6 +867,144 @@ export const MiddleWare = () => {
         webLink,
         setWebLink,
         addWeb,
-        deleteWeb
+        deleteWeb,
+        behan,
+        setBehan,
+        behance,
+        setBehance,
+        portf,
+        setPortf,
+        portfolio,
+        setPortfolio,
+        addBehan,
+        deleteBehan,
+        addPortf,
+        deletePortf,
+        updateProfilePictures,
+        coverLetter,
+        setCoverLetter,
+        handleCoverLetter
+    };
+};
+
+export const PostJob = () => {
+    const [compName, setCompName] = useState('');
+    const [jobTitle, setJobTitle] = useState('');
+    const [category, setCategory] = useState('');
+    const [openRoles, setOpenRoles] = useState('');
+    const [location, setLocation] = useState('');
+    const [jobType, setJobType] = useState('');
+    const [reqExp, setReqExp] = useState('');
+    const [skillsArray, setSkillsArray] = useState<string[]>([]);
+    const [skills, setSkills] = useState('');
+    const [salary, setSalary] = useState('');
+    const [jobDes, setJobDes] = useState('');
+    const [deadline, setDeadline] = useState('');
+    const [gender, setGender] = useState('');
+    const [educationLevel, setEducationLevel] = useState('');
+    const [email, setEmail] = useState('');
+    const [externalLink, setExternalLink] = useState('');
+    const addSuggestedSkill = async (suggesteSkill: string) => {
+        skillsArray.push(suggesteSkill);
+        setSkills('');
+        console.log(skillsArray);
+    };
+    const deleteSkill = (index: number) => {
+        const newArray = skillsArray.filter((item, i) => i !== index);
+        setSkillsArray(newArray);
+        /*         updateSkills(newArray, documentId);
+         */
+    };
+    const postAjob = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        setSkills(JSON.stringify(skillsArray));
+        /*   console.log(
+            jobTitle,
+            category,
+            openRoles,
+            location,
+            jobType,
+            reqExp,
+            skills,
+            salary,
+            jobDes,
+            deadline,
+            gender,
+            educationLevel,
+            email,
+            externalLink
+        ); */
+
+        const abebe = postJobs(
+            jobTitle,
+            category,
+            openRoles,
+            location,
+            jobType,
+            reqExp,
+            skills,
+            salary,
+            jobDes,
+            deadline,
+            gender,
+            educationLevel,
+            email,
+            externalLink
+        );
+        abebe.then((res) => {
+            setCompName('');
+            setJobTitle('');
+            setCategory('');
+            setOpenRoles('');
+            setLocation('');
+            setJobType('');
+            setReqExp('');
+            setSkillsArray([]);
+            setSkills('');
+            setSalary('');
+            setJobDes('');
+            setDeadline('');
+            setGender('');
+            setEducationLevel('');
+            setEmail('');
+            setExternalLink('');
+        });
+    };
+    return {
+        compName,
+        setCompName,
+        jobTitle,
+        setJobTitle,
+        category,
+        setCategory,
+        openRoles,
+        setOpenRoles,
+        location,
+        setLocation,
+        jobType,
+        setJobType,
+        reqExp,
+        setReqExp,
+        skills,
+        setSkills,
+        skillsArray,
+        setSkillsArray,
+        addSuggestedSkill,
+        deleteSkill,
+        salary,
+        setSalary,
+        jobDes,
+        setJobDes,
+        deadline,
+        setDeadline,
+        gender,
+        setGender,
+        educationLevel,
+        setEducationLevel,
+        email,
+        setEmail,
+        externalLink,
+        setExternalLink,
+        postAjob
     };
 };

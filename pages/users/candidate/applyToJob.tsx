@@ -76,7 +76,6 @@ const applyToJob = () => {
                 applyToJobs(userData.Id, jobId, employerId, cover, res.$id).then((res) => {
                     getSavedJobId(jobId).then((rep) => {
                         console.log(rep);
-
                         rep.total != 0 &&
                             unSaveJobs(rep.documents[0].$id).then((rem) => {
                                 //console.log(rem);

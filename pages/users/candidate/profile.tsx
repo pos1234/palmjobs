@@ -2,14 +2,11 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '@/lib/context';
 import { MiddleWare } from '@/lib/middleware';
-import parse from 'html-react-parser';
 import dynamic from 'next/dynamic';
-import { accountData, deleteProfileImage, getProfilePicture } from '@/lib/services';
+import { accountData, deleteProfileImage, getProfilePicture, signOut } from '@/lib/services';
 import skillsData from '@/lib/skillData';
-const MyEditor = dynamic(() => import('../../../components/Edit'), {
-    ssr: false
-});
-const EditContent = dynamic(() => import('../../../components/Edit'), {
+import 'react-quill/dist/quill.snow.css';
+const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 interface Data {
@@ -23,12 +20,29 @@ const Profile = () => {
     const [displayWorkHisotry, setDisplayWorkHistory] = useState(false);
     const [displayProject, setDisplayProject] = useState(false);
     const [linkedAdd, setLinkedAdd] = useState(false);
+    const [behancAdd, setBehanceAdd] = useState(false);
+    const [portfAdd, setPortfAdd] = useState(false);
     const [callAdd, setCallAdd] = useState(false);
     const [githubAdd, setGithubAdd] = useState(false);
+    const [updateRes, setUpdateRes] = useState(false);
+    const [updateSupport, setUpdateSupport] = useState(false);
     const userData: any = accountData();
+    const bioMaxCharacters = 100;
+    const bioDescMaxCharacters = 1000;
+    const coverMaxCharacters = 5000;
+    const skillsMaxCharacters = 6;
+    const maximumCertificates = 5;
+    const maximumProjects = 5;
+    const maximumWorkHistory = 3;
+    const maximumEducation = 5;
+    const maxWorkHistoryTitle = 20;
+    const maxWorkHistoryCompany = 20;
+    const maxWorkHistoryStartDate = 20;
+    const maxWorkHistoryEndDate = 20;
+    const maxWorkHistoryDescription = 580;
+
     const items: Data[] = skillsData;
-    /*     const items: Data[] = [{ word: 'react' }, { word: 'react-Native' }, { word: 'react.js' }, { word: 'Angular' }, { word: 'banana' }];
-     */ const {
+    const {
         firstLetter,
         headline,
         setHeadline,
@@ -40,8 +54,6 @@ const Profile = () => {
         setFile,
         projectFile,
         setProjectFile,
-        profilePictureId,
-        setProfilePictureId,
         array,
         setArray,
         certificateArray,
@@ -62,8 +74,6 @@ const Profile = () => {
         setWorkIndex,
         workEdit,
         setWorkEdit,
-        uploadProfilePicture,
-        updateProfilePicture,
         deleteProfilePicture,
         handleBio,
         /*         addSkills,
@@ -127,6 +137,7 @@ const Profile = () => {
         addResume,
         resume,
         setResume,
+        updateResume,
         resumeId,
         inputResume,
         setInputResume,
@@ -135,15 +146,42 @@ const Profile = () => {
         setCall,
         setPhone,
         addPhone,
-        deletePhone
+        deletePhone,
+        behan,
+        setBehan,
+        behance,
+        setBehance,
+        portf,
+        setPortf,
+        portfolio,
+        setPortfolio,
+        addBehan,
+        deleteBehan,
+        addPortf,
+        deletePortf,
+        addSupportDocument,
+        updateSupportDoc,
+        supportDocument,
+        setSupportDocument,
+        supportDocumentId,
+        inputSupportDoc,
+        setInputSupportDoc,
+        updateProfilePictures,
+        uploadProfilePictures,
+        coverLetter,
+        setCoverLetter,
+        handleCoverLetter
     } = MiddleWare();
+
     const { loading, user, role } = useUser();
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<Data[]>([]);
     const [approveDeleteSkill, setApproveDeleteSkill] = useState<myState>(null);
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
-        setSearchTerm(inputValue);
+        console.log(array.length);
+
+        if (array.length <= skillsMaxCharacters) setSearchTerm(inputValue);
         const filteredSuggestions = items.filter((data) => data.word.toLowerCase().includes(inputValue.toLowerCase()));
         setSuggestions(filteredSuggestions);
     };
@@ -155,7 +193,7 @@ const Profile = () => {
     };
     const clickMe = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-        addSuggestedSkill(searchTerm);
+        array.length <= skillsMaxCharacters && addSuggestedSkill(searchTerm);
         setSearchTerm('');
     };
     const showCertificate = () => {
@@ -204,10 +242,6 @@ const Profile = () => {
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsChecked(event.target.checked);
     };
-    const handleEditorData = (data: any) => {
-        setWorkHistoryData({ ...workHistoryData, jobDescription: data });
-        //console.log(workHistoryData.jobDescription);
-    };
     const sureDeleteSkill = (index: number) => {
         setApproveDeleteSkill(index);
     };
@@ -218,8 +252,186 @@ const Profile = () => {
     const editUserName = () => {
         setEditName(true);
     };
+    const updatePic = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (e.currentTarget.files) {
+            const fileList = Array.from(e.currentTarget.files);
+
+            // Maximum file size in bytes (e.g., 5MB)
+            const maxSize = 1 * 1024 * 1024;
+
+            // Allowed file extensions
+            const allowedExtensions = ['.jpg', '.jpeg', '.png'];
+
+            // Filter files based on size and extension
+            const filteredFiles = fileList.filter((file) => {
+                // Check file size
+                if (file.size > maxSize) {
+                    console.log(`File ${file.name} exceeds the maximum size limit.`);
+                    return false;
+                }
+                // Check file extension
+                const fileExtension = `.${file.name.split('.').pop()}`;
+                if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
+                    console.log(`File ${file.name} has an invalid extension.`);
+                    return false;
+                }
+
+                return updateProfilePictures(e.currentTarget.files && e.currentTarget.files[0]);
+            });
+        }
+    };
+    const uploadPic = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (e.currentTarget.files) {
+            const fileList = Array.from(e.currentTarget.files);
+            const maxSize = 1 * 1024 * 1024;
+            const allowedExtensions = ['.jpg', '.jpeg', '.png'];
+            const filteredFiles: any = fileList.filter((file) => {
+                if (file.size > maxSize) {
+                    console.log(`File ${file.name} exceeds the maximum size limit.`);
+                    return false;
+                }
+                const fileExtension = `.${file.name.split('.').pop()}`;
+                if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
+                    console.log(`File ${file.name} has an invalid extension.`);
+                    return false;
+                }
+
+                return uploadProfilePictures(e.currentTarget.files && e.currentTarget.files[0]);
+            });
+        }
+    };
+    const uploadCv = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (e.currentTarget.files) {
+            const fileList = Array.from(e.currentTarget.files);
+            const maxSize = 1 * 1024 * 1024;
+            const allowedExtensions = ['.pdf', 'docx'];
+            const filteredFiles: any = fileList.filter((file) => {
+                if (file.size > maxSize) {
+                    console.log(`File ${file.name} exceeds the maximum size limit.`);
+                    return false;
+                }
+                const fileExtension = `.${file.name.split('.').pop()}`;
+                if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
+                    console.log(`File ${file.name} has an invalid extension.`);
+                    return false;
+                }
+
+                return addResume(e.currentTarget.files && e.currentTarget.files[0]);
+            });
+        }
+    };
+    const updateCv = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (e.currentTarget.files) {
+            const fileList = Array.from(e.currentTarget.files);
+            const maxSize = 1 * 1024 * 1024;
+            const allowedExtensions = ['.pdf'];
+            const filteredFiles: any = fileList.filter((file) => {
+                if (file.size > maxSize) {
+                    console.log(`File ${file.name} exceeds the maximum size limit.`);
+                    return false;
+                }
+                const fileExtension = `.${file.name.split('.').pop()}`;
+                if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
+                    console.log(`File ${file.name} has an invalid extension.`);
+                    return false;
+                }
+
+                return updateResume(e.currentTarget.files && e.currentTarget.files[0]);
+            });
+        }
+    };
+    const uploadSupportDoc = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (e.currentTarget.files) {
+            const fileList = Array.from(e.currentTarget.files);
+            const maxSize = 1 * 1024 * 1024;
+            const allowedExtensions = ['.pdf'];
+            const filteredFiles: any = fileList.filter((file) => {
+                if (file.size > maxSize) {
+                    console.log(`File ${file.name} exceeds the maximum size limit.`);
+                    return false;
+                }
+                const fileExtension = `.${file.name.split('.').pop()}`;
+                if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
+                    console.log(`File ${file.name} has an invalid extension.`);
+                    return false;
+                }
+
+                return addSupportDocument(e.currentTarget.files && e.currentTarget.files[0]);
+            });
+        }
+    };
+    const updateSupportDocument = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (e.currentTarget.files) {
+            const fileList = Array.from(e.currentTarget.files);
+            const maxSize = 1 * 1024 * 1024;
+            const allowedExtensions = ['.pdf'];
+            const filteredFiles: any = fileList.filter((file) => {
+                if (file.size > maxSize) {
+                    console.log(`File ${file.name} exceeds the maximum size limit.`);
+                    return false;
+                }
+                const fileExtension = `.${file.name.split('.').pop()}`;
+                if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
+                    console.log(`File ${file.name} has an invalid extension.`);
+                    return false;
+                }
+
+                return updateSupportDoc(e.currentTarget.files && e.currentTarget.files[0]);
+            });
+        }
+    };
+    const addCoverLetter = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        handleCoverLetter();
+    };
     return (
         <>
+            <form onSubmit={addCoverLetter}>
+                <h1>cover letter</h1>
+                <ReactQuill
+                    theme="snow"
+                    value={coverLetter}
+                    onChange={(e) => {
+                        const inputValue = e;
+                        if (inputValue.length < coverMaxCharacters) {
+                            setCoverLetter(inputValue);
+                        }
+                    }}
+                />
+                <span>{coverMaxCharacters - coverLetter.length}</span>
+                <button type="submit">submit</button>
+            </form>
+            {image ? (
+                <>
+                    <img src={image} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
+                    <input value={file} type="file" onChange={updatePic} />
+                    <button onClick={deleteProfilePicture}>delete profile</button>
+                </>
+            ) : (
+                <>
+                    <p
+                        style={{
+                            background: 'red',
+                            width: '50px',
+                            height: '50px',
+                            borderRadius: '50%',
+                            textAlign: 'center',
+                            fontSize: '2rem',
+                            color: 'white',
+                            textTransform: 'uppercase'
+                        }}
+                    >
+                        {firstLetter}
+                    </p>
+                    <input type="file" onChange={uploadPic} />
+                </>
+            )}
             {userData && !editName && (
                 <h1>
                     {userData.name}
@@ -232,9 +444,12 @@ const Profile = () => {
                         type="text"
                         value={editedName}
                         onChange={(e) => {
-                            setEditedName(e.currentTarget.value);
+                            if (e.currentTarget.value.length <= 10) {
+                                setEditedName(e.currentTarget.value);
+                            }
                         }}
                     />
+                    <span></span>
                     <button type="submit">sumbit</button>
                 </form>
             )}
@@ -257,12 +472,51 @@ const Profile = () => {
                     />
                     <button type="submit">sumbit</button>
                 </form>
-            )}{' '}
+            )}
+            {behance && (
+                <>
+                    <p>{behance}</p>
+                    <button onClick={deleteLinkedIn}>delete</button>
+                </>
+            )}
+            {!behance && !behancAdd && <button onClick={() => setBehanceAdd(true)}>Behance +</button>}
+            {!behance && behancAdd && (
+                <form onSubmit={addBehan}>
+                    <input
+                        type="text"
+                        value={behan}
+                        onChange={(e) => {
+                            setBehan(e.currentTarget.value);
+                        }}
+                    />
+                    <button type="submit">sumbit</button>
+                </form>
+            )}
+            <br />
+            {portfolio && (
+                <>
+                    <p>{portfolio}</p>
+                    <button onClick={deleteBehan}>delete</button>
+                </>
+            )}
+            {!portfolio && !portfAdd && <button onClick={() => setPortfAdd(true)}>LinkedIn +</button>}
+            {!portfolio && portfAdd && (
+                <form onSubmit={addPortf}>
+                    <input
+                        type="text"
+                        value={portf}
+                        onChange={(e) => {
+                            setPortf(e.currentTarget.value);
+                        }}
+                    />
+                    <button type="submit">sumbit</button>
+                </form>
+            )}
             <br />
             {phone && (
                 <>
                     <p>{phone}</p>
-                    <button onClick={deletePhone}>delete</button>
+                    <button onClick={deletePortf}>delete</button>
                 </>
             )}
             {!phone && !callAdd && <button onClick={() => setCallAdd(true)}>Phone +</button>}
@@ -300,77 +554,65 @@ const Profile = () => {
                 </form>
             )}
             {!resumeId && !inputResume && <button onClick={() => setInputResume(true)}>upload resume</button>}
-            {!resumeId && inputResume && (
-                <form onSubmit={addResume}>
-                    <input
-                        type="file"
-                        onChange={(e) => {
-                            setResume(e.currentTarget.files);
-                        }}
-                    />
-                    <button type="submit">sumbit</button>
-                </form>
-            )}
-            {image ? (
-                <>
-                    <img src={image} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
-                    <form onSubmit={updateProfilePicture}>
-                        <input type="file" onChange={(e) => setFile(e.currentTarget.files)} />
-                        <button type="submit">update profile</button>
-                    </form>
-                    <button onClick={deleteProfilePicture}>delete profile</button>
-                </>
-            ) : (
-                <>
-                    <p
-                        style={{
-                            background: 'red',
-                            width: '50px',
-                            height: '50px',
-                            borderRadius: '50%',
-                            textAlign: 'center',
-                            fontSize: '2rem',
-                            color: 'white',
-                            textTransform: 'uppercase'
-                        }}
-                    >
-                        {firstLetter}
-                    </p>
-                    <form onSubmit={uploadProfilePicture}>
-                        <input type="file" onChange={(e) => setFile(e.currentTarget.files)} />
-                        <button type="submit">add Profile</button>
-                    </form>{' '}
-                </>
-            )}
+            {resumeId && !updateRes && <button onClick={() => setUpdateRes(true)}>update resume</button>}
+            {!resumeId && inputResume && <input type="file" onChange={uploadCv} />}
+            {resumeId && updateRes && <input type="file" onChange={updateCv} />}
+            <br />
+            {!supportDocumentId && !inputSupportDoc && <button onClick={() => setInputSupportDoc(true)}>upload support Doc</button>}
+            {supportDocumentId && !updateSupport && <button onClick={() => setUpdateSupport(true)}>update support doc</button>}
+            {!supportDocumentId && inputSupportDoc && <input type="file" onChange={uploadSupportDoc} />}
+            {supportDocumentId && updateSupport && <input type="file" onChange={updateSupportDocument} />}
             <form style={{ margin: '10%' }} onSubmit={handleBio}>
                 <input
                     value={headline}
                     required
                     type="text"
-                    onChange={(e: React.FormEvent<HTMLInputElement>) => setHeadline(e.currentTarget.value)}
+                    onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                        if (e.currentTarget.value.length <= bioMaxCharacters) {
+                            setHeadline(e.currentTarget.value);
+                        }
+                    }}
                 />
+                <span>{bioMaxCharacters - headline.length}</span>
                 <br />
-                <textarea value={description} required onChange={(e) => setDescription(e.currentTarget.value)} />
+                <textarea
+                    value={description}
+                    required
+                    onChange={(e) => {
+                        if (e.currentTarget.value.length <= bioDescMaxCharacters) {
+                            setDescription(e.currentTarget.value);
+                        }
+                    }}
+                />
+                <span>
+                    {description.length} / {bioDescMaxCharacters}
+                </span>
                 <br />
                 <button type="submit">save bio</button>
             </form>
-            <form style={{ margin: '10%' }} onSubmit={clickMe}>
-                <div>
-                    <input type="text" placeholder="Search..." value={searchTerm} onChange={handleInputChange} />
-                    <ul>
-                        {suggestions &&
-                            suggestions.map((suggestion) => (
-                                <li key={suggestion.word} onClick={() => handleSuggestionClick(suggestion)}>
-                                    {suggestion.word}
-                                </li>
-                            ))}
-                    </ul>
-                </div>
-                <button type="submit">save skill</button>
-            </form>
+            {array.length < skillsMaxCharacters && (
+                <form style={{ margin: '10%' }} onSubmit={clickMe}>
+                    <div>
+                        <input type="text" placeholder="Search..." value={searchTerm} onChange={handleInputChange} />
+                        <span>
+                            {array.length} / {skillsMaxCharacters}
+                        </span>
+                        <ul>
+                            {suggestions &&
+                                array.length <= skillsMaxCharacters &&
+                                suggestions.map((suggestion) => (
+                                    <li key={suggestion.word} onClick={() => handleSuggestionClick(suggestion)}>
+                                        {suggestion.word}
+                                    </li>
+                                ))}
+                        </ul>
+                    </div>
+                    <button type="submit">save skill</button>
+                </form>
+            )}
             {array.map((item, index) => (
                 <button style={{ marginRight: '10px' }} key={index}>
-                    {item} <span onClick={() => sureDeleteSkill(index)}>X</span>{' '}
+                    {item} <span onClick={() => sureDeleteSkill(index)}>X</span>
                 </button>
             ))}
             {approveDeleteSkill != null && (
@@ -388,7 +630,8 @@ const Profile = () => {
                 </div>
             )}
             <br />
-            {/* <button onClick={handleLogout}>logout</button> <br/><br/> */}
+            <button onClick={signOut}>logout</button> <br />
+            <br />
             <table>
                 <tbody>
                     <tr>
@@ -452,7 +695,14 @@ const Profile = () => {
                 </tbody>
             </table>
             <br /> <br />
-            <button onClick={showCertificate}>add certificate</button>
+            {certificateArray.length <= maximumCertificates && (
+                <button onClick={showCertificate}>
+                    add certificate
+                    <span>
+                        {certificateArray.length}/{maximumCertificates}
+                    </span>
+                </button>
+            )}
             {displayCertificate && (
                 <form style={{ margin: '10%' }} onSubmit={addCertificate}>
                     <p>Certificate Name</p>
@@ -552,8 +802,8 @@ const Profile = () => {
                                     <button
                                         type="button"
                                         onClick={() => {
-                                            deleteProject();
-                                            deleteProfileImage(editedProject.thumbnailId);
+/*                                             deleteProject(index);
+ */                                            deleteProfileImage(editedProject.thumbnailId);
                                         }}
                                     >
                                         delete project
@@ -565,7 +815,14 @@ const Profile = () => {
                 </tbody>
             </table>
             <br />
-            <button onClick={showProject}>add Projects</button>
+            {projectsArray.length <= maximumProjects && (
+                <button onClick={showProject}>
+                    add Projects
+                    <span>
+                        {projectsArray.length}/{maximumProjects}
+                    </span>
+                </button>
+            )}
             {displayProject && (
                 <form style={{ margin: '10%' }} onSubmit={addProject}>
                     <p>Project Name</p>
@@ -592,7 +849,29 @@ const Profile = () => {
                         onChange={(e: React.FormEvent<HTMLInputElement>) => setProjectData({ ...projectData, url: e.currentTarget.value })}
                     />
                     <br />
-                    <input type="file" onChange={(e) => setProjectFile(e.currentTarget.files)} />
+                    <input
+                        type="file"
+                        onChange={(e) => {
+                            if (e.currentTarget.files) {
+                                const fileList = Array.from(e.currentTarget.files);
+                                const maxSize = 1 * 1024 * 1024;
+                                const allowedExtensions = ['.jpg', '.jpeg', '.png'];
+                                const filteredFiles: any = fileList.filter((file) => {
+                                    if (file.size > maxSize) {
+                                        console.log(`File ${file.name} exceeds the maximum size limit.`);
+                                        return false;
+                                    }
+                                    const fileExtension = `.${file.name.split('.').pop()}`;
+                                    if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
+                                        console.log(`File ${file.name} has an invalid extension.`);
+                                        return false;
+                                    }
+
+                                    return setProjectFile(e.currentTarget.files);
+                                });
+                            }
+                        }}
+                    />
 
                     <br />
                     <button type="submit">save project</button>
@@ -614,7 +893,8 @@ const Profile = () => {
                                             </summary>
                                             <p>{item.startDate}</p>
                                             {item.endDate && <p>{item.endDate}</p>}
-                                            <div style={{ paddingLeft: '2rem' }}>{parse(item.jobDescription)}</div>
+                                            {/*                                             <div style={{ paddingLeft: '2rem' }}>{parse(item.jobDescription)}</div>
+                                             */}{' '}
                                         </details>
                                     ))}
                             </ul>
@@ -671,15 +951,12 @@ const Profile = () => {
                                         </div>
                                     )}
                                     <br />
-                                    {/*                                     <p>Descriptionsl</p>
-                                     */}
-                                    {/*                                     <EditContent onEditorData={handleEditorData} />
-                                     */}{' '}
-                                    {/* <textarea
+                                    <p>Descriptions</p>
+                                    <ReactQuill
+                                        theme="snow"
                                         value={editedWork.jobDescription}
-                                        required
-                                        onChange={(e) => setEditedWork({ ...editedWork, jobDescription: e.currentTarget.value })}
-                                    /> */}
+                                        onChange={(e) => setEditedWork({ ...editedWork, jobDescription: e })}
+                                    />
                                     <br />
                                     <button type="submit">update work History</button>
                                     <button type="button" onClick={deleteWorkHistory}>
@@ -692,7 +969,14 @@ const Profile = () => {
                 </tbody>
             </table>
             <br /> <br />
-            <button onClick={showWorkHistory}>work history</button>
+            {workHistoryArray.length <= maximumWorkHistory && (
+                <button onClick={showWorkHistory}>
+                    work history
+                    <span>
+                        {workHistoryArray.length}/{maximumWorkHistory}
+                    </span>
+                </button>
+            )}
             <table>
                 <tbody>
                     <tr>
@@ -704,10 +988,14 @@ const Profile = () => {
                                         required
                                         value={workHistoryData.title}
                                         type="text"
-                                        onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                            setWorkHistoryData({ ...workHistoryData, title: e.currentTarget.value })
-                                        }
+                                        onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                                            const inputValue = e.currentTarget.value;
+                                            if (inputValue.length <= maxWorkHistoryTitle) {
+                                                setWorkHistoryData({ ...workHistoryData, title: inputValue });
+                                            }
+                                        }}
                                     />
+                                    <span>{maxWorkHistoryTitle - workHistoryData.title.length}</span>
                                     <br />
                                     <br />
                                     <p>Company Name</p>
@@ -752,13 +1040,11 @@ const Profile = () => {
                                     )}
                                     <br />
                                     <p>Description</p>
-                                    <MyEditor onEditorData={handleEditorData} />
-                                    {/* <textarea
+                                    <ReactQuill
+                                        theme="snow"
                                         value={workHistoryData.jobDescription}
-                                        required
-                                                                                onChange={(e) => setWorkHistoryData({ ...workHistoryData, jobDescription: e.currentTarget.value })}
-
-                                    /> */}
+                                        onChange={(e) => setWorkHistoryData({ ...workHistoryData, jobDescription: e })}
+                                    />
                                     <br />
                                     <button type="submit">save certificate</button>
                                 </form>
@@ -768,7 +1054,14 @@ const Profile = () => {
                 </tbody>
             </table>
             {/* projects */}
-            <button onClick={showEducation}>Education</button>
+            {educationArray.length <= maximumEducation && (
+                <button onClick={showEducation}>
+                    Education
+                    <span>
+                        {educationArray.length}/{maximumEducation}
+                    </span>
+                </button>
+            )}
             {displayEducation && (
                 <form style={{ margin: '10%' }} onSubmit={addEducation}>
                     <p>Level of Education</p>

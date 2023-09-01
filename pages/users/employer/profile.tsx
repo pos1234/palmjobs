@@ -2,16 +2,10 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '@/lib/context';
 import { MiddleWare } from '@/lib/middleware';
-import parse from 'html-react-parser';
 import dynamic from 'next/dynamic';
 import { accountData, deleteProfileImage, getProfilePicture } from '@/lib/services';
 import skillsData from '@/lib/skillData';
-const MyEditor = dynamic(() => import('../../../components/Edit'), {
-    ssr: false
-});
-const EditContent = dynamic(() => import('../../../components/Edit'), {
-    ssr: false
-});
+
 interface Data {
     word: string;
 }
@@ -23,16 +17,14 @@ const Profile = () => {
     const [addEmployee, setAddEmployee] = useState(false);
     const [addSectors, setAddSectors] = useState(false);
     const [addWebLink, setAddWebLink] = useState(false);
+    const [profileImage, setProfileImage] = useState<any>();
+    const [imageTrue, setImageTrue] = useState(false);
     const userData: any = accountData();
     const items: Data[] = skillsData;
     const {
         firstLetter,
         file,
-        setFile,
         image,
-        setImage,
-        uploadProfilePicture,
-        updateProfilePicture,
         deleteProfilePicture,
         addSuggestedSkill,
         changeUserName,
@@ -69,7 +61,9 @@ const Profile = () => {
         webLink,
         setWebLink,
         addWeb,
-        deleteWeb
+        deleteWeb,
+        updateProfilePictures,
+        uploadProfilePictures
     } = MiddleWare();
     const { loading, user, role } = useUser();
     const [searchTerm, setSearchTerm] = useState('');
@@ -107,15 +101,64 @@ const Profile = () => {
     const editUserName = () => {
         setEditName(true);
     };
+    const updatePic = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (e.currentTarget.files) {
+            const fileList = Array.from(e.currentTarget.files);
+
+            // Maximum file size in bytes (e.g., 5MB)
+            const maxSize = 1 * 1024 * 1024;
+
+            // Allowed file extensions
+            const allowedExtensions = ['.jpg', '.jpeg', '.png'];
+
+            // Filter files based on size and extension
+            const filteredFiles = fileList.filter((file) => {
+                // Check file size
+                if (file.size > maxSize) {
+                    console.log(`File ${file.name} exceeds the maximum size limit.`);
+
+                    return false;
+                }
+                // Check file extension
+                const fileExtension = `.${file.name.split('.').pop()}`;
+                if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
+                    console.log(`File ${file.name} has an invalid extension.`);
+
+                    return false;
+                }
+
+                return updateProfilePictures(e.currentTarget.files && e.currentTarget.files[0]);
+            });
+        }
+    };
+    const uploadPic = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        if (e.currentTarget.files) {
+            const fileList = Array.from(e.currentTarget.files);
+            const maxSize = 1 * 1024 * 1024;
+            const allowedExtensions = ['.jpg', '.jpeg', '.png'];
+            const filteredFiles: any = fileList.filter((file) => {
+                if (file.size > maxSize) {
+                    console.log(`File ${file.name} exceeds the maximum size limit.`);
+                    return false;
+                }
+                const fileExtension = `.${file.name.split('.').pop()}`;
+                if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
+                    console.log(`File ${file.name} has an invalid extension.`);
+                    return false;
+                }
+
+                return uploadProfilePictures(e.currentTarget.files && e.currentTarget.files[0]);
+            });
+        }
+    };
     return (
         <>
             {image ? (
                 <>
                     <img src={image} style={{ width: '50px', height: '50px', borderRadius: '50%' }} />
-                    <form onSubmit={updateProfilePicture}>
-                        <input type="file" onChange={(e) => setFile(e.currentTarget.files)} />
-                        <button type="submit">update profile</button>
-                    </form>
+                    <input value={file} type="file" onChange={updatePic} />
                     <button onClick={deleteProfilePicture}>delete profile</button>
                 </>
             ) : (
@@ -134,10 +177,7 @@ const Profile = () => {
                     >
                         {firstLetter}
                     </p>
-                    <form onSubmit={uploadProfilePicture}>
-                        <input type="file" onChange={(e) => setFile(e.currentTarget.files)} />
-                        <button type="submit">add Profile</button>
-                    </form>{' '}
+                    <input type="file" onChange={uploadPic} />
                 </>
             )}
             {userData && !editName && (

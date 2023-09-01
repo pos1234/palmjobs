@@ -9,14 +9,48 @@ body {
 .aos-init[data-aos][data-aos].aos-animate {
     transform: unset;
 }
-.RichEditor-root {
+.hideScrollBar::-webkit-scrollbar {
+    display: none;
+}
+.hideIncrease::-webkit-inner-spin-button,
+.hideIncrease::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.appearNone::-webkit-calendar-picker-indicator {
+    margin-right: 1rem;
+    cursor: pointer;
+}
+
+.fadedSuccess {
+    opacity: 0;
+    animation-name: fade-in;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+/* .RichEditor-root {
     background: #fff;
     border: 1px solid #ddd;
     font-family: 'Georgia', serif;
     font-size: 14px;
     padding: 15px;
 }
-
 .RichEditor-editor {
     border-top: 1px solid #ddd;
     cursor: text;
@@ -71,4 +105,33 @@ body {
 
 .RichEditor-activeButton {
     color: #5890ff;
+} */
+
+#photo-upload {
+    display: none;
+}
+.profilePictureContainer {
+    position: relative;
+    overflow: hidden;
+}
+.profilePictureContainer:hover .custom-file-upload {
+    bottom: -0.5rem;
+    transition: all 0.5s;
+}
+.custom-file-upload {
+    display: inline-block;
+    position: absolute;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(5px);
+    border: none;
+    text-align: center;
+    padding: 1rem;
+    bottom: -50%;
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+    transition: all 0.5s;
 }

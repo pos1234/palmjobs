@@ -32,8 +32,8 @@ const Footer = () => {
     };
     return (
         <>
-            <div className="">
-                <div className="grid grid-cols-12 pt-3 border-b-2 border-t-2 py-10">
+            <div className="mt-28">
+                <div className="grid grid-cols-12 pt-8 border-b-2 border-t-2 py-10">
                     <div className="col-span-12 md:col-span-4 lg:col-span-3 xl:col-span-2">
                         <img src={logo} alt="palmjobs logo" className=" h-16 md:h-20" />
                         <ul className="flex space-x-5 text-gradientFirst pl-5 pt-4">
