@@ -1,6 +1,10 @@
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
-import { useState } from 'react';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { ReactChild, ReactElement, useState } from 'react';
+import { ReactNode } from 'react';
+
 const Login = () => {
     const logo = '/images/logo.svg';
     const google = '/images/google.svg';
@@ -8,12 +12,86 @@ const Login = () => {
     const [register, setRegister] = useState(false);
     const [registerForm, setRegisterForm] = useState(false);
     const [forgotPassword, setForgotPassword] = useState(false);
+    const renderCustomIndicator = (
+        clickHandler: (e: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>) => void,
+        isSelected: boolean,
+        index: number,
+        label: string
+    ): React.ReactNode => {
+        return (
+            <div style={{ display: 'inline-block' }} className="float-left">
+                <span
+                    key={index}
+                    onClick={clickHandler}
+                    onKeyDown={clickHandler}
+                    className={
+                        isSelected
+                            ? 'w-5 h-5 bg-gradient-to-r from-gradientFirst to-gradientSecond cursor-pointer rounded-full'
+                            : 'w-5 h-5 bg-textW rounded-full cursor-pointer'
+                    }
+                    style={{ display: 'inline-block', marginRight: '1rem' }}
+                />
+            </div>
+        );
+    };
+    const profile = '/images/profile.svg';
 
     return (
         <>
-            <div className="grid grid-cols-12 overflow-y-auto pb-40 sm:pb-5 h-screen">
-                <div className="col-span-12 md:col-span-6 order-2 md:order-1 flex items-center pl-20 bg-skillColor rounded-tr-[5.75rem] rounded-br-[5.75rem]">
-                    hey
+            <div className="grid grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
+                <div className="col-span-12 md:col-span-6 order-2 md:order-1 flex items-center bg-skillColor rounded-tr-[5.75rem] rounded-br-[5.75rem] ">
+                    <div className="loginCoursel w-full  lg:pt-[15%] flex item-center justify-center md:h-[40%] lg:h-[60%] xl:h-[65%]">
+                        <Carousel
+                            renderIndicator={renderCustomIndicator}
+                            showStatus={false}
+                            showArrows={false}
+                            autoPlay={true}
+                            interval={9000}
+                            showThumbs={false}
+                            className="flex flex-col px-10 pt-10 w-full"
+                        >
+                           
+                            <div className="w-full text-left flex flex-col mb-20">
+                                <p className="text-zinc-900 text-[1.7rem] pb-5 font-medium max-h-[18rem] overflow-hidden md:text-[1.2rem] lg:text-[1.5rem] xl:text-[1.8rem]">
+                                    “It’s a huge benefit to the client, to be able to quickly hire a talented, vetted person. And the costs
+                                    at YES are low, which means the client pays less and I earn more.”
+                                </p>
+                                <div className="grid grid-cols-12">
+                                    <img src={profile} className="w-full h-full col-span-2" />
+                                    <div className="col-span-10 flex flex-col justify-center pl-5">
+                                        <p className="text-neutral-900 text-xl font-medium leading-7">John Doe</p>
+                                        <p className="text-stone-300 text-lg font-normal leading-relaxed">Marketing Manager</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="w-full text-left flex flex-col mb-20">
+                                <p className="text-zinc-900 text-[1.7rem] pb-5 font-medium max-h-[18rem] overflow-hidden md:text-[1.2rem] lg:text-[1.5rem] xl:text-[1.8rem]">
+                                    “It’s a huge benefit to the client, to be able to quickly hire a talented, vetted person. And the costs
+                                    at YES are low, which means the client pays less and I earn more.”
+                                </p>
+                                <div className="grid grid-cols-12">
+                                    <img src={profile} className="w-full h-full col-span-2" />
+                                    <div className="col-span-10 flex flex-col justify-center pl-5">
+                                        <p className="text-neutral-900 text-xl font-medium leading-7">John Doe</p>
+                                        <p className="text-stone-300 text-lg font-normal leading-relaxed">Marketing Manager</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="w-full text-left flex flex-col mb-20">
+                                <p className="text-zinc-900 text-[1.7rem] pb-5 font-medium max-h-[18rem] overflow-hidden md:text-[1.2rem] lg:text-[1.5rem] xl:text-[1.8rem]">
+                                    “It’s a huge benefit to the client, to be able to quickly hire a talented, vetted person. And the costs
+                                    at YES are low, which means the client pays less and I earn more.”
+                                </p>
+                                <div className="grid grid-cols-12">
+                                    <img src={profile} className="w-full h-full col-span-2" />
+                                    <div className="col-span-10 flex flex-col justify-center pl-5">
+                                        <p className="text-neutral-900 text-xl font-medium leading-7">John Doe</p>
+                                        <p className="text-stone-300 text-lg font-normal leading-relaxed">Marketing Manager</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </Carousel>
+                    </div>
                 </div>
                 <div className="col-span-12  order-1 md:order-2 text-center flex flex-col gap-y-5 items-center md:px-5 lg:px-10 xl:px-20 md:col-span-6">
                     <div className={forgotPassword == false ? 'flex justify-center' : 'flex justify-center mt-20 sm:mt-28'}>

@@ -45,9 +45,7 @@ const applyToJob = () => {
                 setCurrentResumeId(res.$id);
                 // console.log(res.$id);
             });
-
         console.log(resume);
-
         applied.then((res: any) => {
             if (res.total == 0) {
                 setAppliedJob(false);
@@ -69,7 +67,7 @@ const applyToJob = () => {
         /* setReplaceResume(e.currentTarget.files) */
         /* setCurrentResume(e.currentTarget && e.currentTarget.files[0].name); */
     };
-    const apply = (e: React.FormEvent<HTMLElement>) => {
+    /* const apply = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         if (replaceResume) {
             uploadResume(replaceResume[0]).then((res) => {
@@ -93,12 +91,12 @@ const applyToJob = () => {
                     });
             });
         });
-    };
+    }; */
 
     return (
         <div>
             {userData && !appliedJob && !loading && (
-                <form onSubmit={apply}>
+                <form /* onSubmit={apply} */>
                     <h1>This is the data that will be sent to the employer</h1>
                     <h2>{userData.bioHeadline}</h2>
                     <p>{userData.bioDescription}</p>
