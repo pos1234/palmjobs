@@ -3,9 +3,8 @@ import { signOut } from '@/lib/services';
 import styles from '@/styles/navigation.module.css';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 
-const Navigation = () => {
+const Navigation = (props: any) => {
     const logo = '/images/logo.svg';
-
     return (
         <div>
             <div className="grid grid-cols-12 pt-3  md:border-b-2">
@@ -30,7 +29,7 @@ const Navigation = () => {
                             <BorderColorIcon sx={{ fontSize: '1.2rem', marginRight: '0.2rem' }} /> Hire Talent
                         </button>
                     </div>
-                    <div className="col-span-6 grid justify-items-center md:hidden">
+                    <div onClick={() => props.viewFuntion(!props.view)} className="col-span-6 grid justify-items-center md:hidden">
                         <div className={styles['hamburger-menu']}>
                             <div className={styles['bar']}></div>
                             <div className={styles['bar']}></div>

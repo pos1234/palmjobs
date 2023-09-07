@@ -31,14 +31,20 @@ const JobDetails = (props: any) => {
     const handleSaveJob = (jobId: string) => {
         if (checkUser) {
             router.push('/account/signIn');
+            console.log('hey');
+            
         } else {
             const checkJob = alreadyApplied(props.userId, jobId);
             checkJob.then((res) => {
                 const checkSaved = alreadySaved(props.userId, jobId);
-                if (res.total == 0) {
-                    console.log(res);
-
+                /* console.log(res); */
+                checkSaved.then((rep)=>console.log(rep))
+                    console.log(checkSaved);
+                    
+                /* if (res.total == 0) { */
                     checkSaved.then((rem: any) => {
+                        console.log('saved message' + rem);
+                        
                         if (rem.total == 0) {
                             console.log('not saved');
                             saveJobs(props.userId, jobId);
@@ -46,7 +52,7 @@ const JobDetails = (props: any) => {
                             console.log('already saved this job');
                         }
                     });
-                }
+                //}
             });
             /* router.push({
                 pathname: '/users/candidate/applyToJob',

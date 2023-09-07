@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { Client, Account, ID, Databases, Query, Storage } from 'appwrite';
+import { toast } from 'react-toastify';
 const client = new Client();
 const databases = new Databases(client);
 const account = new Account(client);
@@ -56,12 +57,8 @@ export const accountData = () => {
     return userData;
 };
 export const getUserData = async () => {
-    try {
-        const getData = await account.get();
-        return getData;
-    } catch (e) {
-        console.log(e);
-    }
+    const getInfo = await account.get();
+    return getInfo;
 };
 export const updateUserName = (name: string) => {
     const promise = account.updateName(name);
@@ -285,17 +282,28 @@ export const getCandidateInfo = async () => {
     return results;
 };
 
-export const applyToJobs = (candidateId: string, jobId: string, employerId: string, letter: string, fileId?: string) => {
+export const applyToJobs = (
+    candidateId: string,
+    jobId: string,
+    employerId: string,
+    canEmail: string,
+    canPhone: string,
+    letter: string,
+    fileId?: string
+) => {
     const promise = databases.createDocument(DATABASE_ID, APPLIED_JOBS, ID.unique(), {
         jobId: jobId,
         employerId: employerId,
         candidateId: candidateId,
         coverLetter: letter,
         resumeId: fileId,
+        candidateEmail: canEmail,
+        candidatePhone: canPhone,
         appliedDate: new Date(),
         employerDelete: false,
         candidateDelete: false
     });
+
     return promise;
 };
 
@@ -312,20 +320,21 @@ export const fetchAppliedJobIds = async () => {
     const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('candidateId', userAccount.$id)]);
     return results;
 }; */
-export const fetchAppliedJobsData = async (ids: string[]) => {
-    const dataPromises = ids.map(async (id) => {
-        try {
-            // Fetch data from Appwrite for the given ID
-            const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, id);
-            return response;
-        } catch (error) {
-            console.error(`Error fetching data for ID ${id}:`, error);
-            return null;
-        }
-    });
-
+export const fetchAppliedJobsData = async (ids: string) => {
+    /*     const dataPromises = ids.map(async (id) => {
+     */ try {
+        // Fetch data from Appwrite for the given ID
+        const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, ids);
+        return response;
+    } catch (error) {
+        console.error(`Error fetching data for ID ${ids}:`, error);
+        return null;
+    }
+    /*     });
+     */
     // Wait for all promises to resolve and return the data
-    return Promise.all(dataPromises);
+    /*     return Promise.all(dataPromises);
+     */
 };
 export const getAppliedJobId = async (id: string) => {
     const userAccount = await account.get();
@@ -498,9 +507,25 @@ export const createImage = (image: any) => {
     const promise = storage.createFile(IMAGE, ID.unique(), image);
     return promise;
 };
+
 export const uploadResume = (resume: any) => {
     const promise = storage.createFile(RESUME, ID.unique(), resume);
     return promise;
+};
+export const getResumeName = async (resume: any) => {
+    const name = storage.getFile(RESUME, resume);
+    return name;
+};
+export const downLoadResume = (resume: any) => {
+    const response = storage.getFileDownload(RESUME, resume);
+    const blob = new Blob([response.href], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'downloads.pdf');
+    document.body.appendChild(link);
+    link.click();
+    /* return href; */
 };
 export const deleteResume = (fileId: string) => {
     const promise = storage.deleteFile(RESUME, fileId);
@@ -571,12 +596,21 @@ export const updateSkills = async (skillsData: string[], id: string) => {
         console.log(e);
     }
 };
-export const updateProjects = async (projectData: string, id: string) => {
-    const datas = {
-        projects: projectData
+export const updateProjects = async (name: string, url: string, desc: string, thumbId: string, id: string) => {
+    const datas = [
+        {
+            projectName: name,
+            link: url,
+            detail: desc,
+            thumbnailId: thumbId
+        }
+    ];
+    const stringData = name == '' ? null : JSON.stringify(datas);
+    const sendData = {
+        projects: stringData
     };
     try {
-        return updateDocuments(id, datas);
+        return updateDocuments(id, sendData);
     } catch (e) {
         console.log(e);
     }

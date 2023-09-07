@@ -1,24 +1,26 @@
-import { fetchAppliedJobsData, getAppliedJobId, fetchAppliedJobIds, removeAppliedJobs, accountData } from '../../../lib/services';
+import { fetchAppliedJobsData, getAppliedJobId, fetchAppliedJobIds, removeAppliedJobs, accountData } from './services';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/lib/context';
 import { useRouter } from 'next/router';
 
 const userCandidate = () => {
-    const { loading, user, role } = useUser();
+    /*  const { loading, user, role } = useUser();
     const router = useRouter();
-    const [appliedJobId, setAppliedJobId] = useState<any[]>([]);
+    const [appliedJobId, setAppliedJobId] = useState<string[]>([]);
     const [appliedJobs, setAppliedJobs] = useState<any[]>([]);
     useEffect(() => {
-        /*  result.then((res: any) => {
+          result.then((res: any) => {
             setAppliedJobs(res.documents);
-        }); */
+        }); 
         fetchAppliedJobIds().then((res: any) => {
             for (let i = 0; i < res.documents.length; i++) {
                 if (!appliedJobId.includes(res.documents[i].jobId)) {
                     appliedJobId.push(res.documents[i].jobId);
-                    fetchAppliedJobsData(appliedJobId)
+                    fetchAppliedJobsData(appliedJobId[i] appliedJobId )
                         .then((responseData) => {
-                            setAppliedJobs(responseData);
+                                                        setAppliedJobs(responseData);
+                            
+                            appliedJobs.push(responseData);
                             console.log(responseData);
                         })
                         .catch((error) => {
@@ -28,15 +30,15 @@ const userCandidate = () => {
             }
         });
     }, [appliedJobs]);
-    const removeApplied = (id: string) => {
+     const removeApplied = (id: string) => {
         getAppliedJobId(id).then((res) => {
             const index = appliedJobId.indexOf(res.documents[0].$id);
             appliedJobId.splice(index, 1);
             removeAppliedJobs(res.documents[0].$id).then(() => {
                 fetchAppliedJobIds().then((res: any) => {
-                    fetchAppliedJobsData(appliedJobId)
+                    return fetchAppliedJobsData( appliedJobId)
                         .then((responseData) => {
-                            setAppliedJobs(responseData);
+                            responseData !== null && setAppliedJobs(responseData.documents);
                             console.log(responseData);
                         })
                         .catch((error) => {
@@ -45,7 +47,7 @@ const userCandidate = () => {
                 });
             });
         });
-    };
+    }; 
     useEffect(() => {
         const cand = !(role == '' || role == 'candidate') ? true : false;
         if ((!user && !loading) || cand) {
@@ -77,7 +79,7 @@ const userCandidate = () => {
                 </tbody>
             </table>
         </>
-    );
+    ); */ return <h2>hey</h2>;
 };
 
 export default userCandidate;
