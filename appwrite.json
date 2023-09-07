@@ -1,0 +1,21 @@
+{
+    "projectId": "6491591cdff307cf903b",
+    "projectName": "yes_project",
+    "functions": [
+        {
+            "$id": "64c769b82d09fb66dce5",
+            "name": "userRole",
+            "runtime": "node-18.0",
+            "path": "functions/userRole",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
+}
