@@ -6,20 +6,81 @@ import PeopleIcon from '@mui/icons-material/People';
 import HelpIcon from '@mui/icons-material/Help';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from 'react';
-import PostAJob from '../../components/employerComponents/EmployerPostJob';
+import PostAJob from '../../../components/employerComponents/EmployerPostJob';
 import styles from '@/styles/navigation.module.css';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 /* import EmployerProfile from '@/components/employerComponents/EmployerProfile';
- */ import Jobs from '@/components/employerComponents/Jobs';
+ */ import Dashboard from '@/components/employerComponents/Dashoboard';
+import Jobs from '@/components/employerComponents/Jobs';
+import Candidates from '@/components/employerComponents/Candidates';
+import EmployerProfile from '@/components/employerComponents/EmployerProfile';
 const AdminJob = () => {
     const profile = '/images/profile.svg';
-    const [postJob, setPostJob] = useState(false);
+    const [postJob, setPostJob] = useState(true);
     const [dashboard, setDashboard] = useState(false);
-    const [jobs, setJobs] = useState(true);
+    const [jobs, setJobs] = useState(false);
     const [candidates, setCandidates] = useState(false);
     const [profileSetting, setProfileSetting] = useState(false);
     const [settings, setSettings] = useState(false);
     const [view, setView] = useState(false);
+    const handleNavigation = (name: string) => {
+        'dashboard';
+
+        if (name === 'postJob') {
+            setPostJob(true);
+            setDashboard(false);
+            setJobs(false);
+            setCandidates(false);
+            setProfileSetting(false);
+            setSettings(false);
+            setView(false);
+        }
+        if (name === 'dashboard') {
+            setDashboard(true);
+            setPostJob(false);
+            setJobs(false);
+            setCandidates(false);
+            setProfileSetting(false);
+            setSettings(false);
+            setView(false);
+        }
+        if (name === 'jobs') {
+            setPostJob(false);
+            setDashboard(false);
+            setJobs(true);
+            setCandidates(false);
+            setProfileSetting(false);
+            setSettings(false);
+            setView(false);
+        }
+        if (name === 'candidates') {
+            setPostJob(false);
+            setDashboard(false);
+            setJobs(false);
+            setCandidates(true);
+            setProfileSetting(false);
+            setSettings(false);
+            setView(false);
+        }
+        if (name === 'profileSetting') {
+            setPostJob(false);
+            setDashboard(false);
+            setJobs(false);
+            setCandidates(false);
+            setProfileSetting(true);
+            setSettings(false);
+            setView(false);
+        }
+        if (name === 'settings') {
+            setPostJob(false);
+            setDashboard(false);
+            setJobs(false);
+            setCandidates(false);
+            setProfileSetting(false);
+            setSettings(true);
+            setView(false);
+        }
+    };
     return (
         <>
             <Navigation view={view} viewFuntion={setView} />
@@ -36,6 +97,7 @@ const AdminJob = () => {
                         <div className="text-neutral-900 text-lg font-normal leading-normal">Jane Doe</div>
                     </div>
                     <div
+                        onClick={() => handleNavigation('postJob')}
                         className={
                             postJob
                                 ? 'flex pl-5 items-center bg-orange-100 py-3 gap-x-4 text-orange-600 cursor-pointer w-full lg:pl-10'
@@ -54,6 +116,7 @@ const AdminJob = () => {
                         <p className=" text-xl font-medium leading-loose">Post Job</p>
                     </div>
                     <div
+                        onClick={() => handleNavigation('dashboard')}
                         className={
                             dashboard
                                 ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
@@ -66,6 +129,7 @@ const AdminJob = () => {
                         <p className="text-xl font-medium leading-loose">Dashboard</p>
                     </div>
                     <div
+                        onClick={() => handleNavigation('jobs')}
                         className={
                             jobs
                                 ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
@@ -78,6 +142,7 @@ const AdminJob = () => {
                         <p className="text-xl font-medium leading-loose">Jobs</p>
                     </div>
                     <div
+                        onClick={() => handleNavigation('candidates')}
                         className={
                             candidates
                                 ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
@@ -90,6 +155,7 @@ const AdminJob = () => {
                         <p className="text-xl font-medium leading-loose">Candidates</p>
                     </div>
                     <div
+                        onClick={() => handleNavigation('profileSetting')}
                         className={
                             profileSetting
                                 ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
@@ -102,6 +168,7 @@ const AdminJob = () => {
                         <p className="text-xl font-medium leading-loose">Profile</p>
                     </div>
                     <div
+                        onClick={() => handleNavigation('settings')}
                         className={
                             settings
                                 ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
@@ -120,20 +187,62 @@ const AdminJob = () => {
                         <p className="text-xl font-medium leading-loose">Logout</p>
                     </div>
                 </div>
-                <div className={view && postJob ? 'hidden md:grid md:col-span-9 ' : postJob ? 'col-span-12 md:col-span-9' : 'hidden'}>
+                <div
+                    className={
+                        view && postJob
+                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : postJob
+                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32 employerBack'
+                            : 'hidden'
+                    }
+                >
                     <PostAJob />
                 </div>
-                <div className={view && jobs ? 'hidden md:grid md:col-span-9 ' : jobs ? 'col-span-12 md:col-span-9' : 'hidden'}>
+                <div
+                    className={
+                        view && dashboard
+                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : dashboard
+                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : 'hidden'
+                    }
+                >
+                    <Dashboard />
+                </div>
+                <div
+                    className={
+                        view && jobs
+                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : jobs
+                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : 'hidden'
+                    }
+                >
                     <Jobs />
                 </div>
-
-                {/* <div
+                <div
                     className={
-                        view && profileSetting ? 'hidden md:grid md:col-span-9 ' : profileSetting ? 'col-span-12 md:col-span-9' : 'hidden'
+                        view && candidates
+                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : candidates
+                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : 'hidden'
+                    }
+                >
+                    <Candidates />
+                </div>
+
+                <div
+                    className={
+                        view && profileSetting
+                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : profileSetting
+                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : 'hidden'
                     }
                 >
                     <EmployerProfile />
-                </div> */}
+                </div>
             </div>
         </>
     );

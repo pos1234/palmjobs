@@ -5,9 +5,15 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 const DropDown = (props: any) => {
     return (
-        <div className="col-span-6 focus:ring-red-500  md:col-span-4 z-[1] rounded-full ">
+        <div className="col-span-6 focus:ring-red-500  md:col-span-4 z-[1] rounded-full">
             <Listbox value={props.selectedElement} onChange={props.setSelectedElement}>
-                <div className="bg-[#F8F8F8] relative cursor-pointer rounded-full border-[1px]">
+                <div
+                    className={
+                        props.text === 'noBorder'
+                            ? 'bg-[#F8F8F8] relative cursor-pointer h-full'
+                            : 'bg-[#F8F8F8] relative cursor-pointer rounded-full border-[1px]'
+                    }
+                >
                     <Listbox.Button className="relative w-full cursor-pointer rounded-full rounded-lg bg-none py-3 pl-3 pr-10  text-left">
                         <span className="block truncate pl-2 text-[0.9rem]">{props.selectedElement.name}</span>
                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
