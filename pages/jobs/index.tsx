@@ -225,7 +225,7 @@ const Jobs = () => {
         <>
             <div className="px-3 xl:px-16">
                 <Navigation />
-                <div className="grid grid-cols-12 gap-x-10 mt-8 bg-forBack md:mt-16">
+                <div className="grid grid-cols-12 sm:gap-x-10 mt-8 bg-forBack md:mt-16">
                     <div className="col-span-12 bg-textW">
                         <p
                             className={
@@ -266,7 +266,7 @@ const Jobs = () => {
                                 <div className="hidden col-span-2 text-fadedText items-center justify-center md:col-span-1 md:justify-end md:flex ">
                                     <SearchIcon className="text-[1.7rem]" />
                                 </div>
-                                <div className="col-span-11 md:col-span-10 xl:col-span-9">
+                                <div className="col-span-11 sm:col-span-11 md:col-span-10 xl:col-span-9">
                                     <input
                                         value={searchWord}
                                         /*                                     value={searchQuery}

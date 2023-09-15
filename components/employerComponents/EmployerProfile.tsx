@@ -114,7 +114,7 @@ const EmployerProfile = () => {
                 <RequiredTextLabel text="Your Phone Number?" />
                 <TextInput placeHolder="phone number" value={companyName} setFunction={setCompanyName} />
             </div>
-            <RequiredTextLabel text="Job Description ?" req="nReq" />
+            <RequiredTextLabel text="Company Description ?" req="nReq" />
             <div className="pb-20 mr-2 mt-5 xl:mr-64">
                 <ReactQuill
                     className="h-28 text-addS"
