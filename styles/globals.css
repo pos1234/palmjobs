@@ -5,8 +5,12 @@
 html,
 body {
     font-family: 'Poppins', sans-serif;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
 /* .aos-init[data-aos][data-aos].aos-animate {
     transform: unset;
 } */
@@ -31,16 +35,20 @@ body {
     margin-right: 1rem;
     cursor: pointer;
 }
-.jobsBack{
+.jobsBack {
     background: url('../public/images/jobsBack.svg') no-repeat;
     background-size: 100%;
-      
 }
 .fadedSuccess {
     opacity: 0;
     animation-name: fade-in;
     animation-duration: 2s;
     animation-fill-mode: forwards;
+}
+.employerBack {
+    background: url('../public/images/leafWhite.svg') repeat-y;
+    background-position-x: 100%;
+    background-size: 10%;
 }
 .loginCoursel {
     background: url('../public/images/loginCricle.svg') no-repeat;

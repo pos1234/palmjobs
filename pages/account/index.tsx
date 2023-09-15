@@ -4,6 +4,7 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { ReactChild, ReactElement, useState } from 'react';
 import { ReactNode } from 'react';
+import Link from 'next/link';
 
 const Login = () => {
     const logo = '/images/logo.svg';
@@ -50,7 +51,6 @@ const Login = () => {
                             showThumbs={false}
                             className="flex flex-col px-10 pt-10 w-full"
                         >
-                           
                             <div className="w-full text-left flex flex-col mb-20">
                                 <p className="text-zinc-900 text-[1.7rem] pb-5 font-medium max-h-[18rem] overflow-hidden md:text-[1.2rem] lg:text-[1.5rem] xl:text-[1.8rem]">
                                     “It’s a huge benefit to the client, to be able to quickly hire a talented, vetted person. And the costs
@@ -95,7 +95,9 @@ const Login = () => {
                 </div>
                 <div className="col-span-12  order-1 md:order-2 text-center flex flex-col gap-y-5 items-center md:px-5 lg:px-10 xl:px-20 md:col-span-6">
                     <div className={forgotPassword == false ? 'flex justify-center' : 'flex justify-center mt-20 sm:mt-28'}>
-                        <img src={logo} className=" w-[15rem]   " />
+                        <Link href="/">
+                            <img src={logo} className=" w-[15rem]   " />
+                        </Link>
                         {/* xl:w-[28.5rem] */}
                     </div>
                     {forgotPassword == false && (
@@ -148,7 +150,7 @@ const Login = () => {
                                     &#128075; Hi
                                     <input
                                         type="text"
-                                        className="ml-2 border-b-2 border-dashed border-[#141417] w-40 active:border-0 focus:outline-0 mb-3 sm:mb-0"
+                                        className="outline-0 ml-2 border-0 border-b-2 border-dashed border-[#141417] w-40 focus:ring-0 focus:ring-b-0 focus:outline-0 mb-3 sm:mb-0"
                                     />
                                     ! Tell us why you're here.
                                 </p>
