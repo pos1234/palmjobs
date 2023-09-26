@@ -428,7 +428,10 @@ const Jobs = () => {
                                                             )}
                                                             {items.datePosted && (
                                                                 <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-4 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2">
-                                                                    <CalendarTodayOutlinedIcon sx={{ fontSize: '0.9rem' }} className="-mt-0.5 mr-1 " />
+                                                                    <CalendarTodayOutlinedIcon
+                                                                        sx={{ fontSize: '0.9rem' }}
+                                                                        className="-mt-0.5 mr-1 "
+                                                                    />
                                                                     {new Date(items.datePosted)
                                                                         .toLocaleDateString('en-GB')
                                                                         .replace(/\//g, '-')}
@@ -558,13 +561,25 @@ const Jobs = () => {
                                                             }
                                                             icon={
                                                                 jobDetails.currency == 'euro' ? (
-                                                                    <EuroIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                                    <EuroIcon
+                                                                        sx={{ fontSize: '1.125rem' }}
+                                                                        className="mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                                                    />
                                                                 ) : jobDetails.currency == 'usd' ? (
-                                                                    <AttachMoneyOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                                    <AttachMoneyOutlined
+                                                                        sx={{ fontSize: '1.125rem' }}
+                                                                        className="mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                                                    />
                                                                 ) : jobDetails.currency == 'gpb' ? (
-                                                                    <CurrencyPoundIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                                    <CurrencyPoundIcon
+                                                                        sx={{ fontSize: '1.125rem' }}
+                                                                        className="mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                                                    />
                                                                 ) : jobDetails.currency == 'rnp' ? (
-                                                                    <CurrencyRupeeIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                                    <CurrencyRupeeIcon
+                                                                        sx={{ fontSize: '1.125rem' }}
+                                                                        className="mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                                                    />
                                                                 ) : (
                                                                     <p>ETB</p>
                                                                 )
@@ -596,7 +611,10 @@ const Jobs = () => {
                                                                 .toLocaleDateString('en-GB')
                                                                 .replace(/\//g, '-')}
                                                             icon={
-                                                                <CalendarTodayOutlinedIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                                <CalendarTodayOutlinedIcon
+                                                                    sx={{ fontSize: '1.125rem' }}
+                                                                    className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                                                />
                                                             }
                                                         />
                                                     )}
@@ -607,7 +625,10 @@ const Jobs = () => {
                                                                 .toLocaleDateString('en-GB')
                                                                 .replace(/\//g, '-')}
                                                             icon={
-                                                                <CalendarTodayOutlinedIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                                <CalendarTodayOutlinedIcon
+                                                                    sx={{ fontSize: '1.125rem' }}
+                                                                    className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                                                />
                                                             }
                                                         />
                                                     )}
