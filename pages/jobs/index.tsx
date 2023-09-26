@@ -368,7 +368,6 @@ const Jobs = () => {
                                                     }
                                                 >
                                                     <JobImage id={items.employerId} className="col-span-3 sm:max-md:col-span-4" />
-
                                                     <div className="col-span-9 flex flex-col pl-2 justify-center sm:max-md:col-span-8 sm:max-md:pl-0">
                                                         {items.companyName && (
                                                             <p className="text-[13px] text-darkBlue sm:text-[1.5rem] md:text-[0.9rem] xl:text-[0.9rem]">
@@ -382,7 +381,7 @@ const Jobs = () => {
                                                         )}
                                                         {items.jobLocation && (
                                                             <p className="text-fadedText">
-                                                                <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} />{' '}
+                                                                <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} />
                                                                 {items.jobLocation}
                                                             </p>
                                                         )}
@@ -391,20 +390,32 @@ const Jobs = () => {
                                                         <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1">
                                                             {items.jobType && (
                                                                 <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2">
-                                                                    <AccessTimeOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 " />
+                                                                    <AccessTimeOutlinedIcon
+                                                                        sx={{ fontSize: '0.9rem' }}
+                                                                        className="-mt-0.5 mr-1 "
+                                                                    />
                                                                     {items.jobType}
                                                                 </li>
                                                             )}
                                                             {(items.minSalary || items.maxSalary) && (
                                                                 <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2">
                                                                     {items.currency == 'euro' ? (
-                                                                        <EuroIcon className="text-[0.9rem] -mt-0.5 mr-1" />
+                                                                        <EuroIcon sx={{ fontSize: '0.9rem' }} className="-mt-0.5 mr-1" />
                                                                     ) : items.currency == 'usd' ? (
-                                                                        <AttachMoneyOutlined className="text-[0.9rem] -mt-0.5 mr-1" />
+                                                                        <AttachMoneyOutlined
+                                                                            sx={{ fontSize: '0.9rem' }}
+                                                                            className="-mt-0.5 mr-1"
+                                                                        />
                                                                     ) : items.currency == 'gpb' ? (
-                                                                        <CurrencyPoundIcon className="text-[0.9rem] -mt-0.5 mr-1" />
+                                                                        <CurrencyPoundIcon
+                                                                            sx={{ fontSize: '0.9rem' }}
+                                                                            className="-mt-0.5 mr-1"
+                                                                        />
                                                                     ) : items.currency == 'rnp' ? (
-                                                                        <CurrencyRupeeIcon className="text-[0.9rem] -mt-0.5 mr-1" />
+                                                                        <CurrencyRupeeIcon
+                                                                            sx={{ fontSize: '0.9rem' }}
+                                                                            className="-mt-0.5 mr-1"
+                                                                        />
                                                                     ) : (
                                                                         <span className="text-[7px] mr-1">ETB</span>
                                                                     )}
@@ -417,7 +428,7 @@ const Jobs = () => {
                                                             )}
                                                             {items.datePosted && (
                                                                 <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-4 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2">
-                                                                    <CalendarTodayOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 " />{' '}
+                                                                    <CalendarTodayOutlinedIcon sx={{ fontSize: '0.9rem' }} className="-mt-0.5 mr-1 " />
                                                                     {new Date(items.datePosted)
                                                                         .toLocaleDateString('en-GB')
                                                                         .replace(/\//g, '-')}
