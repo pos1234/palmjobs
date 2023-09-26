@@ -10,49 +10,25 @@ const Applied = (props: any) => {
     const [appliedJobId, setAppliedJobId] = useState<any[]>([]);
     const [appliedJobs, setAppliedJobs] = useState<any[]>([]);
     const [appliedJobData, setAppliedData] = useState<any[]>([]);
-    useEffect(() => {
-        /*  result.then((res: any) => {
-            setAppliedJobs(res.documents);
-        }); */
-        fetchAppliedJobIds().then((res: any) => {
-            /*             console.log(res);
-             */
+    const appliedJobsId = async () => {
+        const res = await fetchAppliedJobIds();
+        if (res) {
             for (let i = 0; i < res.documents.length; i++) {
                 if (appliedJobId.indexOf(res.documents[i].jobId) === -1) {
                     appliedJobId.push(res.documents[i].jobId);
-                    fetchAppliedJobsData(res.documents[i].jobId)
-                        .then((responseData) => {
+                    if (res.documents[i].jobId) {
+                        const responseData = await fetchAppliedJobsData(res.documents[i].jobId);
+                        if (responseData) {
                             appliedJobs.push(responseData);
-                            console.log(responseData + 'cool');
-                        })
-                        .catch((error) => {
-                            console.error('Error fetching data from Appwrite:', error);
-                        });
+                        }
+                    }
                 }
             }
-        });
-    }, [appliedJobs, appliedJobId]);
-    /* const removeApplied = (id: string) => {
-        getAppliedJobId(id).then((res) => {
-            const index = appliedJobId.indexOf(res.documents[0].$id);
-            appliedJobId.splice(index, 1);
-            removeAppliedJobs(res.documents[0].$id).then(() => {
-                fetchAppliedJobIds().then((res: any) => {
-                    fetchAppliedJobsData(appliedJobId)
-                        .then((responseData) => {
-                            setAppliedJobs(responseData);
-                            console.log(responseData);
-                        })
-                        .catch((error) => {
-                            console.error('Error fetching data from Appwrite:', error);
-                        });
-                });
-            });
-        });
-    }; */
+        }
+    };
     useEffect(() => {
-        console.log(appliedJobs);
-    }, [appliedJobId]);
+        appliedJobsId();
+    }, [appliedJobs, appliedJobId]);
     return (
         <>
             {appliedJobs &&

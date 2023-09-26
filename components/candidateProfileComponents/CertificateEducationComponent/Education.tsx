@@ -48,14 +48,14 @@ const Education = () => {
                 <p className="font-fhW text-fhS leading-fhL pl-1 col-span-12">
                     <SchoolOutlinedIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
                     Education
-                    <EditIcon
+                    {/* <EditIcon
                         onClick={() => setOpenEducation(true)}
                         sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
                         className="w-7 h-7 p-1.5 ml-5 hidden md:inline-block cursor-pointer"
-                    />
+                    /> */}
                 </p>
             </div>
-            <div className="col-span-4 md:col-span-1 grid justify-items-end md:hidden">
+            <div className="col-span-4 flex justify-end md:col-span-8 md:pr-4 lg:col-span-6 xl:col-span-7">
                 <EditIcon
                     onClick={() => setOpenEducation(true)}
                     sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}

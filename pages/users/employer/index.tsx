@@ -8,12 +8,15 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from 'react';
 import PostAJob from '../../../components/employerComponents/EmployerPostJob';
 import styles from '@/styles/navigation.module.css';
+import ShieldIcon from '@mui/icons-material/Shield';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 /* import EmployerProfile from '@/components/employerComponents/EmployerProfile';
  */ import Dashboard from '@/components/employerComponents/Dashoboard';
 import Jobs from '@/components/employerComponents/Jobs';
 import Candidates from '@/components/employerComponents/Candidates';
 import EmployerProfile from '@/components/employerComponents/EmployerProfile';
+import Privacy from '@/components/employerComponents/Privacy';
+import { employeeAuth } from '@/components/withAuth';
 const AdminJob = () => {
     const profile = '/images/profile.svg';
     const [postJob, setPostJob] = useState(true);
@@ -21,18 +24,17 @@ const AdminJob = () => {
     const [jobs, setJobs] = useState(false);
     const [candidates, setCandidates] = useState(false);
     const [profileSetting, setProfileSetting] = useState(false);
-    const [settings, setSettings] = useState(false);
+    const [privacy, setPrivacy] = useState(false);
     const [view, setView] = useState(false);
     const handleNavigation = (name: string) => {
         'dashboard';
-
         if (name === 'postJob') {
             setPostJob(true);
             setDashboard(false);
             setJobs(false);
             setCandidates(false);
             setProfileSetting(false);
-            setSettings(false);
+            setPrivacy(false);
             setView(false);
         }
         if (name === 'dashboard') {
@@ -41,7 +43,7 @@ const AdminJob = () => {
             setJobs(false);
             setCandidates(false);
             setProfileSetting(false);
-            setSettings(false);
+            setPrivacy(false);
             setView(false);
         }
         if (name === 'jobs') {
@@ -50,7 +52,7 @@ const AdminJob = () => {
             setJobs(true);
             setCandidates(false);
             setProfileSetting(false);
-            setSettings(false);
+            setPrivacy(false);
             setView(false);
         }
         if (name === 'candidates') {
@@ -59,7 +61,7 @@ const AdminJob = () => {
             setJobs(false);
             setCandidates(true);
             setProfileSetting(false);
-            setSettings(false);
+            setPrivacy(false);
             setView(false);
         }
         if (name === 'profileSetting') {
@@ -68,16 +70,16 @@ const AdminJob = () => {
             setJobs(false);
             setCandidates(false);
             setProfileSetting(true);
-            setSettings(false);
+            setPrivacy(false);
             setView(false);
         }
-        if (name === 'settings') {
+        if (name === 'privacy') {
             setPostJob(false);
             setDashboard(false);
             setJobs(false);
             setCandidates(false);
             setProfileSetting(false);
-            setSettings(true);
+            setPrivacy(true);
             setView(false);
         }
     };
@@ -101,14 +103,14 @@ const AdminJob = () => {
                         className={
                             postJob
                                 ? 'flex pl-5 items-center bg-orange-100 py-3 gap-x-4 text-orange-600 cursor-pointer w-full lg:pl-10'
-                                : 'flex pl-5 text-stone-300 items-center group py-3 gap-x-4 cursor-pointer w-full hover:bg-orange-100 hover:text-orange-600 lg:pl-10'
+                                : 'flex pl-5 text-stone-400 items-center group py-3 gap-x-4 cursor-pointer w-full hover:bg-orange-100 hover:text-orange-600 lg:pl-10'
                         }
                     >
                         <div
                             className={
                                 postJob
                                     ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW rounded-md border-0'
-                                    : 'group-hover:bg-gradient-to-r group-hover:from-gradientFirst group-hover:to-gradientSecond bg-stone-300 text-textW rounded-md border-0 '
+                                    : 'group-hover:bg-gradient-to-r group-hover:from-gradientFirst group-hover:to-gradientSecond bg-stone-400 text-textW rounded-md border-0 '
                             }
                         >
                             <AddIcon />
@@ -120,20 +122,20 @@ const AdminJob = () => {
                         className={
                             dashboard
                                 ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-300 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
+                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
                         }
                     >
                         <div className=" rounded-md border-0">
                             <AssessmentIcon sx={{ fontSize: '1.9rem' }} />
                         </div>
-                        <p className="text-xl font-medium leading-loose">Dashboard</p>
+                        <p className="text-xl font-medium leading-loose">Analytics</p>
                     </div>
                     <div
                         onClick={() => handleNavigation('jobs')}
                         className={
                             jobs
                                 ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-300 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
+                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
                         }
                     >
                         <div className=" rounded-md border-0">
@@ -146,7 +148,7 @@ const AdminJob = () => {
                         className={
                             candidates
                                 ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-300 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
+                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
                         }
                     >
                         <div className=" rounded-md border-0">
@@ -159,7 +161,7 @@ const AdminJob = () => {
                         className={
                             profileSetting
                                 ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-2 gap-x-3 text-stone-300 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
+                                : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
                         }
                     >
                         <div className=" rounded-md border-0">
@@ -168,19 +170,19 @@ const AdminJob = () => {
                         <p className="text-xl font-medium leading-loose">Profile</p>
                     </div>
                     <div
-                        onClick={() => handleNavigation('settings')}
+                        onClick={() => handleNavigation('privacy')}
                         className={
-                            settings
+                            privacy
                                 ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-2 gap-x-3 text-stone-300 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
+                                : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
                         }
                     >
                         <div className=" rounded-md border-0">
-                            <HelpIcon sx={{ fontSize: '1.9rem' }} />
+                            <ShieldIcon sx={{ fontSize: '1.9rem' }} />
                         </div>
-                        <p className="text-xl font-medium leading-loose">Settings</p>
+                        <p className="text-xl font-medium leading-loose">Security</p>
                     </div>
-                    <div className="left-0 flex pl-4 items-center py-2 gap-x-3 text-stone-300 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer md:absolute md:bottom-3 lg:pl-9">
+                    <div className="left-0 flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer md:absolute md:bottom-3 lg:pl-9">
                         <div className=" rounded-md border-0">
                             <LogoutIcon sx={{ fontSize: '1.9rem' }} />
                         </div>
@@ -207,7 +209,7 @@ const AdminJob = () => {
                             : 'hidden'
                     }
                 >
-                    <Dashboard />
+                    <Dashboard changeFunction={handleNavigation} />
                 </div>
                 <div
                     className={
@@ -231,7 +233,6 @@ const AdminJob = () => {
                 >
                     <Candidates />
                 </div>
-
                 <div
                     className={
                         view && profileSetting
@@ -243,8 +244,19 @@ const AdminJob = () => {
                 >
                     <EmployerProfile />
                 </div>
+                <div
+                    className={
+                        view && privacy
+                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : privacy
+                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                            : 'hidden'
+                    }
+                >
+                    <Privacy />
+                </div>
             </div>
         </>
     );
 };
-export default AdminJob;
+export default employeeAuth(AdminJob);

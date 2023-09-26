@@ -8,20 +8,25 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import ConfirmModal from '@/components/ConfirmModal';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import PhoneIphoneOutlinedIcon from '@mui/icons-material/PhoneIphoneOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { useUser } from '@/lib/context';
 import { MiddleWare } from '@/lib/middleware';
-import { accountData } from '@/lib/services';
+import { accountData, signOut } from '@/lib/services';
 import { useRouter } from 'next/router';
 import UploadResume from '@/components/candidateProfileComponents/uploadResume';
 import Skills from '@/components/candidateProfileComponents/Skills';
 import Bio from '@/components/candidateProfileComponents/Bio';
 import Certificate from '@/components/candidateProfileComponents/Certificate';
 import Project from '@/components/candidateProfileComponents/Project';
+import { candidateAuth } from '@/components/withAuth';
+import PhonelinkIcon from '@mui/icons-material/Phonelink';
+import FormatBoldIcon from '@mui/icons-material/FormatBold';
 interface Data {
     word: string;
 }
-const Nav = () => {
+const Profile = () => {
     const loadingIn = '/images/loading.svg';
     const [openProfile, setOpenProfile] = useState(false);
     const [about, setAbout] = useState(true);
@@ -54,17 +59,9 @@ const Nav = () => {
         addSocialLink,
         loadings,
         locate,
-        setLocate
+        setLocate,
+        addPhoneAddress
     } = MiddleWare();
-
-    const { loading, user, role } = useUser();
-
-    useEffect(() => {
-        const cand = !(role == '' || role == 'candidate') ? true : false;
-        if ((!user && !loading) || cand) {
-            router.push('/account/signIn');
-        }
-    }, [user, loading, role]);
     const editUserName = () => {
         setEditName(true);
     };
@@ -164,10 +161,14 @@ const Nav = () => {
         e.preventDefault();
         handleCoverLetter();
     };
+    const handlePhoneLocation = () => {
+        addPhoneAddress();
+    };
     return (
         <div className="px-3 md:px-16">
             <Navigation />
-            <div className="grid grid-cols-12 pt-8 xl:pl-48 xl:pr-16 mt-20">
+            {/* <button onClick={signOut}>Logout</button> */}
+            <div className="grid grid-cols-12 pt-8 xl:pl-48 xl:pr-16 md:mt-20">
                 <div className="col-span-12 grid grid-cols-12">
                     <div className="col-span-12 grid grid-cols-12 justify-items-center md:col-span-7 md:justify-items-start lg:col-span-6 xl:col-span-6 ">
                         <div className="col-span-12 relative md:col-span-4 xl:col-span-4">
@@ -191,7 +192,7 @@ const Nav = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <p className="w-40 h-40 col-span-2 rounded-3xl cursor-pointer bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex text-center justify-center text-[5rem] font-frhW">
+                                        <p className="w-40 h-40 col-span-2 rounded-3xl pt-5 cursor-pointer bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex text-center justify-center text-[5rem] font-frhW">
                                             {firstLetter}
                                         </p>
                                         <div className="uploadProfile">
@@ -207,23 +208,71 @@ const Nav = () => {
                             </div>
                             {profileError && <p className="text-gradientFirst pt-3 pl-2 text-[12px]">{profileError}</p>}
                         </div>
-                        <div className="col-span-12 pt-5 md:col-span-8 md:pl-5 xl:pl-2 xl:col-span-6">
-                            <p className="font-frhW text-frhS leading-frhL">
-                                {userData && userData.name}
-                                <EditIcon
-                                    onClick={() => setOpenProfile(!openProfile)}
-                                    sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                    className="w-5 h-5 p-1 ml-2 cursor-pointer"
-                                />
-                            </p>
-                            <p className="font-midRW text-midRS leading-midRL text-lightGrey mt-5">
-                                <FmdGoodOutlinedIcon className="w-7 h-7" /> Addis Ababa
-                                {linked && (
-                                    <Link target="_blank" href={linked}>
-                                        <LinkedInIcon sx={{ color: '#FE5E0A' }} className="w-7 h-7" />
-                                    </Link>
-                                )}
-                            </p>
+                        <div className="col-span-12 max-md:mt-3 md:col-span-8 md:pl-10 lg:pl-5 xl:pl-3 xl:col-span-8">
+                            <p className="font-frhW text-bigS ">{userData && userData.name}</p>
+                            <div className="font-midRW text-midRS leading-midRL text-lightGrey flex flex-col gap-y-4 mt-2">
+                                <div className="flex items-center">
+                                    <span className="w-5 h-5 text-stone-400 z-[2] pl-3">
+                                        <FmdGoodOutlinedIcon className="-mt-[4px]" />
+                                    </span>
+                                    <input
+                                        placeholder="Enter Address"
+                                        type="text"
+                                        className="-ml-5 z-[1] rounded-full w-full pl-10 py-3 group border-stone-200 focus:ring-orange-300 focus:outline-0 focus:border-0 "
+                                        value={locate}
+                                        onChange={(e) => {
+                                            if (e.currentTarget.value.length <= 50) {
+                                                setLocate(e.currentTarget.value);
+                                            }
+                                        }}
+                                        onBlur={handlePhoneLocation}
+                                    />
+                                </div>
+                                <div className="flex items-center">
+                                    <span className="w-5 h-5 text-stone-400 z-[2] pl-3">
+                                        <PhoneIphoneOutlinedIcon className="-mt-[4px]" />
+                                    </span>
+                                    <input
+                                        placeholder="Enter phone number"
+                                        type="text"
+                                        className="-ml-5 z-[1] rounded-full w-full pl-10 py-3 group border-stone-200 focus:ring-orange-300 focus:outline-0 focus:border-0 "
+                                        value={call}
+                                        onChange={(e) => {
+                                            if (e.currentTarget.value.length <= 10) {
+                                                setCall(e.currentTarget.value);
+                                            }
+                                        }}
+                                        onBlur={handlePhoneLocation}
+                                    />
+                                </div>
+                                <div className="flex gap-x-5 text-[#618c61]">
+                                    {linked && (
+                                        <Link target="_blank" title="linkedIn" href={linked}>
+                                            <LinkedInIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                                        </Link>
+                                    )}
+                                    {githubLink && (
+                                        <Link target="_blank" title="github" href={githubLink}>
+                                            <GitHubIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                                        </Link>
+                                    )}
+                                    {behan && (
+                                        <Link target="_blank" title="behance" href={behan}>
+                                            <FormatBoldIcon className="w-8 h-8 hover:text-[#FE5E0A]" />
+                                        </Link>
+                                    )}
+                                    {portfolio && (
+                                        <Link target="_blank" title="portifolio" href={portfolio}>
+                                            <PhonelinkIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                                        </Link>
+                                    )}
+                                    <EditIcon
+                                        onClick={() => setOpenProfile(!openProfile)}
+                                        sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
+                                        className="w-5 h-5 p-1 ml-2 cursor-pointer"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -232,8 +281,8 @@ const Nav = () => {
                             onClick={() => setAbout(true)}
                             className={
                                 about
-                                    ? 'font-shW text-shS leading-shL cursor-pointer'
-                                    : 'font-shW text-shS leading-shL text-lightGrey cursor-pointer'
+                                    ? 'font-shW text-shS leading-shL cursor-pointer px-5 flex items-center h-[3.5rem] rounded-2xl bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW'
+                                    : 'font-shW text-shS leading-shL cursor-pointer px-5 flex items-center h-[3.5rem] rounded-2xl hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond hover:text-textW'
                             }
                         >
                             About
@@ -241,9 +290,9 @@ const Nav = () => {
                         <p
                             onClick={() => setAbout(false)}
                             className={
-                                about
-                                    ? 'font-shW text-shS leading-shL text-lightGrey cursor-pointer'
-                                    : 'font-shW text-shS leading-shL cursor-pointer'
+                                !about
+                                    ? 'font-shW text-shS leading-shL cursor-pointer px-5 flex items-center h-[3.5rem] rounded-2xl bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW'
+                                    : 'font-shW text-shS leading-shL cursor-pointer px-5 flex items-center h-[3.5rem] rounded-2xl hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond hover:text-textW'
                             }
                         >
                             Resume
@@ -268,41 +317,6 @@ const Nav = () => {
                                 <p className="font-thW text-frhS leading-shL pb-5 ">Social Links</p>
                                 <form className="col-span-12 grid grid-cols-12" onSubmit={addSocialLink}>
                                     <div className="col-span-12 grid grid-cols-12 gap-2 h-[20rem] overflow-auto md:h-[18rem] lg:h-[18rem]">
-                                        <div className="col-span-12 md:col-span-6">
-                                            <p className="w-full font-fhW text-smS mt-0 mb-2 leading-shL">
-                                                Phone
-                                                <span className="float-right pr-5 text-fadedText text-numS">{call.length} / 10</span>
-                                            </p>
-                                            <input
-                                                value={call}
-                                                type="number"
-                                                onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                                    if (e.currentTarget.value.length <= 10) {
-                                                        setCall(e.currentTarget.value);
-                                                    }
-                                                }}
-                                                placeholder="Enter Phone"
-                                                className="border-[1px] w-full rounded-full h-12 pl-5 text-addS hideIncrease"
-                                            />
-                                        </div>
-                                        <div className="col-span-12 md:col-span-6">
-                                            <p className="w-full font-fhW text-smS mt-0 mb-2 leading-shL">
-                                                Address
-                                                <span className="float-right pr-5 text-fadedText text-numS">{behan.length} / 200</span>
-                                            </p>
-                                            <input
-                                                value={locate}
-                                                required
-                                                type="text"
-                                                onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                                    if (e.currentTarget.value.length <= 50) {
-                                                        setLocate(e.currentTarget.value);
-                                                    }
-                                                }}
-                                                placeholder="Enter Address"
-                                                className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
-                                            />
-                                        </div>
                                         <div className="col-span-12 md:col-span-6">
                                             <p className="w-full font-fhW text-smS mt-0 mb-2 leading-shL">
                                                 LinkedIn
@@ -409,4 +423,4 @@ const Nav = () => {
         </div>
     );
 };
-export default Nav;
+export default candidateAuth(Profile);

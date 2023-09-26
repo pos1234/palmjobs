@@ -64,11 +64,8 @@ const Project = () => {
         setProjectEdit(true);
         setProjectIndex(projectsArray[0].thumbnailId);
         setEditedProject(projectsArray[0]);
-        console.log(projectsArray[0]);
     };
-    useEffect(() => {
-        console.log(openProjectModal);
-    }, [openProjectModal]);
+   
     return (
         <div className="col-span-12 pt-7 grid grid-cols-12 bg-textW rounded-3xl pb-8 lg:pl-10">
             <div className="col-span-8 md:col-span-3">

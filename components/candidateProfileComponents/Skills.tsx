@@ -15,7 +15,7 @@ const Skills = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<Data[]>([]);
     const items: Data[] = skillsData;
-    const skillsMaxCharacters = 6;
+    const skillsMaxCharacters = 7;
     const clickMe = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setInputSkill(false);
@@ -30,7 +30,6 @@ const Skills = () => {
     };
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
-        console.log(array.length);
         if (array.length <= skillsMaxCharacters) setSearchTerm(inputValue);
         const filteredSuggestions = items.filter((data) => data.word.toLowerCase().includes(inputValue.toLowerCase()));
         setSuggestions(filteredSuggestions);
@@ -58,7 +57,7 @@ const Skills = () => {
                     </div>
                 ))}
 
-                {!inputSkill && array.length < 6 && (
+                {!inputSkill && array.length < 7 && (
                     <button
                         onClick={() => setInputSkill(true)}
                         className="w-36 h-12 font-midRW text-midRS leading-midRL text-gradientFirst bg-skillColor text-center flex items-center justify-center rounded-[3.75rem]
@@ -67,7 +66,7 @@ const Skills = () => {
                         <AddIcon sx={{ marginLeft: '-1rem' }} /> Add
                     </button>
                 )}
-                {inputSkill && array.length < 6 && (
+                {inputSkill && array.length < 7 && (
                     <form
                         onSubmit={clickMe}
                         className="min-w-[9rem] h-12 font-midRW text-midRS leading-midRL bg-skillColor text-center grid grid-cols-12 rounded-[3.75rem]"
@@ -77,7 +76,7 @@ const Skills = () => {
                                 value={searchTerm}
                                 onChange={handleInputChange}
                                 type="text"
-                                className="w-[80%] pl-2 my-auto ml-[10%] col-span-10 border-[1px] border-gradientFirst focus:outline-none"
+                                className="w-[80%] h-8 pl-2 my-auto ml-[10%] col-span-10 border-[1px] rounded-full focus:border-gradientFirst focus:ring-0 focus:outline-none"
                             />
 
                             <button type="submit" className="col-span-2 text-gradientFirst">
@@ -85,7 +84,7 @@ const Skills = () => {
                             </button>
                         </div>
                         {searchTerm && suggestions.length !== 0 && (
-                            <div className="col-span-12 pl-3 h-40 border-2 bg-gradientSecond rounded-sm text-left overflow-auto overflow-x-hidden">
+                            <div className="col-span-12 pl-3 h-40 border-2 bg-textW rounded-sm text-left overflow-auto overflow-x-hidden">
                                 {suggestions &&
                                     suggestions.map((suggestion) => (
                                         <p

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MiddleWare } from '@/lib/middleware';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { getResumeName } from '@/lib/services';

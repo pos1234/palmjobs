@@ -1,6 +1,5 @@
 import {
     addSocials,
-    userInformation,
     getCandidateDocumentId,
     updateBio,
     updateSkills,
@@ -32,7 +31,6 @@ import {
     deleteSector,
     addWebsites,
     deleteWebsites,
-    postJobs,
     addBehance,
     deleteBehance,
     addPortfolio,
@@ -41,7 +39,9 @@ import {
     uploadSupportDoc,
     deleteResume,
     deleteSupportDoc,
-    insertCoverLetter
+    insertCoverLetter,
+    getAccount,
+    addAddressPhone
 } from './services';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -162,67 +162,60 @@ export const MiddleWare = () => {
         if (str != '') return JSON.parse(str);
         else return '';
     };
-    const [userRoles, setUserRoles] = useState('');
-    useEffect(() => {
-        const firstNameLetter = userInformation();
-        firstNameLetter
-            .then((response) => {
-                const firstName = response.name;
-                setFirstLetter(firstName.charAt(0));
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-        const docId = userRoles == 'candidate' ? getCandidateDocumentId() : getEmployerDocumentId();
-        const userRole = getRole();
-        userRole.then((roles) => {
-            setUserRoles(roles.documents[0].userRole);
-        });
-        docId
-            .then((res: any) => {
-                if (userRoles == 'candidate') {
-                    const certificate = convertToArray(res.documents[0].certificates) || [];
-                    const projects = convertToArray(res.documents[0].projects) || [];
-                    const workhistory = convertToArray(res.documents[0].workHistory) || [];
-                    const education = convertToArray(res.documents[0].educations) || [];
+
+    const getDatas = async () => {
+        /* const usersRole = await assignRole();
+         console.log(usersRole); */
+        const userId = await getAccount();
+        if (userId !== 'failed') {
+            setFirstLetter(userId.name.charAt(0));
+            const userRole = await getRole(userId.$id);
+            if (userRole) {
+                if (userRole.documents[0].userRole == 'candidate') {
+                    const docId = await getCandidateDocumentId(userId.$id);
+                    const certificate = convertToArray(docId.documents[0].certificates) || [];
+                    const projects = convertToArray(docId.documents[0].projects) || [];
+                    const workhistory = convertToArray(docId.documents[0].workHistory) || [];
+                    const education = convertToArray(docId.documents[0].educations) || [];
                     setWorkHistoryArray(workhistory || '');
                     setCertificateArray(certificate || '');
                     setProjectsArray(projects || '');
                     setEducationArray(education || '');
-                    setDocumentId(res.documents[0].$id || '');
-                    setHeadline(res.documents[0].bioHeadline || '');
-                    setDescription(res.documents[0].bioDescription || '');
-                    setArray(res.documents[0].skills || '');
-                    setProfilePictureId(res.documents[0].profilePictureId || '');
-                    setLinked(res.documents[0].linkedIn || '');
-                    setBehan(res.documents[0].behance || '');
-                    setPortfolio(res.documents[0].portfolio || '');
-                    setCall(res.documents[0].phoneNumber || '');
-                    /*                 setLocate(res.documents[0].address || '');
-                     */ setGithubLink(res.documents[0].github || '');
-                    setResumeId(res.documents[0].resumeId || '');
-                    setSupportDocumentId(res.documents[0].supportingDocumentId || '');
-                    setCoverLetter(res.documents[0].coverLetter || '');
+                    setDocumentId(docId.documents[0].$id || '');
+                    setHeadline(docId.documents[0].bioHeadline || '');
+                    setDescription(docId.documents[0].bioDescription || '');
+                    setArray(docId.documents[0].skills || '');
+                    setProfilePictureId(docId.documents[0].profilePictureId || '');
+                    setLinked(docId.documents[0].linkedIn || '');
+                    setBehan(docId.documents[0].behance || '');
+                    setPortfolio(docId.documents[0].protfolio || '');
+                    setCall(docId.documents[0].phoneNumber || '');
+                    setLocate(docId.documents[0].address || '');
+                    setGithubLink(docId.documents[0].github || '');
+                    setSupportDocumentId(docId.documents[0].supportingDocumentId || '');
+                    setCoverLetter(docId.documents[0].coverLetter || '');
+                    setResumeId(docId.documents[0].resumeId || '');
                 }
-                if (userRoles == 'employer') {
-                    setDocumentId(res.documents[0].$id);
-                    setProfilePictureId(res.documents[0].profilePictureId || '');
-                    setPhone(res.documents[0].phoneNumber || '');
-                    setLocation(res.documents[0].location || '');
-                    setEmployee(res.documents[0].noOfEmployee || '');
-                    setSectorValue(res.documents[0].sector || '');
-                    setWebLink(res.documents[0].websiteLink || '');
+                if (userRole.documents[0].userRole == 'employer') {
+                    const docId = await getEmployerDocumentId(userId.$id);
+                    setDocumentId(docId.documents[0].$id);
+                    setProfilePictureId(docId.documents[0].profilePictureId || '');
+                    setPhone(docId.documents[0].phoneNumber || '');
+                    setLocation(docId.documents[0].location || '');
+                    setEmployee(docId.documents[0].noOfEmployee || '');
+                    setSectorValue(docId.documents[0].sector || '');
+                    setWebLink(docId.documents[0].websiteLink || '');
                 }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+            }
+        }
+    };
+    useEffect(() => {
+        getDatas();
         const { href } = getProfilePicture(profilePictureId);
         profilePictureId && setImage(href);
     }, [user]);
     useEffect(() => {
         const { href } = getProfilePicture(profilePictureId);
-        console.log(href);
         profilePictureId && setImage(href);
     }, [profilePictureId]);
 
@@ -383,7 +376,7 @@ export const MiddleWare = () => {
                     setLoadings(false);
                     setOpenProjectModal(false);
                     console.log('hey');
-                    
+
                     toast.success('Project Added Successfully');
                     const project = JSON.parse(res.projects);
                     setProjectsArray(project);
@@ -584,10 +577,20 @@ export const MiddleWare = () => {
                 router.reload();
             });
     };
+    const addPhoneAddress = () => {
+        const updateLink = addAddressPhone(call, locate, documentId);
+        updateLink
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
     const addSocialLink = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadings(true);
-        const updateLink = addSocials(call, /* locate, */ linked, githubLink, behan, portfolio, documentId);
+        const updateLink = addSocials(linked, githubLink, behan, portfolio, documentId);
 
         updateLink
             .then((res) => {
@@ -782,6 +785,7 @@ export const MiddleWare = () => {
         }
     }; */
     return {
+        addPhoneAddress,
         locate,
         setLocate,
         openProjectModal,
@@ -948,124 +952,4 @@ export const MiddleWare = () => {
     };
 };
 
-export const PostJob = () => {
-    const [compName, setCompName] = useState('');
-    const [jobTitle, setJobTitle] = useState('');
-    const [category, setCategory] = useState('');
-    const [openRoles, setOpenRoles] = useState('');
-    const [location, setLocation] = useState('');
-    const [jobType, setJobType] = useState('');
-    const [reqExp, setReqExp] = useState('');
-    const [skillsArray, setSkillsArray] = useState<string[]>([]);
-    const [skills, setSkills] = useState('');
-    const [salary, setSalary] = useState('');
-    const [jobDes, setJobDes] = useState('');
-    const [deadline, setDeadline] = useState('');
-    const [gender, setGender] = useState('');
-    const [educationLevel, setEducationLevel] = useState('');
-    const [email, setEmail] = useState('');
-    const [externalLink, setExternalLink] = useState('');
-    const addSuggestedSkill = async (suggesteSkill: string) => {
-        skillsArray.push(suggesteSkill);
-        setSkills('');
-        console.log(skillsArray);
-    };
-    const deleteSkill = (index: number) => {
-        const newArray = skillsArray.filter((item, i) => i !== index);
-        setSkillsArray(newArray);
-        /*         updateSkills(newArray, documentId);
-         */
-    };
-    const postAjob = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        setSkills(JSON.stringify(skillsArray));
-        /*   console.log(
-            jobTitle,
-            category,
-            openRoles,
-            location,
-            jobType,
-            reqExp,
-            skills,
-            salary,
-            jobDes,
-            deadline,
-            gender,
-            educationLevel,
-            email,
-            externalLink
-        ); */
 
-        const abebe = postJobs(
-            jobTitle,
-            category,
-            openRoles,
-            location,
-            jobType,
-            reqExp,
-            skills,
-            salary,
-            jobDes,
-            deadline,
-            gender,
-            educationLevel,
-            email,
-            externalLink
-        );
-        abebe.then((res) => {
-            setCompName('');
-            setJobTitle('');
-            setCategory('');
-            setOpenRoles('');
-            setLocation('');
-            setJobType('');
-            setReqExp('');
-            setSkillsArray([]);
-            setSkills('');
-            setSalary('');
-            setJobDes('');
-            setDeadline('');
-            setGender('');
-            setEducationLevel('');
-            setEmail('');
-            setExternalLink('');
-        });
-    };
-    return {
-        compName,
-        setCompName,
-        jobTitle,
-        setJobTitle,
-        category,
-        setCategory,
-        openRoles,
-        setOpenRoles,
-        location,
-        setLocation,
-        jobType,
-        setJobType,
-        reqExp,
-        setReqExp,
-        skills,
-        setSkills,
-        skillsArray,
-        setSkillsArray,
-        addSuggestedSkill,
-        deleteSkill,
-        salary,
-        setSalary,
-        jobDes,
-        setJobDes,
-        deadline,
-        setDeadline,
-        gender,
-        setGender,
-        educationLevel,
-        setEducationLevel,
-        email,
-        setEmail,
-        externalLink,
-        setExternalLink,
-        postAjob
-    };
-};

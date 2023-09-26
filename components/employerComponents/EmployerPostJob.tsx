@@ -1,9 +1,10 @@
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import EditLocationAltOutlinedIcon from '@mui/icons-material/EditLocationAltOutlined';
 import SettingsRemoteIcon from '@mui/icons-material/SettingsRemote';
 import RadioInput from '@/components/RadioInput';
+import GroupWorkIcon from '@mui/icons-material/GroupWork';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
@@ -15,37 +16,60 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import Skills from '@/components/employerComponents/Skills';
 import CloseIcon from '@mui/icons-material/Close';
 import DropDown from '@/components/DropDown';
+import {
+    accountData,
+    deleteProfileImage,
+    getProfileData,
+    getProfilePicture,
+    fetchPostedJobs,
+    /*     postJobs,
+     */ fetchSinglePostedJobs,
+    postFirstTab,
+    postSecondTab,
+    postThirdTab,
+    postFourthTab,
+    fetchDraftedJobs,
+    updateFirstTab
+} from '@/lib/services';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import ConfirmModal from '@/components/ConfirmModal';
+import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
+import AccessTimeOutlined from '@mui/icons-material/AccessTimeOutlined';
+import LocalFireDepartmentOutlined from '@mui/icons-material/LocalFireDepartmentOutlined';
+import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
+import { toast } from 'react-toastify';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import EuroIcon from '@mui/icons-material/Euro';
+import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import { useRouter } from 'next/router';
+import EmployerProfile from './EmployerProfile';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
+interface Data {
+    word: string;
+}
 const salaryRangeData = [{ name: 'Range' }, { name: 'Starting amount' }, { name: 'Maximum amount' }, { name: 'Exact amount' }];
-const expData = [
-    'No experience needed',
-    'Under 1 year',
-    '1 year',
-    '2 year',
-    '3 year',
-    '4 year',
-    '5 year',
-    '6 year',
-    '7 year',
-    '8 year',
-    '9 year',
-    '10+ years'
-];
+const expData = ['0-2 years', '3-5 years', '6-8 years', '9-10 years', '10+ years'];
 const salaryPerData = [{ name: 'Per Month' }, { name: 'Per Hour' }, { name: 'Per Year' }];
 
 const TextInput = (props: any) => {
     return (
-        <input
-            placeholder={props.placeHolder}
-            value={props.value}
-            onChange={(e) => props.setFunction(e.currentTarget.value)}
-            className="w-96 h-12 pl-5 bg-white rounded-3xl border border-gray-200"
-        />
+        <>
+            <input
+                placeholder={props.placeHolder}
+                value={props.value}
+                onChange={(e) => props.setFunction(e.currentTarget.value)}
+                className={
+                    props.errorMessage
+                        ? 'w-96 h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0'
+                        : 'w-96 h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0'
+                }
+            />
+            {props.errorMessage && <p className="text-red-500 text-[13px]">{props.errorMessage}</p>}
+        </>
     );
 };
 const RequiredTextLabel = (props: any) => {
@@ -56,7 +80,6 @@ const RequiredTextLabel = (props: any) => {
         </div>
     );
 };
-
 const RequredExp = (props: any) => {
     return (
         <div
@@ -77,7 +100,7 @@ const Jobtype = (props: any) => {
         <div className="col-span-6 flex flex-col max-md:pl-2 py-2 rounded-2xl gap-y-2 bg-textW sm:col-span-3 items-center">
             <p className="font-fhW sm:max-md:text-[0.8rem] md:text-fhS md:max-lg:text-[1rem]"> {props.salary}</p>
             <p className=" text-fadedText sm:max-md:text-[12px] flex md:max-lg:text-[0.7rem] lg:text-[14px]">
-                <PinDropOutlinedIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />{' '}
+                {props.icon}
                 {props.money}
             </p>
         </div>
@@ -85,26 +108,68 @@ const Jobtype = (props: any) => {
 };
 
 const PostAJob = () => {
+    const router = useRouter();
+    const loadingIn = '/images/loading.svg';
     const profile = '/images/profile.svg';
     const previewImage = '/images/previewImage.svg';
+    const [chooseJob, setChooseJob] = useState(true);
+    const [selectedRadio, setSelectedRadio] = useState('empty');
+    const [first, setFirst] = useState(false);
     const [second, setSecond] = useState(false);
     const [third, setThird] = useState(false);
     const [fourth, setFourth] = useState(false);
-    const [datas, setDatas] = useState('');
+    const [compName, setCompName] = useState('');
+    const [compError, setCompError] = useState('');
+    const [jobTitle, setJobTitle] = useState('');
+    const [jobTitleError, setJobTitleError] = useState('');
+    const [category, setCategory] = useState('');
+    const [categoryError, setCategoryError] = useState('');
+    const [remote, setRemote] = useState(false);
+    const [hybrid, setHybrid] = useState(false);
     const [location, setLocation] = useState('');
-    const [remote, setRemote] = useState(true);
-    const [jobtype, setJobTye] = useState('');
-    const [addLocation, setAddLocation] = useState(false);
-    const [expRequired, setExpRequired] = useState('');
+    const [locationError, setLocationError] = useState('');
+    const [worktype, setWorkType] = useState('Full Time');
+    const [addLocation, setAddLocation] = useState(true);
+    const [expRequired, setExpRequired] = useState('0-2 years');
     const [openPositions, setOpenPositions] = useState<number>(1);
+    const [skillArray, setSkillArray] = useState<any>([]);
+    const [skillError, setSkillError] = useState('');
+    const [minSalary, setMinSalary] = useState('');
+    const [maxSalary, setMaxSalary] = useState('');
+    const [currency, setCurrency] = useState('etb');
+    const [salary, setSalary] = useState('');
     const [salaryRange, setSalaryRange] = useState(salaryRangeData[0]);
+    const [salaryRangeError, setSalaryRangeError] = useState('');
     const [salaryPer, setSalaryPer] = useState(salaryPerData[0]);
     const [jobDesc, setJobDesc] = useState('');
+    const [jobDescError, setJobDescError] = useState('');
+    const [compDesc, setCompDesc] = useState('');
+    const [compDescError, setCompDescError] = useState('');
+    const [emailSent, setEmailSent] = useState('');
+    const [externalLink, setExternalLink] = useState('');
+    const today = new Date();
+    const fifteenthDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14);
+    const [deadline, setDeadline] = useState(`${fifteenthDay}`);
     const [palm, setPalm] = useState(true);
     const [email, setEmail] = useState(false);
+    const [emailError, setEmailError] = useState('');
     const [link, setLink] = useState(false);
+    const [linkError, setLinkError] = useState('');
     const [company, setCompany] = useState(false);
     const [openPreview, setOpenPreview] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [postedJobs, setPostedJobs] = useState<any>();
+    const [jobId, setJobId] = useState('');
+    const [profileFilled, setProfileFilled] = useState(false);
+    const [postingJobId, setPostingJobId] = useState('');
+    const initialData = () => {
+        const result = getProfileData();
+        if (result) {
+            result.then((res: any) => {
+                res && res.documents && res.documents[0] && res.documents[0].description && setCompDesc(res.documents[0].description);
+            });
+        }
+    };
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(e.target.value, 10);
         if (!isNaN(value) && value > 1) {
@@ -116,94 +181,572 @@ const PostAJob = () => {
             setFourth(false);
             setThird(true);
             setSecond(false);
+            setFirst(false);
+            setChooseJob(false);
         } else if (third == true) {
             setFourth(false);
             setThird(false);
             setSecond(true);
+            setFirst(false);
+            setChooseJob(false);
         } else if (second == true) {
             setFourth(false);
             setThird(false);
             setSecond(false);
+            setFirst(true);
+            setChooseJob(false);
+        } /* else if (first == true) {
+            setFourth(false);
+            setThird(false);
+            setSecond(false);
+            setFirst(false);
+            setChooseJob(false);
+        } */
+    };
+    const handleFront = (e: React.FormEvent<HTMLElement>) => {
+        if (chooseJob && !first && !second && !third && !fourth) {
+            setFourth(false);
+            setThird(false);
+            setSecond(false);
+            setFirst(true);
+            setChooseJob(false);
+        }
+        if (first && !second && !third && !fourth) {
+            /*             setCompError('');
+             */ setJobTitleError('');
+            setCategoryError('');
+            /*  if (compName == '') {
+                setCompError('Company Name is required');
+            } else  */ if (jobTitle == '') {
+                setJobTitleError('Job Titile is required');
+            } else if (category == '') {
+                setCategoryError('Job Titile is required');
+            } else if (location == '') {
+                setLocationError('Please Provide Location');
+            } else {
+                setFourth(false);
+                setThird(false);
+                setSecond(true);
+                setFirst(false);
+                setChooseJob(false);
+            }
+        }
+        if (second && !third && !fourth) {
+            if (skillArray.length == 0) {
+                setSkillError('Please provide required skills');
+            } else {
+                setFourth(false);
+                setThird(true);
+                setSecond(false);
+                setFirst(false);
+                setChooseJob(false);
+            }
+        }
+        if (!second && third && !fourth) {
+            setSalaryRangeError('');
+            if (salaryRange.name === 'Range') {
+                /* if (minSalary === '' || maxSalary === '') {
+                    setSalaryRangeError('Please provide Minimum and Maximum salary');
+                } else */ if (jobDesc == '') {
+                    setJobDescError('Job Description is required');
+                } else if (compDesc == '') {
+                    setCompDescError('Company Description is required');
+                } else {
+                    if (minSalary !== '' && maxSalary !== '') {
+                        setSalary(minSalary + '-' + maxSalary);
+                    } else if (minSalary !== '' && maxSalary == '') {
+                        setSalary(minSalary);
+                    } else if (minSalary == '' && maxSalary !== '') {
+                        setSalary(maxSalary);
+                    } else {
+                        setSalary('');
+                    }
+                    setFourth(true);
+                    setThird(false);
+                    setSecond(false);
+                    setFirst(false);
+                    setChooseJob(false);
+                }
+            } else if (salaryRange.name === 'Starting amount') {
+                /*  if (minSalary === ' ') {
+                    setSalaryRangeError('Please provide Minimum salary');
+                } else  */ if (jobDesc == ' ') {
+                    setJobDescError('Job Description is required');
+                } else if (compDesc == ' ') {
+                    setCompDescError('Company Description is required');
+                } else {
+                    setSalary(/* 'Starting' + */ minSalary);
+                    setFourth(true);
+                    setThird(false);
+                    setSecond(false);
+                    setFirst(false);
+                    setChooseJob(false);
+                }
+            } else if (salaryRange.name == 'Maximum amount') {
+                /* if (maxSalary === ' ') {
+                    setSalaryRangeError('Please provide Maximum salary');
+                } else  */ if (jobDesc == ' ') {
+                    setJobDescError('Job Description is required');
+                } else if (compDesc == ' ') {
+                    setCompDescError('Company Description is required');
+                } else {
+                    setSalary(maxSalary);
+                    setFourth(true);
+                    setThird(false);
+                    setSecond(false);
+                    setFirst(false);
+                    setChooseJob(false);
+                }
+            } else if (salaryRange.name === 'Exact amount') {
+                /* if (salary === '') {
+                    setSalaryRangeError('Please provide Exact salary');
+                } else  */ if (jobDesc == '') {
+                    setJobDescError('Job Description is required');
+                } else if (compDesc == ' ') {
+                    setCompDescError('Company Description is required');
+                } else {
+                    setFourth(true);
+                    setThird(false);
+                    setSecond(false);
+                    setFirst(false);
+                    setChooseJob(false);
+                }
+            }
         }
     };
-    const handleFront = () => {
-        console.log('hey');
+    const handleFirstSubmit = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
 
-        if (second == false && third == false && fourth == false) {
-            setFourth(false);
-            setThird(false);
-            setSecond(true);
-        }
-        if (second == true && third == false && fourth == false) {
-            setFourth(false);
-            setThird(true);
-            setSecond(false);
-        }
-        if (second == false && third == true && fourth == false) {
-            setFourth(true);
-            setThird(false);
-            setSecond(false);
+        if (first && !second && !third && !fourth) {
+            setJobTitleError('');
+            setCategoryError('');
+            if (jobTitle == '') {
+                setJobTitleError('Job Titile is required');
+            } else if (category == '') {
+                setCategoryError('Job Titile is required');
+            } else if (location == '') {
+                setLocationError('Please Provide Location');
+            } else {
+                if (postingJobId) {
+                    setLoading(true);
+                    updateFirstTab(jobTitle, category, openPositions.toString(), location, postingJobId)
+                        .then((res: any) => {
+                            setLoading(false);
+                            toast.success('Saved as Draft');
+                            setFourth(false);
+                            setThird(false);
+                            setSecond(true);
+                            setFirst(false);
+                            setChooseJob(false);
+                        })
+                        .catch((error) => {
+                            setLoading(false);
+                            toast.error('Draft Not Saved');
+                            console.log(error);
+                        });
+                } else {
+                    setLoading(true);
+                    postFirstTab(jobTitle, category, openPositions.toString(), location)
+                        .then((res: any) => {
+                            setPostingJobId(res.$id);
+                            console.log(res);
+                            setLoading(false);
+                            toast.success('Saved as Draft');
+                            setFourth(false);
+                            setThird(false);
+                            setSecond(true);
+                            setFirst(false);
+                            setChooseJob(false);
+                        })
+                        .catch((error) => {
+                            setLoading(false);
+                            toast.error('Draft Not Saved');
+                            console.log(error);
+                        });
+                }
+            }
         }
     };
+    const handleSecondSubmit = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        if (second && !third && !fourth) {
+            if (skillArray.length == 0) {
+                setSkillError('Please provide required skills');
+            } else {
+                setLoading(true);
+                postSecondTab(worktype, expRequired, JSON.stringify(skillArray), postingJobId)
+                    .then((res: any) => {
+                        setLoading(false);
+                        setFourth(false);
+                        setThird(true);
+                        setSecond(false);
+                        setFirst(false);
+                        setChooseJob(false);
+                        toast.success('Saved as Draft');
+                    })
+                    .catch((error) => {
+                        setLoading(false);
+                        toast.error('Draft Not Saved');
+                        console.log(error);
+                    });
+            }
+        }
+    };
+    const handleThirdSubmit = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        if (!second && third && !fourth) {
+            setSalaryRangeError('');
+            if (jobDesc == '') {
+                setJobDescError('Job Description is required');
+            } else if (compDesc == ' ') {
+                setCompDescError('Company Description is required');
+            } else {
+                setLoading(true);
+                postThirdTab(minSalary, maxSalary, currency, jobDesc, postingJobId)
+                    .then((res: any) => {
+                        setLoading(false);
+                        setFourth(true);
+                        setThird(false);
+                        setSecond(false);
+                        setFirst(false);
+                        setChooseJob(false);
+                        toast.success('Saved as Draft');
+                    })
+                    .catch((error) => {
+                        setLoading(false);
+                        toast.error('Draft Not Saved');
+                        console.log(error);
+                    });
+            }
+        }
+    };
+    const handleFourthSubmit = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        if (email && emailSent == '') {
+            setEmailError('please provide email address');
+        } else if (link && externalLink == '') {
+            setLinkError('please provide link');
+        } else {
+            setLoading(true);
+            postFourthTab(postingJobId, deadline, '', emailSent, externalLink)
+                .then((res: any) => {
+                    setLoading(false);
+                    toast.success('Job posted successfully');
+                    router.push(`/jobs/${res.$id}`);
+                })
+                .catch((error) => {
+                    setLoading(false);
+                    toast.error('Job not posted');
+                    console.log(error);
+                });
+        }
+    };
+    /*    const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        if (email && emailSent == '') {
+            setEmailError('please provide email address');
+        } else if (link && externalLink == '') {
+            setLinkError('please provide link');
+        } else {
+            setLoading(true);
+            postJobs(
+                compName,
+                jobTitle,
+                category,
+                openPositions.toString(),
+                location,
+                worktype,
+                expRequired,
+                JSON.stringify(skillArray),
+                minSalary,
+                maxSalary,
+                currency,
+                jobDesc,
+                deadline,
+                '',
+                emailSent,
+                externalLink
+            ).then((res: any) => {
+                setLoading(false);
+                toast.success('Successfully Posted Job');
+                setCompName('');
+                setJobTitle('');
+                setCategory('');
+                setOpenPositions(1);
+                setLocation('Remote');
+                setWorkType('Full Time');
+                setExpRequired('No experience needed');
+                setSkillArray([]);
+                setSalary('');
+                setMinSalary('');
+                setMaxSalary('');
+                setJobDesc('');
+                setEmailSent('');
+                setExternalLink('');
+                setDeadline(`${fifteenthDay}`);
+                console.log(res);
+
+                router.push(`/jobs/${res.$id}`);
+            });
+            .catch((error) => {
+                    setLoading(false);
+                    toast.error('Job Not Posted');
+                    console.log(error);
+                });
+        }
+    }; */
+    const handleJobSelection = async (id: string) => {
+        setPostingJobId(id);
+        fetchSinglePostedJobs(id).then((res: any) => {
+            setJobTitle(res.documents[0].jobTitle);
+            setCategory(res.documents[0].jobIndustry);
+            if (res.documents[0].jobLocation.toLowerCase() == 'remote') {
+                setRemote(true);
+                setHybrid(false);
+                setAddLocation(false);
+            }
+            if (res.documents[0].jobLocation.toLowerCase() == 'hybrid') {
+                setRemote(false);
+                setHybrid(true);
+                setAddLocation(false);
+            }
+            if (res.documents[0].jobLocation.toLowerCase() !== 'hybrid' && res.documents[0].jobLocation.toLowerCase() !== 'remote') {
+                setRemote(false);
+                setHybrid(false);
+                setAddLocation(true);
+                setLocation(res.documents[0].jobLocation);
+            }
+            res.documents[0].jobType && setWorkType(res.documents[0].jobType);
+            res.documents[0].expreienceLevel && setExpRequired(res.documents[0].expreienceLevel);
+            res.documents[0].openPositions && setOpenPositions(res.documents[0].openPositions);
+            if (res.documents[0].requiredSkills) {
+                try {
+                    const parsedSkills = JSON.parse(res.documents[0].requiredSkills);
+                    setSkillArray(parsedSkills);
+                } catch (error) {
+                    console.error('Error parsing requiredSkills:', error);
+                }
+            }
+            res.documents[0].salaryRange && setMinSalary(res.documents[0].salaryRange);
+            res.documents[0].jobDescription && setJobDesc(res.documents[0].jobDescription);
+            if (res.documents[0].emailApplication) {
+                setPalm(false);
+                setEmail(true);
+                setLink(false);
+                setEmailSent(res.documents[0].emailApplication);
+            }
+            if (res.documents[0].externalLink) {
+                setPalm(false);
+                setEmail(false);
+                setLink(true);
+                setExternalLink(res.documents[0].externalLink);
+            }
+        });
+    };
+    const getPosted = async () => {
+        const posted = await fetchPostedJobs();
+        if (posted && posted.documents) {
+            posted && setPostedJobs(posted.documents);
+            posted && setJobId(posted.documents[0] && posted.documents[0].$id);
+        }
+    };
+    const getDrafted = async () => {
+        const posted = await fetchDraftedJobs();
+        if (posted && posted.documents) {
+            console.log(posted);
+
+            posted && setPostedJobs(posted.documents);
+            posted && setJobId(posted.documents[0] && posted.documents[0].$id);
+        }
+    };
+    const getProfile = async () => {
+        getProfileData().then((res: any) => {
+            if (res.documents[0].location == '' || res.documents[0].phoneNumber == '' || res.documents[0].description == '') {
+                setProfileFilled(true);
+            }
+        });
+    };
+    useEffect(() => {
+        if (selectedRadio == 'empty') {
+            getProfile();
+        }
+        if (selectedRadio == 'duplicate') {
+            getPosted();
+        }
+        if (selectedRadio == 'draft') {
+            getDrafted();
+        }
+    }, [selectedRadio]);
+    useEffect(() => {
+        initialData();
+    }, []);
     return (
         <div className="pt-5 pl-10 pb-10 bg-textW min-h-screen xl:pr-28 xl:px-20">
-            <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>
-            <div
-                className="col-span-12 grid grid-cols-12 gap-x-2 pr-20 mt-1 lg:pr-40
+            {!chooseJob && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
+            {!chooseJob && (
+                <div
+                    className="col-span-12 grid grid-cols-12 gap-x-2 pr-20 mt-1 lg:pr-40
              xl:pr-60"
-            >
-                <div className="rounded-2xl bg-gradientFirst h-1.5 col-span-3"></div>
-                <div
-                    className={
-                        second || third || fourth
-                            ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3'
-                            : 'rounded-2xl bg-fadedText h-1.5 col-span-3'
-                    }
-                ></div>
-                <div
-                    className={
-                        third || fourth ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3' : 'rounded-2xl bg-fadedText h-1.5 col-span-3'
-                    }
-                ></div>
-                <div
-                    className={fourth ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3' : 'rounded-2xl bg-fadedText h-1.5 col-span-3'}
-                ></div>
+                >
+                    <div className="rounded-2xl bg-gradientFirst h-1.5 col-span-3"></div>
+                    <div
+                        className={
+                            second || third || fourth
+                                ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3'
+                                : 'rounded-2xl bg-fadedText h-1.5 col-span-3'
+                        }
+                    ></div>
+                    <div
+                        className={
+                            third || fourth ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3' : 'rounded-2xl bg-fadedText h-1.5 col-span-3'
+                        }
+                    ></div>
+                    <div
+                        className={fourth ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3' : 'rounded-2xl bg-fadedText h-1.5 col-span-3'}
+                    ></div>
+                </div>
+            )}
+            <div className={chooseJob && !first && !second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}>
+                <div className="text-neutral-900 text-3xl font-semibold leading-10">Create a job post</div>
+                <div className="flex flex-col gap-y-5 pt-5 pb-10">
+                    <RadioInput
+                        radioName="selectedRadio"
+                        radioText="Start with a new post"
+                        radioValue="empty"
+                        setFunction={setSelectedRadio}
+                    />
+                    <RadioInput
+                        radioName="selectedRadio"
+                        radioText="Use a previous job as a template"
+                        radioValue="duplicate"
+                        setFunction={setSelectedRadio}
+                    />
+                    <RadioInput
+                        radioName="selectedRadio"
+                        radioText="Continue from Draft"
+                        radioValue="draft"
+                        setFunction={setSelectedRadio}
+                    />
+                </div>
+                <div>
+                    {(selectedRadio == 'duplicate' || selectedRadio == 'draft') && (
+                        <select
+                            style={{ maxHeight: '200px' }}
+                            onChange={(e) => {
+                                setJobId(e.currentTarget.value);
+                                handleJobSelection(e.currentTarget.value);
+                            }}
+                            className="form-select w-96 h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0"
+                        >
+                            {postedJobs &&
+                                postedJobs.map((item: any, index: number) => {
+                                    return (
+                                        <option value={item.$id} key={index}>
+                                            {item.jobTitle}
+                                        </option>
+                                    );
+                                })}
+                        </select>
+                    )}
+                    {/* {selectedRadio == 'draft' && (
+                        <select
+                            value={category}
+                            style={{ maxHeight: '200px' }}
+                            onChange={(e) => setCategory(e.currentTarget.value)}
+                            className="form-select w-96 h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0"
+                        >
+                            <option value="Agriculture">Draft</option>
+                            <option value="Construction">Construction</option>
+                            <option value="Education">Education</option>
+                            <option value="Energy">Energy</option>
+                            <option value="Finance & Insurance">Finance & Insurance</option>
+                            <option value="HealthCare">HealthCare</option>
+                            <option value="Hospital and Tourism">Hospital and Tourism</option>
+                        </select>
+                    )} */}
+                </div>
             </div>
-            <div className={!second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}>
+            <form
+                onSubmit={handleFirstSubmit}
+                className={!chooseJob && first && !second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}
+            >
                 <div className="text-neutral-900 text-3xl font-semibold leading-10">Provide Basic Information</div>
                 <RequiredTextLabel text="Job Title" />
-                <TextInput placeHolder="Job Position" value={datas} setFunction={setDatas} />
+                <TextInput errorMessage={jobTitleError} placeHolder="Job Position" value={jobTitle} setFunction={setJobTitle} />
                 <RequiredTextLabel text="Job Category" />
-                <TextInput placeHolder="Job Category" value={datas} setFunction={setDatas} />
+                <select
+                    value={category}
+                    style={{ maxHeight: '200px' }}
+                    onChange={(e) => setCategory(e.currentTarget.value)}
+                    className="form-select w-96 h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0"
+                >
+                    <option value="Agriculture">Agriculture</option>
+                    <option value="Construction">Construction</option>
+                    <option value="Education">Education</option>
+                    <option value="Energy">Energy</option>
+                    <option value="Finance & Insurance">Finance & Insurance</option>
+                    <option value="HealthCare">HealthCare</option>
+                    <option value="Hospital and Tourism">Hospital and Tourism</option>
+                    <option value="Information Technology">Information Technology</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Mining">Mining</option>
+                    <option value="Public Administration">Public Administration</option>
+                    <option value="Real State">Real State</option>
+                    <option value="Transportation & Logisitics">Transportation & Logisitics</option>
+                    <option value="Wholesale Trade">Wholesale Trade</option>
+                    <option value="Creative & Media">Creative & Media</option>
+                    <option value="Automative">Automative</option>
+                    <option value="Pharmaceuticals">Pharmaceuticals</option>
+                    <option value="Telecommunications">Telecommunications</option>
+                    <option value="Food & Beverage">Food & Beverage</option>
+                </select>
                 <RequiredTextLabel text="How many open roles ?" />
                 <div className="flex gap-x-5 items-center mt-3">
                     <div
                         onClick={() => {
                             if (openPositions > 1) setOpenPositions(openPositions - 1);
                         }}
-                        className="text-orange-600 cursor-pointer"
+                        className="text-orange-600 rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-orange-500"
                     >
-                        <RemoveIcon sx={{ fontSize: '2rem' }} />
+                        <RemoveIcon />
                     </div>
                     <input
                         type="number"
                         value={openPositions}
                         onChange={handleInputChange}
-                        className="border-2 w-16 pl-5 py-2 rounded-3xl hideIncrease"
+                        className="border-2 w-16 py-2 text-center rounded-3xl hideIncrease focus:border-orange-500 focus:ring-0"
                     />
                     <div
                         onClick={() => setOpenPositions(openPositions + 1)}
-                        className="text-orange-600 rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-orange-600"
+                        className="text-orange-600 rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-orange-500"
                     >
                         <AddIcon />
                     </div>
                 </div>
                 <RequiredTextLabel text="Which option best describe this job's location ?" />
-                <div className="flex bg-forBack w-72 p-2 gap-x-5">
+                <div className="flex bg-forBack w-1/2 p-2 gap-x-5">
                     <div
                         onClick={() => {
-                            setAddLocation(!addLocation);
-                            setRemote(!remote);
+                            setLocation('');
+                            setAddLocation(true);
+                            setRemote(false);
+                            setHybrid(false);
+                        }}
+                        className={
+                            addLocation
+                                ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                        }
+                    >
+                        <EditLocationAltOutlinedIcon className="-ml-2" />
+                        <p className="absolute bottom-0">Add Location</p>
+                    </div>
+                    <div
+                        onClick={() => {
+                            setAddLocation(false);
+                            setRemote(true);
+                            setHybrid(false);
+                            setLocation('Remote');
                         }}
                         className={
                             remote
@@ -216,95 +759,165 @@ const PostAJob = () => {
                     </div>
                     <div
                         onClick={() => {
-                            setAddLocation(!addLocation);
-                            setRemote(!remote);
+                            setAddLocation(false);
+                            setRemote(false);
+                            setHybrid(true);
+                            setLocation('Hybrid');
                         }}
                         className={
-                            addLocation
-                                ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                            hybrid
+                                ? 'flex rounded-md flex-col relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
                                 : 'hover:bg-skillColor hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
-                        <EditLocationAltOutlinedIcon className="-ml-2" />
-                        <p className="absolute bottom-0">Add Location</p>
+                        <GroupWorkIcon className="-ml-2" />
+                        <p className="absolute bottom-0">Hybrid</p>
                     </div>
                 </div>
                 {addLocation && (
                     <>
                         <RequiredTextLabel text="Address" />
-                        <TextInput placeHolder="Job Address" value={datas} setFunction={setDatas} />
+                        <TextInput placeHolder="Job Address" errorMessage={locationError} value={location} setFunction={setLocation} />
                     </>
                 )}
-                {/* <div className="flex justify-end pt-5">
-                    <div className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12">
-                        Save and Continue
-                    </div>
-                </div> */}
-            </div>
-            <div className={second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}>
+                <div className="flex pt-10 justify-end">
+                    {loading && (
+                        <img
+                            src={loadingIn}
+                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        />
+                    )}
+                    {!loading && (
+                        <button
+                            type="submit"
+                            /*                             onClick={handleFront}
+                             */ className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        >
+                            Save and Continue
+                        </button>
+                    )}
+                </div>
+            </form>
+            <form
+                onSubmit={handleSecondSubmit}
+                className={!chooseJob && !first && second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}
+            >
                 <div className="text-neutral-900 text-3xl font-semibold leading-10">Technology Details</div>
                 <RequiredTextLabel text="What is the job type" />
                 <div className="flex gap-x-4 flex-wrap gap-y-3">
-                    <RadioInput radioName="jobType" radioText="Internship" radioValue="Internship" setFunction={setJobTye} />
-                    <RadioInput radioName="jobType" radioText="Full Time" radioValue="Full Time" setFunction={setJobTye} />
-                    <RadioInput radioName="jobType" radioText="Part Time" radioValue="Part Time" setFunction={setJobTye} />
-                    <RadioInput radioName="jobType" radioText="Remote" radioValue="Remote" setFunction={setJobTye} />
+                    <RadioInput radioName="jobType" radioText="Internship" radioValue="Internship" setFunction={setWorkType} />
+                    <RadioInput
+                        radioName="jobType"
+                        radioText="Full Time"
+                        checked={worktype === '' || worktype === 'Full Time'}
+                        radioValue="Full Time"
+                        setFunction={setWorkType}
+                    />
+                    <RadioInput radioName="jobType" radioText="Part Time" radioValue="Part Time" setFunction={setWorkType} />
+                    <RadioInput radioName="jobType" radioText="Consultancy" radioValue="Consultancy" setFunction={setWorkType} />
                 </div>
                 <RequiredTextLabel text="What experience level is required ?" />
-                <TextInput placeHolder="Job Category" value={datas} setFunction={setDatas} />
-                <RequiredTextLabel text="How many open roles ?" />
                 <div className="flex gap-x-3 gap-y-3 flex-wrap mt-3 xl:pr-60">
                     {expData.map((item: any, index: number) => {
-                        return <RequredExp text={item} value={expRequired} setFuntioner={setExpRequired} />;
+                        return <RequredExp text={item} key={index} value={expRequired} setFuntioner={setExpRequired} />;
                     })}
                 </div>
                 <RequiredTextLabel text="Required Skills ?" />
-                <Skills />
-                {/* <div className="flex justify-between pt-5">
-                    <div className="text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12">
-                        <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
-                    </div>
-                    <div className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12">
-                        Save and Continue
-                    </div>
-                </div> */}
-            </div>
-            <div className={!second && third && !fourth ? 'col-span-12 pt-5  space-y-3 ' : 'hidden'}>
-                <div className="text-neutral-900 text-[1.3rem] font-semibold leading-10 md:text-[1.6rem]">
-                    Add Compensation and Description
-                </div>
-                <RequiredTextLabel text="What is the pay ?" req="nReq" />
-                <div className="flex flex-wrap gap-5 xl:pr-10">
-                    <div className="w-40">
-                        <DropDown selectedElement={salaryRange} setSelectedElement={setSalaryRange} displayedData={salaryRangeData} />
-                    </div>
-                    {(salaryRange.name == 'Range' || salaryRange.name == 'Starting amount') && (
-                        <input type="number" placeholder="Minimum" className="pl-5 w-40 rounded-full hideIncrease" />
+                <Skills array={skillArray} setArray={setSkillArray} />
+                {skillError && <p className="text-red-500 text-[13px]">{skillError}</p>}
+                <div className="flex pt-10 justify-end">
+                    {loading && (
+                        <img
+                            src={loadingIn}
+                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        />
                     )}
-                    {(salaryRange.name == 'Range' || salaryRange.name == 'Maximum amount') && (
-                        <input type="number" placeholder="Maximum" className="pl-5 w-40 rounded-full hideIncrease" />
+                    {!loading && !profileFilled && (
+                        <button
+                            type="submit"
+                            /*                             onClick={handleFront}
+                             */ className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        >
+                            Save and Continue
+                        </button>
                     )}
-                    {salaryRange.name == 'Exact amount' && (
-                        <input type="number" placeholder="Exact amount" className="pl-5 w-40 rounded-full hideIncrease" />
+                </div>
+            </form>
+            <form
+                onSubmit={handleThirdSubmit}
+                className={!chooseJob && !first && !second && third && !fourth ? 'col-span-12 pt-5  space-y-1.5 ' : 'hidden'}
+            >
+                {!profileFilled && (
+                    <>
+                        <div className="text-neutral-900 text-[1.3rem] font-semibold leading-10 md:text-[1.6rem]">
+                            Add Compensation and Description
+                        </div>
+                        <RequiredTextLabel text="What is the pay ?" req="nReq" />
+                        <div className="flex flex-wrap gap-5 xl:pr-10">
+                            <select
+                                value={currency}
+                                style={{ maxHeight: '200px' }}
+                                onChange={(e) => setCurrency(e.currentTarget.value)}
+                                className="form-select h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0"
+                            >
+                                <option value="etb">ETB</option>
+                                <option value="usd">USD</option>
+                                <option value="euro">EURO</option>
+                                <option value="gpb">GBP</option>
+                                <option value="rnp">RNP</option>
+                            </select>
+                            <input
+                                type="number"
+                                onChange={(e) => {
+                                    setMinSalary(e.currentTarget.value);
+                                }}
+                                placeholder="Minimum"
+                                className="pl-5 w-40 rounded-full border border-gray-200 focus:ring-orange-500 focus:border-0 hideIncrease"
+                            />
+                            <input
+                                type="number"
+                                onChange={(e) => {
+                                    setMaxSalary(e.currentTarget.value);
+                                }}
+                                placeholder="Maximum"
+                                className="pl-5 w-40 rounded-full border border-gray-200 focus:ring-orange-500 focus:border-0 hideIncrease"
+                            />
+                        </div>
+                        <RequiredTextLabel text="Job Description ?" />
+                        <div className="pb-20 mr-2 relative xl:mr-64">
+                            <ReactQuill
+                                className="h-60 text-addS"
+                                value={jobDesc}
+                                onChange={(e) => setJobDesc(e)}
+                                placeholder="Add Description"
+                            />
+                            {jobDescError && <p className="text-red-500 absolute bottom-3 text-[13px] ">{jobDescError}</p>}
+                        </div>
+                    </>
+                )}
+                {profileFilled && <EmployerProfile setFilled={setProfileFilled} />}
+                <div className="flex pt-10 justify-end">
+                    {loading && (
+                        <img
+                            src={loadingIn}
+                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        />
                     )}
-                    <div className="w-48">
-                        <DropDown selectedElement={salaryPer} setSelectedElement={setSalaryPer} displayedData={salaryPerData} />
-                    </div>
+                    {!profileFilled && !loading && (
+                        <button
+                            type="submit"
+                            /*                             onClick={handleFront}
+                             */ className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        >
+                            Save and Continue
+                        </button>
+                    )}
                 </div>
-                <RequiredTextLabel text="Job Description ?" />
-                <div className="pb-20 mr-2 xl:mr-64">
-                    <ReactQuill className="h-28 text-addS" value={jobDesc} onChange={(e) => setJobDesc(e)} placeholder="Add Description" />
-                </div>
-                {/* <div className="flex justify-between pt-5 self-end">
-                    <div className="text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12">
-                        <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
-                    </div>
-                    <div className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12">
-                        Save and Continue
-                    </div>
-                </div> */}
-            </div>
-            <div className={!second && !third && fourth ? 'col-span-12 pt-5  space-y-3 ' : 'hidden'}>
+            </form>
+            <form
+                onSubmit={handleFourthSubmit}
+                className={!chooseJob && !first && !second && !third && fourth ? 'col-span-12 pt-5  space-y-3 ' : 'hidden'}
+            >
                 <div className="text-neutral-900 text-[1.3rem] font-semibold leading-10 md:text-[1.6rem]">Set application Preference</div>
                 <div className="flex bg-forBack w-1/2 p-2 gap-x-5">
                     <div
@@ -356,26 +969,68 @@ const PostAJob = () => {
                 {email && (
                     <>
                         <RequiredTextLabel text="Email" />
-                        <TextInput placeHolder="Email Address" value={datas} setFunction={setDatas} />
+                        <TextInput placeHolder="Email Address" value={emailSent} setFunction={setEmailSent} />
+                        <p className="text-red-500 text-[13px]">{emailError}</p>
                     </>
                 )}
                 {link && (
                     <>
                         <RequiredTextLabel text="External Link" />
-                        <TextInput placeHolder="External Link" value={datas} setFunction={setDatas} />
+                        <TextInput placeHolder="External Link" value={externalLink} setFunction={setExternalLink} />
+                        <p className="text-red-500 text-[13px]">{linkError}</p>
                     </>
                 )}
-                <RequiredTextLabel text="Job Deadline" req="nReq" />
-                <input type="date" className="rounded-full px-28 py-3 cursor-pointer" />
-            </div>
+                <div className="flex flex-col pt-2 gap-y-4 pb-7">
+                    <RequiredTextLabel text="Job Deadline" req="nReq" />
+                    <input
+                        value={deadline}
+                        type="date"
+                        onChange={(e) => setDeadline(e.currentTarget.value)}
+                        className="rounded-full w-96 border-stone-300 px-28 py-3 cursor-pointer focus:border-orange-500 focus:ring-0"
+                    />
+                </div>
+
+                <div className="flex pt-10 justify-end">
+                    <div
+                        onClick={() => setOpenPreview(true)}
+                        className={
+                            fourth
+                                ? 'text-orange-600 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12 ml-40'
+                                : 'hidden'
+                        }
+                    >
+                        See Preview &nbsp; <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                    </div>
+                    {loading && (
+                        <img
+                            src={loadingIn}
+                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        />
+                    )}
+
+                    {!loading && (
+                        <button
+                            type="submit"
+                            /*                             onClick={handleFront}
+                             */ className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        >
+                            Post Job
+                        </button>
+                    )}
+                </div>
+            </form>
             <div className="flex justify-between pt-5 self-end">
                 <div
                     onClick={handleBack}
-                    className="text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                    className={
+                        second || third || fourth
+                            ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12'
+                            : 'opacity-0'
+                    }
                 >
                     <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
                 </div>
-                <div
+                {/* <div
                     onClick={() => setOpenPreview(true)}
                     className={
                         fourth
@@ -384,13 +1039,31 @@ const PostAJob = () => {
                     }
                 >
                     See Preview &nbsp; <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
-                </div>
-                <div
-                    onClick={handleFront}
-                    className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
-                >
-                    Save and Continue
-                </div>
+                </div> */}
+
+                {/* {fourth && !loading && (
+                    <button
+                        type="submit"
+                        onClick={handleFront}
+                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                    >
+                        Post Job
+                    </button>
+                )} */}
+                {/* {loading && (
+                    <img
+                        src={loadingIn}
+                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                    />
+                )}*/}
+                {!fourth && !profileFilled && chooseJob && (
+                    <div
+                        onClick={handleFront}
+                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                    >
+                        Continue
+                    </div>
+                )}
             </div>
             {
                 <ConfirmModal isOpen={openPreview} handleClose={() => setOpenPreview(!openPreview)}>
@@ -421,12 +1094,13 @@ const PostAJob = () => {
                             <div className="col-span-12 grid grid-cols-12 gap-0f">
                                 <img src={profile} className="col-span-2 w-full h-full sm:h-[5.8rem]" />
                                 <div className="col-span-8 flex flex-col pl-3">
-                                    <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">Nylos</p>
+                                    <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">{compName}</p>
                                     <p className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-dfvhS xl:text-[1.5rem]">
-                                        Marketing Manager
+                                        {jobTitle}
                                     </p>
                                     <p className="text-fadedText">
-                                        <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} /> Addis Abeba
+                                        <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} />
+                                        {location}
                                     </p>
                                 </div>
                                 <div className="col-span-2 flex gap-x-5 text-lightGrey items-center">
@@ -435,10 +1109,47 @@ const PostAJob = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 grid grid-cols-12 bg-forBack gap-x-1 gap-y-2 md:gap-x-2 md:p-2 xl:mx-2">
-                                <Jobtype salary="Salary" money="5000" />
-                                <Jobtype salary="Job Type" money="Remote" />
-                                <Jobtype salary="Applicants" money="20 / 50" />
-                                <Jobtype salary="Skill" money="Expert" />
+                                {salary !== '' && (
+                                    <Jobtype
+                                        salary="Salary"
+                                        money={salary}
+                                        icon={
+                                            currency == 'euro' ? (
+                                                <EuroIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                            ) : currency == 'usd' ? (
+                                                <AttachMoneyOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                            ) : currency == 'gpb' ? (
+                                                <CurrencyPoundIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                            ) : currency == 'rnp' ? (
+                                                <CurrencyRupeeIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                            ) : (
+                                                <p>ETB</p>
+                                            )
+                                        }
+                                    />
+                                )}
+
+                                <Jobtype
+                                    salary="Job Type"
+                                    money={worktype}
+                                    icon={
+                                        <AccessTimeOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                    }
+                                />
+                                <Jobtype
+                                    salary="Date Posted"
+                                    money={new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                    icon={
+                                        <CalendarToday className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                    }
+                                />
+                                <Jobtype
+                                    salary="Deadline"
+                                    money={new Date(deadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                    icon={
+                                        <CalendarToday className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                    }
+                                />
                             </div>
                             <div className="col-span-12 grid grid-cols-12 border-[1px] mx-3 rounded-full">
                                 <div
@@ -466,30 +1177,22 @@ const PostAJob = () => {
                             {!company && (
                                 <div className="col-span-12 mx-3">
                                     <p className="font-thW text-frhS">Job Description</p>
-                                    <p className="text-sm text-fadedText max-h-20 overflow-y-auto hideScrollBar">
-                                        Lorem ipsum dolor sit amet consectetur. Accumsan feugiat dolor aliquet senectus mi viverra. Lectus
-                                        fringilla ut dignissim mauris diam vitae pharetra. Sagittis phasellus morbi morbi dis. Nisi sit arcu
-                                        scelerisque donec accumsan faucibus duis. Placerat egestas fermentum pretium phasellus id urna eget
-                                        elementum duis. Netus tellus senectus sollicitudin egestas adipiscing nulla aenean vestibulum.
-                                        Sapien velit lorem facilisis eget vitae. Sit id viverra enim ut hendrerit ultricies sed praesent.
-                                    </p>
-                                    <div className="w-full mt-1 rounded-full rounded-3xl bg-gradientSecond text-textW text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer ">
+                                    <div
+                                        className="text-sm text-fadedText max-h-20 overflow-y-auto hideScrollBar"
+                                        dangerouslySetInnerHTML={{ __html: jobDesc }}
+                                    />
+                                    <div className="w-full mt-16 rounded-full rounded-3xl bg-gradientSecond text-textW text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer ">
                                         Apply
                                     </div>
                                 </div>
                             )}
                             {company && (
-                                <div className="col-span-12 mx-3">
+                                <div className="col-span-12 mx-3 mb-10">
                                     <p className="font-thW text-frhS">Company's Detail</p>
-                                    <p className="text-midRS text-fadedText max-h-20 overflow-y-auto hideScrollBar">
-                                        Lorem ipsum dolor sit amet consectetur. Accumsan feugiat dolor aliquet senectus mi viverra. Lectus
-                                        fringilla ut dignissim mauris diam vitae pharetra. Sagittis phasellus morbi morbi dis. Nisi sit arcu
-                                        scelerisque donec accumsan faucibus duis. Placerat egestas fermentum pretium phasellus id urna eget
-                                        elementum duis. Netus tellus senectus sollicitudin egestas adipiscing nulla aenean vestibulum.
-                                        Sapien velit lorem facilisis eget vitae. Sit id viverra enim ut hendrerit ultricies sed praesent. Et
-                                        viverra ipsum auctor at eleifend. Integer integer rhoncus amet sagittis erat in facilisi diam est.
-                                        Iaculis ut interdum mattis aliquet.
-                                    </p>
+                                    <div
+                                        className="text-sm text-fadedText max-h-20 overflow-y-auto hideScrollBar"
+                                        dangerouslySetInnerHTML={{ __html: compDesc }}
+                                    />
                                 </div>
                             )}
                         </div>
