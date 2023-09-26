@@ -105,27 +105,31 @@ const PJobs = (props: any) => {
                 <p className="text-neutral-900 text-lg font-medium leading-normal">{props.title}</p>
                 <div className="flex flex-wrap text-stone-400 text-[0.8rem] gap-x-4 gap-y-1 mt-1">
                     <div>
-                        <PinDropOutlinedIcon className="text-[1.1rem] -mt-1" /> <span>{props.location}</span>
+                        <PinDropOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" /> <span>{props.location}</span>
                     </div>
                     <div>
-                        <AccessTimeOutlinedIcon className="text-[1.1rem] -mt-1" /> <span>{props.jobType}</span>
+                        <AccessTimeOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" /> <span>{props.jobType}</span>
                     </div>
                     <div>
-                        <AttachMoneyOutlinedIcon className="text-[1.1rem] -mt-1" /> <span>{props.salary}</span>
+                        <AttachMoneyOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" /> <span>{props.salary}</span>
                     </div>
                     <div className="flex items-center flex gap-x-2 lg:hidden ">
-                        <CalendarTodayOutlinedIcon className="text-[1.1rem] text-gradientFirst -mt-1" /> <span>{props.datePosted}</span>
+                        <CalendarTodayOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] text-gradientFirst -mt-1" />{' '}
+                        <span>{props.datePosted}</span>
                     </div>
                     <div className="flex items-center flex gap-x-2 lg:hidden">
-                        <Groups2OutlinedIcon className="text-[1.1rem] text-gradientFirst -mt-1" /> <span>{props.noApplicant}</span>
+                        <Groups2OutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] text-gradientFirst -mt-1" />{' '}
+                        <span>{props.noApplicant}</span>
                     </div>
                 </div>
             </div>
             <div className="col-span-2 flex items-center flex gap-x-2 lg:text-[0.9rem] hidden  lg:flex">
-                <CalendarTodayOutlinedIcon className="text-[1.1rem] text-gradientFirst -mt-0.5" /> <span>{props.datePosted}</span>
+                <CalendarTodayOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] text-gradientFirst -mt-0.5" />{' '}
+                <span>{props.datePosted}</span>
             </div>
             <div className="col-span-3 flex items-center flex gap-x-2 lg:text-[0.9rem] hidden lg:flex">
-                <Groups2OutlinedIcon className="text-[1.1rem] text-gradientFirst -mt-0.5" /> <span>{props.noApplicant}</span>
+                <Groups2OutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] text-gradientFirst -mt-0.5" />{' '}
+                <span>{props.noApplicant}</span>
             </div>
             <div className="col-span-2 flex items-center max-sm:hidden lg:text-[0.9rem]">
                 <select
@@ -144,7 +148,10 @@ const PJobs = (props: any) => {
             <div className="flex items-center pl-0 sm:pl-2 col-span-2  sm:col-span-3 lg:col-span-2 lg:text-[0.9rem] ">
                 <Popover className="w-full sm:relative focus:ring-0 focus:border-0 focus:outline-0">
                     <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0">
-                        <MoreHorizIcon className="text-[2.5rem] focus:ring-0 focus:border-0 focus:outline-0 -mt-1 cursor-pointer" />
+                        <MoreHorizIcon
+                            sx={{ fontSize: '2.5rem' }}
+                            className="text-[2.5rem] focus:ring-0 focus:border-0 focus:outline-0 -mt-1 cursor-pointer"
+                        />
                     </Popover.Button>
 
                     <Popover.Panel className="absolute -ml-28 sm:ml-0 w-[10rem] sm:w-full border-2 rounded-2xl flex w-full flex-col gap-y-3 bg-textW py-3 px-3 bg-white shadow z-10">
@@ -152,18 +159,18 @@ const PJobs = (props: any) => {
                             onClick={() => setOpenJobEdit(true)}
                             className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
                         >
-                            <BorderColorIcon className="text-[1rem]" />
+                            <BorderColorIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
                             <span>Edit Job</span>
                         </div>
                         <div
                             onClick={() => setOpenPreview(true)}
                             className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
                         >
-                            <VisibilityIcon className="text-[1rem]" />
+                            <VisibilityIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
                             <span>View Details</span>
                         </div>
                         <div className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700">
-                            <ShareOutlinedIcon className="text-[1rem]" />
+                            <ShareOutlinedIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
                             <span>Share</span>
                         </div>
                     </Popover.Panel>
@@ -200,7 +207,10 @@ const PJobs = (props: any) => {
                                     salary="Salary"
                                     money={props.salary}
                                     icon={
-                                        <AttachMoneyOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <AttachMoneyOutlined
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     }
                                 />
 
@@ -208,21 +218,30 @@ const PJobs = (props: any) => {
                                     salary="Job Type"
                                     money={props.jobType}
                                     icon={
-                                        <AccessTimeOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <AccessTimeOutlined
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     }
                                 />
                                 <Jobtype
                                     salary="Applicants"
                                     money="20"
                                     icon={
-                                        <Person2OutlinedIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <Person2OutlinedIcon
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     }
                                 />
                                 <Jobtype
                                     salary="Skill"
                                     money="Expert"
                                     icon={
-                                        <LocalFireDepartmentOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <LocalFireDepartmentOutlined
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     }
                                 />
                             </div>
