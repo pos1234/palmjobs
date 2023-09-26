@@ -600,7 +600,10 @@ const Jobs = () => {
                                                             salary="Job Type"
                                                             money={jobDetails.jobType}
                                                             icon={
-                                                                <AccessTimeOutlinedIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                                <AccessTimeOutlinedIcon
+                                                                    sx={{ fontSize: '1.125rem' }}
+                                                                    className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                                                />
                                                             }
                                                         />
                                                     )}
