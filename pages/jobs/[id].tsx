@@ -144,8 +144,9 @@ const singleJob = () => {
                             )}
                         </div>
                         <div className="col-span-2 flex gap-x-5 text-lightGrey items-center">
-                            <ShareOutlinedIcon className="text-[2rem] cursor-pointer" />
+                            <ShareOutlinedIcon sx={{ fontSize: '2rem' }} className="text-[2rem] cursor-pointer" />
                             <BookmarkBorderOutlinedIcon
+                                sx={{ fontSize: '2rem' }}
                                 /*                                         onClick={() => handleSaveJob(jobDetails.jobId)}
                                  */ className="text-[2rem] cursor-pointer"
                             />
@@ -182,7 +183,10 @@ const singleJob = () => {
                                 salary="Job Type"
                                 money={jobDetails.jobType}
                                 icon={
-                                    <AccessTimeOutlinedIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                    <AccessTimeOutlinedIcon
+                                        sx={{ fontSize: '1.125rem' }}
+                                        className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                    />
                                 }
                             />
                         )}
@@ -191,7 +195,10 @@ const singleJob = () => {
                                 salary="Posted Date"
                                 money={new Date(jobDetails.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                 icon={
-                                    <CalendarTodayOutlinedIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                    <CalendarTodayOutlinedIcon
+                                        sx={{ fontSize: '1.125rem' }}
+                                        className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                    />
                                 }
                             />
                         )}
@@ -200,7 +207,10 @@ const singleJob = () => {
                                 salary="Deadline"
                                 money={new Date(jobDetails.applicationDeadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                 icon={
-                                    <CalendarTodayOutlinedIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                    <CalendarTodayOutlinedIcon
+                                        sx={{ fontSize: '1.125rem' }}
+                                        className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                    />
                                 }
                             />
                         )}
