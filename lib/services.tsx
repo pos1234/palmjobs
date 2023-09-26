@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { Client, Account, ID, Databases, Query, Storage } from 'appwrite';
+import { toast } from 'react-toastify';
 const client = new Client();
 const databases = new Databases(client);
 const account = new Account(client);
@@ -15,6 +16,7 @@ const COMPANY_DATA = process.env.NEXT_PUBLIC_COMPANY_DATA || '';
 const SHORT_LISTED = process.env.NEXT_PUBLIC_SHORT_LISTED || '';
 const IMAGE = process.env.NEXT_PUBLIC_IMAGE || '';
 const RESUME = process.env.NEXT_PUBLIC_FILE || '';
+const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 
 client
     .setEndpoint(ENDPOINT) // Your API Endpoint
@@ -24,41 +26,56 @@ const storage = new Storage(client);
 export const googleSignIn = () => {
     account.createOAuth2Session('google', 'http://localhost:3000/users/candidate/profile', 'http://localhost:3000/account/register');
 };
-
 // Jobs page
+export const getAccount = async () => {
+    try {
+        const sessionData = await account.get();
+        const role = await getRole(sessionData.$id);
+        return sessionData;
+        // Check if user is authenticated
+    } catch (error) {
+        // Redirect to login page if not authenticated
+        return 'failed';
+    }
+};
+/* export const getLogin = () => {
+    return account.get();
+}; */
 const updateDocuments = async (id: string, datas: any) => {
-    const roles = await getRole();
-
+    const { $id } = await account.get();
+    const roles = await getRole($id);
     const promise =
         roles.documents[0].userRole == 'candidate'
-            ? databases.updateDocument(DATABASE_ID, CANDIDATE_DATA, id, datas)
-            : databases.updateDocument(DATABASE_ID, COMPANY_DATA, id, datas);
+            ? await databases.updateDocument(DATABASE_ID, CANDIDATE_DATA, id, datas)
+            : await databases.updateDocument(DATABASE_ID, COMPANY_DATA, id, datas);
 
+    return promise;
+};
+export const changePassword = (password: string, oldPassword: string) => {
+    const promise = account.updatePassword(password, oldPassword);
     return promise;
 };
 export const accountData = () => {
     const [userData, setUserData] = useState('');
-    const userAccount = account.get();
-    /*  try {
-        account.get().then((userInfo: any) => {
-            setUserData(userInfo);
-        });
+
+    try {
+        const userAccount = getAccount();
+        useEffect(() => {
+            if (userAccount) {
+                userAccount.then((userInfo: any) => {
+                    setUserData(userInfo);
+                });
+            }
+        }, []);
+        return userData;
     } catch (e) {
         console.log(e);
-    } */
-    useEffect(() => {
-        if (userAccount) {
-            userAccount.then((userInfo: any) => {
-                setUserData(userInfo);
-            });
-        }
-    }, []);
-    return userData;
+    }
 };
 export const getUserData = async () => {
     try {
-        const getData = await account.get();
-        return getData;
+        const getInfo = getAccount();
+        return getInfo;
     } catch (e) {
         console.log(e);
     }
@@ -77,22 +94,20 @@ export const addLinkedInLink = (link: string, id: string) => {
         console.log(e);
     }
 };
-export const addSocials = (
-    phone: string,
-    /* place: string, */
-    linkedIn: string,
-    githubLink: string,
-    behanceLInk: string,
-    portfolioLink: string,
-    id: string
-) => {
+export const addSocials = (linkedIn: string, githubLink: string, behanceLInk: string, portfolioLink: string, id: string) => {
     const datas = {
-        phoneNumber: phone,
-        /* address:place, */
         linkedIn: linkedIn,
         github: githubLink,
         behance: behanceLInk,
         protfolio: portfolioLink
+    };
+
+    return updateDocuments(id, datas);
+};
+export const addAddressPhone = (phone: string, place: string, id: string) => {
+    const datas = {
+        phoneNumber: phone,
+        address: place
     };
 
     return updateDocuments(id, datas);
@@ -258,15 +273,9 @@ export const deleteGithubLink = (id: string) => {
         console.log(e);
     }
 };
-export const fetchJobs = () => {
-    const [jobs, setJobs] = useState([]);
-    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS);
-    useEffect(() => {
-        promise.then((res: any) => {
-            setJobs(res.documents);
-        });
-    }, []);
-    return jobs;
+export const fetchJobs = async () => {
+    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.limit(100), Query.offset(0)]);
+    return promise;
 };
 export const checkEmailAppliation = (id: string) => {
     const [jobs, setJobs] = useState('');
@@ -279,58 +288,67 @@ export const checkEmailAppliation = (id: string) => {
     return jobs;
 };
 export const getCandidateInfo = async () => {
-    const userAccount = await account.get();
-    const results = await databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', userAccount.$id)]);
-    console.log(results);
-    return results;
+    const res: any = await getAccount();
+    if (res) {
+        const results = await databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', res.$id)]);
+        return results;
+    }
 };
 
-export const applyToJobs = (candidateId: string, jobId: string, employerId: string, letter: string, fileId?: string) => {
+export const applyToJobs = (
+    candidateId: string,
+    jobId: string,
+    employerId: string,
+    canEmail: string,
+    canPhone: string,
+    letter: string,
+    fileId?: string
+) => {
     const promise = databases.createDocument(DATABASE_ID, APPLIED_JOBS, ID.unique(), {
         jobId: jobId,
         employerId: employerId,
         candidateId: candidateId,
         coverLetter: letter,
         resumeId: fileId,
+        candidateEmail: canEmail,
+        candidatePhone: canPhone,
         appliedDate: new Date(),
         employerDelete: false,
         candidateDelete: false
     });
+
     return promise;
 };
 
 export const fetchAppliedJobIds = async () => {
-    const userAccount = await account.get();
-    const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [
-        Query.equal('candidateId', userAccount.$id),
-        Query.equal('candidateDelete', false)
-    ]);
-    return results;
+    try {
+        const userAccount = await account.get();
+        const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [
+            Query.equal('candidateId', userAccount.$id),
+            Query.equal('candidateDelete', false)
+        ]);
+        return results;
+    } catch (e) {
+        console.log(e);
+    }
 };
 /* export const fetchAppliedJobs = async () => {
     const userAccount = await account.get();
     const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('candidateId', userAccount.$id)]);
     return results;
 }; */
-export const fetchAppliedJobsData = async (ids: string[]) => {
-    const dataPromises = ids.map(async (id) => {
-        try {
-            // Fetch data from Appwrite for the given ID
-            const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, id);
-            return response;
-        } catch (error) {
-            console.error(`Error fetching data for ID ${id}:`, error);
-            return null;
-        }
-    });
-
-    // Wait for all promises to resolve and return the data
-    return Promise.all(dataPromises);
+export const fetchAppliedJobsData = async (ids: string) => {
+    const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, ids);
+    return response;
 };
 export const getAppliedJobId = async (id: string) => {
-    const userAccount = await account.get();
-    const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('jobId', id)]);
-    return results;
+    try {
+        const userAccount = await account.get();
+        const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('jobId', id)]);
+        return results;
+    } catch (e) {
+        console.log(e);
+    }
 };
 export const removeAppliedJobs = (id: string) => {
     const datas = {
@@ -341,13 +359,8 @@ export const removeAppliedJobs = (id: string) => {
     return results;
 };
 export const alreadyApplied = async (id: string, jobId: string) => {
-    /*  try { */
     const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('candidateId', id), Query.equal('jobId', jobId)]);
     return results;
-    /*  } catch (error) {
-        console.error('Error fetching documents:', error);
-        return [];
-    } */
 };
 
 export const saveJobs = (candidateId: string, jobId: string) => {
@@ -404,9 +417,9 @@ export const Register = async (email: string, password: string, userName: string
     const promise = await account.create(ID.unique(), email, password, userName);
     return promise;
 };
-export const getRole = async () => {
-    const userId = await account.get();
-    const usersRole = await databases.listDocuments(DATABASE_ID, USER_ROLE, [Query.equal('userId', userId.$id)]);
+export const getRole = async (id: string) => {
+    /* const userId = await account.get();*/
+    const usersRole = await databases.listDocuments(DATABASE_ID, USER_ROLE, [Query.equal('userId', id)]);
     return usersRole;
 };
 export const defineRole = async (id: string, role: string) => {
@@ -419,7 +432,6 @@ export const defineRole = async (id: string, role: string) => {
             Id: id
         });
     }
-
     if (role == 'employer') {
         const createId = await databases.createDocument(DATABASE_ID, COMPANY_DATA, ID.unique(), {
             employerId: id
@@ -432,7 +444,7 @@ export const defineRole = async (id: string, role: string) => {
 
 export const sendEmailVerification = async (email: string, password: string) => {
     await account.createEmailSession(email, password);
-    await account.createVerification('http://localhost:3000/account/verify');
+    await account.createVerification(`${VERIFY}/account/verify`);
 };
 
 export const verfiyAccount = (userId: string, secret: string) => {
@@ -444,7 +456,8 @@ export const verfiyAccount = (userId: string, secret: string) => {
     }
 };
 export const sendRecovery = async (email: string) => {
-    const promise = account.createRecovery(email, 'https://palmjobs.vercel.app/account/resetPassword');
+    /*     const promise = account.createRecovery(email, 'https://palmjobs.vercel.app/account/resetPassword');
+     */ const promise = account.createRecovery(email, `${VERIFY}/account/resetPassword`);
     return promise;
 };
 export const updatePassword = async (userId: string, secret: string, password: string) => {
@@ -465,42 +478,45 @@ export const signIn = async (email: string, password: string) => {
     return loggedIn;
 };
 
-export const signOut = () => {
-    const promises = account.deleteSession('current');
-    promises.then(
-        (res) => {
-            // console.log(res);
-        },
-        (err) => {
-            //console.log(err);
-        }
-    );
+export const signOut = async () => {
+    try {
+        const promises = await account.deleteSession('current');
+    } catch (e) {
+        console.log(e);
+    }
 };
 
-export const userInformation = async () => {
-    const account = new Account(client);
-    const userData = await account.get();
-    return userData;
-};
-export const getEmployerDocumentId = async () => {
-    const account = new Account(client);
-    const userId = await account.get();
-    const documentId = await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userId.$id)]);
+export const getEmployerDocumentId = async (id: string) => {
+    const documentId = await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', id)]);
     return documentId;
 };
-export const getCandidateDocumentId = async () => {
-    const account = new Account(client);
-    const userId = await account.get();
-    const documentId = await databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', userId.$id)]);
+export const getCandidateDocumentId = async (id: string) => {
+    const documentId = await databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', id)]);
     return documentId;
 };
 export const createImage = (image: any) => {
     const promise = storage.createFile(IMAGE, ID.unique(), image);
     return promise;
 };
+
 export const uploadResume = (resume: any) => {
     const promise = storage.createFile(RESUME, ID.unique(), resume);
     return promise;
+};
+export const getResumeName = async (resume: any) => {
+    const name = storage.getFile(RESUME, resume);
+    return name;
+};
+export const downLoadResume = (resume: any) => {
+    const response = storage.getFileDownload(RESUME, resume);
+    const blob = new Blob([response.href], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'downloads.pdf');
+    document.body.appendChild(link);
+    link.click();
+    /* return href; */
 };
 export const deleteResume = (fileId: string) => {
     const promise = storage.deleteFile(RESUME, fileId);
@@ -536,7 +552,6 @@ export const getProfilePicture = (id: string) => {
     const images = storage.getFileView(IMAGE, id);
     return images;
 };
-
 export const updateProfileId = (id: string, fileId: string) => {
     const datas = {
         profilePictureId: fileId
@@ -571,12 +586,21 @@ export const updateSkills = async (skillsData: string[], id: string) => {
         console.log(e);
     }
 };
-export const updateProjects = async (projectData: string, id: string) => {
-    const datas = {
-        projects: projectData
+export const updateProjects = async (name: string, url: string, desc: string, thumbId: string, id: string) => {
+    const datas = [
+        {
+            projectName: name,
+            link: url,
+            detail: desc,
+            thumbnailId: thumbId
+        }
+    ];
+    const stringData = name == '' ? null : JSON.stringify(datas);
+    const sendData = {
+        projects: stringData
     };
     try {
-        return updateDocuments(id, datas);
+        return updateDocuments(id, sendData);
     } catch (e) {
         console.log(e);
     }
@@ -613,7 +637,76 @@ export const updateEducation = async (education: string, id: string) => {
 };
 
 //EMPLOYER
-export const postJobs = async (
+export const postFirstTab = async (title: string, category: string, openRoles: string, location: string) => {
+    const userAccount = await getAccount();
+    const stat = 'Draft';
+    if (userAccount !== 'failed') {
+        const promise = databases.createDocument(DATABASE_ID, POSTED_JOBS, ID.unique(), {
+            jobTitle: title,
+            jobIndustry: category,
+            openPositions: openRoles,
+            jobLocation: location,
+            jobStatus: stat,
+            employerId: userAccount.$id
+            /*             datePosted: Date().toString()
+             */
+        });
+        return promise;
+    }
+};
+export const updateFirstTab = async (title: string, category: string, openRoles: string, location: string, id: string) => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
+            jobTitle: title,
+            jobIndustry: category,
+            openPositions: openRoles,
+            jobLocation: location
+        });
+        return promise;
+    }
+};
+export const postSecondTab = async (jobType: string, reqExp: string, skills: string, id: string) => {
+    const userAccount = await getAccount();
+    const stat = 'Draft';
+    if (userAccount !== 'failed') {
+        const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
+            jobType: jobType,
+            expreienceLevel: reqExp,
+            requiredSkills: skills
+        });
+        return promise;
+    }
+};
+export const postThirdTab = async (minSalary: string, maxSalary: string, currency: string, jobDes: string, id: string) => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
+            minSalary,
+            maxSalary,
+            currency,
+            jobDescription: jobDes
+        });
+        return promise;
+    }
+};
+export const postFourthTab = async (id: string, deadline: string, education?: string, email?: string, link?: string) => {
+    const userAccount = await getAccount();
+    const stat = 'Active';
+    if (userAccount !== 'failed') {
+        const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
+            applicationDeadline: deadline,
+            educationLevel: education,
+            emailApplication: email,
+            externalLink: link,
+            jobStatus: stat,
+            datePosted: Date().toString()
+        });
+        return promise;
+    }
+};
+/* export const postJobs = async (
+    compName: string,
     title: string,
     category: string,
     openRoles: string,
@@ -621,44 +714,71 @@ export const postJobs = async (
     jobType: string,
     reqExp: string,
     skills: string,
-    salary: string,
+    minSalary: string,
+    maxSalary: string,
+    currency: string,
     jobDes: string,
     deadline: string,
-    gender: string,
-    education: string,
+    education?: string,
     email?: string,
     link?: string
 ) => {
-    const userAccount = await account.get();
+    const userAccount = await getAccount();
     const stat = 'Active';
-    const promise = databases.createDocument(DATABASE_ID, POSTED_JOBS, ID.unique(), {
-        jobTitle: title,
-        jobIndustry: category,
-        openPositions: openRoles,
-        jobLocation: location,
-        jobType: jobType,
-        expreienceLevel: reqExp,
-        requiredSkills: skills,
-        salaryRange: salary,
-        jobDescription: jobDes,
-        applicationDeadline: deadline,
-        prefferedGender: gender,
-        educationLevel: education,
-        emailApplication: email,
-        externalLink: link,
-        jobStatus: stat,
-        employerId: userAccount.$id,
-        companyName: userAccount.name,
-        datePosted: Date().toString()
-    });
-    return promise;
+    if (userAccount !== 'failed') {
+        const promise = databases.createDocument(DATABASE_ID, POSTED_JOBS, ID.unique(), {
+            companyName: compName,
+            jobTitle: title,
+            jobIndustry: category,
+            openPositions: openRoles,
+            jobLocation: location,
+            jobType: jobType,
+            expreienceLevel: reqExp,
+            requiredSkills: skills,
+            minSalary,
+            maxSalary,
+            currency,
+            jobDescription: jobDes,
+            applicationDeadline: deadline,
+            educationLevel: education,
+            emailApplication: email,
+            externalLink: link,
+            jobStatus: stat,
+            employerId: userAccount.$id,
+            datePosted: Date().toString()
+        });
+        return promise;
+    }
+}; */
+export const NoPostedJobs = async () => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
+            Query.equal('employerId', userAccount.$id),
+            Query.notEqual('jobStatus', 'Delete')
+        ]);
+        return promise;
+    }
 };
-export const fetchPostedJobs = (id: string) => {
-    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
-        Query.equal('employerId', id),
-        Query.notEqual('jobStatus', 'Delete')
-    ]);
-    return promise;
+export const fetchPostedJobs = async () => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
+            Query.equal('employerId', userAccount.$id),
+            Query.notEqual('jobStatus', 'Draft')
+        ]);
+        return promise;
+    }
+};
+export const fetchDraftedJobs = async () => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
+            Query.equal('employerId', userAccount.$id),
+            Query.equal('jobStatus', 'Draft')
+        ]);
+        return promise;
+    }
 };
 export const fetchSinglePostedJobs = (id: string) => {
     const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('$id', id)]);
@@ -667,82 +787,129 @@ export const fetchSinglePostedJobs = (id: string) => {
 export const updateJobs = (
     id: string,
     title: string,
-    category: string,
-    openRoles: string,
+    /*     category: string,
+     */ openRoles: string,
     location: string,
     jobType: string,
-    reqExp: string,
-    skills: string,
-    salary: string,
+    /*     reqExp: string,
+     */ /*     skills: string,
+     */ salary: string,
     deadline: string,
-    gender: string,
-    education: string
+    /*     education: string
+     */ jobDes: string
 ) => {
     /*     databases.updateDocument('[DATABASE_ID]', '[COLLECTION_ID]', '[DOCUMENT_ID]');
      */ const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
         jobTitle: title,
-        jobIndustry: category,
-        openPositions: openRoles,
+        /*         jobIndustry: category,
+         */ openPositions: openRoles,
         jobLocation: location,
         jobType: jobType,
-        expreienceLevel: reqExp,
-        requiredSkills: skills,
-        salaryRange: salary,
+        /*         expreienceLevel: reqExp,
+         */ /*         requiredSkills: skills,
+         */ salaryRange: salary,
         applicationDeadline: deadline,
-        prefferedGender: gender,
-        educationLevel: education
+        jobDescription: jobDes
+        /*         educationLevel: education
+         */
     });
     return promise;
 };
-export const fetchActivePostedJobs = (id: string) => {
-    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('employerId', id), Query.equal('jobStatus', 'Active')]);
+export const fetchCandidateDetail = (id: string) => {
+    const promise = databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', id)]);
     return promise;
 };
-export const fetchPausedPostedJobs = (id: string) => {
-    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('employerId', id), Query.equal('jobStatus', 'Pause')]);
-    return promise;
+export const fetchActivePostedJobs = async () => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
+            Query.equal('employerId', userAccount.$id),
+            Query.equal('jobStatus', 'Active')
+        ]);
+        return promise;
+    }
 };
-export const fetchClosedPostedJobs = (id: string) => {
-    const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('employerId', id), Query.equal('jobStatus', 'Close')]);
-    return promise;
+export const fetchPausedPostedJobs = async () => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
+            Query.equal('employerId', userAccount.$id),
+            Query.equal('jobStatus', 'Pause')
+        ]);
+        return promise;
+    }
+};
+export const fetchClosedPostedJobs = async () => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
+            Query.equal('employerId', userAccount.$id),
+            Query.equal('jobStatus', 'Close')
+        ]);
+        return promise;
+    }
+};
+export const noApplication = async () => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('employerId', userAccount.$id)]);
+        return promise;
+    }
 };
 export const fetchAppliedCandidates = (id: string) => {
     const promise = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('employerId', id)]);
     return promise;
 };
-export const fetchAppliedCandidatesSingleJob = (empId: string, jobId: string) => {
-    const promise = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('employerId', empId), Query.equal('jobId', jobId)]);
-    return promise;
+export const fetchAppliedCandidatesSingleJob = async (jobId: string) => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [
+            Query.equal('employerId', userAccount.$id),
+            Query.equal('jobId', jobId)
+        ]);
+        return promise;
+    }
 };
-export const shortListedCandidate = (empId: string, jobId: string, candId: string) => {
-    const checker = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [
-        Query.equal('employerId', empId),
-        Query.equal('jobId', jobId),
-        Query.equal('candidateId', candId)
-    ]);
-    const promise = checker.then((res) => {
-        if (res.total == 0)
-            return databases.createDocument(DATABASE_ID, SHORT_LISTED, ID.unique(), {
-                jobId: jobId,
-                employerId: empId,
-                candidateId: candId
-            });
-        return null;
-    });
-    return promise;
+export const shortListedCandidate = async (jobId: string, candId: string) => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const checker = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [
+            Query.equal('employerId', userAccount.$id),
+            Query.equal('jobId', jobId),
+            Query.equal('candidateId', candId)
+        ]);
+        const promise = checker.then((res) => {
+            if (res.total == 0)
+                return databases.createDocument(DATABASE_ID, SHORT_LISTED, ID.unique(), {
+                    jobId: jobId,
+                    employerId: userAccount.$id,
+                    candidateId: candId
+                });
+            return null;
+        });
+        return promise;
+    }
 };
 export const deleteShortListedCandidate = (id: string) => {
     const results = databases.deleteDocument(DATABASE_ID, SHORT_LISTED, id);
     return results;
 };
-export const fetchShortListed = (empId: string, jobId: string) => {
-    const promise = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [
-        Query.equal('employerId', empId),
-        Query.equal('jobId', jobId),
-        Query.equal('interview', 'false')
-    ]);
-
-    return promise;
+export const noShortListed = async () => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [Query.equal('employerId', userAccount.$id)]);
+        return promise;
+    }
+};
+export const fetchShortListed = async (jobId: string) => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [
+            Query.equal('employerId', userAccount.$id),
+            Query.equal('jobId', jobId)
+        ]);
+        return promise;
+    }
 };
 export const fetchInterview = (empId: string, jobId: string) => {
     const promise = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [
@@ -769,5 +936,44 @@ export const updateJobStatus = (id: string, stat: string) => {
     const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, datas);
     return promise;
 };
-
+export const updateProfile = async (
+    /*  companyName: string, */
+    sector: string,
+    location: string,
+    noOfEmployee: string,
+    phoneNumber: string,
+    websiteLink: string | null | undefined,
+    description: string
+) => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const datas = {
+            /*         companyName,
+             */ sector,
+            location,
+            noOfEmployee,
+            phoneNumber,
+            websiteLink,
+            description
+        };
+        const { documents } = await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userAccount.$id)]);
+        const promise = databases.updateDocument(DATABASE_ID, COMPANY_DATA, documents[0].$id, datas);
+        return promise;
+    }
+};
+export const getProfileData = async () => {
+    const userAccount = await getAccount();
+    const promise =
+        userAccount !== 'failed' &&
+        (await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userAccount.$id)]));
+    return promise;
+};
+export const getCompanyData = (id: string) => {
+    const promise = databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', id)]);
+    return promise;
+};
+export const getEmployerPicture = async (id: string) => {
+    const promise = await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', id)]);
+    return promise;
+};
 //CANDIDATE

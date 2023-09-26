@@ -21,7 +21,7 @@ module.exports = {
                 fadedText: '#C4C4C4',
                 modalTitle: '#3B3B3B',
                 forBack: '#ffa06e0d',
-                darkBlue: '#141414B2'
+                darkBlue: '#141414B2',
                 /*                 darkBlue: '#141414'
                  */
             },
@@ -85,5 +85,5 @@ module.exports = {
             }
         }
     },
-    plugins: []
+    plugins: [require('@tailwindcss/forms')]
 };

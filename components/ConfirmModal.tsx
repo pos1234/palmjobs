@@ -17,14 +17,8 @@ const ConfirmModal = ({ children, isOpen, handleClose }: ConfirmModalProps) => {
     return (
         <ReactPortal wrapperId="react-portal-modal-container">
             <>
-                <div className="fixed flex items-center justify-center top-0 left-0 w-screen h-screen bg-neutral-800 bg-opacity-50">
+                <div className="fixed z-[2] flex items-center justify-center top-0 left-0 w-[100%] h-[100%] h-screen bg-neutral-800 bg-opacity-50">
                     {children}
-                    {/* <div className="bg-red-500">
-                        <p>hey</p>
-                        <button onClick={handleClose} className="bg-green-500">
-                            close
-                        </button>
-                    </div> */}
                 </div>
             </>
         </ReactPortal>

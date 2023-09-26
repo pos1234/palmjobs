@@ -1,6 +1,5 @@
 import {
     addSocials,
-    userInformation,
     getCandidateDocumentId,
     updateBio,
     updateSkills,
@@ -32,7 +31,6 @@ import {
     deleteSector,
     addWebsites,
     deleteWebsites,
-    postJobs,
     addBehance,
     deleteBehance,
     addPortfolio,
@@ -41,11 +39,14 @@ import {
     uploadSupportDoc,
     deleteResume,
     deleteSupportDoc,
-    insertCoverLetter
+    insertCoverLetter,
+    getAccount,
+    addAddressPhone
 } from './services';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { useUser } from './context';
+import { toast } from 'react-toastify';
 export const MiddleWare = () => {
     const router = useRouter();
     const { loading, user, role } = useUser();
@@ -53,7 +54,7 @@ export const MiddleWare = () => {
     const [description, setDescription] = useState('');
     const [skill, setSkill] = useState('');
     const [file, setFile] = useState<any>();
-    const [projectFile, setProjectFile] = useState<any>();
+    const [projectFile, setProjectFile] = useState<File | null>(null);
     const [profilePictureId, setProfilePictureId] = useState('');
     const [firstLetter, setFirstLetter] = useState('');
     const [array, setArray] = useState<string[]>([]);
@@ -83,8 +84,8 @@ export const MiddleWare = () => {
     const [phone, setPhone] = useState('');
     const [call, setCall] = useState('');
     const [location, setLocation] = useState('');
-    const [success, setSuccess] = useState('');
-    const [loadings, setLoadings] = useState(false);
+    /*     const [success, setSuccess] = useState('');
+     */ const [loadings, setLoadings] = useState(false);
     const [address, setAddress] = useState('');
     const [webLink, setWebLink] = useState('');
     const [website, setWebsite] = useState('');
@@ -102,7 +103,7 @@ export const MiddleWare = () => {
     const [inputResume, setInputResume] = useState(false);
     const [inputSupportDoc, setInputSupportDoc] = useState(false);
     const [coverLetter, setCoverLetter] = useState('');
-
+    const [openProjectModal, setOpenProjectModal] = useState(false);
     const [education, setEducation] = useState({
         educationLevel: '',
         fieldStudy: '',
@@ -122,9 +123,9 @@ export const MiddleWare = () => {
         thumbnailId: ''
     });
     const [editedProject, setEditedProject] = useState({
-        name: '',
-        description: '',
-        url: '',
+        projectName: '',
+        detail: '',
+        link: '',
         thumbnailId: ''
     });
     const [certificateData, setCertificateData] = useState({
@@ -161,65 +162,63 @@ export const MiddleWare = () => {
         if (str != '') return JSON.parse(str);
         else return '';
     };
-    const [userRoles, setUserRoles] = useState('');
+
+    const getDatas = async () => {
+        /* const usersRole = await assignRole();
+         console.log(usersRole); */
+        const userId = await getAccount();
+        if (userId !== 'failed') {
+            setFirstLetter(userId.name.charAt(0));
+            const userRole = await getRole(userId.$id);
+            if (userRole) {
+                if (userRole.documents[0].userRole == 'candidate') {
+                    const docId = await getCandidateDocumentId(userId.$id);
+                    const certificate = convertToArray(docId.documents[0].certificates) || [];
+                    const projects = convertToArray(docId.documents[0].projects) || [];
+                    const workhistory = convertToArray(docId.documents[0].workHistory) || [];
+                    const education = convertToArray(docId.documents[0].educations) || [];
+                    setWorkHistoryArray(workhistory || '');
+                    setCertificateArray(certificate || '');
+                    setProjectsArray(projects || '');
+                    setEducationArray(education || '');
+                    setDocumentId(docId.documents[0].$id || '');
+                    setHeadline(docId.documents[0].bioHeadline || '');
+                    setDescription(docId.documents[0].bioDescription || '');
+                    setArray(docId.documents[0].skills || '');
+                    setProfilePictureId(docId.documents[0].profilePictureId || '');
+                    setLinked(docId.documents[0].linkedIn || '');
+                    setBehan(docId.documents[0].behance || '');
+                    setPortfolio(docId.documents[0].protfolio || '');
+                    setCall(docId.documents[0].phoneNumber || '');
+                    setLocate(docId.documents[0].address || '');
+                    setGithubLink(docId.documents[0].github || '');
+                    setSupportDocumentId(docId.documents[0].supportingDocumentId || '');
+                    setCoverLetter(docId.documents[0].coverLetter || '');
+                    setResumeId(docId.documents[0].resumeId || '');
+                }
+                if (userRole.documents[0].userRole == 'employer') {
+                    const docId = await getEmployerDocumentId(userId.$id);
+                    setDocumentId(docId.documents[0].$id);
+                    setProfilePictureId(docId.documents[0].profilePictureId || '');
+                    setPhone(docId.documents[0].phoneNumber || '');
+                    setLocation(docId.documents[0].location || '');
+                    setEmployee(docId.documents[0].noOfEmployee || '');
+                    setSectorValue(docId.documents[0].sector || '');
+                    setWebLink(docId.documents[0].websiteLink || '');
+                }
+            }
+        }
+    };
     useEffect(() => {
-        const firstNameLetter = userInformation();
-        firstNameLetter.then((response) => {
-            const firstName = response.name;
-            setFirstLetter(firstName.charAt(0));
-        });
-        const docId = userRoles == 'candidate' ? getCandidateDocumentId() : getEmployerDocumentId();
-        const userRole = getRole();
-        userRole.then((roles) => {
-            setUserRoles(roles.documents[0].userRole);
-        });
-        docId.then((res: any) => {
-            if (userRoles == 'candidate') {
-                const certificate = convertToArray(res.documents[0].certificates) || [];
-                const projects = convertToArray(res.documents[0].projects) || [];
-                const workhistory = convertToArray(res.documents[0].workHistory) || [];
-                const education = convertToArray(res.documents[0].educations) || [];
-                setWorkHistoryArray(workhistory || '');
-                setCertificateArray(certificate || '');
-                setProjectsArray(projects || '');
-                setEducationArray(education || '');
-                setDocumentId(res.documents[0].$id || '');
-                setHeadline(res.documents[0].bioHeadline || '');
-                setDescription(res.documents[0].bioDescription || '');
-                setArray(res.documents[0].skills || '');
-                setProfilePictureId(res.documents[0].profilePictureId || '');
-                setLinked(res.documents[0].linkedIn || '');
-                setBehan(res.documents[0].behance || '');
-                setPortfolio(res.documents[0].portfolio || '');
-                setCall(res.documents[0].phoneNumber || '');
-                /*                 setLocate(res.documents[0].address || '');
-                 */ setGithubLink(res.documents[0].github || '');
-                setResumeId(res.documents[0].resumeId || '');
-                setSupportDocumentId(res.documents[0].supportingDocumentId || '');
-                setCoverLetter(res.documents[0].coverLetter || '');
-            }
-            if (userRoles == 'employer') {
-                // console.log(res.documents[0].$id);
-
-                setDocumentId(res.documents[0].$id);
-                setProfilePictureId(res.documents[0].profilePictureId || '');
-                setPhone(res.documents[0].phoneNumber || '');
-                setLocation(res.documents[0].location || '');
-                setEmployee(res.documents[0].noOfEmployee || '');
-                setSectorValue(res.documents[0].sector || '');
-                setWebLink(res.documents[0].websiteLink || '');
-            }
-        });
+        getDatas();
         const { href } = getProfilePicture(profilePictureId);
-        console.log(profilePictureId);
-
         profilePictureId && setImage(href);
     }, [user]);
     useEffect(() => {
         const { href } = getProfilePicture(profilePictureId);
-        console.log(href);
         profilePictureId && setImage(href);
     }, [profilePictureId]);
+
     const handleBio = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadings(true);
@@ -228,14 +227,15 @@ export const MiddleWare = () => {
         response
             .then((res) => {
                 setLoadings(false);
-                setSuccess('success');
+                toast.success('Successfully Saved');
             })
             .catch((error) => {
                 console.log(error);
-                setSuccess('failed');
+                toast.error('Bio Not Saved');
                 setLoadings(false);
             });
     };
+
     /*  const addSkills = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         array.push(skill);
@@ -274,9 +274,7 @@ export const MiddleWare = () => {
         resultProfile.then((res: any) => {
             setProfilePictureId(res.$id);
             const response = updateProfileId(documentId, res.$id);
-
             const { href } = res && getProfilePicture(res.$id);
-            console.log(href);
             href && setImage(href);
         });
     };
@@ -296,7 +294,8 @@ export const MiddleWare = () => {
         result
             .then((res: any) => {
                 setLoadings(false);
-                setSuccess('success');
+                toast.success('Successfully Added Certificate');
+
                 const certificate = JSON.parse(res.certificates);
                 setCertificateArray(certificate);
                 setCertificateData({
@@ -307,101 +306,123 @@ export const MiddleWare = () => {
             })
             .catch((error) => {
                 console.log(error);
-                setSuccess('failed');
+                toast.error('Certificate Not Added');
                 setLoadings(false);
             });
     };
-
     const editCertificate: any = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadings(true);
         certificateArray[certificateIndex] = editedCertificate;
-
         const response = updateCertificates(convertToString(certificateArray), documentId);
         response
             .then((res) => {
                 setLoadings(false);
-                setSuccess('success');
+                toast.success('Certificate Saved Successfully');
             })
             .catch((error) => {
                 console.log(error);
-                setSuccess('failed');
+                toast.error('Certificate Not Saved ');
                 setLoadings(false);
             });
         /* setCertificateEdit(false); */
     };
     const deleteCertificate: any = (index: number) => {
         /*         e.preventDefault();
-         */ certificateArray.splice(certificateIndex, 1);
-        updateCertificates(convertToString(certificateArray), documentId);
+         */ certificateArray.splice(index, 1);
+        const result = updateCertificates(convertToString(certificateArray), documentId);
+        result
+            .then((res) => {
+                toast.success('Successfully Deleted Certificate');
+            })
+            .catch((error) => {
+                console.log(error);
+                toast.error('Certificate Not Deleted');
+            });
         setCertificateEdit(false);
     };
-    const updatedProjectData = (projectData: any, thumbnailId: any) => {
-        const updatedProjectData = {
-            ...projectData,
-            thumbnailId
-        };
-        return updatedProjectData;
-    };
-    const addProject = (e: React.FormEvent<HTMLElement>) => {
+
+    const addProject = async (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadings(true);
         if (projectFile) {
-            const resultProfile = createImage(projectFile[0]);
-            resultProfile
-                .then((res) => {
-                    /*                 const { href } = res && getProfilePicture(res.$id);
-                     */ const toDate = updatedProjectData(projectData, res.$id);
-                    projectsArray.push(toDate);
-                    const result = updateProjects(convertToString(projectsArray), documentId);
-                    result.then((res: any) => {
-                        setLoadings(false);
-                        setSuccess('success');
-                        const project = JSON.parse(res.projects);
-                        setProjectsArray(project);
-                        setProjectData({
-                            name: '',
-                            description: '',
-                            url: '',
-                            thumbnailId: ''
-                        });
-                        setProjectFile(null);
+            const { $id } = await createImage(projectFile);
+            const result = updateProjects(projectData.name, projectData.url, projectData.description, $id, documentId);
+            result
+                .then((res: any) => {
+                    setLoadings(false);
+                    setOpenProjectModal(false);
+                    toast.success('Project Added Successfully');
+                    const project = JSON.parse(res.projects);
+                    setProjectsArray(project);
+                    setProjectData({
+                        name: '',
+                        description: '',
+                        url: '',
+                        thumbnailId: ''
+                    });
+                    setProjectFile(null);
+                })
+                .catch((error: any) => {
+                    console.log(error);
+                    toast.error('Project Not Added');
+                    setLoadings(false);
+                });
+        }
+        if (!projectFile) {
+            const result = updateProjects(projectData.name, projectData.url, projectData.description, '', documentId);
+            result
+                .then((res: any) => {
+                    setLoadings(false);
+                    setOpenProjectModal(false);
+                    console.log('hey');
+
+                    toast.success('Project Added Successfully');
+                    const project = JSON.parse(res.projects);
+                    setProjectsArray(project);
+                    setProjectData({
+                        name: '',
+                        description: '',
+                        url: '',
+                        thumbnailId: ''
                     });
                 })
                 .catch((error) => {
                     console.log(error);
-                    setSuccess('failed');
+                    toast.error('Project Not Added');
                     setLoadings(false);
                 });
-        } else {
-            projectsArray.push(projectData);
-            const result = updateProjects(convertToString(projectsArray), documentId);
-            result.then((res: any) => {
-                const project = JSON.parse(res.projects);
-                setProjectsArray(project);
-                setProjectData({
-                    name: '',
-                    description: '',
-                    url: '',
-                    thumbnailId: ''
-                });
-            });
         }
     };
-
     const editProject: any = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-        projectsArray[projectIndex] = editedProject;
-        updateProjects(convertToString(projectsArray), documentId);
-        setProjectEdit(false);
+        setLoadings(true);
+        updateProjects(editedProject.projectName, editedProject.link, editedProject.detail, editedProject.thumbnailId, documentId)
+            .then((res) => {
+                setLoadings(false);
+                projectsArray.pop();
+                projectsArray.push(editedProject);
+                toast.success('Successfully Saved Project');
+            })
+
+            .catch((error) => {
+                toast.error('Project Not Saved');
+                setLoadings(false);
+            });
     };
-    const deleteProject = (index:number) => {
-      projectsArray.splice(index, 1);
-      console.log(projectsArray[index]);
-        
-        updateProjects(convertToString(projectsArray), documentId);
-/*         setProjectEdit(false);
- */    };
+    const deleteProject = () => {
+        updateProjects('', '', '', '', documentId)
+            .then((res) => {
+                setProjectsArray([]);
+                toast.success('Successfully Removed Project');
+            })
+
+            .catch((error) => {
+                toast.error('Project Not Removed');
+            });
+        /*         setProjectEdit(false);
+         */
+    };
     const addWorkHistory: any = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadings(true);
@@ -417,13 +438,13 @@ export const MiddleWare = () => {
                     endDate: '',
                     jobDescription: ''
                 });
-                setSuccess('success');
+                toast.success('Work Hitory Added Successfully');
                 const work = JSON.parse(res.workHistory);
                 setWorkHistoryArray(work);
             })
             .catch((error) => {
                 console.log(error);
-                setSuccess('failed');
+                toast.error('Work Hitory Not Added');
                 setLoadings(false);
             });
     };
@@ -435,11 +456,11 @@ export const MiddleWare = () => {
         response
             .then((res) => {
                 setLoadings(false);
-                setSuccess('success');
+                toast.success('Work Hitory Saved Successfully');
             })
             .catch((error) => {
                 console.log(error);
-                setSuccess('failed');
+                toast.error('Work Hitory Not Saved');
                 setLoadings(false);
             });
         /*         setWorkEdit(false);
@@ -456,12 +477,11 @@ export const MiddleWare = () => {
         e.preventDefault();
         educationArray.push(education);
         setLoadings(true);
-
         const result = updateEducation(convertToString(educationArray), documentId);
         result
             .then((res: any) => {
                 setLoadings(false);
-                setSuccess('success');
+                toast.success('Education Added Successfully');
                 const educate = JSON.parse(res.educations);
                 setEducationArray(educate);
                 setEducation({
@@ -473,7 +493,7 @@ export const MiddleWare = () => {
             })
             .catch((error) => {
                 console.log(error);
-                setSuccess('failed');
+                toast.error('Education Not Added');
                 setLoadings(false);
             });
     };
@@ -485,18 +505,24 @@ export const MiddleWare = () => {
         result
             .then((res: any) => {
                 setLoadings(false);
-                setSuccess('success');
+                toast.success('Education Saved Successfully');
             })
             .catch((error) => {
                 console.log(error);
-                setSuccess('failed');
+                toast.error('Education Not Saved');
                 setLoadings(false);
             });
         /* setEditEducation(false); */
     };
     const deleteEducation = (index: number) => {
         educationArray.splice(index, 1);
-        updateEducation(convertToString(educationArray), documentId);
+        updateEducation(convertToString(educationArray), documentId)
+            .then((res) => {
+                toast.success('Successfully Removed Education');
+            })
+            .catch((error) => {
+                toast.error('Education Not Removed');
+            });
         setEditEducation(false);
     };
     const changeUserName = (e: React.FormEvent<HTMLElement>) => {
@@ -551,19 +577,29 @@ export const MiddleWare = () => {
                 router.reload();
             });
     };
+    const addPhoneAddress = () => {
+        const updateLink = addAddressPhone(call, locate, documentId);
+        updateLink
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
     const addSocialLink = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadings(true);
-        const updateLink = addSocials(call, /* locate, */ linked, githubLink, behan, portfolio, documentId);
+        const updateLink = addSocials(linked, githubLink, behan, portfolio, documentId);
 
         updateLink
             .then((res) => {
                 setLoadings(false);
-                setSuccess('success');
+                toast.success('Saved Successfully');
             })
             .catch((error) => {
                 console.log(error);
-                setSuccess('failed');
+                toast.error('Not Saved Successfully');
                 setLoadings(false);
             });
     };
@@ -682,20 +718,46 @@ export const MiddleWare = () => {
     };
     const addResume = (file: any) => {
         const resultResume = uploadResume(file);
-        resultResume.then((res: any) => {
-            const response = updateResumeId(documentId, res.$id);
-        });
+        resultResume
+            .then((res: any) => {
+                setResumeId(res.$id);
+                const response = updateResumeId(documentId, res.$id);
+                response
+                    .then((rem) => {
+                        toast.success('Resume Added Successfully');
+                    })
+                    .catch((error) => {
+                        toast.error('Resume Not Added');
+                        console.log(error);
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
     const updateResume = (file: any) => {
         const results = deleteResume(resumeId);
         console.log(resumeId);
 
         const resultResume = uploadResume(file);
-        resultResume.then((res: any) => {
-            setResumeId(res.$id);
-            const response = updateResumeId(documentId, res.$id);
-        });
+        resultResume
+            .then((res: any) => {
+                setResumeId(res.$id);
+                const response = updateResumeId(documentId, res.$id);
+                response
+                    .then((rem) => {
+                        toast.success('Replaced Successfully');
+                    })
+                    .catch((error) => {
+                        toast.error('Resume Not Replaced');
+                        console.log(error);
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
+
     const addSupportDocument = (file: any) => {
         const resultResume = uploadResume(file);
         resultResume.then((res: any) => {
@@ -723,10 +785,13 @@ export const MiddleWare = () => {
         }
     }; */
     return {
+        addPhoneAddress,
         locate,
         setLocate,
-        success,
-        setSuccess,
+        openProjectModal,
+        setOpenProjectModal,
+        /* success,
+        setSuccess, */
         loadings,
         setLoadings,
         addSocialLink,
@@ -887,124 +952,4 @@ export const MiddleWare = () => {
     };
 };
 
-export const PostJob = () => {
-    const [compName, setCompName] = useState('');
-    const [jobTitle, setJobTitle] = useState('');
-    const [category, setCategory] = useState('');
-    const [openRoles, setOpenRoles] = useState('');
-    const [location, setLocation] = useState('');
-    const [jobType, setJobType] = useState('');
-    const [reqExp, setReqExp] = useState('');
-    const [skillsArray, setSkillsArray] = useState<string[]>([]);
-    const [skills, setSkills] = useState('');
-    const [salary, setSalary] = useState('');
-    const [jobDes, setJobDes] = useState('');
-    const [deadline, setDeadline] = useState('');
-    const [gender, setGender] = useState('');
-    const [educationLevel, setEducationLevel] = useState('');
-    const [email, setEmail] = useState('');
-    const [externalLink, setExternalLink] = useState('');
-    const addSuggestedSkill = async (suggesteSkill: string) => {
-        skillsArray.push(suggesteSkill);
-        setSkills('');
-        console.log(skillsArray);
-    };
-    const deleteSkill = (index: number) => {
-        const newArray = skillsArray.filter((item, i) => i !== index);
-        setSkillsArray(newArray);
-        /*         updateSkills(newArray, documentId);
-         */
-    };
-    const postAjob = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        setSkills(JSON.stringify(skillsArray));
-        /*   console.log(
-            jobTitle,
-            category,
-            openRoles,
-            location,
-            jobType,
-            reqExp,
-            skills,
-            salary,
-            jobDes,
-            deadline,
-            gender,
-            educationLevel,
-            email,
-            externalLink
-        ); */
 
-        const abebe = postJobs(
-            jobTitle,
-            category,
-            openRoles,
-            location,
-            jobType,
-            reqExp,
-            skills,
-            salary,
-            jobDes,
-            deadline,
-            gender,
-            educationLevel,
-            email,
-            externalLink
-        );
-        abebe.then((res) => {
-            setCompName('');
-            setJobTitle('');
-            setCategory('');
-            setOpenRoles('');
-            setLocation('');
-            setJobType('');
-            setReqExp('');
-            setSkillsArray([]);
-            setSkills('');
-            setSalary('');
-            setJobDes('');
-            setDeadline('');
-            setGender('');
-            setEducationLevel('');
-            setEmail('');
-            setExternalLink('');
-        });
-    };
-    return {
-        compName,
-        setCompName,
-        jobTitle,
-        setJobTitle,
-        category,
-        setCategory,
-        openRoles,
-        setOpenRoles,
-        location,
-        setLocation,
-        jobType,
-        setJobType,
-        reqExp,
-        setReqExp,
-        skills,
-        setSkills,
-        skillsArray,
-        setSkillsArray,
-        addSuggestedSkill,
-        deleteSkill,
-        salary,
-        setSalary,
-        jobDes,
-        setJobDes,
-        deadline,
-        setDeadline,
-        gender,
-        setGender,
-        educationLevel,
-        setEducationLevel,
-        email,
-        setEmail,
-        externalLink,
-        setExternalLink,
-        postAjob
-    };
-};
