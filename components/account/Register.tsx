@@ -11,6 +11,7 @@ const RegisterComponent = (props: any) => {
     const [lastNameError, setLastNameError] = useState('');
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [retypedPassword, setRetypedPassword] = useState('');
     const [register, setRegister] = useState({
         email: '',
         password: '',
@@ -35,6 +36,10 @@ const RegisterComponent = (props: any) => {
             setEmailError('please provide email');
         } else if (register.password == '') {
             setPasswordError('please provide password');
+        } else if (retypedPassword == '') {
+            setPasswordError('please Confirm password');
+        } else if (register.password !== retypedPassword) {
+            setPasswordError("password doesn't match");
         } else if (register.password.length < 8) {
             setPasswordError('password must be more than 8 charachters');
         } else {
@@ -83,7 +88,8 @@ const RegisterComponent = (props: any) => {
         <form onSubmit={handleRegister} className="w-full pl-5 grid grid-cols-12 text-left pr-2 md:pr-0 gap-x-5">
             <div className="col-span-12 sm:col-span-6">
                 <p className="col-span-6 font-thW text-smS mt-5 mb-2 leading-shL">First name</p>
-                <input value={register.firstName}
+                <input
+                    value={register.firstName}
                     onChange={(e: React.FormEvent<HTMLInputElement>) => setRegister({ ...register, firstName: e.currentTarget.value })}
                     type="text"
                     placeholder="Enter First Name"
@@ -99,7 +105,8 @@ const RegisterComponent = (props: any) => {
             </div>
             <div className="col-span-12 sm:col-span-6">
                 <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL sm:col-span-6">Last name</p>
-                <input value={register.lastName}
+                <input
+                    value={register.lastName}
                     onChange={(e: React.FormEvent<HTMLInputElement>) => setRegister({ ...register, lastName: e.currentTarget.value })}
                     type="text"
                     placeholder="Enter Last Name"
@@ -112,7 +119,8 @@ const RegisterComponent = (props: any) => {
                 {lastNameError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{lastNameError}</p>}
             </div>
             <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL">Email Address</p>
-            <input value={register.email}
+            <input
+                value={register.email}
                 onChange={(e) => setRegister({ ...register, email: e.currentTarget.value })}
                 type="text"
                 placeholder="Enter your Email"
@@ -123,24 +131,40 @@ const RegisterComponent = (props: any) => {
                 }
             />
             {emailError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{emailError}</p>}
-            <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL">Password</p>
-            <div className="col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 text-addS">
-                <input value={register.password}
-                    onChange={(e: React.FormEvent<HTMLInputElement>) => setRegister({ ...register, password: e.currentTarget.value })}
+            <div className="col-span-12 sm:col-span-6 flex flex-col">
+                <p className="col-span-6 font-thW text-smS mt-5 mb-2 leading-shL">Password</p>
+                <div className="flex ">
+                    <input
+                        value={register.password}
+                        onChange={(e: React.FormEvent<HTMLInputElement>) => setRegister({ ...register, password: e.currentTarget.value })}
+                        type={visible ? 'text' : 'password'}
+                        placeholder="Enter Your Password"
+                        className={
+                            passwordError
+                                ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
+                                : 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                        }
+                    />
+                    <span onClick={() => setVisible(!visible)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
+                        {visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    </span>
+                </div>
+            </div>
+            <div className="col-span-12 sm:col-span-6">
+                <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL sm:col-span-6">Confirm Password</p>
+                <input
+                    value={retypedPassword}
+                    onChange={(e: React.FormEvent<HTMLInputElement>) => setRetypedPassword(e.currentTarget.value)}
                     type={visible ? 'text' : 'password'}
-                    placeholder="Enter Your Password"
+                    placeholder="Retype password"
                     className={
                         passwordError
-                            ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                            : 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                            ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
+                            : 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
                     }
                 />
-                <span onClick={() => setVisible(!visible)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
-                    {visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                </span>
             </div>
             {passwordError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{passwordError}</p>}
-
             <div className="col-span-12 mt-5">
                 <input type="checkbox" placeholder="Project Name" className="pl-5 text-addS" />
                 <span className="font-addW text-addS leading-addL pl-2">I agree to the Terms of Service and Privacy Policy</span>

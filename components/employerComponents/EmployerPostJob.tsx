@@ -107,7 +107,7 @@ const Jobtype = (props: any) => {
     );
 };
 
-const PostAJob = () => {
+const PostAJob = (props: any) => {
     const router = useRouter();
     const loadingIn = '/images/loading.svg';
     const profile = '/images/profile.svg';
@@ -316,7 +316,6 @@ const PostAJob = () => {
     };
     const handleFirstSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-
         if (first && !second && !third && !fourth) {
             setJobTitleError('');
             setCategoryError('');
@@ -495,6 +494,7 @@ const PostAJob = () => {
                 });
         }
     }; */
+
     const handleJobSelection = async (id: string) => {
         setPostingJobId(id);
         fetchSinglePostedJobs(id).then((res: any) => {
@@ -543,6 +543,18 @@ const PostAJob = () => {
             }
         });
     };
+    useEffect(() => {
+        if (props.editedJobId) {
+            if (chooseJob && !first && !second && !third && !fourth) {
+                setFourth(false);
+                setThird(false);
+                setSecond(false);
+                setFirst(true);
+                setChooseJob(false);
+            }
+            handleJobSelection(props.editedJobId);
+        }
+    }, [props.editedJobId]);
     const getPosted = async () => {
         const posted = await fetchPostedJobs();
         if (posted && posted.documents) {
@@ -561,8 +573,15 @@ const PostAJob = () => {
     };
     const getProfile = async () => {
         getProfileData().then((res: any) => {
-            if (res.documents[0].location == '' || res.documents[0].phoneNumber == '' || res.documents[0].description == '') {
-                setProfileFilled(true);
+            if (res && res.documents[0]) {
+                if (
+                    res.documents[0].location == '' ||
+                    res.documents[0].phoneNumber == '' ||
+                    res.documents[0].description == '' ||
+                    res.documents[0].companyName == ''
+                ) {
+                    setProfileFilled(true);
+                }
             }
         });
     };
@@ -580,6 +599,9 @@ const PostAJob = () => {
     useEffect(() => {
         initialData();
     }, []);
+    const todaysDate = new Date();
+    const maxDate = new Date();
+    maxDate.setMonth(today.getMonth() + 1);
     return (
         <div className="pt-5 pl-10 pb-10 bg-textW min-h-screen xl:pr-28 xl:px-20">
             {!chooseJob && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
@@ -648,22 +670,6 @@ const PostAJob = () => {
                                 })}
                         </select>
                     )}
-                    {/* {selectedRadio == 'draft' && (
-                        <select
-                            value={category}
-                            style={{ maxHeight: '200px' }}
-                            onChange={(e) => setCategory(e.currentTarget.value)}
-                            className="form-select w-96 h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0"
-                        >
-                            <option value="Agriculture">Draft</option>
-                            <option value="Construction">Construction</option>
-                            <option value="Education">Education</option>
-                            <option value="Energy">Energy</option>
-                            <option value="Finance & Insurance">Finance & Insurance</option>
-                            <option value="HealthCare">HealthCare</option>
-                            <option value="Hospital and Tourism">Hospital and Tourism</option>
-                        </select>
-                    )} */}
                 </div>
             </div>
             <form
@@ -825,7 +831,17 @@ const PostAJob = () => {
                 <RequiredTextLabel text="Required Skills ?" />
                 <Skills array={skillArray} setArray={setSkillArray} />
                 {skillError && <p className="text-red-500 text-[13px]">{skillError}</p>}
-                <div className="flex pt-10 justify-end">
+                <div className="flex pt-10 justify-between">
+                    <div
+                        onClick={handleBack}
+                        className={
+                            second || third || fourth
+                                ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12'
+                                : 'opacity-0'
+                        }
+                    >
+                        <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
+                    </div>
                     {loading && (
                         <img
                             src={loadingIn}
@@ -864,7 +880,7 @@ const PostAJob = () => {
                                 <option value="usd">USD</option>
                                 <option value="euro">EURO</option>
                                 <option value="gpb">GBP</option>
-                                <option value="rnp">RNP</option>
+                                <option value="rnp">RMB</option>
                             </select>
                             <input
                                 type="number"
@@ -896,7 +912,17 @@ const PostAJob = () => {
                     </>
                 )}
                 {profileFilled && <EmployerProfile setFilled={setProfileFilled} />}
-                <div className="flex pt-10 justify-end">
+                <div className="flex pt-10 justify-between">
+                    <div
+                        onClick={handleBack}
+                        className={
+                            second || third || fourth
+                                ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12'
+                                : 'opacity-0'
+                        }
+                    >
+                        <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
+                    </div>
                     {loading && (
                         <img
                             src={loadingIn}
@@ -985,12 +1011,24 @@ const PostAJob = () => {
                     <input
                         value={deadline}
                         type="date"
+                        min={todaysDate.toISOString().split('T')[0]}
+                        max={maxDate.toISOString().split('T')[0]}
                         onChange={(e) => setDeadline(e.currentTarget.value)}
                         className="rounded-full w-96 border-stone-300 px-28 py-3 cursor-pointer focus:border-orange-500 focus:ring-0"
                     />
                 </div>
 
-                <div className="flex pt-10 justify-end">
+                <div className="flex pt-10">
+                    <div
+                        onClick={handleBack}
+                        className={
+                            second || third || fourth
+                                ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12'
+                                : 'opacity-0'
+                        }
+                    >
+                        <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
+                    </div>
                     <div
                         onClick={() => setOpenPreview(true)}
                         className={
@@ -1019,8 +1057,8 @@ const PostAJob = () => {
                     )}
                 </div>
             </form>
-            <div className="flex justify-between pt-5 self-end">
-                <div
+            <div className="flex justify-end pt-5">
+                {/* <div
                     onClick={handleBack}
                     className={
                         second || third || fourth
@@ -1029,7 +1067,7 @@ const PostAJob = () => {
                     }
                 >
                     <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
-                </div>
+                </div> */}
                 {/* <div
                     onClick={() => setOpenPreview(true)}
                     className={
@@ -1109,10 +1147,16 @@ const PostAJob = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 grid grid-cols-12 bg-forBack gap-x-1 gap-y-2 md:gap-x-2 md:p-2 xl:mx-2">
-                                {salary !== '' && (
+                                {(minSalary !== '' || maxSalary !== '') && (
                                     <Jobtype
                                         salary="Salary"
-                                        money={salary}
+                                        money={
+                                            minSalary == '' && maxSalary !== ''
+                                                ? maxSalary
+                                                : minSalary !== '' && maxSalary == ''
+                                                ? minSalary
+                                                : minSalary + '-' + maxSalary
+                                        }
                                         icon={
                                             currency == 'euro' ? (
                                                 <EuroIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
@@ -1123,12 +1167,11 @@ const PostAJob = () => {
                                             ) : currency == 'rnp' ? (
                                                 <CurrencyRupeeIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
                                             ) : (
-                                                <p>ETB</p>
+                                                <span className="mr-2">ETB</span>
                                             )
                                         }
                                     />
                                 )}
-
                                 <Jobtype
                                     salary="Job Type"
                                     money={worktype}
@@ -1160,7 +1203,7 @@ const PostAJob = () => {
                                     }
                                     onClick={() => setCompany(false)}
                                 >
-                                    Description
+                                    Job Description
                                 </div>
 
                                 <div
@@ -1176,7 +1219,8 @@ const PostAJob = () => {
                             </div>
                             {!company && (
                                 <div className="col-span-12 mx-3">
-                                    <p className="font-thW text-frhS">Job Description</p>
+                                    {/*                                     <p className="font-thW text-frhS">Job Description</p>
+                                     */}{' '}
                                     <div
                                         className="text-sm text-fadedText max-h-20 overflow-y-auto hideScrollBar"
                                         dangerouslySetInnerHTML={{ __html: jobDesc }}

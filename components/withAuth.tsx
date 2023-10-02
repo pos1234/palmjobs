@@ -20,9 +20,7 @@ export function candidateAuth(WrappedComponent: React.ComponentType<any>) {
                 router.push('/account');
             }
         };
-
         checkAuth();
-
         return <WrappedComponent {...props} />;
     };
 }

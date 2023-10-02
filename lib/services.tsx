@@ -274,7 +274,11 @@ export const deleteGithubLink = (id: string) => {
     }
 };
 export const fetchJobs = async () => {
-    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.limit(100), Query.offset(0)]);
+    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
+        Query.limit(100),
+        Query.offset(0),
+        Query.equal('jobStatus', 'Active')
+    ]);
     return promise;
 };
 export const checkEmailAppliation = (id: string) => {
@@ -780,6 +784,10 @@ export const fetchDraftedJobs = async () => {
         return promise;
     }
 };
+export const deleteDraftedJobs = async (id: string) => {
+    const promise = databases.deleteDocument(DATABASE_ID, POSTED_JOBS, id);
+    return promise;
+};
 export const fetchSinglePostedJobs = (id: string) => {
     const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('$id', id)]);
     return promise;
@@ -829,16 +837,16 @@ export const fetchActivePostedJobs = async () => {
         return promise;
     }
 };
-export const fetchPausedPostedJobs = async () => {
+/* export const fetchDraftedJobs = async () => {
     const userAccount = await getAccount();
     if (userAccount !== 'failed') {
         const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
             Query.equal('employerId', userAccount.$id),
-            Query.equal('jobStatus', 'Pause')
+            Query.equal('jobStatus', 'Draft')
         ]);
         return promise;
     }
-};
+}; */
 export const fetchClosedPostedJobs = async () => {
     const userAccount = await getAccount();
     if (userAccount !== 'failed') {
@@ -937,7 +945,7 @@ export const updateJobStatus = (id: string, stat: string) => {
     return promise;
 };
 export const updateProfile = async (
-    /*  companyName: string, */
+    companyName: string,
     sector: string,
     location: string,
     noOfEmployee: string,
@@ -948,8 +956,8 @@ export const updateProfile = async (
     const userAccount = await getAccount();
     if (userAccount !== 'failed') {
         const datas = {
-            /*         companyName,
-             */ sector,
+            companyName,
+            sector,
             location,
             noOfEmployee,
             phoneNumber,

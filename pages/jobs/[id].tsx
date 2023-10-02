@@ -160,7 +160,7 @@ const singleJob = () => {
                                     !jobDetails.minSalary && jobDetails.maxSalary
                                         ? jobDetails.maxSalary
                                         : jobDetails.minSalary && !jobDetails.maxSalary
-                                        ? jobDetails.maxSalary
+                                        ? jobDetails.minSalary
                                         : jobDetails.minSalary + '-' + jobDetails.maxSalary
                                 }
                                 icon={
@@ -173,7 +173,7 @@ const singleJob = () => {
                                     ) : jobDetails.currency == 'rnp' ? (
                                         <CurrencyRupeeIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
                                     ) : (
-                                        <p>ETB</p>
+                                        <span className="mr-2">ETB</span>
                                     )
                                 }
                             />
@@ -224,7 +224,7 @@ const singleJob = () => {
                             }
                             onClick={() => setCompany(false)}
                         >
-                            Description
+                            Job Description
                         </div>
 
                         <div
@@ -242,7 +242,8 @@ const singleJob = () => {
                     </div>
                     {!company && (
                         <div className="col-span-12 mx-3 flex flex-col">
-                            <p className="font-thW text-frhS">Job Description</p>
+                            {/*                             <p className="font-thW text-frhS">Job Description</p>
+                             */}
                             <div
                                 dangerouslySetInnerHTML={{ __html: jobDetails.jobDescription }}
                                 className="text-midRS text-fadedText min-h-[200px] max-h-96 mb-3 overflow-y-auto hideScrollBar"

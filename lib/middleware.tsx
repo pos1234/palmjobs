@@ -104,6 +104,7 @@ export const MiddleWare = () => {
     const [inputSupportDoc, setInputSupportDoc] = useState(false);
     const [coverLetter, setCoverLetter] = useState('');
     const [openProjectModal, setOpenProjectModal] = useState(false);
+    const [allLoading, setAllLoading] = useState(false);
     const [education, setEducation] = useState({
         educationLevel: '',
         fieldStudy: '',
@@ -166,12 +167,15 @@ export const MiddleWare = () => {
     const getDatas = async () => {
         /* const usersRole = await assignRole();
          console.log(usersRole); */
+        setAllLoading(true);
         const userId = await getAccount();
         if (userId !== 'failed') {
             setFirstLetter(userId.name.charAt(0));
             const userRole = await getRole(userId.$id);
             if (userRole) {
                 if (userRole.documents[0].userRole == 'candidate') {
+                    setAllLoading(false);
+
                     const docId = await getCandidateDocumentId(userId.$id);
                     const certificate = convertToArray(docId.documents[0].certificates) || [];
                     const projects = convertToArray(docId.documents[0].projects) || [];
@@ -785,6 +789,7 @@ export const MiddleWare = () => {
         }
     }; */
     return {
+        allLoading,
         addPhoneAddress,
         locate,
         setLocate,
@@ -951,5 +956,3 @@ export const MiddleWare = () => {
         handleCoverLetter
     };
 };
-
-

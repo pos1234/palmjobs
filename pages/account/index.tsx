@@ -7,7 +7,8 @@ import ForgotPassword from '@/components/account/ForgotPassword';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAccount, getRole, signIn, signOut } from '@/lib/services';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
 import RegisterComponent from '@/components/account/Register';
 import Slider from '@/components/Slider';
@@ -31,8 +32,6 @@ const Login = () => {
         email: '',
         password: ''
     });
-
-    const profile = '/images/profile.svg';
     const loadingIn = '/images/loading.svg';
     function validateEmail(email: string): boolean {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,6 +84,7 @@ const Login = () => {
     };
     return (
         <>
+            <ToastContainer />
             <div className="grid grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
                 <div className="col-span-12  flex items-center bg-skillColor rounded-tr-[5.75rem] rounded-br-[5.75rem] order-2 max-md:mt-10 md:col-span-6 md:order-1">
                     <div
@@ -209,17 +209,15 @@ const Login = () => {
                     )}
                     {(register == false || registerForm == true) && forgotPassword == false && (
                         <div className="w-full p-2 grid gap-x-2 grid-cols-12 gap-y-4 lg:gap-y-0">
-                            <button className="col-span-12 border-2 rounded-full cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-span-6 md:max-lg:col-span-12">
+                            <button className="col-span-12 border-2 rounded-full cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-start-4 sm:col-end-10 md:max-lg:col-span-12">
                                 <p> Sign in with Google</p> <img src={google} alt="google" className="w-[2rem] h-[2rem] inline ml-3" />
                             </button>
-                            <button className="text-addS text-fadedText col-span-12 border-2 rounded-full cursor-pointer py-[0.93rem] flex justify-evenly items-center sm:col-span-6 md:max-lg:col-span-12">
+                            {/* <button className="text-addS text-fadedText col-span-12 border-2 rounded-full cursor-pointer py-[0.93rem] flex justify-evenly items-center sm:col-span-6 md:max-lg:col-span-12">
                                 Sign in with Facebook <img src={facebook} alt="google" className="w-[2rem] h-[2rem] inline ml-3 -mt-1" />
-                            </button>
+                            </button> */}
                         </div>
                     )}
-
                     {registerForm && <RegisterComponent role={getJob ? 'candidate' : 'employer'} />}
-
                     {!register && forgotPassword == false && (
                         <>
                             <form className="w-full pl-5 grid grid-cols-12 text-left pr-2 md:pr-0" onSubmit={handlelogin}>
@@ -257,7 +255,10 @@ const Login = () => {
                                     {visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
                                 </span>
                                 {passwordError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{passwordError}</p>}
-                                <div onClick={() => setForgotPassword(true)} className="col-span-12 flex justify-end sm:pr-32 md:pr-20 lg:pr-24">
+                                <div
+                                    onClick={() => setForgotPassword(true)}
+                                    className="col-span-12 flex justify-end sm:pr-32 md:pr-20 lg:pr-24"
+                                >
                                     <span className="font-addW text-addS mt-5 mb-2 leading-addL cursor-pointer text-gradientFirst">
                                         Forgot Password?
                                     </span>
@@ -272,7 +273,6 @@ const Login = () => {
                                         <img src={loadingIn} className="self-end text-textW h-16 w-full xl:w-56 rounded-full" />
                                     </div>
                                 )}
-                              
                             </form>
                         </>
                     )}
