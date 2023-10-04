@@ -9,7 +9,8 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import DropDown from '@/components/DropDown';
 import { useState } from 'react';
 import Link from 'next/link';
-
+import PinDropOutlined from '@mui/icons-material/PinDropOutlined';
+import { useRouter } from 'next/router';
 const TopSearched = () => {
     return (
         <div className="col-span-6 justify-self-center grid grid-cols-12 rounded-full border-2 text-fadedText px-5 py-1.5  sm:col-span-4 md:col-span-3 lg:col-span-2">
@@ -31,9 +32,11 @@ const addressData = [
 ];
 const catagoryData = [{ name: 'Category' }, { name: 'Full Time' }, { name: 'Part Time' }, { name: 'Remote' }, { name: 'Internship' }];
 const Home = () => {
+    const router = useRouter();
     const [location, setLocation] = useState(false);
     const [category, setCategory] = useState(false);
-    const [address, setAddress] = useState(addressData[0]);
+    const [searchText, setSearchText] = useState('');
+    const [address, setAddress] = useState('');
     const [catag, setCatag] = useState(catagoryData[0]);
     const openLocation = () => {
         setLocation(!location);
@@ -41,8 +44,14 @@ const Home = () => {
     const openCategory = () => {
         setCategory(!category);
     };
+    const handleSearch = () => {
+        router.push({
+            pathname: '/jobs',
+            query: { param1: searchText, param2: address}
+        });
+    };
     return (
-        <div className="px-3 md:px-16 overflow-hidden">
+        <div className="px-3 lg:px-16 lg:col-span-16 overflow-hidden">
             <Navigation />
             <div>
                 <div className="md:mt-20">
@@ -63,19 +72,33 @@ const Home = () => {
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tincidunt in
                 </p>
                 <div className="grid grid-cols-12 gap-y-4 max-sm:px-5 max-sm:pt-10 sm:space-x-5 md:space-x-2 lg:space-x-5 lg:px-10 xl:px-40 md:py-5 md:pt-10">
-                    <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 md:h-16  sm:col-span-6 md:col-span-4 lg:col-span-3">
+                    <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 md:h-16  sm:col-span-6 md:col-span-4 lg:col-span-4">
                         <div className="col-span-2 flex items-center justify-center text-gray-500">
                             <PersonSearchOutlinedIcon />
                         </div>
                         <div className="col-span-10 flex items-center pr-2">
                             <input
+                                onChange={(e) => setSearchText(e.currentTarget.value)}
                                 type="text"
                                 placeholder="What are you looking for?"
                                 className="h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8] sm:h-[90%]"
                             />
                         </div>
                     </div>
-                    <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 h-20 md:h-16 sm:col-span-6 md:col-span-4 lg:col-span-3">
+                    <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 md:h-16  sm:col-span-6 md:col-span-4 lg:col-span-4">
+                        <div className="col-span-2 flex items-center justify-center text-gray-500">
+                            <PinDropOutlined />
+                        </div>
+                        <div className="col-span-10 flex items-center pr-2">
+                            <input
+                                onChange={(e) => setAddress(e.currentTarget.value)}
+                                type="text"
+                                placeholder="Remote"
+                                className="h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8] sm:h-[90%]"
+                            />
+                        </div>
+                    </div>
+                    {/*  <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 h-20 md:h-16 sm:col-span-6 md:col-span-4 lg:col-span-3">
                         <div className="col-span-2 flex items-center justify-center text-gray-500">
                             <LocationOnOutlinedIcon />
                         </div>
@@ -91,8 +114,8 @@ const Home = () => {
                                 text="noBorder"
                             />
                         </div>
-                    </div>
-                    <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 h-20 sm:col-start-4 sm:col-end-10 sm:h-20 md:h-16 md:col-span-4 lg:col-span-3">
+                    </div> */}
+                    {/* <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 h-20 sm:col-start-4 sm:col-end-10 sm:h-20 md:h-16 md:col-span-4 lg:col-span-3">
                         <div className="col-span-2 flex items-center justify-center text-gray-500">
                             <CategoryOutlinedIcon />
                         </div>
@@ -102,25 +125,33 @@ const Home = () => {
                         >
                             <DropDown selectedElement={catag} setSelectedElement={setCatag} displayedData={catagoryData} text="noBorder" />
                         </div>
-                    </div>
-                    <button className="text-shS col-span-12  rounded-2xl sm:col-start-4 h-20 max-sm:mx-5 sm:col-end-10 sm:max-lg:mt-5 sm:h-20 md:h-16 lg:col-span-3 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond">
+                    </div> */}
+                    <button
+                        onClick={handleSearch}
+                        className="text-shS col-span-12  rounded-2xl sm:col-start-4 h-20 max-sm:mx-5 sm:col-end-10 sm:max-lg:mt-5 sm:h-20 md:h-16 lg:col-span-3 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond"
+                    >
                         <SearchOutlinedIcon sx={{ fontSize: '1.5rem', marginRight: '0.2rem' }} /> Search
                     </button>
                 </div>
-                <div className="grid grid-cols-12 max-sm:gap-y-3 gap-y-3 max-sm:gap-x-2 max-sm:pt-5 sm:max-lg:mt-10 lg:grid-cols-10 lg:px-10 xl:px-52 ">
+                {/* <div className="grid grid-cols-12 max-sm:gap-y-3 gap-y-3 max-sm:gap-x-2 max-sm:pt-5 sm:max-lg:mt-10 lg:grid-cols-10 lg:px-10 xl:px-52 ">
                     <TopSearched />
                     <TopSearched />
                     <TopSearched />
                     <TopSearched />
                     <TopSearched />
-                </div>
+                </div> */}
                 <div className="mt-10">
                     <p className="text-center mb-10">
                         <span className="bg-gradient-to-r from-gradientFirst to-gradientSecond text-center px-3 text-textW py-1 rounded-full mr-5 block max-sm:mx-20 max-sm:mt-10 max-sm:mb-4 sm:inline cursor-pointer">
                             New
                         </span>
                         Stay connected to Recent jobs
-                        <Link href="users/candidate/profile" className="font-shW text-gradientFirst underline cursor-pointer max-sm:block ml-2">Upload your Resume</Link>
+                        <Link
+                            href="users/candidate/profile"
+                            className="font-shW text-gradientFirst underline cursor-pointer max-sm:block ml-2"
+                        >
+                            Upload your Resume
+                        </Link>
                     </p>
                 </div>
             </div>

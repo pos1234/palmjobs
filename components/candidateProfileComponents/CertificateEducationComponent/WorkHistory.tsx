@@ -23,7 +23,7 @@ const ElementWithIcon = (props: any) => {
 
     return (
         <>
-            <div className="grid grid-cols-12 pb-5 cursor-pointer md:mb-5 sm:max-md:gap-x-2 " onClick={toggleDescription} key={props.key}>
+            <div className="grid grid-cols-12 pb-5 cursor-pointer md:mb-5 sm:max-md:gap-x-2 " onClick={toggleDescription}>
                 <div className="col-span-12 pb-3 border-b-2 mr-2 max-lg:ml-1 grid grid-cols-12 lg:mr-1 lg:ml-7">
                     <div className="col-span-2 sm:col-span-1 md:col-span-1 lg:col-span-1">
                         <div className="w-14 h-14 bg-skillColor flex items-center justify-center rounded-[1rem]">
@@ -142,12 +142,12 @@ const WorkHitory = () => {
                 {workHistoryArray &&
                     workHistoryArray.map((item, index) => (
                         <ElementWithIcon
+                            key={index}
                             title={item.title}
                             companyName={item.companyName}
                             startDate={item.startDate}
                             endDate={item.endDate}
                             workDescription={item.jobDescription}
-                            key={item.index}
                         />
                     ))}
             </div>

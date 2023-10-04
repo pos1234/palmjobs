@@ -1,4 +1,7 @@
-const jobData = [
+import { fetchJobs } from '@/lib/services';
+import { useEffect, useState } from 'react';
+
+/* const jobData = [
     {
         id: 1,
         compName: 'Linear Company',
@@ -180,4 +183,16 @@ const jobData = [
             'Mollit in laborum tempor Lorem incididunt irure. Aute eu ex ad sunt. Pariatur sint culpa do incididunt eiusmod eiusmod culpa. laborum tempor Lorem incididunt.'
     }
 ];
-export default jobData;
+export default jobData; */
+/* const jobData = () => {
+    const [jobsData, setJobsData] = useState<string[]>([]);
+    useEffect(() => {
+        fetchJobs().then((res: any) => {
+            setJobsData(res.documents);
+            console.log(res);
+        });
+    }, []);
+
+    return jobsData;
+};
+export default jobData; */

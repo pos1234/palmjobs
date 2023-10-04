@@ -11,7 +11,7 @@ import Education from './CertificateEducationComponent/Education';
 const CertificateDetails = (props: any) => {
     return (
         <div
-            key={props.key}
+            /* key={props.keys} */
             className="col-span-12  grid grid-cols-12 bg-lightGreen rounded-2xl p-5 sm:max-md:col-span-6 md:max-lg:col-span-4 lg:col-span-11"
         >
             <div className="col-span-2">
@@ -21,8 +21,8 @@ const CertificateDetails = (props: any) => {
                 <p className="font-dfvW text-dfvS leading-dfvL">{props.certificateName}</p>
                 <p className="font-fhW text-fhS leading-fhL text-lightGrey">{props.givenBy}</p>
                 <p className="text-smRs mt-2">
-                    <CalendarTodayIcon sx={{ fontSize: '0.8rem', marginTop: '-0.3rem' }} />{' '}
-                    <span className="text-fadedText">{props.givenDate}</span>
+                    <CalendarTodayIcon sx={{ fontSize: '0.8rem', marginTop: '-0.3rem' }} />
+                    <span className="text-stone-700 ml-2">{props.givenDate}</span>
                 </p>
             </div>
         </div>
@@ -83,12 +83,7 @@ const Certificate = () => {
                     <div className="col-span-12 grid grid-cols-12 mt-6 sm:max-md:gap-x-3 md:max-lg:gap-x-2 gap-y-4">
                         {certificateArray &&
                             certificateArray.map((item, index) => (
-                                <CertificateDetails
-                                    key={item.index}
-                                    certificateName={item.name}
-                                    givenBy={item.issuedBy}
-                                    givenDate={item.year}
-                                />
+                                <CertificateDetails key={index} certificateName={item.name} givenBy={item.issuedBy} givenDate={item.year} />
                             ))}
                     </div>
 

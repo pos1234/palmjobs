@@ -8,6 +8,7 @@ import 'react-quill/dist/quill.snow.css';
 import { FileUploader } from 'react-drag-drop-files';
 import EditIcon from '@mui/icons-material/Edit';
 import dynamic from 'next/dynamic';
+import Notification from '../Notification';
 import {
     getUserData,
     alreadyApplied,
@@ -19,7 +20,8 @@ import {
     getSavedJobId,
     unSaveJobs,
     uploadResume,
-    downLoadResume
+    downLoadResume,
+    getAccount
 } from '@/lib/services';
 import { toast } from 'react-toastify';
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -28,6 +30,8 @@ const ReactQuill = dynamic(() => import('react-quill'), {
 const ApplyToJob = (props: any) => {
     const profile = '/images/profile.svg';
     const pdfIcon = '/images/pdf2.svg';
+    const pdfIconSmall = '/images/pdfIcon.svg';
+    const loadingImage = '/images/loading.svg';
     const [openApply, setOpenApply] = useState(true);
     const [fisrt, setFirst] = useState(true);
     const [second, setSecond] = useState(false);
@@ -35,7 +39,7 @@ const ApplyToJob = (props: any) => {
     const [fourth, setFourth] = useState(false);
     const [userData, setUserData] = useState<any>();
     const [cover, setCover] = useState('');
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [appliedJob, setAppliedJob] = useState(false);
     const [currentResume, setCurrentResume] = useState<any>();
     const [replaceResume, setReplaceResume] = useState<any>();
@@ -46,6 +50,9 @@ const ApplyToJob = (props: any) => {
     const [linked, setLinked] = useState('');
     const [fileName, setFileName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [openNotify, setOpenNotify] = useState(false);
+    const [failed, setFailed] = useState(false);
+    const [loadingApply, setLoadingApply] = useState(false);
     const toggleTabs = () => {
         if (fisrt == true) {
             setFirst(false);
@@ -64,12 +71,49 @@ const ApplyToJob = (props: any) => {
             setFourth(true);
         }
     };
-    useEffect(() => {
-        getUserData().then((res) => {
+    const getData = async () => {
+        const res: any = await getAccount();
+        if (res) {
             setNewName(res.name);
             setNewEmail(res.email);
+        }
+    };
+    const getCanInfo = async () => {
+        const res = await getCandidateInfo();
+        if (res) {
+            setUserData(res.documents[0]);
+            setPhone(res.documents[0].phoneNumber);
+            setLinked(res.documents[0].linkedIn);
+            setCover(res.documents[0].coverLetter);
+            return res;
+        }
+    };
+    const checkApplied = async () => {
+        setLoading(true);
+        getCanInfo().then((userData: any) => {
+            alreadyApplied(userData.documents[0].Id, props.jobId).then((applied) => {
+                const resume = userData && userData.documents[0].resumeId != null && getResume(userData.documents[0].resumeId);
+                resume &&
+                    resume.then((res: any) => {
+                        setFileName(res.name);
+                        setCurrentResumeId(res.$id);
+                    });
+                if (applied.total !== 0) {
+                    setLoading(false);
+                    setAppliedJob(true);
+                }
+                if (applied.total == 0) {
+                    setLoading(false);
+                    setAppliedJob(false);
+                }
+            });
         });
-    }, []);
+    };
+    useEffect(() => {
+        getData();
+        getCanInfo();
+        checkApplied();
+    }, [props.jobId]);
     const fileTypes = ['pdf', 'doc', 'docx'];
     const updateTheCv = (files: any) => {
         setFileName(files.name);
@@ -84,83 +128,57 @@ const ApplyToJob = (props: any) => {
         setErrorMessage(err);
         console.log(err);
     };
-    useEffect(() => {
-        const data = getCandidateInfo();
-        data.then((res) => {
-            setUserData(res.documents[0]);
-            setPhone(res.documents[0].phoneNumber);
-            setLinked(res.documents[0].linkedIn);
-            setCover(res.documents[0].coverLetter);
-        });
-    }, []);
-    useEffect(() => {
-        console.log(loading);
-    }, [loading]);
-    useEffect(() => {
-        const applied = alreadyApplied(userData && userData.Id, props.jobId);
-        const resume = userData && userData.resumeId != null && getResume(userData.resumeId);
-        resume &&
-            resume.then((res: any) => {
-                setFileName(res.name);
-                setCurrentResumeId(res.$id);
-            });
-        applied.then((res: any) => {
-            if (res.total !== 0) {
-                setAppliedJob(true);
-
-                const timer = setTimeout(() => {
-                    setLoading(false);
-                }, 1000);
-            } else {
-                setAppliedJob(false);
-                const timer = setTimeout(() => {
-                    setLoading(false);
-                }, 1000);
-            }
-        });
-    }, [userData]);
-    const apply = (e: React.FormEvent<HTMLElement>) => {
+    useEffect(() => {}, [userData]);
+    const apply = async (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
+        setLoadingApply(true);
         if (replaceResume) {
             uploadResume(replaceResume).then((res) => {
                 applyToJobs(userData.Id, props.jobId, props.employerId, newEmail, phone, cover, res.$id)
                     .then((res) => {
-                        toast.success('Successfully Applied');
-                        /*  getSavedJobId(props.jobId).then((rep) => {
-                                                    console.log(rep);
-                              rep.total != 0 &&
-                                unSaveJobs(rep.documents[0].$id).then((rem) => {
-                                    //console.log(rem);
-                                });
-                        });*/
+                        setOpenApply(false);
+                        setOpenNotify(true);
+                        setFailed(false);
+                        setLoadingApply(false);
                     })
                     .catch((error) => {
-                        toast.error('Not Applied');
+                        setOpenApply(false);
+                        setOpenNotify(true);
+                        setFailed(true);
+                        setLoadingApply(false);
                         console.log(error);
                     });
             });
         } else {
             applyToJobs(userData.Id, props.jobId, props.employerId, newEmail, phone, cover, currentResumeId)
                 .then((res) => {
-                    toast.success('Successfully Applied'); /*   res.total != 0 &&
-
-            /*             getSavedJobId(props.jobId).then((res) => {
-             
-                    unSaveJobs(res.documents[0].$id).then((rem) => {
-                                               console.log(rem);
-                         
-                    }); 
-                        });
-             */
+                    setOpenApply(false);
+                    setOpenNotify(true);
+                    setFailed(false);
+                    setLoadingApply(false);
                 })
                 .catch((error) => {
-                    toast.error('Not Applied');
+                    setOpenApply(false);
+                    setOpenNotify(true);
+                    setFailed(true);
+                    setLoadingApply(false);
                     console.log(error);
                 });
         }
     };
     return (
         <>
+            {!failed && (
+                <Notification
+                    openNotify={openNotify}
+                    setOpenNotify={setOpenNotify}
+                    successText="success"
+                    successWord="Successfully Applied"
+                />
+            )}
+            {failed && (
+                <Notification openNotify={openNotify} setOpenNotify={setOpenNotify} successText="failed" successWord="Application Failed" />
+            )}
             {userData && (
                 <ConfirmModal isOpen={openApply} handleClose={() => setOpenApply(!openApply)}>
                     {loading && (
@@ -196,7 +214,8 @@ const ApplyToJob = (props: any) => {
                             <button
                                 onClick={() => {
                                     props.setterFunction(false);
-                                    setLoading(true);
+                                    /*                                     setLoading(true);
+                                     */
                                 }}
                                 type="button"
                                 className="text-textW bg-gradient-to-r  from-gradientFirst to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
@@ -278,40 +297,31 @@ const ApplyToJob = (props: any) => {
                                             <p className="text-neutral-400">{newEmail}</p>
                                             <p className="font-fhW text-smS mt-2  leading-shL">Mobile phone number</p>
                                             <p className="text-neutral-400">{phone}</p>
-                                            {/*   <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Linkedin</p>
-                            <input
-                                type="text"
-                                placeholder="Johndoe.linkedin.com"
-                                className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
-                            /> */}
                                         </div>
-                                        <div className="col-span-12 grid grid-cols-12 shadow border border-orange-600 rounded-3xl mt-2">
-                                            <div className=" flex items-center justify-center bg-red-600 rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
-                                                <img src={pdfIcon} className="w-10 h-16 relative" />
-                                            </div>
-                                            <div className="col-span-7 flex items-center pl-3">
-                                                <p className="text-black text-2xl font-medium leading-loose">{fileName}</p>
-                                            </div>
-                                            <div className="col-span-3 grid grid-cols-12">
-                                                <div className="col-span-9 flex justify-end items-center pr-4">
-                                                    <div className="w-7 h-7 border rounded-full border-orange-500 p-1">
-                                                        <div className="w-full h-full flex rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond"></div>
+                                        {fileName && (
+                                            <div className="col-span-12 grid grid-cols-12 shadow border border-orange-500 rounded-3xl mt-2">
+                                                <div className=" flex items-center justify-center bg-orange-500 rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
+                                                    <img src={pdfIcon} className="w-10 h-16 relative" />
+                                                </div>
+                                                <div className="col-span-9 flex items-center pl-3">
+                                                    <p className="text-black text-2xl font-medium leading-loose">{fileName}</p>
+                                                </div>
+                                                <div className="col-span-1 flex items-center justify-end pr-2">
+                                                    <div className="col-span-3 flex items-center justify-end pt-1">
+                                                        <EditIcon
+                                                            onClick={() => {
+                                                                setSecond(true);
+                                                                setFirst(false);
+                                                                setThird(false);
+                                                                setFourth(false);
+                                                            }}
+                                                            sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
+                                                            className="w-7 h-7 p-1.5 cursor-pointer"
+                                                        />
                                                     </div>
                                                 </div>
-                                                <div className="col-span-3 flex items-center justify-end pt-1">
-                                                    <EditIcon
-                                                        onClick={() => {
-                                                            setSecond(true);
-                                                            setFirst(false);
-                                                            setThird(false);
-                                                            setFourth(false);
-                                                        }}
-                                                        sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                                        className="w-7 h-7 p-1.5 mr-2 cursor-pointer"
-                                                    />
-                                                </div>
                                             </div>
-                                        </div>
+                                        )}
                                         <div className="col-span-12 mt-5 relative">
                                             <EditIcon
                                                 onClick={() => {
@@ -343,30 +353,39 @@ const ApplyToJob = (props: any) => {
                                 {second && (
                                     <div className="col-span-12 pt-5 grid grid-cols-12">
                                         <p className="col-span-12 text-black text-3xl font-semibold leading-10">Resume</p>
-                                        <div className="col-span-12 grid grid-cols-12 shadow border border-orange-600 rounded-3xl mt-2">
-                                            <div className="py-4 flex items-center justify-center bg-red-600 rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
-                                                <img src={pdfIcon} className="w-12 h-16 relative" />
-                                            </div>
-                                            <div className="col-span-7 flex items-center pl-3 break-all">
-                                                <p className="text-black text-lg font-medium leading-loose sm:text-xl">{fileName}</p>
-                                            </div>
-                                            <div className="col-span-3 grid grid-cols-12">
-                                                <div className="col-span-6 flex items-center justify-end pt-1">
-                                                    <GetAppIcon
-                                                        className="w-9 h-9 text-fadedText mr-3 cursor-pointer"
-                                                        onClick={() => downLoadResume(currentResumeId)}
-                                                    />
-                                                    <div className="h-12 bg-fadedText flex w-0.5"></div>
+                                        <div className=" col-span-12">
+                                            <FileUploader
+                                                multiple={false}
+                                                maxSize={1}
+                                                onSizeError={sizeError}
+                                                onTypeError={displayError}
+                                                handleChange={updateTheCv}
+                                                classes={
+                                                    props.view
+                                                        ? 'hidden'
+                                                        : 'col-span-12 w-full mt-5 h-40 bg-white rounded-3xl shadow border border-gray-200 flex flex-col items-center justify-center'
+                                                }
+                                                name="file"
+                                                types={fileTypes}
+                                            >
+                                                {/* <div className="text-gray-200">
+                                                    <img src={pdfIconSmall} />
+                                                </div> */}
+                                                {/* <div className="text-black text-xs font-normal">
+                                                    {fileName ? fileName : <p>Select a file or drag and drop here</p>}
+                                                </div> */}
+
+                                                <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
+                                                    PDF, DOCX or DOC, file size no more than 1MB
                                                 </div>
-                                                <div className="col-span-6 flex items-center pl-4">
-                                                    <div className="w-7 h-7 border rounded-full border-orange-500 p-1">
-                                                        <div className="w-full h-full flex rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond"></div>
+                                                <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-orange-300 border-opacity-25 justify-start items-center flex  text-center">
+                                                    <div className="cursor-pointer absolute z-0 top-3 w-full">
+                                                        <div className="text-orange-600 text-xs font-normal uppercase">Replace</div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className=" col-span-6 mt-14">
-                                            <FileUploader
+                                                {errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}
+                                            </FileUploader>
+                                            {/* <FileUploader
                                                 multiple={false}
                                                 maxSize={1}
                                                 onSizeError={sizeError}
@@ -375,17 +394,36 @@ const ApplyToJob = (props: any) => {
                                                 classes={
                                                     errorMessage
                                                         ? 'text-stone-300 border relative flex items-center justify-center border-red-300 h-14 w-full rounded-full cursor-pointer'
-                                                        : 'text-stone-300 border relative flex items-center justify-center border-stone-300 h-14 w-full rounded-full cursor-pointer'
+                                                        : 'text-stone-500 border relative flex items-center justify-center border-stone-500 h-14 w-full rounded-full cursor-pointer'
                                                 }
                                                 types={fileTypes}
                                             >
                                                 Upload Resume
-                                            </FileUploader>
-                                            <div className="text-stone-300 text-sm text-center mt-3 font-light leading-normal">
+                                            </FileUploader> */}
+                                            {/* <div className="text-stone-300 text-sm text-center mt-3 font-light leading-normal">
                                                 {errorMessage && <div className="text-red-500 text-xs mb-2">{errorMessage}</div>}
                                                 DOC, DOCX, PDF (1 MB)
-                                            </div>
+                                            </div> */}
                                         </div>
+                                        {fileName && (
+                                            <div className="col-span-12 grid grid-cols-12 shadow border border-orange-500 rounded-3xl mt-5">
+                                                <div className="py-4 flex items-center justify-center bg-orange-500 rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
+                                                    <img src={pdfIcon} className="w-12 h-5 relative" />
+                                                </div>
+                                                <div className="col-span-8 flex items-center pl-3 break-all">
+                                                    <p className="text-black text-lg font-medium leading-loose sm:text-xl">{fileName}</p>
+                                                </div>
+                                                <div className="col-span-2 flex items-center justify-around">
+                                                    <div className="h-8 bg-fadedText flex w-0.5"></div>
+                                                    <div className="col-span-12 flex items-center justify-end pt-1">
+                                                        <GetAppIcon
+                                                            className="w-9 h-9 text-fadedText cursor-pointer"
+                                                            onClick={() => downLoadResume(currentResumeId)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                                 {fisrt && (
@@ -424,14 +462,6 @@ const ApplyToJob = (props: any) => {
                                             placeholder="+251 911 2424 23"
                                             className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
-                                        <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Linkedin</p>
-                                        <input
-                                            value={linked}
-                                            onChange={(e) => setLinked(e.currentTarget.value)}
-                                            type="text"
-                                            placeholder="Johndoe.linkedin.com"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
-                                        />
                                     </div>
                                 )}
                             </div>
@@ -441,7 +471,7 @@ const ApplyToJob = (props: any) => {
                                 </p>
                                 <button
                                     onClick={() => props.setterFunction(false)}
-                                    className="text-stone-300 border border-stone-300 h-16 w-full rounded-full order-2 col-span-12 sm:order-1 sm:col-span-6 xl:col-span-3"
+                                    className="text-stone-500 border border-stone-500 h-16 w-full rounded-full order-2 col-span-12 sm:order-1 sm:col-span-6 xl:col-span-3"
                                 >
                                     Discard
                                 </button>
@@ -454,13 +484,23 @@ const ApplyToJob = (props: any) => {
                                         Continue
                                     </button>
                                 )}
+
                                 {fourth && (
-                                    <button
-                                        type="submit"
-                                        className="text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                                    >
-                                        Apply
-                                    </button>
+                                    <>
+                                        {loadingApply == true ? (
+                                            <img
+                                                src={loadingImage}
+                                                className="self-end text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
+                                            />
+                                        ) : (
+                                            <button
+                                                type="submit"
+                                                className="self-end text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
+                                            >
+                                                Apply
+                                            </button>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </form>

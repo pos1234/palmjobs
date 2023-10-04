@@ -18,7 +18,8 @@ const CandidateJobs = () => {
             <div className="px-3 mt-20 grid grid-cols-12 md:px-20">
                 {saved && <p className="font-shW text-shS leading-shL text-darkBlue col-span-12">My Saved Jobs</p>}
                 {applied && <p className="font-shW text-shS leading-shL text-darkBlue col-span-12">Applied Jobs</p>}
-                {archive && <p className="font-shW text-shS leading-shL text-darkBlue col-span-12">Archived Jobs</p>}
+                {/*                 {archive && <p className="font-shW text-shS leading-shL text-darkBlue col-span-12">Archived Jobs</p>}
+                 */}{' '}
                 <div className="mt-8 col-span-12 grid grid-cols-12 gap-y-3 gap-x-5 md:col-span-10 lg:col-span-8">
                     <button
                         className={
@@ -48,7 +49,7 @@ const CandidateJobs = () => {
                     >
                         Applied
                     </button>
-                    <button
+                    {/*   <button
                         className={
                             archive == true
                                 ? 'col-span-6 h-[3.5rem] bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW rounded-full cursor-pointer md:col-span-3'
@@ -61,7 +62,7 @@ const CandidateJobs = () => {
                         }}
                     >
                         Archive
-                    </button>
+                    </button> */}
                 </div>
                 {/*                 <p className="col-span-12 mt-5 text-darkBlue text-midS font-midW">2 Jobs</p>
                  */}{' '}
