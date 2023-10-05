@@ -51,7 +51,7 @@ const Jobs = (props: any) => {
         <>
             <ToastContainer />
             <div className="bg-textW min-h-screen">
-                <div className="relative flex justify-between pt-10 items-center lg:pl-10">
+                <div className="relative flex justify-between pt-10 items-center px-2 lg:pl-10">
                     <p className="text-black text-3xl font-[700]">Jobs</p>
                     <div
                         onClick={() => handleNav('postJob')}

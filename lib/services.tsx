@@ -166,11 +166,12 @@ export const deletePortfolio = (id: string) => {
         console.log(e);
     }
 };
-export const insertCoverLetter = (id: string, cover: any) => {
+export const insertCoverLetter = async (id: string, cover: any) => {
     const datas = {
         coverLetter: cover
     };
-    updateDocuments(id, datas);
+   const promise = await updateDocuments(id, datas);
+   return promise
 };
 export const addSector = (sectors: string, id: string) => {
     const datas = {
@@ -345,9 +346,12 @@ export const fetchAppliedJobsData = async (ids: string) => {
     const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, ids);
     return response;
 };
+export const getNoApplicants = async (id: string) => {
+    const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('jobId', id)]);
+    return results;
+};
 export const getAppliedJobId = async (id: string) => {
     try {
-        const userAccount = await account.get();
         const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('jobId', id)]);
         return results;
     } catch (e) {

@@ -10,8 +10,7 @@ import PostAJob from '../../../components/employerComponents/EmployerPostJob';
 import styles from '@/styles/navigation.module.css';
 import ShieldIcon from '@mui/icons-material/Shield';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
-/* import EmployerProfile from '@/components/employerComponents/EmployerProfile';
- */ import Dashboard from '@/components/employerComponents/Dashoboard';
+import Dashboard from '@/components/employerComponents/Dashoboard';
 import Jobs from '@/components/employerComponents/Jobs';
 import Candidates from '@/components/employerComponents/Candidates';
 import EmployerProfile from '@/components/employerComponents/EmployerProfile';
@@ -139,7 +138,7 @@ const AdminJob = () => {
                 <div
                     className={
                         menu
-                            ? 'absolute top-0 h-full flex flex-col w-full z-40 bg-textW gap-y-2 col-span-12 pt-16 h-screen px-20 flex-col md:min-h-screen md:px-0 md:col-span-3 xl:col-span-2'
+                            ? 'fixed top-0 h-screen overflow-auto flex flex-col w-full z-40 bg-textW gap-y-2 col-span-12 pt-16 h-screen px-20 flex-col md:min-h-screen md:px-0 md:col-span-3 xl:col-span-2'
                             : 'hidden md:relative md:flex md:flex-col bg-textW md:gap-y-2 md:pt-16 md:min-h-screen md:col-span-3 xl:col-span-2'
                     }
                 >
@@ -262,7 +261,10 @@ const AdminJob = () => {
                         <p className="text-xl font-medium leading-loose">Security</p>
                     </div>
                     <div
-                        onClick={() => setOpenLogout(!openLogout)}
+                        onClick={() => {
+                            setOpenLogout(!openLogout);
+                            setMenu(false);
+                        }}
                         className="left-0 flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer md:absolute md:bottom-3 lg:pl-9"
                     >
                         <div className=" rounded-md border-0">
@@ -340,9 +342,8 @@ const AdminJob = () => {
             </div>
             <ConfirmModal isOpen={openLogout} handleClose={() => setOpenLogout(!openLogout)}>
                 <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl flex flex-col gap-y-5 items-center justify-center pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0">
-                    <p className="col-span-12 text-black text-3xl font-semibold leading-10 ">Are you sure you want to logout ?</p>
-
-                    <div className="flex gap-x-10">
+                    <p className="col-span-12 text-black font-semibold leading-10 md:text-3xl">Are you sure you want to logout ?</p>
+                    <div className="flex gap-x-10 max-sm:flex-col max-sm:gap-y-3">
                         <button
                             onClick={() => setOpenLogout(!openLogout)}
                             type="button"

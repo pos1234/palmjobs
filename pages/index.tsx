@@ -47,7 +47,7 @@ const Home = () => {
     const handleSearch = () => {
         router.push({
             pathname: '/jobs',
-            query: { param1: searchText, param2: address}
+            query: { param1: searchText, param2: address }
         });
     };
     return (
@@ -68,7 +68,7 @@ const Home = () => {
                 <p className="font-shW text-shS text-center text-[40px] sm:text-[60px] md:text-[72px] md:leading-[92px]">
                     Right Fit! <br /> The Perfect Job on <span className="text-gradientFirst">YES</span>
                 </p>
-                <p className="text-center text-[#393D48] max-sm:mt-3">
+                <p className="text-center text-[#393D48] max-sm:mt-3 sm:max-md:mb-5">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tincidunt in
                 </p>
                 <div className="grid grid-cols-12 gap-y-4 max-sm:px-5 max-sm:pt-10 sm:space-x-5 md:space-x-2 lg:space-x-5 lg:px-10 xl:px-40 md:py-5 md:pt-10">
@@ -81,11 +81,11 @@ const Home = () => {
                                 onChange={(e) => setSearchText(e.currentTarget.value)}
                                 type="text"
                                 placeholder="What are you looking for?"
-                                className="h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8] sm:h-[90%]"
+                                className="max-md:h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8] "
                             />
                         </div>
                     </div>
-                    <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 md:h-16  sm:col-span-6 md:col-span-4 lg:col-span-4">
+                    <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 md:h-16 sm:col-span-6 md:col-span-4 lg:col-span-4">
                         <div className="col-span-2 flex items-center justify-center text-gray-500">
                             <PinDropOutlined />
                         </div>
@@ -94,7 +94,7 @@ const Home = () => {
                                 onChange={(e) => setAddress(e.currentTarget.value)}
                                 type="text"
                                 placeholder="Remote"
-                                className="h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8] sm:h-[90%]"
+                                className="max-md:h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8]"
                             />
                         </div>
                     </div>
@@ -128,7 +128,7 @@ const Home = () => {
                     </div> */}
                     <button
                         onClick={handleSearch}
-                        className="text-shS col-span-12  rounded-2xl sm:col-start-4 h-20 max-sm:mx-5 sm:col-end-10 sm:max-lg:mt-5 sm:h-20 md:h-16 lg:col-span-3 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond"
+                        className="text-shS col-span-12  rounded-2xl sm:col-start-4 h-20 max-sm:mx-5 sm:col-end-10 sm:max-lg:mt-5 sm:h-20 md:mt-0 md:h-16 md:col-span-4 lg:col-span-3 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond"
                     >
                         <SearchOutlinedIcon sx={{ fontSize: '1.5rem', marginRight: '0.2rem' }} /> Search
                     </button>

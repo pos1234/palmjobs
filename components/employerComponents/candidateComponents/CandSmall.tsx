@@ -57,9 +57,9 @@ const CandSmall = (props: any) => {
             }
         >
             <div className="grid grid-cols-12 gap-x-2">
-                {imageHref && <img src={imageHref} className="col-span-2 w-16 h-16 md:col-span-4 rounded-xl" />}
+                {imageHref && <img src={imageHref} className="col-span-2 sm:w-16 sm:h-16 md:col-span-4 rounded-xl" />}
                 <div className="col-span-9 flex flex-col md:col-span-7">
-                    <p className="text-neutral-900 text-lg font-medium">John Doe</p>
+                    <p className="text-neutral-900 text-md font-medium">{candidateData && candidateData.name}</p>
                     <p className="text-stone-300 text-sm font-normal">{candidateData && candidateData.bioHeadline}</p>
                     {candidateData && candidateData.address && (
                         <p className="text-neutral-900 text-opacity-70 text-sm font-normal leading-normal">

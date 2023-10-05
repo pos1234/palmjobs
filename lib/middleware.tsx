@@ -257,7 +257,13 @@ export const MiddleWare = () => {
         updateSkills(newArray, documentId);
     };
     const handleCoverLetter = () => {
-        insertCoverLetter(documentId, coverLetter);
+        insertCoverLetter(documentId, coverLetter)
+            .then((res) => {
+                toast.success('Successfully updated Cover Letter');
+            })
+            .catch((error) => {
+                toast.error('Cover Letter Not Updated');
+            });
     };
     const uploadProfilePictures = (file: any) => {
         const resultProfile = createImage(file);

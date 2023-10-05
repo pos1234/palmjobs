@@ -65,7 +65,7 @@ const Project = () => {
         setProjectIndex(projectsArray[0].thumbnailId);
         setEditedProject(projectsArray[0]);
     };
-   
+
     return (
         <div className="col-span-12 pt-7 grid grid-cols-12 bg-textW rounded-3xl pb-8 lg:pl-10">
             <div className="col-span-8 md:col-span-3">
@@ -99,8 +99,7 @@ const Project = () => {
                                                 setProjectEdit(true);
                                                 indexProjects(index);
                                                 setOpenProject(true);
-                                                /*                                                 setOpenProjectModal(true);
-                                                 */
+                                                setOpenProjectModal(true);
                                             }}
                                             sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
                                             className="w-7 h-7 p-1.5 mr-2 cursor-pointer"
@@ -173,7 +172,6 @@ const Project = () => {
                         setProjectEdit(false);
                     }}
                 >
-                    <button onClick={() => console.log(openProjectModal)}>click me</button>
                     <div className="mx-2 max-sm:h-full max-sm:overflow-y-scroll pb-10 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0 ">
                         <div className="col-span-12 grid grid-cols-12">
                             <div className="col-span-12 grid grid-cols-12">
@@ -191,9 +189,9 @@ const Project = () => {
                             </div>
                         </div>
                         {projectsArray.length == 0 && displayProject && (
-                            <form className="col-span-12 grid grid-cols-12 px-10 gap-x-2" onSubmit={addProject}>
+                            <form className="col-span-12 grid grid-cols-12 gap-x-2 max-md:pr-3 md:px-10" onSubmit={addProject}>
                                 <div className="col-span-12 sm:col-span-6">
-                                    <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Project Names</p>
+                                    <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Project Name</p>
                                     <input
                                         value={projectData.name}
                                         type="text"

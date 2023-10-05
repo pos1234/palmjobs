@@ -82,7 +82,13 @@ const Candidates = (props: any) => {
     };
     return (
         <div className="bg-textW min-h-screen">
-            <div className="relative flex justify-between pt-10 items-center lg:pl-10">
+            <div
+                className={
+                    openCanDetail
+                        ? 'relative flex justify-between pt-10 items-center px-1 max-md:hidden lg:pl-10'
+                        : 'relative flex justify-between pt-10 items-center px-1 lg:pl-10'
+                }
+            >
                 <p className="text-black text-3xl font-[700]">Candidates</p>
                 <div
                     onClick={() => handleNav('postJob')}
@@ -93,18 +99,21 @@ const Candidates = (props: any) => {
             </div>
             {allLoading && <JobsShimmer />}
             {!allLoading && (
-                <div className="mt-0 lg:pl-10">
-                    <div className="flex flex-col gap-y-3 justify-between">
+                <div className="max-md:mt-3 lg:pl-10">
+                    <div
+                        className={
+                            openCanDetail ? 'flex flex-col gap-y-3 justify-between max-md:hidden' : 'flex flex-col gap-y-3 justify-between'
+                        }
+                    >
                         <div className="flex max-sm:pl-5 items-center gap-x-2">
                             <div className=" p-1 rounded-2xl border-[1px] border-stone-300 flex items-center gap-x-3 rounded-2xl px-3">
                                 <p>Job</p>
-
                                 <select
                                     onChange={(e) => {
                                         setJobId(e.currentTarget.value);
                                         handleJobSelection(e.currentTarget.value);
                                     }}
-                                    className="border-x-[2px] border-stone-300 max-w-[20rem] focus:border-stone-300 focus:ring-0 bg-stone-50 py-3 border-0 cursor-pointer"
+                                    className="border-x-[2px] border-stone-300 w-full sm:max-w-[20rem] focus:border-stone-300 focus:ring-0 bg-stone-50 py-3 border-0 cursor-pointer"
                                 >
                                     {postedJobs &&
                                         postedJobs.map((item: any, index: number) => {
@@ -120,16 +129,10 @@ const Candidates = (props: any) => {
                                 </div>
                             </div>
                         </div>
-                        {/*  <div className="flex gap-x-5">
-                        <p className="cursor-pointer text-neutral-900 text-2xl font-semibold leading-10">Active</p>
-                        <div className="cursor-pointer hover:text-neutral-900 text-stone-300 text-2xl font-semibold leading-10">
-                            Shortlist
-                        </div>
-                    </div> */}
-                        <div className="p-1 flex flex-col md:flex-row gap-2 gap-x-6">
+                        <div className="p-1 flex flex-col max-sm:px-5 md:flex-row gap-2 gap-x-6">
                             <select
                                 onChange={(e) => setAllCandidates(e.currentTarget.value)}
-                                className="cursor-pointer border-stone-300 focus:border-0 focus:ring-orange-300 h-16 rounded-2xl"
+                                className="cursor-pointer border-stone-300 max-w-[20rem] focus:border-0 focus:ring-orange-300 max-md:h-14 h-16 rounded-2xl"
                             >
                                 <option value="All Candidates">All Candidates</option>
                                 <option value="Best Match">Best Match</option>
@@ -165,8 +168,8 @@ const Candidates = (props: any) => {
                         <div
                             className={
                                 allCandidates == 'All Candidates'
-                                    ? 'col-span-12 order-1 flex flex-col gap-y-4 overflow-y-auto max-h-screen pr-2 md:pr-0 md:col-span-6 xl:col-span-3'
-                                    : 'col-span-12 hidden flex flex-col gap-y-4 overflow-y-auto max-h-screen pr-2 md:pr-0 md:col-span-6 xl:col-span-3'
+                                    ? 'col-span-12 max-sm:pr-2 order-1 flex flex-col gap-y-4 overflow-y-auto max-h-screen pr-2 md:pr-0 md:col-span-6 xl:col-span-3'
+                                    : 'col-span-12 max-sm:pr-2 hidden flex flex-col gap-y-4 overflow-y-auto max-h-screen pr-2 md:pr-0 md:col-span-6 xl:col-span-3'
                             }
                         >
                             {appliedCan &&

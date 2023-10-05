@@ -16,6 +16,7 @@ import ApplyToJob from '@/components/candidateProfileComponents/ApplyToJobs';
 import EuroIcon from '@mui/icons-material/Euro';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import Share from '@/components/Share';
 const JobCard = (props: any) => {
     return (
         <div className="col-span-6 flex flex-col max-md:pl-2 py-2 rounded-2xl gap-y-2 bg-textW sm:col-span-3 items-center">
@@ -40,6 +41,7 @@ const singleJob = () => {
     const [applyJobId, setApplyJobId] = useState('');
     const [applyEmployerId, setApplyEmployerId] = useState('');
     const [jobDetails, setJobDetails] = useState<any>();
+    const [openShare, setOpenShare] = useState(false);
     const handleSearch = () => {
         router.push({
             pathname: '/jobs',
@@ -87,7 +89,7 @@ const singleJob = () => {
         window.location.href = mailtoLink;
     };
     return (
-        <div className="px-16 pb-20">
+        <div className="px-3 pb-20 md:px-16">
             <Navigation />
             <div className="grid grid-cols-12 gap-y-4 max-sm:px-5 max-sm:pt-10 border-b-2 sm:space-x-5 md:space-x-2 lg:space-x-5 lg:px-10 xl:px-40 py-10">
                 <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 sm:h-16  sm:col-span-6 md:col-span-6 lg:col-span-4">
@@ -125,7 +127,7 @@ const singleJob = () => {
                 </button>
             </div>
             {jobDetails && (
-                <div className="grid grid-cols-12 gap-y-5 bg-textW pt-5 rounded-t-xl px-10 md:px-20 lg:px-48 xl:px-80">
+                <div className="grid grid-cols-12 gap-y-5 bg-textW pt-5 rounded-t-xl px-3 sm:px-10 md:px-20 lg:px-48 xl:px-80">
                     <div className="col-span-12 grid grid-cols-12 gap-0f">
                         <JobImage id={jobDetails.employerId} className="col-span-2 sm:h-[5.8rem]" />
                         <div className="col-span-8 flex flex-col max-sm:pl-3 sm:pl-2 xl:pl-1">
@@ -143,12 +145,17 @@ const singleJob = () => {
                                 </p>
                             )}
                         </div>
-                        <div className="col-span-2 flex gap-x-5 text-lightGrey items-center">
-                            <ShareOutlinedIcon sx={{ fontSize: '2rem' }} className="text-[2rem] cursor-pointer" />
+                        <div className="col-span-2 flex gap-x-2 text-lightGrey items-center md:gap-x-5">
+                            <ShareOutlinedIcon
+                                sx={{ fontSize: '1.5rem' }}
+                                onClick={() => setOpenShare(true)}
+                                className="md:text-[2rem] cursor-pointer"
+                            />
+                            <Share openShare={openShare} setOpenShare={setOpenShare} link={jobDetails.$id} />
                             <BookmarkBorderOutlinedIcon
-                                sx={{ fontSize: '2rem' }}
+                                sx={{ fontSize: '1.5rem' }}
                                 /*                                         onClick={() => handleSaveJob(jobDetails.jobId)}
-                                 */ className="text-[2rem] cursor-pointer"
+                                 */ className="cursor-pointer md:text-[2rem]"
                             />
                         </div>
                     </div>
@@ -219,8 +226,8 @@ const singleJob = () => {
                         <div
                             className={
                                 company == true
-                                    ? 'col-span-6 rounded-full rounded-3xl text-lightGrey text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
-                                    : 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
+                                    ? 'col-span-6 rounded-full rounded-3xl text-lightGrey  font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
+                                    : 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
                             }
                             onClick={() => setCompany(false)}
                         >
@@ -230,8 +237,8 @@ const singleJob = () => {
                         <div
                             className={
                                 company == true
-                                    ? 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
-                                    : 'col-span-6 rounded-full rounded-3xl text-lightGrey text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
+                                    ? 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
+                                    : 'col-span-6 rounded-full rounded-3xl text-lightGrey font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
                             }
                             onClick={() => {
                                 setCompany(true);
@@ -242,8 +249,6 @@ const singleJob = () => {
                     </div>
                     {!company && (
                         <div className="col-span-12 mx-3 flex flex-col">
-                            {/*                             <p className="font-thW text-frhS">Job Description</p>
-                             */}
                             <div
                                 dangerouslySetInnerHTML={{ __html: jobDetails.jobDescription }}
                                 className="text-midRS text-fadedText min-h-[200px] max-h-96 mb-3 overflow-y-auto hideScrollBar"

@@ -42,6 +42,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobsShimmer from '@/components/shimmer/JobsShimmer';
 import Share from '@/components/Share';
+import Link from 'next/link';
 const sortByData = [{ name: 'Best Match' }, { name: 'Most Recent' }, { name: 'Featured' }];
 const datePostedData = ['Date Posted', 'Any time', 'Past 24hrs', 'Past Week', 'Past Month'];
 const experienceData = ['Experience Level', 'Internship', 'Entry Level', 'Associate', 'Mid-senior Level', 'Senior'];
@@ -115,7 +116,7 @@ const Jobs = () => {
             param2 && setAddress(param2.toString());
             param2 && setAddressHolder(param2.toString());
         }
-    }, []);
+    }, [router.query]);
     useEffect(() => {
         const documents = getCompanyData(employerId);
         documents.then(async (res) => {
@@ -154,11 +155,14 @@ const Jobs = () => {
             return isMatch;
         });
     const [filtered, setFiltered] = useState(data);
-    const itemsPerPage = 5;
+    const itemsPerPage = 1;
     const pageCount = filData && Math.ceil(filData.length / itemsPerPage);
     const currentData = filData && filData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const [checked, setChecked] = useState(false);
     const setTheSearchTerm = () => {
+        router.push({
+            query: { param1: searchWord, param2: addressHolder }
+        });
         setSearchQuery(searchWord);
         setAddress(addressHolder);
     };
@@ -173,7 +177,7 @@ const Jobs = () => {
     const showPage = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        for (let i = 0; i < filData.length; i++) {
+        for (let i = 1; i <= filData.length; i++) {
             const item = document.getElementById(`item-${i}`);
             if (item) {
                 item.style.display = i >= startIndex && i < endIndex ? 'grid' : 'none';
@@ -389,19 +393,17 @@ const Jobs = () => {
                                                                 : 'cursor-pointer max-h-[18rem] bg-textW grid grid-cols-12 py-3 px-4 bg-white rounded-3xl shadow border rounded-2xl xl:pr-0 xl:pl-4 xl:py-7 '
                                                         }
                                                     >
-                                                        <JobImage id={items.employerId} className="col-span-3 sm:max-md:col-span-4" />
-                                                        <div className="col-span-9 flex flex-col pl-2 justify-center sm:max-md:col-span-8 sm:max-md:pl-0">
+                                                        <JobImage id={items.employerId} className="col-span-2 md:col-span-3" />
+                                                        <div className="col-span-9 flex flex-col pl-2 justify-center sm:max-md:col-span-8 sm:max-md:pl-3">
                                                             <ReturnName id={items.employerId} />
                                                             {items.jobTitle && (
-                                                                <p className="text-darkBlue font-midRW text-thS sm:font-fhW sm:text-[2rem] md:text-[1.2rem] xl:text-[1.1rem]">
+                                                                <p className="text-darkBlue font-midRW text-[1rem] sm:font-fhW sm:text-[2rem] md:text-[1.2rem] xl:text-[1.1rem]">
                                                                     {items.jobTitle}
                                                                 </p>
                                                             )}
                                                             {items.jobLocation && (
-                                                                <p className="text-fadedText">
-                                                                    <PinDropOutlinedIcon
-                                                                        sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }}
-                                                                    />
+                                                                <p className="text-fadedText max-sm:text-[14px]">
+                                                                    <PinDropOutlinedIcon sx={{ fontSize: '1rem', marginTop: '-0.2rem' }} />
                                                                     {items.jobLocation}
                                                                 </p>
                                                             )}
@@ -490,7 +492,7 @@ const Jobs = () => {
                                             <div className="col-span-12 flex flex-col">
                                                 <p
                                                     onClick={() => setOpenJobDetail(false)}
-                                                    className="p-3 border-2 rounded-full flex justify-center md:hidden"
+                                                    className="p-3 border-2 rounded-full flex justify-center cursor-pointer md:hidden"
                                                 >
                                                     Back To Search
                                                 </p>
@@ -537,7 +539,10 @@ const Jobs = () => {
                                                 </div>
                                                 <div className="col-span-12 grid grid-cols-12 gap-y-5 bg-textW pt-5 z-[0] rounded-t-xl ">
                                                     <div className="col-span-12 flex grid-cols-12 gap-0">
-                                                        <JobImage id={jobDetails.employerId} className="col-span-2 sm:h-[5.8rem]" />
+                                                        <JobImage
+                                                            id={jobDetails.employerId}
+                                                            className="col-span-2 h-[4rem] sm:h-[5.8rem]"
+                                                        />
                                                         <div className="col-span-8 flex flex-col max-sm:pl-3 sm:pl-2 xl:pl-1">
                                                             {companyName && (
                                                                 <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">
@@ -545,19 +550,18 @@ const Jobs = () => {
                                                                 </p>
                                                             )}
                                                             {jobDetails.jobTitle && (
-                                                                <p className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-dfvhS xl:text-[1.5rem]">
+                                                                <p className="text-darkBlue font-midRW text-[16px] sm:font-fhW sm:text-dfvhS xl:text-[1.5rem]">
                                                                     {jobDetails.jobTitle}
                                                                 </p>
                                                             )}
                                                             {jobDetails.jobLocation && (
-                                                                <p className="text-fadedText">
-                                                                    <PinDropOutlinedIcon
-                                                                        sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }}
-                                                                    />
+                                                                <p className="text-fadedText max-sm:text-[14px] sm:block">
+                                                                    <PinDropOutlinedIcon sx={{ fontSize: '1rem', marginTop: '-0.2rem' }} />
                                                                     {jobDetails.jobLocation}
                                                                 </p>
                                                             )}
                                                         </div>
+
                                                         <div className="col-span-2 flex flex-grow gap-x-5 text-lightGrey justify-end items-center">
                                                             <ShareOutlinedIcon
                                                                 onClick={() => setOpenShare(true)}
@@ -652,8 +656,8 @@ const Jobs = () => {
                                                         <div
                                                             className={
                                                                 company == true
-                                                                    ? 'col-span-6 rounded-full rounded-3xl text-lightGrey text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
-                                                                    : 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
+                                                                    ? 'col-span-6 rounded-full rounded-3xl text-lightGrey  font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
+                                                                    : 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
                                                             }
                                                             onClick={() => setCompany(false)}
                                                         >
@@ -663,8 +667,8 @@ const Jobs = () => {
                                                         <div
                                                             className={
                                                                 company == true
-                                                                    ? 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
-                                                                    : 'col-span-6 rounded-full rounded-3xl text-lightGrey text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
+                                                                    ? 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer text-bigS'
+                                                                    : 'col-span-6 rounded-full rounded-3xl text-lightGrey font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer text-bigS'
                                                             }
                                                             onClick={() => {
                                                                 setCompany(true);
@@ -732,14 +736,17 @@ const Jobs = () => {
                             </div>
                             <img src={uploadResume} className="h-[20rem] self-center md:w-[14rem] md:h-[14rem]" />
                         </div> */}
-                                <div className="flex justify-center items-center md:pt-10 xl:flex-col xl:text-center xl:mt-5 max-h-[20rem] pb-10 bg-textW rounded-xl">
+                                <div className="justify-center items-center md:pt-10 xl:flex-col xl:text-center xl:mt-5 max-h-[20rem] pb-10 bg-textW rounded-xl hidden lg:flex">
                                     <img src={profile} className="self-center w-[8rem] h-[8rem]" />
                                     <div className=" px-5 flex flex-col gap-y-2 mt-2 xl:w-full">
                                         <p className="text-[1.5rem] font-fhW">John Doe</p>
                                         <p className="text-fadedText">Let employers find you</p>
-                                        <button className="text-textW font-fhW bg-gradient-to-r from-gradientFirst to-gradientSecond  py-3 rounded-full mt-4 xl:w-2/3 self-center">
+                                        <Link
+                                            href="/users/candidate/profile"
+                                            className="text-textW font-fhW bg-gradient-to-r from-gradientFirst to-gradientSecond  py-3 rounded-full mt-4 xl:w-2/3 self-center"
+                                        >
                                             Edit Your Profile
-                                        </button>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
@@ -749,13 +756,13 @@ const Jobs = () => {
                                 pageCount > 1
                                     ? openJobDetail
                                         ? 'col-span-3 flex justify-center items-center gap-x-3 mt-4 max-md:hidden'
-                                        : 'col-span-3 flex justify-center items-center gap-x-3 mt-4'
+                                        : 'flex justify-center items-center gap-x-3 mt-4 col-span-12 md:col-span-6 lg:col-span-3'
                                     : 'hidden'
                             }
                         >
                             <button
                                 className={
-                                    maxPaginate >= 5 /* && pageCount > 5 */
+                                    maxPaginate > 5 && pageCount > 5
                                         ? 'border bg-gray-200 hover:bg-gray-300 rounded-md px-3 py-1 text-center'
                                         : 'hidden'
                                 }
@@ -766,8 +773,15 @@ const Jobs = () => {
                             {[...Array(pageCount)].map((_, index) => (
                                 <button
                                     key={index}
+                                    /* className={
+                                        index < maxPaginate  &&  index + 1 > minPaginate
+                                            ? currentPage == index + 1
+                                                ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-md px-3 py-1 mx-1 text-white'
+                                                : 'hover:bg-gray-200 hover:border-gray-200 border border-gray-400 rounded-md px-3 py-1 mx-1'
+                                            : 'hidden'
+                                    } */
                                     className={
-                                        index < maxPaginate + 1 && index + 1 > minPaginate
+                                        index + 1 < maxPaginate && index + 2 > minPaginate
                                             ? currentPage == index + 1
                                                 ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-md px-3 py-1 mx-1 text-white'
                                                 : 'hover:bg-gray-200 hover:border-gray-200 border border-gray-400 rounded-md px-3 py-1 mx-1'

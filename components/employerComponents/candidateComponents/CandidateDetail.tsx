@@ -7,13 +7,19 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import EducationDetail from './EducationDetail';
 import WorkDetail from './WorkDetail';
 import ProjectDetail from './ProjectDetail';
+import Link from 'next/link';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import PhonelinkIcon from '@mui/icons-material/Phonelink';
+import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 const CandidateDetail = (props: any) => {
     return (
         <div className="flex flex-col gap-y-3 p-5 rounded-2xl">
             <div className="flex gap-x-2">
                 {props.imageLinkValue && <img src={props.imageLinkValue} className="w-16 h-16 rounded-xl" />}
                 <div className="col-span-7 flex flex-col">
-                    <p className="text-neutral-900 text-lg font-medium">Jane Doe</p>
+                    <p className="text-neutral-900 text-lg font-medium">{props && props.detailData && props.detailData.name}</p>
                     <p className="text-stone-300 text-sm font-normal">{props && props.detailData && props.detailData.bioHeadline}</p>
                     <p className="text-neutral-900 text-opacity-70 text-sm font-normal leading-normal">
                         <PinDropOutlinedIcon sx={{ fontSize: '1rem' }} /> {props && props.detailData && props.detailData.address}
@@ -28,6 +34,42 @@ const CandidateDetail = (props: any) => {
                     {props && props.detailData && props.detailData.bioDescription}
                 </div>
             </div>
+            {props && props.detailData && (
+                <div className="flex gap-x-5 text-[#618c61]">
+                    {props.detailData.linkedIn && (
+                        <Link target="_blank" title="linkedIn" href={props.detailData.linkedIn}>
+                            <LinkedInIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                        </Link>
+                    )}
+                    {props.detailData.github && (
+                        <Link target="_blank" title="github" href={props.detailData.github}>
+                            <GitHubIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                        </Link>
+                    )}
+                    {props.detailData.behance && (
+                        <Link target="_blank" title="behance" href={props.detailData.behance}>
+                            <FormatBoldIcon className="w-8 h-8 hover:text-[#FE5E0A]" />
+                        </Link>
+                    )}
+                    {props.detailData.protfolio && (
+                        <Link target="_blank" title="portifolio" href={props.detailData.protfolio}>
+                            <PhonelinkIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                        </Link>
+                    )}
+                </div>
+            )}
+            {props && props.detailData && props.detailData.coverLetter && (
+                <div className="pb-5 flex-grow max-sm:h-60">
+                    <p className="font-fhW text-fhS leading-fhL">
+                        <TextSnippetIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                        Cover Letter
+                    </p>
+                    <div
+                        className="border-0 pt-3 text-stone-400 focus:border-0 focus:ring-0 h-full max-h-[80%] w-full overflow-y-auto overflow-x-hidden"
+                        dangerouslySetInnerHTML={{ __html: props.detailData.coverLetter }}
+                    />
+                </div>
+            )}
             <div className="flex gap-2 gap-y-3 flex-wrap my-2">
                 <p className="font-fhW text-fhS leading-fhL w-full">
                     <LocalFireDepartmentOutlinedIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
