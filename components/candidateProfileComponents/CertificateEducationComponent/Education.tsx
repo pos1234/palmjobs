@@ -77,7 +77,7 @@ const Education = () => {
                                         />
                                     </div>
                                 </div>
-                                <div className="col-span-9 grid grid-cols-12 sm:col-span-11 sm:max-lg:pl-4 md:col-span-11 lg:pl-5">
+                                <div className="col-span-9 grid grid-cols-12 pl-2 sm:col-span-11 sm:max-lg:pl-4 md:col-span-11 lg:pl-5">
                                     <p className="col-span-12 text-fhS font-fhW leading-fhL flex items-center md:text-shS md:font-smRW">
                                         {item.educationLevel}
                                     </p>
@@ -196,7 +196,7 @@ const Education = () => {
                             <form className="col-span-11 grid grid-cols-12 xl:pl-8" onSubmit={addEducation}>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2 cursor-pointer">
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Level of Education</p>
-                                    <div className="relative border-2 rounded-full" onClick={() => setSelected(!selected)}>
+                                    <div className="relative border-2 rounded-full" /* onClick={() => setSelected(!selected)} */>
                                         <select
                                             className="w-full rounded-full appearance-none px-4 p-3"
                                             value={education.educationLevel}
@@ -214,9 +214,9 @@ const Education = () => {
                                             <option value="Doctorate (PhD)">Doctorate (PhD)</option>
                                             <option value="Post-Doctorate">Post-Doctorate</option>
                                         </select>
-                                        <div className="absolute top-3 right-4">
+                                        {/* <div className="absolute top-3 right-4">
                                             {selected ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
@@ -287,7 +287,7 @@ const Education = () => {
                             <form className="col-span-11 grid grid-cols-12 xl:pl-8" onSubmit={editEducations}>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2 cursor-pointer">
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Level of Education</p>
-                                    <div className="relative border-2 rounded-full" onClick={() => setSelected(!selected)}>
+                                    <div className="relative border-2 rounded-full" /* onClick={() => setSelected(!selected)} */>
                                         <select
                                             className="w-full rounded-full appearance-none px-4 p-3"
                                             value={EditedEducation.educationLevel}
@@ -305,9 +305,9 @@ const Education = () => {
                                             <option value="Doctorate (PhD)">Doctorate (PhD)</option>
                                             <option value="Post-Doctorate">Post-Doctorate</option>
                                         </select>
-                                        <div className="absolute top-3 right-4">
+                                        {/* <div className="absolute top-3 right-4">
                                             {selected ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">

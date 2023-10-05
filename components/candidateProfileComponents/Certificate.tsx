@@ -188,7 +188,7 @@ const Certificate = () => {
                                     !editOneCertificate &&
                                     certificateArray.map((item, index) => (
                                         <div
-                                            key={item.index}
+                                            key={index}
                                             className="col-span-12 grid grid-cols-12 border-2 rounded-2xl p-5 sm:max-md:col-span-6 lg:col-span-6"
                                         >
                                             <div className="col-span-2">

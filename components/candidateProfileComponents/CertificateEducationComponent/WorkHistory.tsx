@@ -20,7 +20,6 @@ const ElementWithIcon = (props: any) => {
     const toggleDescription = () => {
         setIsOpen(!isOpen);
     };
-
     return (
         <>
             <div className="grid grid-cols-12 pb-5 cursor-pointer md:mb-5 sm:max-md:gap-x-2 " onClick={toggleDescription}>
@@ -35,7 +34,7 @@ const ElementWithIcon = (props: any) => {
                             />
                         </div>
                     </div>
-                    <div className="col-span-8 grid grid-cols-12 sm:col-span-10 sm:max-lg:pl-4 md:col-span-10 lg:pl-5">
+                    <div className="col-span-8 grid grid-cols-12 pl-2 sm:col-span-10 sm:max-lg:pl-4 md:col-span-10 lg:pl-5">
                         <p className="col-span-12 text-fhS font-fhW leading-fhL flex items-center md:text-shS md:font-smRW">
                             {props.title}
                         </p>
@@ -153,7 +152,7 @@ const WorkHitory = () => {
             </div>
             {openWork && (
                 <ConfirmModal isOpen={openWork} handleClose={() => setOpenWork(!openWork)}>
-                    <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
+                    <div className="mx-2 pb-10 w-full overflow-scroll h-[100%] pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
                         <div className="col-span-12 grid grid-cols-12 ">
                             <div className="col-span-12 grid grid-cols-12 mb-5">
                                 <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
@@ -288,7 +287,7 @@ const WorkHitory = () => {
                                             />
                                         </div>
                                     )}
-                                    <div className="col-span-12 pr-2 md:pl-2">
+                                    <div className="col-span-12 pr-2 max-md:mb-10 md:pl-2">
                                         <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Job Description</p>
                                         <ReactQuill
                                             className="h-28 text-addS"
@@ -379,7 +378,7 @@ const WorkHitory = () => {
                                             />
                                         </div>
                                     )}
-                                    <div className="col-span-12 pr-2 md:pl-2">
+                                    <div className="col-span-12 pr-2 max-md:mb-10 md:pl-2">
                                         <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Job Description</p>
                                         <ReactQuill
                                             className="h-28 text-addS"

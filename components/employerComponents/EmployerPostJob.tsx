@@ -64,8 +64,8 @@ const TextInput = (props: any) => {
                 onChange={(e) => props.setFunction(e.currentTarget.value)}
                 className={
                     props.errorMessage
-                        ? 'w-96 h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0'
-                        : 'w-96 h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0'
+                        ? ' h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full md:w-96'
+                        : ' h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96'
                 }
             />
             {props.errorMessage && <p className="text-red-500 text-[13px]">{props.errorMessage}</p>}
@@ -107,7 +107,7 @@ const Jobtype = (props: any) => {
     );
 };
 
-const PostAJob = () => {
+const PostAJob = (props: any) => {
     const router = useRouter();
     const loadingIn = '/images/loading.svg';
     const profile = '/images/profile.svg';
@@ -316,7 +316,6 @@ const PostAJob = () => {
     };
     const handleFirstSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-
         if (first && !second && !third && !fourth) {
             setJobTitleError('');
             setCategoryError('');
@@ -441,60 +440,6 @@ const PostAJob = () => {
                 });
         }
     };
-    /*    const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        if (email && emailSent == '') {
-            setEmailError('please provide email address');
-        } else if (link && externalLink == '') {
-            setLinkError('please provide link');
-        } else {
-            setLoading(true);
-            postJobs(
-                compName,
-                jobTitle,
-                category,
-                openPositions.toString(),
-                location,
-                worktype,
-                expRequired,
-                JSON.stringify(skillArray),
-                minSalary,
-                maxSalary,
-                currency,
-                jobDesc,
-                deadline,
-                '',
-                emailSent,
-                externalLink
-            ).then((res: any) => {
-                setLoading(false);
-                toast.success('Successfully Posted Job');
-                setCompName('');
-                setJobTitle('');
-                setCategory('');
-                setOpenPositions(1);
-                setLocation('Remote');
-                setWorkType('Full Time');
-                setExpRequired('No experience needed');
-                setSkillArray([]);
-                setSalary('');
-                setMinSalary('');
-                setMaxSalary('');
-                setJobDesc('');
-                setEmailSent('');
-                setExternalLink('');
-                setDeadline(`${fifteenthDay}`);
-                console.log(res);
-
-                router.push(`/jobs/${res.$id}`);
-            });
-            .catch((error) => {
-                    setLoading(false);
-                    toast.error('Job Not Posted');
-                    console.log(error);
-                });
-        }
-    }; */
     const handleJobSelection = async (id: string) => {
         setPostingJobId(id);
         fetchSinglePostedJobs(id).then((res: any) => {
@@ -543,6 +488,18 @@ const PostAJob = () => {
             }
         });
     };
+    useEffect(() => {
+        if (props.editedJobId) {
+            if (chooseJob && !first && !second && !third && !fourth) {
+                setFourth(false);
+                setThird(false);
+                setSecond(false);
+                setFirst(true);
+                setChooseJob(false);
+            }
+            handleJobSelection(props.editedJobId);
+        }
+    }, [props.editedJobId]);
     const getPosted = async () => {
         const posted = await fetchPostedJobs();
         if (posted && posted.documents) {
@@ -561,8 +518,15 @@ const PostAJob = () => {
     };
     const getProfile = async () => {
         getProfileData().then((res: any) => {
-            if (res.documents[0].location == '' || res.documents[0].phoneNumber == '' || res.documents[0].description == '') {
-                setProfileFilled(true);
+            if (res && res.documents[0]) {
+                if (
+                    res.documents[0].location == '' ||
+                    res.documents[0].phoneNumber == '' ||
+                    res.documents[0].description == '' ||
+                    res.documents[0].companyName == ''
+                ) {
+                    setProfileFilled(true);
+                }
             }
         });
     };
@@ -580,12 +544,15 @@ const PostAJob = () => {
     useEffect(() => {
         initialData();
     }, []);
+    const todaysDate = new Date();
+    const maxDate = new Date();
+    maxDate.setMonth(today.getMonth() + 1);
     return (
-        <div className="pt-5 pl-10 pb-10 bg-textW min-h-screen xl:pr-28 xl:px-20">
+        <div className="pt-5 px-3 pb-10 bg-textW min-h-screen md:pl-10 xl:pr-28 xl:px-20">
             {!chooseJob && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
             {!chooseJob && (
                 <div
-                    className="col-span-12 grid grid-cols-12 gap-x-2 pr-20 mt-1 lg:pr-40
+                    className="col-span-12 grid grid-cols-12 gap-x-2 mt-1 md:pr-20 lg:pr-40
              xl:pr-60"
                 >
                     <div className="rounded-2xl bg-gradientFirst h-1.5 col-span-3"></div>
@@ -607,7 +574,9 @@ const PostAJob = () => {
                 </div>
             )}
             <div className={chooseJob && !first && !second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}>
-                <div className="text-neutral-900 text-3xl font-semibold leading-10">Create a job post</div>
+                <div className="text-neutral-900 text-3xl font-semibold leading-10 h-20 flex items-center pl-5 md:h-32 jobsBack">
+                    Create a job post
+                </div>
                 <div className="flex flex-col gap-y-5 pt-5 pb-10">
                     <RadioInput
                         radioName="selectedRadio"
@@ -636,7 +605,7 @@ const PostAJob = () => {
                                 setJobId(e.currentTarget.value);
                                 handleJobSelection(e.currentTarget.value);
                             }}
-                            className="form-select w-96 h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0"
+                            className="form-select  h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96"
                         >
                             {postedJobs &&
                                 postedJobs.map((item: any, index: number) => {
@@ -648,37 +617,22 @@ const PostAJob = () => {
                                 })}
                         </select>
                     )}
-                    {/* {selectedRadio == 'draft' && (
-                        <select
-                            value={category}
-                            style={{ maxHeight: '200px' }}
-                            onChange={(e) => setCategory(e.currentTarget.value)}
-                            className="form-select w-96 h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0"
-                        >
-                            <option value="Agriculture">Draft</option>
-                            <option value="Construction">Construction</option>
-                            <option value="Education">Education</option>
-                            <option value="Energy">Energy</option>
-                            <option value="Finance & Insurance">Finance & Insurance</option>
-                            <option value="HealthCare">HealthCare</option>
-                            <option value="Hospital and Tourism">Hospital and Tourism</option>
-                        </select>
-                    )} */}
                 </div>
             </div>
             <form
                 onSubmit={handleFirstSubmit}
                 className={!chooseJob && first && !second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}
             >
-                <div className="text-neutral-900 text-3xl font-semibold leading-10">Provide Basic Information</div>
+                <div className="text-neutral-900  font-semibold leading-10 text-xl md:text-3xl">Provide Basic Information</div>
                 <RequiredTextLabel text="Job Title" />
                 <TextInput errorMessage={jobTitleError} placeHolder="Job Position" value={jobTitle} setFunction={setJobTitle} />
                 <RequiredTextLabel text="Job Category" />
+
                 <select
                     value={category}
                     style={{ maxHeight: '200px' }}
                     onChange={(e) => setCategory(e.currentTarget.value)}
-                    className="form-select w-96 h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0"
+                    className="h-12 max-h-[10px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96"
                 >
                     <option value="Agriculture">Agriculture</option>
                     <option value="Construction">Construction</option>
@@ -724,7 +678,7 @@ const PostAJob = () => {
                     </div>
                 </div>
                 <RequiredTextLabel text="Which option best describe this job's location ?" />
-                <div className="flex bg-forBack w-1/2 p-2 gap-x-5">
+                <div className="flex bg-forBack  p-2 gap-x-5 w-full lg:w-1/2">
                     <div
                         onClick={() => {
                             setLocation('');
@@ -784,14 +738,13 @@ const PostAJob = () => {
                     {loading && (
                         <img
                             src={loadingIn}
-                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-8/12 rounded-full md:w-5/12 lg:w-3/12"
                         />
                     )}
                     {!loading && (
                         <button
                             type="submit"
-                            /*                             onClick={handleFront}
-                             */ className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                            className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-8/12 rounded-full md:w-5/12 lg:w-3/12"
                         >
                             Save and Continue
                         </button>
@@ -825,18 +778,27 @@ const PostAJob = () => {
                 <RequiredTextLabel text="Required Skills ?" />
                 <Skills array={skillArray} setArray={setSkillArray} />
                 {skillError && <p className="text-red-500 text-[13px]">{skillError}</p>}
-                <div className="flex pt-10 justify-end">
+                <div className="flex pt-10 justify-between max-md:flex-col max-md:gap-y-8">
+                    <div
+                        onClick={handleBack}
+                        className={
+                            second || third || fourth
+                                ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 rounded-full max-md:order-2 w-full md:w-5/12 lg:w-3/12'
+                                : 'opacity-0'
+                        }
+                    >
+                        <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
+                    </div>
                     {loading && (
                         <img
                             src={loadingIn}
-                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full w-full md:w-5/12 rounded-full lg:w-3/12"
                         />
                     )}
                     {!loading && !profileFilled && (
                         <button
                             type="submit"
-                            /*                             onClick={handleFront}
-                             */ className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                            className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-full md:w-5/12 rounded-full lg:w-3/12"
                         >
                             Save and Continue
                         </button>
@@ -864,7 +826,7 @@ const PostAJob = () => {
                                 <option value="usd">USD</option>
                                 <option value="euro">EURO</option>
                                 <option value="gpb">GBP</option>
-                                <option value="rnp">RNP</option>
+                                <option value="rnp">RMB</option>
                             </select>
                             <input
                                 type="number"
@@ -896,18 +858,27 @@ const PostAJob = () => {
                     </>
                 )}
                 {profileFilled && <EmployerProfile setFilled={setProfileFilled} />}
-                <div className="flex pt-10 justify-end">
+                <div className="flex pt-10 justify-between max-md:flex-col max-md:gap-y-8">
+                    <div
+                        onClick={handleBack}
+                        className={
+                            second || third || fourth
+                                ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 rounded-full max-md:order-2 w-full md:w-5/12 lg:w-3/12'
+                                : 'opacity-0'
+                        }
+                    >
+                        <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
+                    </div>
                     {loading && (
                         <img
                             src={loadingIn}
-                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-full md:w-5/12 lg:w-3/12"
                         />
                     )}
                     {!profileFilled && !loading && (
                         <button
                             type="submit"
-                            /*                             onClick={handleFront}
-                             */ className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                            className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full  w-full md:w-5/12 lg:w-3/12"
                         >
                             Save and Continue
                         </button>
@@ -919,7 +890,7 @@ const PostAJob = () => {
                 className={!chooseJob && !first && !second && !third && fourth ? 'col-span-12 pt-5  space-y-3 ' : 'hidden'}
             >
                 <div className="text-neutral-900 text-[1.3rem] font-semibold leading-10 md:text-[1.6rem]">Set application Preference</div>
-                <div className="flex bg-forBack w-1/2 p-2 gap-x-5">
+                <div className="flex bg-forBack w-full p-2 gap-x-5 md:w-1/2">
                     <div
                         onClick={() => {
                             setPalm(true);
@@ -985,17 +956,28 @@ const PostAJob = () => {
                     <input
                         value={deadline}
                         type="date"
+                        min={todaysDate.toISOString().split('T')[0]}
+                        max={maxDate.toISOString().split('T')[0]}
                         onChange={(e) => setDeadline(e.currentTarget.value)}
-                        className="rounded-full w-96 border-stone-300 px-28 py-3 cursor-pointer focus:border-orange-500 focus:ring-0"
+                        className="rounded-full  border-stone-300 py-3 cursor-pointer focus:border-orange-500 focus:ring-0 w-full px-20 md:px-28 md:w-96"
                     />
                 </div>
-
-                <div className="flex pt-10 justify-end">
+                <div className="flex pt-10 max-md:flex-col max-md:gap-y-8">
+                    <div
+                        onClick={handleBack}
+                        className={
+                            second || third || fourth
+                                ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 rounded-full max-md:order-3 w-full md:w-5/12 lg:w-3/12'
+                                : 'opacity-0'
+                        }
+                    >
+                        <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
+                    </div>
                     <div
                         onClick={() => setOpenPreview(true)}
                         className={
                             fourth
-                                ? 'text-orange-600 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12 ml-40'
+                                ? 'text-orange-600 flex items-center justify-center cursor-pointer h-16 rounded-full  max-md:order-2 w-full md:ml-40 md:w-5/12 lg:w-3/12'
                                 : 'hidden'
                         }
                     >
@@ -1004,62 +986,24 @@ const PostAJob = () => {
                     {loading && (
                         <img
                             src={loadingIn}
-                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                            className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full max-md:order-1 w-full md:w-5/12 lg:w-3/12"
                         />
                     )}
-
                     {!loading && (
                         <button
                             type="submit"
-                            /*                             onClick={handleFront}
-                             */ className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                            className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full max-md:order-1 w-full md:w-5/12 lg:w-3/12"
                         >
                             Post Job
                         </button>
                     )}
                 </div>
             </form>
-            <div className="flex justify-between pt-5 self-end">
-                <div
-                    onClick={handleBack}
-                    className={
-                        second || third || fourth
-                            ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12'
-                            : 'opacity-0'
-                    }
-                >
-                    <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
-                </div>
-                {/* <div
-                    onClick={() => setOpenPreview(true)}
-                    className={
-                        fourth
-                            ? 'text-orange-600 flex items-center justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12 ml-40'
-                            : 'hidden'
-                    }
-                >
-                    See Preview &nbsp; <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
-                </div> */}
-
-                {/* {fourth && !loading && (
-                    <button
-                        type="submit"
-                        onClick={handleFront}
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
-                    >
-                        Post Job
-                    </button>
-                )} */}
-                {/* {loading && (
-                    <img
-                        src={loadingIn}
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
-                    />
-                )}*/}
+            <div className="flex justify-end pt-5">
                 {!fourth && !profileFilled && chooseJob && (
                     <div
                         onClick={handleFront}
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 max-md:mt-10 w-full md:w-5/12 rounded-full lg:w-3/12"
                     >
                         Continue
                     </div>
@@ -1067,15 +1011,15 @@ const PostAJob = () => {
             </div>
             {
                 <ConfirmModal isOpen={openPreview} handleClose={() => setOpenPreview(!openPreview)}>
-                    <div className="mx-2 pb-5 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-6 md:pl-8 md:w-2/3 lg:w-1/2">
+                    <div className="mx-2 pb-5 w-full  bg-textW rounded-2xl grid grid-cols-12 pt-6 sm:pl-5 md:pl-8 md:w-2/3 lg:w-1/2">
                         <div className="col-span-12 grid grid-cols-12">
                             <div className="col-span-10  flex items-center">
-                                <img src={previewImage} className="w-16 lg:w-20" />
+                                <img src={previewImage} className="w-16 lg:w-20 max-sm:hidden" />
                                 <div className="col-span-9 flex flex-col pl-5">
-                                    <div className="text-neutral-900 text-[0.9rem] font-semibold leading-10 lg:text-lg">
+                                    <div className="text-neutral-900 text-[0.9rem] font-semibold sm:leading-10 lg:text-lg">
                                         This is a preview of what people may see
                                     </div>
-                                    <div className="text-neutral-400 text-sm font-light leading-normal">
+                                    <div className="text-neutral-400  font-light leading-normal text-[12px] sm:text-sm">
                                         Your job post may look slightly different when it is live
                                     </div>
                                 </div>
@@ -1089,7 +1033,6 @@ const PostAJob = () => {
                                 </button>
                             </div>
                         </div>
-
                         <div className="col-span-12 grid grid-cols-12 gap-y-5 bg-textW pt-5 z-[0] rounded-t-xl relative px-2 lg:px-16">
                             <div className="col-span-12 grid grid-cols-12 gap-0f">
                                 <img src={profile} className="col-span-2 w-full h-full sm:h-[5.8rem]" />
@@ -1103,16 +1046,22 @@ const PostAJob = () => {
                                         {location}
                                     </p>
                                 </div>
-                                <div className="col-span-2 flex gap-x-5 text-lightGrey items-center">
-                                    <ShareOutlinedIcon className="text-[2rem] cursor-pointer" />
-                                    <BookmarkBorderOutlinedIcon className="text-[2rem] cursor-pointer" />
+                                <div className="col-span-2 flex text-lightGrey items-center gap-x-2 sm:gap-x-5">
+                                    <ShareOutlinedIcon className="cursor-pointer sm:text-[2rem] " />
+                                    <BookmarkBorderOutlinedIcon className="cursor-pointer sm:text-[2rem] " />
                                 </div>
                             </div>
                             <div className="col-span-12 grid grid-cols-12 bg-forBack gap-x-1 gap-y-2 md:gap-x-2 md:p-2 xl:mx-2">
-                                {salary !== '' && (
+                                {(minSalary !== '' || maxSalary !== '') && (
                                     <Jobtype
                                         salary="Salary"
-                                        money={salary}
+                                        money={
+                                            minSalary == '' && maxSalary !== ''
+                                                ? maxSalary
+                                                : minSalary !== '' && maxSalary == ''
+                                                ? minSalary
+                                                : minSalary + '-' + maxSalary
+                                        }
                                         icon={
                                             currency == 'euro' ? (
                                                 <EuroIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
@@ -1123,12 +1072,11 @@ const PostAJob = () => {
                                             ) : currency == 'rnp' ? (
                                                 <CurrencyRupeeIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
                                             ) : (
-                                                <p>ETB</p>
+                                                <span className="mr-2">ETB</span>
                                             )
                                         }
                                     />
                                 )}
-
                                 <Jobtype
                                     salary="Job Type"
                                     money={worktype}
@@ -1155,19 +1103,19 @@ const PostAJob = () => {
                                 <div
                                     className={
                                         company == true
-                                            ? 'col-span-6 rounded-full rounded-3xl text-lightGrey text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
-                                            : 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
+                                            ? 'col-span-6 rounded-full rounded-3xl text-lightGrey  font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer sm:text-bigS'
+                                            : 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW  font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer sm:text-bigS'
                                     }
                                     onClick={() => setCompany(false)}
                                 >
-                                    Description
+                                    Job Description
                                 </div>
 
                                 <div
                                     className={
                                         company == true
-                                            ? 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
-                                            : 'col-span-6 rounded-full rounded-3xl text-lightGrey text-bigS font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer'
+                                            ? 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer sm:text-bigS'
+                                            : 'col-span-6 rounded-full rounded-3xl text-lightGrey font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer sm:text-bigS'
                                     }
                                     onClick={() => setCompany(true)}
                                 >
@@ -1176,7 +1124,8 @@ const PostAJob = () => {
                             </div>
                             {!company && (
                                 <div className="col-span-12 mx-3">
-                                    <p className="font-thW text-frhS">Job Description</p>
+                                    {/*                                     <p className="font-thW text-frhS">Job Description</p>
+                                     */}{' '}
                                     <div
                                         className="text-sm text-fadedText max-h-20 overflow-y-auto hideScrollBar"
                                         dangerouslySetInnerHTML={{ __html: jobDesc }}

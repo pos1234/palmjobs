@@ -6,7 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { MiddleWare } from '@/lib/middleware';
-import { getProfileData, updateProfile } from '@/lib/services';
+import { getProfileData, getUserData, updateProfile, updateUserName } from '@/lib/services';
 import { toast } from 'react-toastify';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
@@ -17,23 +17,24 @@ const TextInput = (props: any) => {
             placeholder={props.placeHolder}
             value={props.value}
             onChange={(e) => props.setFunction(e.currentTarget.value)}
-            className="w-96 h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0"
+            className=" h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 w-full md:w-96"
         />
     );
 };
 const RequiredTextLabel = (props: any) => {
     return (
         <div>
-            <span className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose md:text-xl">{props.text} </span>
-            <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 text-2xl font-medium leading-loose'}>*</span>
+            <span className="text-neutral-900 text-opacity-70 text-md font-medium sm:leading-loose md:text-xl">{props.text} </span>
+            <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 text-2xl font-medium sm:leading-loose'}>*</span>
         </div>
     );
 };
 
 const EmployerProfile = (props: any) => {
     const loadingIn = '/images/loading.svg';
-    /*     const [companyName, setCompanyName] = useState('');
-     */ const [industry, setIndustry] = useState('');
+    const [companyName, setCompanyName] = useState('');
+    const [userName, setUserName] = useState('');
+    const [industry, setIndustry] = useState('');
     const [address, setAddress] = useState('');
     const [noEmployee, setNoEmployee] = useState('');
     const [phone, setPhone] = useState('');
@@ -76,8 +77,7 @@ const EmployerProfile = (props: any) => {
     const initialData = async () => {
         const result = await getProfileData();
         if (result) {
-            /*             setCompanyName(res.documents[0].companyName);
-             */
+            setCompanyName(result.documents[0].companyName);
             result &&
                 result.documents &&
                 result.documents[0] &&
@@ -118,13 +118,15 @@ const EmployerProfile = (props: any) => {
     };
     useEffect(() => {
         initialData();
+        getUserData().then((res: any) => setUserName(res.name));
     }, []);
     const handleProfile = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoading(true);
-        updateProfile(/* companyName, */ industry, address, noEmployee, phone, webLink, compDescription)
+        updateProfile(companyName, industry, address, noEmployee, phone, webLink, compDescription)
             .then(() => {
                 toast.success('Successfully Updated Profile');
+                updateUserName(userName);
                 setLoading(false);
                 if (props.setFilled) {
                     props.setFilled(false);
@@ -137,7 +139,7 @@ const EmployerProfile = (props: any) => {
             });
     };
     return (
-        <form className="pt-5 pl-10 pb-10 bg-textW  xl:pr-28 xl:px-20" onSubmit={handleProfile}>
+        <form className="pt-5  pb-10 bg-textW px-2 sm:pl-10 xl:pr-28 xl:px-20" onSubmit={handleProfile}>
             <div className="col-span-12 pt-5 space-y-3 mb-3">
                 <div className="col-span-12 relative md:col-span-4 xl:col-span-4">
                     <div className="profilePictureContainer w-28 h-28 col-span-2 rounded-3xl cursor-pointer">
@@ -161,7 +163,7 @@ const EmployerProfile = (props: any) => {
                         ) : (
                             <>
                                 <p className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex text-center justify-center text-[5rem] font-frhW">
-                                    {/* {firstLetter} */} A
+                                    {companyName.charAt(0)}
                                 </p>
                                 <div className="uploadProfile">
                                     <label htmlFor="photo-upload" className="custom-file-upload">
@@ -176,12 +178,14 @@ const EmployerProfile = (props: any) => {
                     </div>
                     {profileError && <p className="text-gradientFirst pt-3 pl-2 text-[12px]">{profileError}</p>}
                 </div>
-                <div className="text-neutral-900 text-3xl font-semibold leading-10">Create employer account</div>
-                {/* <RequiredTextLabel text="Your Company Name?" />
-                <TextInput placeHolder="company name" value={companyName} setFunction={setCompanyName} /> */}
+                <div className="text-neutral-900  font-semibold text-2xl leading-10 md:text-3xl">Create employer account</div>
+                <RequiredTextLabel text="Your Company Name?" />
+                <TextInput placeHolder="company name" value={companyName} setFunction={setCompanyName} />
+                <RequiredTextLabel text="Your Name?" />
+                <TextInput placeHolder="your name" value={userName} setFunction={setUserName} />
                 <RequiredTextLabel text="Your Company's Industry?" />
                 <select
-                    className="w-96 h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 cursor-pointer"
+                    className=" h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 cursor-pointer w-full md:w-96"
                     value={industry}
                     onChange={(e) => {
                         setIndustry(e.currentTarget.value);
@@ -210,7 +214,7 @@ const EmployerProfile = (props: any) => {
                 <RequiredTextLabel text="Your Company's number of employee?" />
                 <input
                     type="number"
-                    className="w-96 h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 hideIncrease"
+                    className=" h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 hideIncrease w-full md:w-96"
                     value={noEmployee}
                     onChange={(e) => setNoEmployee(e.currentTarget.value)}
                 />
@@ -234,7 +238,7 @@ const EmployerProfile = (props: any) => {
                 {!loading && (
                     <button
                         type="submit"
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16  rounded-full w-7/12 md:w-5/12 lg:w-3/12"
                     >
                         Save
                     </button>
@@ -242,7 +246,7 @@ const EmployerProfile = (props: any) => {
                 {loading && (
                     <img
                         src={loadingIn}
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-7/12 md:w-5/12 lg:w-3/12"
                     />
                 )}
             </div>

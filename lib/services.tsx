@@ -166,11 +166,12 @@ export const deletePortfolio = (id: string) => {
         console.log(e);
     }
 };
-export const insertCoverLetter = (id: string, cover: any) => {
+export const insertCoverLetter = async (id: string, cover: any) => {
     const datas = {
         coverLetter: cover
     };
-    updateDocuments(id, datas);
+   const promise = await updateDocuments(id, datas);
+   return promise
 };
 export const addSector = (sectors: string, id: string) => {
     const datas = {
@@ -274,7 +275,11 @@ export const deleteGithubLink = (id: string) => {
     }
 };
 export const fetchJobs = async () => {
-    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.limit(100), Query.offset(0)]);
+    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
+        Query.limit(100),
+        Query.offset(0),
+        Query.equal('jobStatus', 'Active')
+    ]);
     return promise;
 };
 export const checkEmailAppliation = (id: string) => {
@@ -341,9 +346,12 @@ export const fetchAppliedJobsData = async (ids: string) => {
     const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, ids);
     return response;
 };
+export const getNoApplicants = async (id: string) => {
+    const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('jobId', id)]);
+    return results;
+};
 export const getAppliedJobId = async (id: string) => {
     try {
-        const userAccount = await account.get();
         const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('jobId', id)]);
         return results;
     } catch (e) {
@@ -780,6 +788,10 @@ export const fetchDraftedJobs = async () => {
         return promise;
     }
 };
+export const deleteDraftedJobs = async (id: string) => {
+    const promise = databases.deleteDocument(DATABASE_ID, POSTED_JOBS, id);
+    return promise;
+};
 export const fetchSinglePostedJobs = (id: string) => {
     const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('$id', id)]);
     return promise;
@@ -829,16 +841,16 @@ export const fetchActivePostedJobs = async () => {
         return promise;
     }
 };
-export const fetchPausedPostedJobs = async () => {
+/* export const fetchDraftedJobs = async () => {
     const userAccount = await getAccount();
     if (userAccount !== 'failed') {
         const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
             Query.equal('employerId', userAccount.$id),
-            Query.equal('jobStatus', 'Pause')
+            Query.equal('jobStatus', 'Draft')
         ]);
         return promise;
     }
-};
+}; */
 export const fetchClosedPostedJobs = async () => {
     const userAccount = await getAccount();
     if (userAccount !== 'failed') {
@@ -937,7 +949,7 @@ export const updateJobStatus = (id: string, stat: string) => {
     return promise;
 };
 export const updateProfile = async (
-    /*  companyName: string, */
+    companyName: string,
     sector: string,
     location: string,
     noOfEmployee: string,
@@ -948,8 +960,8 @@ export const updateProfile = async (
     const userAccount = await getAccount();
     if (userAccount !== 'failed') {
         const datas = {
-            /*         companyName,
-             */ sector,
+            companyName,
+            sector,
             location,
             noOfEmployee,
             phoneNumber,
