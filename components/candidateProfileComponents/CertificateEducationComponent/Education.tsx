@@ -297,7 +297,7 @@ const Education = () => {
                                         >
                                             <option value="High School Diploma">High School Diploma</option>
                                             <option value="Vocational Training/Certificate">Vocational Training/Certificate</option>
-                                            <option value="Associate Degrer">Associate Degrer</option>
+                                            <option value="Associate Degrer">Associate Degree</option>
                                             <option value="Bachelor's Degree">Bachelor's Degree</option>
                                             <option value="Postgraduate Certificate/Diploma">Postgraduate Certificate/Diploma</option>
                                             <option value="Master's Degree">Master's Degree</option>

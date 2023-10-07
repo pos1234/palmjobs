@@ -59,18 +59,16 @@ const Home = () => {
                         <span className="bg-gradient-to-r from-gradientFirst to-gradientSecond text-center px-3 text-textW py-1 rounded-full mr-5 block max-sm:mx-20 max-sm:mt-10 max-sm:mb-4 sm:inline cursor-pointer">
                             For Employers
                         </span>
-                        Explore talents &nbsp;
+                        {/* Explore talents &nbsp; */}
                         <Link className="font-shW text-gradientFirst underline cursor-pointer" href="/users/employer/">
                             Post Job
                         </Link>
                     </p>
                 </div>
                 <p className="font-shW text-shS text-center text-[40px] sm:text-[60px] md:text-[72px] md:leading-[92px]">
-                    Right Fit! <br /> The Perfect Job on <span className="text-gradientFirst">YES</span>
+                    Connect <br /> Grow, Succeed. {/* <span className="text-gradientFirst">YES</span> */}
                 </p>
-                <p className="text-center text-[#393D48] max-sm:mt-3 sm:max-md:mb-5">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tincidunt in
-                </p>
+                <p className="text-center text-[#393D48] max-sm:mt-3 sm:max-md:mb-5">Find your next job. Easy as a breeze.</p>
                 <div className="grid grid-cols-12 gap-y-4 max-sm:px-5 max-sm:pt-10 sm:space-x-5 md:space-x-2 lg:space-x-5 lg:px-10 xl:px-40 md:py-5 md:pt-10">
                     <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 md:h-16  sm:col-span-6 md:col-span-4 lg:col-span-4">
                         <div className="col-span-2 flex items-center justify-center text-gray-500">
@@ -80,7 +78,7 @@ const Home = () => {
                             <input
                                 onChange={(e) => setSearchText(e.currentTarget.value)}
                                 type="text"
-                                placeholder="What are you looking for?"
+                                placeholder="What"
                                 className="max-md:h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8] "
                             />
                         </div>
@@ -93,7 +91,7 @@ const Home = () => {
                             <input
                                 onChange={(e) => setAddress(e.currentTarget.value)}
                                 type="text"
-                                placeholder="Remote"
+                                placeholder="Where"
                                 className="max-md:h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8]"
                             />
                         </div>
@@ -145,7 +143,7 @@ const Home = () => {
                         <span className="bg-gradient-to-r from-gradientFirst to-gradientSecond text-center px-3 text-textW py-1 rounded-full mr-5 block max-sm:mx-20 max-sm:mt-10 max-sm:mb-4 sm:inline cursor-pointer">
                             New
                         </span>
-                        Stay connected to Recent jobs
+                        Apply with ease
                         <Link
                             href="users/candidate/profile"
                             className="font-shW text-gradientFirst underline cursor-pointer max-sm:block ml-2"

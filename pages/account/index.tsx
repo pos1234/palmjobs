@@ -145,7 +145,6 @@ const Login = () => {
                             <span className="text-smS inline-block mb-1">You're almost there! {name}</span> <br />
                         </p>
                     )}
-
                     {register && !registerForm && (
                         <>
                             <div className="text-center mt-5">
@@ -217,7 +216,7 @@ const Login = () => {
                             </button> */}
                         </div>
                     )}
-                    {registerForm && <RegisterComponent role={getJob ? 'candidate' : 'employer'} />}
+                    {registerForm && <RegisterComponent name={name} role={getJob ? 'candidate' : 'employer'} />}
                     {!register && forgotPassword == false && (
                         <>
                             <form className="w-full pl-5 grid grid-cols-12 text-left pr-2 md:pr-0" onSubmit={handlelogin}>

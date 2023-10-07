@@ -10,7 +10,6 @@ const Bio = () => {
     const [openBio, setOpenBio] = useState(false);
     const bioMaxCharacters = 100;
     const bioDescMaxCharacters = 1000;
-
     return (
         <div className="col-span-12 grid grid-cols-12 bg-textW rounded-3xl p-2 pt-5 pr-0 lg:pl-14 lg:p-8 md:pr-5 lg:pr-5">
             <div className="col-span-8 md:col-span-6">

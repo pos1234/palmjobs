@@ -45,6 +45,7 @@ import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { useRouter } from 'next/router';
 import EmployerProfile from './EmployerProfile';
+import TextInput from '../TextInput';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -55,23 +56,6 @@ const salaryRangeData = [{ name: 'Range' }, { name: 'Starting amount' }, { name:
 const expData = ['0-2 years', '3-5 years', '6-8 years', '9-10 years', '10+ years'];
 const salaryPerData = [{ name: 'Per Month' }, { name: 'Per Hour' }, { name: 'Per Year' }];
 
-const TextInput = (props: any) => {
-    return (
-        <>
-            <input
-                placeholder={props.placeHolder}
-                value={props.value}
-                onChange={(e) => props.setFunction(e.currentTarget.value)}
-                className={
-                    props.errorMessage
-                        ? ' h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full md:w-96'
-                        : ' h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96'
-                }
-            />
-            {props.errorMessage && <p className="text-red-500 text-[13px]">{props.errorMessage}</p>}
-        </>
-    );
-};
 const RequiredTextLabel = (props: any) => {
     return (
         <div>
@@ -112,7 +96,7 @@ const PostAJob = (props: any) => {
     const loadingIn = '/images/loading.svg';
     const profile = '/images/profile.svg';
     const previewImage = '/images/previewImage.svg';
-    const [chooseJob, setChooseJob] = useState(true);
+    const [chooseJob, setChooseJob] = useState(false);
     const [selectedRadio, setSelectedRadio] = useState('empty');
     const [first, setFirst] = useState(false);
     const [second, setSecond] = useState(false);
@@ -162,6 +146,9 @@ const PostAJob = (props: any) => {
     const [jobId, setJobId] = useState('');
     const [profileFilled, setProfileFilled] = useState(false);
     const [postingJobId, setPostingJobId] = useState('');
+    const [noDraft, setNoDraft] = useState(false);
+    const [noJobs, setNoJobs] = useState(false);
+
     const initialData = () => {
         const result = getProfileData();
         if (result) {
@@ -541,8 +528,27 @@ const PostAJob = (props: any) => {
             getDrafted();
         }
     }, [selectedRadio]);
+
     useEffect(() => {
         initialData();
+        fetchDraftedJobs()
+            .then((res) => {
+                res && res.total > 0 && setNoDraft(true);
+                res && res.total > 0 && setChooseJob(true);
+                res && res.total == 0 && setFirst(true);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        fetchPostedJobs()
+            .then((res) => {
+                res && res.total > 0 && setNoJobs(true);
+                res && res.total > 0 && setChooseJob(true);
+                res && res.total == 0 && setFirst(true);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }, []);
     const todaysDate = new Date();
     const maxDate = new Date();
@@ -573,7 +579,11 @@ const PostAJob = (props: any) => {
                     ></div>
                 </div>
             )}
-            <div className={chooseJob && !first && !second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}>
+            <div
+                className={
+                    (noJobs || noDraft) && chooseJob && !first && !second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'
+                }
+            >
                 <div className="text-neutral-900 text-3xl font-semibold leading-10 h-20 flex items-center pl-5 md:h-32 jobsBack">
                     Create a job post
                 </div>
@@ -584,18 +594,22 @@ const PostAJob = (props: any) => {
                         radioValue="empty"
                         setFunction={setSelectedRadio}
                     />
-                    <RadioInput
-                        radioName="selectedRadio"
-                        radioText="Use a previous job as a template"
-                        radioValue="duplicate"
-                        setFunction={setSelectedRadio}
-                    />
-                    <RadioInput
-                        radioName="selectedRadio"
-                        radioText="Continue from Draft"
-                        radioValue="draft"
-                        setFunction={setSelectedRadio}
-                    />
+                    {noJobs && (
+                        <RadioInput
+                            radioName="selectedRadio"
+                            radioText="Use a previous job as a template"
+                            radioValue="duplicate"
+                            setFunction={setSelectedRadio}
+                        />
+                    )}
+                    {noDraft && (
+                        <RadioInput
+                            radioName="selectedRadio"
+                            radioText="Continue from Draft"
+                            radioValue="draft"
+                            setFunction={setSelectedRadio}
+                        />
+                    )}
                 </div>
                 <div>
                     {(selectedRadio == 'duplicate' || selectedRadio == 'draft') && (
@@ -1000,7 +1014,7 @@ const PostAJob = (props: any) => {
                 </div>
             </form>
             <div className="flex justify-end pt-5">
-                {!fourth && !profileFilled && chooseJob && (
+                {!fourth && !profileFilled && chooseJob && (noJobs || noDraft) && (
                     <div
                         onClick={handleFront}
                         className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 max-md:mt-10 w-full md:w-5/12 rounded-full lg:w-3/12"

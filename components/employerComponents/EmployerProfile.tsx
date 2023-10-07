@@ -118,7 +118,9 @@ const EmployerProfile = (props: any) => {
     };
     useEffect(() => {
         initialData();
-        getUserData().then((res: any) => setUserName(res.name));
+        getUserData().then((res: any) => {
+            res && res.name && setUserName(res.name);
+        });
     }, []);
     const handleProfile = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
@@ -163,7 +165,7 @@ const EmployerProfile = (props: any) => {
                         ) : (
                             <>
                                 <p className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex text-center justify-center text-[5rem] font-frhW">
-                                    {companyName.charAt(0)}
+                                    {companyName && companyName.charAt(0)}
                                 </p>
                                 <div className="uploadProfile">
                                     <label htmlFor="photo-upload" className="custom-file-upload">

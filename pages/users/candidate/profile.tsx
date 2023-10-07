@@ -12,7 +12,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import PhoneIphoneOutlinedIcon from '@mui/icons-material/PhoneIphoneOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { MiddleWare } from '@/lib/middleware';
-import { accountData, signOut } from '@/lib/services';
+import { accountData, addSocials, signOut } from '@/lib/services';
 import { useRouter } from 'next/router';
 import UploadResume from '@/components/candidateProfileComponents/uploadResume';
 import Skills from '@/components/candidateProfileComponents/Skills';
@@ -25,6 +25,7 @@ import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import CandidateProfileShimmer from '@/components/shimmer/CandidateProfileShimmer';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import TextInput from '@/components/TextInput';
 interface Data {
     word: string;
 }
@@ -34,6 +35,11 @@ const Profile = () => {
     const [about, setAbout] = useState(true);
     const router = useRouter();
     const [profileError, setProfileError] = useState('');
+    const [loadin, setLoadin] = useState(false);
+    const [githubError, setGithubError] = useState('');
+    const [behanceError, setBehanceError] = useState('');
+    const [linkedError, setLinkedError] = useState('');
+    const [portfolioError, setPortfolioError] = useState('');
     const userData: any = accountData();
     const {
         allLoading,
@@ -63,7 +69,8 @@ const Profile = () => {
         setLocate,
         addPhoneAddress,
         coverLetter,
-        setCoverLetter
+        setCoverLetter,
+        documentId
     } = MiddleWare();
     const editUserName = () => {
         setEditName(true);
@@ -170,6 +177,43 @@ const Profile = () => {
     const removeHtmlTags = (html: string) => {
         const regex = /(<([^>]+)>)/gi;
         return html.replace(regex, '');
+    };
+    const isValidUrl = (url: string): boolean => {
+        try {
+            new URL(url);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    };
+    const hanleLinkUpdate = (e: React.FormEvent<HTMLElement>) => {
+        const linkText = 'Invalid Url';
+        e.preventDefault();
+        setGithubError('');
+        setLinkedError('');
+        setBehanceError('');
+        setPortfolioError('');
+        if (linked !== '' && !isValidUrl(linked)) {
+            setLinkedError(linkText);
+        } else if (githubLink !== '' && !isValidUrl(githubLink)) {
+            setGithubError(linkText);
+        } else if (behan !== '' && !isValidUrl(behan)) {
+            setBehanceError(linkText);
+        } else if (portfolio !== '' && !isValidUrl(portfolio)) {
+            setPortfolioError(linkText);
+        } else {
+            setLoadin(true);
+            addSocials(linked, githubLink, behan, portfolio, documentId)
+                .then((res) => {
+                    setLoadin(false);
+                    toast.success('Saved Successfully');
+                })
+                .catch((error) => {
+                    console.log(error);
+                    toast.error('Not Saved Successfully');
+                    setLoadin(false);
+                });
+        }
     };
     return (
         <div className="px-3 md:px-16">
@@ -327,98 +371,57 @@ const Profile = () => {
                 </div>
             )}
             <Footer />
-            {/* MODALS */}
             {openProfile && (
                 <ConfirmModal isOpen={openProfile} handleClose={() => setOpenProfile(!openProfile)}>
                     <div className="mx-2 h-[80%] w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 pb-14 md:pt-8 md:h-auto md:pl-14 md:w-2/3 lg:w-1/2 md:mx-0">
                         <div className="col-span-12 order-1 grid grid-cols-12 max-sm:pr-4">
                             <div className="col-span-11">
                                 <p className="font-thW text-frhS leading-shL pb-5 ">Social Links</p>
-                                <form className="col-span-12 grid grid-cols-12" onSubmit={addSocialLink}>
-                                    <div className="col-span-12 flex gap-3 h-[100%] max-md:flex-col">
-                                        <div className="flex flex-wrap gap-2 gap-y-5">
-                                            <div className="flex flex-col w-full">
-                                                <p className="font-fhW w-full text-smS leading-shL">
-                                                    LinkedIn
-                                                    <span className="float-right pr-5 text-fadedText text-numS">{linked.length} / 200</span>
-                                                </p>
-                                                <input
-                                                    value={linked}
-                                                    required
-                                                    type="text"
-                                                    onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                                        if (e.currentTarget.value.length <= 200) {
-                                                            setLinked(e.currentTarget.value);
-                                                        }
-                                                    }}
-                                                    placeholder="LinkedIn Link"
-                                                    className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
-                                                />
-                                            </div>
-                                            <div className="flex flex-col w-full">
-                                                <p className="w-full font-fhW text-smS leading-shL">
-                                                    Github
-                                                    <span className="float-right pr-5 text-fadedText text-numS">
-                                                        {githubLink.length} / 200
-                                                    </span>
-                                                </p>
-                                                <input
-                                                    value={githubLink}
-                                                    required
-                                                    type="text"
-                                                    onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                                        if (e.currentTarget.value.length <= 200) {
-                                                            setGithubLink(e.currentTarget.value);
-                                                        }
-                                                    }}
-                                                    placeholder="Github Link"
-                                                    className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
-                                                />
-                                            </div>
+                                <form className="col-span-12 grid grid-cols-12" onSubmit={hanleLinkUpdate}>
+                                    <div className="col-span-12 flex gap-3 h-[100%] grid grid-cols-1 md:grid-cols-2">
+                                        <div className="flex flex-col">
+                                            <p className="font-fhW w-full text-smS leading-shL">LinkedIn</p>
+                                            <TextInput
+                                                errorMessage={linkedError}
+                                                placeHolder="Behance Link"
+                                                value={linked}
+                                                setFunction={setLinked}
+                                                class="full"
+                                            />
                                         </div>
-                                        <div className="flex flex-wrap gap-2 gap-y-5">
-                                            <div className="flex flex-col w-full">
-                                                <p className="w-full font-fhW text-smS leading-shL">
-                                                    Behance
-                                                    <span className="float-right pr-5 text-fadedText text-numS">{behan.length} / 200</span>
-                                                </p>
-                                                <input
-                                                    value={behan}
-                                                    required
-                                                    type="text"
-                                                    onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                                        if (e.currentTarget.value.length <= 200) {
-                                                            setBehan(e.currentTarget.value);
-                                                        }
-                                                    }}
-                                                    placeholder="Behance Link"
-                                                    className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
-                                                />
-                                            </div>
-                                            <div className="flex flex-col w-full">
-                                                <p className="w-full font-fhW text-smS leading-shL">
-                                                    Portfolio
-                                                    <span className="float-right pr-5 text-fadedText text-numS">
-                                                        {githubLink.length} / 200
-                                                    </span>
-                                                </p>
-                                                <input
-                                                    value={portfolio}
-                                                    required
-                                                    type="text"
-                                                    onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                                        if (e.currentTarget.value.length <= 200) {
-                                                            setPortfolio(e.currentTarget.value);
-                                                        }
-                                                    }}
-                                                    placeholder="Portfolio Link"
-                                                    className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
-                                                />
-                                            </div>
+                                        <div className="flex flex-col">
+                                            <p className="w-full font-fhW text-smS leading-shL">Github</p>
+                                            <TextInput
+                                                class="full"
+                                                placeHolder="Behance Link"
+                                                value={githubLink}
+                                                setFunction={setGithubLink}
+                                                errorMessage={githubError}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <p className="w-full font-fhW text-smS leading-shL">Behance</p>
+                                            <TextInput
+                                                placeHolder="Behance Link"
+                                                value={behan}
+                                                errorMessage={behanceError}
+                                                setFunction={setBehan}
+                                                class="full"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <p className="w-full font-fhW text-smS leading-shL">Portfolio</p>
+                                            <TextInput
+                                                class="full"
+                                                placeHolder="Portfolio Link"
+                                                value={portfolio}
+                                                setFunction={setPortfolioError}
+                                                errorMessage={portfolioError}
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-span-12 grid justify-items-end pr-3 mt-5">
-                                        {loadings == true ? (
+                                        {loadin == true ? (
                                             <img
                                                 src={loadingIn}
                                                 className="self-end text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full xl:w-56 rounded-full"

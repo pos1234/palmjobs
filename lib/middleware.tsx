@@ -597,11 +597,10 @@ export const MiddleWare = () => {
                 console.log(error);
             });
     };
-    const addSocialLink = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        setLoadings(true);
+    const addSocialLink = (/* e: React.FormEvent<HTMLElement> */) => {
+        /*         e.preventDefault();
+         */ setLoadings(true);
         const updateLink = addSocials(linked, githubLink, behan, portfolio, documentId);
-
         updateLink
             .then((res) => {
                 setLoadings(false);
@@ -795,6 +794,7 @@ export const MiddleWare = () => {
         }
     }; */
     return {
+        documentId,
         allLoading,
         addPhoneAddress,
         locate,

@@ -206,9 +206,9 @@ const Candidates = (props: any) => {
                             className={
                                 openCanDetail == true
                                     ? allCandidates == 'Shortlisted'
-                                        ? 'col-span-12 bg-textW overflow-y-auto order-2 max-h-screen md:col-span-6 md:grid lg:col-span-8 xl:col-span-9'
-                                        : 'col-span-12 bg-textW overflow-y-auto order-2 max-h-screen md:col-span-6 md:grid'
-                                    : 'col-span-12 bg-textW overflow-y-auto order-2 max-h-screen hidden md:col-span-6 md:grid'
+                                        ? 'col-span-12 bg-textW overflow-y-auto order-2 max-h-screen md:col-span-6 md:grid lg:col-span-8 xl:col-span-9 hideScrollBar'
+                                        : 'col-span-12 bg-textW overflow-y-auto order-2 max-h-screen md:col-span-6 md:grid hideScrollBar'
+                                    : 'col-span-12 bg-textW overflow-y-auto order-2 max-h-screen hidden md:col-span-6 md:grid hideScrollBar'
                             }
                         >
                             <CandidateDetail detailData={candidateDetail} imageLinkValue={imageUrl} />

@@ -368,7 +368,7 @@ const Jobs = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-span-12 grid grid-cols-12 gap-x-5 bg-forBack">
+                                <div className="col-span-12 grid grid-cols-12 gap-x-5 bg-forBack pl-2">
                                     <div
                                         className={
                                             openJobDetail == true
@@ -679,8 +679,6 @@ const Jobs = () => {
                                                     </div>
                                                     {!company && (
                                                         <div className="col-span-12 mx-3 flex flex-col">
-                                                            {/*                                                             <p className="font-thW text-frhS">Job Description</p>
-                                                             */}{' '}
                                                             <div
                                                                 dangerouslySetInnerHTML={{ __html: jobDetails.jobDescription }}
                                                                 className="text-midRS text-fadedText min-h-[200px] max-h-96 mb-16 overflow-y-auto hideScrollBar"
@@ -763,7 +761,7 @@ const Jobs = () => {
                             <button
                                 className={
                                     maxPaginate > 5 && pageCount > 5
-                                        ? 'border bg-gray-200 hover:bg-gray-300 rounded-md px-3 py-1 text-center'
+                                        ? 'border bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 text-center'
                                         : 'hidden'
                                 }
                                 onClick={previousPage}
@@ -794,7 +792,9 @@ const Jobs = () => {
                             ))}
                             <button
                                 className={
-                                    maxPaginate < pageCount ? 'border bg-gray-200 hover:bg-gray-300 rounded-md px-3 py-1 ' : 'hidden'
+                                    maxPaginate < pageCount
+                                        ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 '
+                                        : 'hidden'
                                 }
                                 onClick={nextPage}
                             >

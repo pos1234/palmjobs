@@ -28,6 +28,8 @@ const Navigation = (props: any) => {
             setUserData(userInfo);
             const role = await getRole(userInfo.$id);
             setUserRole(role.documents[0].userRole);
+            console.log(role.documents[0].userRole);
+
             if (role.documents[0].userRole == 'candidate') {
                 const candidate = await getCandidateInfo();
                 if (candidate) {
@@ -51,9 +53,14 @@ const Navigation = (props: any) => {
     };
     const handleLogout = () => {
         signOut().then((res) => {
+            setOpenLogout(false);
             router.push('/');
         });
     };
+
+    useEffect(() => {
+        console.log(userData);
+    }, [userData]);
     useEffect(() => {
         getUserData();
     }, []);
@@ -217,8 +224,6 @@ const Navigation = (props: any) => {
                             <div className="flex items-center pl-0 sm:pl-2 lg:text-[0.9rem] px-2 py-1 text-stone-500 ">
                                 <Popover className="focus:ring-0 focus:border-0 focus:outline-0">
                                     <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 px-2 flex text-stone-500">
-                                        {/*                                     <PersonOutlineOutlinedIcon className="text-[1.5rem] hover:text-orange-500 focus:ring-0 focus:border-0 focus:outline-0 cursor-pointer text-stone-500" />
-                                         */}
                                         {userDetail && userDetail.profilePictureId && (
                                             <div className="w-10 h-10 ">
                                                 <img
@@ -229,15 +234,27 @@ const Navigation = (props: any) => {
                                             </div>
                                         )}
                                         {userData && (
-                                            <div className="flex flex-col text-left ml-3">
+                                            <div className="flex flex-col text-left ml-3 justify-center">
                                                 {userRole == 'candidate' ? <p className="text-[16px] font-[600]">{userData.name}</p> : null}
                                                 {userRole == 'candidate'
                                                     ? userDetail && <p className="text-[12px] text-stone-500">{userDetail.bioHeadline}</p>
                                                     : null}
+                                                {userRole == 'employer' ? (
+                                                    <>
+                                                        {userDetail && (
+                                                            <p className="text-[16px] font-[600]">
+                                                                {userDetail.companyName && userDetail.companyName}
+                                                            </p>
+                                                        )}
+                                                    </>
+                                                ) : null}
+                                                {/* {userRole == 'employer'
+                                                    ? userDetail && <p className="text-[12px] text-stone-500">{userDetail.bioHeadline}</p>
+                                                    : null} */}
                                             </div>
                                         )}
                                     </Popover.Button>
-                                    <Popover.Panel className="absolute border-2 rounded-2xl flex flex-col gap-y-3 p-3 bg-textW shadow z-10 w-[8rem] sm:ml-20 md:mt-3 lg:mt-8">
+                                    <Popover.Panel className="absolute right-0 border-2 rounded-2xl flex flex-col gap-y-3 p-3 bg-textW shadow z-10 w-[8rem] md:mt-3 lg:mt-8">
                                         {userRole == 'candidate' ? (
                                             <Link
                                                 href="/users/candidate/profile"
@@ -274,7 +291,6 @@ const Navigation = (props: any) => {
             <ConfirmModal isOpen={openLogout} handleClose={() => setOpenLogout(!openLogout)}>
                 <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl flex flex-col gap-y-5 items-center justify-center pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0">
                     <p className="col-span-12 text-black text-3xl font-semibold leading-10 ">Are you sure you want to logout ?</p>
-
                     <div className="flex gap-x-10">
                         <button
                             onClick={() => setOpenLogout(!openLogout)}

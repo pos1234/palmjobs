@@ -3,13 +3,25 @@ import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds } from '@/lib/services';
+import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds, getCompanyData } from '@/lib/services';
 import { useEffect, useState } from 'react';
 import ApplyToJob from './ApplyToJobs';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobImage from '../JobImage';
 import SingleJobShimmer from '../shimmer/SingleJobShimmer';
+const CompanyName = (props: any) => {
+    const [compData, setCompData] = useState<any>();
+    const getCompData = () => {
+        getCompanyData(props.id).then((res) => {
+            res && res.documents && setCompData(res.documents[0]);
+        });
+    };
+    useEffect(() => {
+        getCompData();
+    }, []);
+    return <>{compData && <p className="text-[12px] text-darkBlue sm:text-fhS">{compData.companyName}</p>}</>;
+};
 const SavedJobs = (props: any) => {
     const [savedJobId, setSavedJobId] = useState<any[]>([]);
     const [savedJobs, setSavedJobs] = useState<any[]>([]);
@@ -100,11 +112,13 @@ const SavedJobs = (props: any) => {
                 savedJobs.map((datas: any) => {
                     return (
                         <div className={props.view ? 'col-span-12 grid grid-cols-12 py-3 bg-textW' : 'hidden'} key={datas.$id}>
-                            <JobImage id={datas.employerId} className="hidden h-full w-full md:col-span-2 md:block lg:col-span-1" />
+                            <JobImage id={datas.employerId} className="hidden md:col-span-2 md:block lg:col-span-1" />
                             <div className="col-span-12 pl-5 grid grid-cols-12 md:col-span-10 lg:col-span-8">
-                                <JobImage id={datas.employerId} className="col-span-2 h-full md:hidden" />
+                                <JobImage id={datas.employerId} className="col-span-2 md:hidden" />
                                 <div className="col-span-10 pl-1">
-                                    <p className="text-[12px] text-darkBlue sm:text-fhS">{datas.companyName}</p>
+                                    <CompanyName id={datas.employerId} />
+                                    {/*                                     <p className="text-[12px] text-darkBlue sm:text-fhS">{datas.companyName}</p>
+                                     */}{' '}
                                     <p className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-frhS">{datas.jobTitle}</p>
                                     <p className="text-fadedText rounded-full md:hidden">
                                         <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} /> {datas.jobLocation}

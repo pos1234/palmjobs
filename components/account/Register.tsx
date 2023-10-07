@@ -12,10 +12,12 @@ const RegisterComponent = (props: any) => {
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false);
     const [retypedPassword, setRetypedPassword] = useState('');
+    const [checked, setChecked] = useState(false);
+    const [checkError, setCheckError] = useState('');
     const [register, setRegister] = useState({
         email: '',
         password: '',
-        firstName: '',
+        firstName: props.name,
         lastName: ''
     });
     function validateEmail(email: string): boolean {
@@ -42,6 +44,8 @@ const RegisterComponent = (props: any) => {
             setPasswordError("password doesn't match");
         } else if (register.password.length < 8) {
             setPasswordError('password must be more than 8 charachters');
+        } else if (!checked) {
+            setCheckError('Please Agree to Terms and Condition');
         } else {
             if (validateEmail(register.email)) {
                 setLoading(true);
@@ -166,8 +170,14 @@ const RegisterComponent = (props: any) => {
             </div>
             {passwordError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{passwordError}</p>}
             <div className="col-span-12 mt-5">
-                <input type="checkbox" placeholder="Project Name" className="pl-5 text-addS" />
+                <input
+                    onChange={(e) => setChecked(e.currentTarget.checked)}
+                    type="checkbox"
+                    placeholder="Project Name"
+                    className="pl-5 text-addS max-h-[1rem]"
+                />
                 <span className="font-addW text-addS leading-addL pl-2">I agree to the Terms of Service and Privacy Policy</span>
+                {checkError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{checkError}</p>}
             </div>
             <div className="col-span-12 grid grid-cols-12 justify-items-end pr-2">
                 {loading && (

@@ -65,7 +65,7 @@ const CandidateDetail = (props: any) => {
                         Cover Letter
                     </p>
                     <div
-                        className="border-0 pt-3 text-stone-400 focus:border-0 focus:ring-0 h-full max-h-[80%] w-full overflow-y-auto overflow-x-hidden"
+                        className="border-0 pt-3 text-stone-400 focus:border-0 focus:ring-0 h-full max-h-[80%] w-full overflow-y-auto overflow-x-hidden hideScrollBar"
                         dangerouslySetInnerHTML={{ __html: props.detailData.coverLetter }}
                     />
                 </div>
