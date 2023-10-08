@@ -152,7 +152,7 @@ const WorkHitory = () => {
             </div>
             {openWork && (
                 <ConfirmModal isOpen={openWork} handleClose={() => setOpenWork(!openWork)}>
-                    <div className="mx-2 pb-10 w-full overflow-scroll h-[100%] pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
+                    <div className="mx-2 pb-10 w-full overflow-scroll h-[100%] pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0 overflow-x-hidden">
                         <div className="col-span-12 grid grid-cols-12 ">
                             <div className="col-span-12 grid grid-cols-12 mb-5">
                                 <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
@@ -248,7 +248,7 @@ const WorkHitory = () => {
                                                 setEditedWork({ ...editedWork, title: e.currentTarget.value })
                                             }
                                             placeholder="Add Title"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
@@ -260,7 +260,7 @@ const WorkHitory = () => {
                                                 setEditedWork({ ...editedWork, companyName: e.currentTarget.value })
                                             }
                                             placeholder="Add Company Name"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
@@ -271,19 +271,20 @@ const WorkHitory = () => {
                                             onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                                 setEditedWork({ ...editedWork, startDate: e.currentTarget.value })
                                             }
-                                            className="pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-orange-500 focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     {editedWork.endDate && (
                                         <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
                                             <p className="font-fhW text-smS mt-5 mb-2 leading-shL">End Date</p>
                                             <input
+                                                max={new Date().toISOString().split('T')[0]}
                                                 value={editedWork.endDate}
                                                 type="date"
                                                 onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                                     setEditedWork({ ...editedWork, endDate: e.currentTarget.value })
                                                 }
-                                                className="pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                                className="focus:ring-orange-500 focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                             />
                                         </div>
                                     )}
@@ -329,7 +330,7 @@ const WorkHitory = () => {
                                                 }
                                             }}
                                             placeholder="Add Title"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
@@ -341,13 +342,13 @@ const WorkHitory = () => {
                                                 setWorkHistoryData({ ...workHistoryData, companyName: e.currentTarget.value })
                                             }
                                             placeholder="Add Company Name"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 pr-2 md:pl-2 flex items-center mt-3">
                                         <input
                                             type="checkbox"
-                                            className="border-[1px] rounded-xl h-4 pl-5 text-addS"
+                                            className="focus:ring-orange-500 focus:border-0 border-[1px] rounded-xl h-4 pl-5 text-addS"
                                             checked={isChecked}
                                             onChange={handleCheckboxChange}
                                         />
@@ -359,7 +360,7 @@ const WorkHitory = () => {
                                             value={workHistoryData.startDate}
                                             type="date"
                                             onChange={(e) => setWorkHistoryData({ ...workHistoryData, startDate: e.currentTarget.value })}
-                                            className="pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-orange-500 focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
 
@@ -367,6 +368,7 @@ const WorkHitory = () => {
                                         <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
                                             <p className="font-fhW text-smS mt-5 mb-2 leading-shL">End Date</p>
                                             <input
+                                                max={new Date().toISOString().split('T')[0]}
                                                 value={workHistoryData.endDate}
                                                 type="date"
                                                 onChange={(e) =>
@@ -374,7 +376,7 @@ const WorkHitory = () => {
                                                         ? setWorkHistoryData({ ...workHistoryData, endDate: 'present' })
                                                         : setWorkHistoryData({ ...workHistoryData, endDate: e.currentTarget.value })
                                                 }
-                                                className="pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                                className="focus:ring-orange-500 focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                             />
                                         </div>
                                     )}

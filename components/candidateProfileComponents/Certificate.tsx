@@ -134,7 +134,7 @@ const Certificate = () => {
                                             setEditedCertificate({ ...editedCertificate, name: e.currentTarget.value })
                                         }
                                         placeholder="Add Certificate Name"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2">
@@ -146,7 +146,7 @@ const Certificate = () => {
                                             setEditedCertificate({ ...editedCertificate, issuedBy: e.currentTarget.value })
                                         }
                                         placeholder="Certificate Issued By"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
@@ -160,7 +160,7 @@ const Certificate = () => {
                                                 setEditedCertificate({ ...editedCertificate, year: selectedDate });
                                         }}
                                         placeholder="Year Issued"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
                                         max={new Date().toISOString().split('T')[0]}
                                     />
                                 </div>
@@ -256,7 +256,7 @@ const Certificate = () => {
                                                 setCertificateData({ ...certificateData, name: e.currentTarget.value })
                                             }
                                             placeholder="Add Certificate Name"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-7 pr-2 md:pl-2">
@@ -268,7 +268,7 @@ const Certificate = () => {
                                                 setCertificateData({ ...certificateData, issuedBy: e.currentTarget.value })
                                             }
                                             placeholder="Certificate Issued By"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
@@ -282,7 +282,7 @@ const Certificate = () => {
                                                     setCertificateData({ ...certificateData, year: selectedDate });
                                             }}
                                             placeholder="Year Issued"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
+                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
                                             max={new Date().toISOString().split('T')[0]}
                                         />
                                     </div>

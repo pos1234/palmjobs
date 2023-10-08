@@ -68,7 +68,7 @@ const Bio = () => {
                                             }
                                         }}
                                         placeholder="Marketing Manager"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
 
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">
@@ -86,7 +86,7 @@ const Bio = () => {
                                             }
                                         }}
                                         placeholder="Describe yourself...."
-                                        className="border-[1px] w-full rounded-xl resize-none pt-3 pl-5 h-36 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-xl resize-none pt-3 pl-5 h-36 text-addS"
                                     ></textarea>
                                 </div>
                             </div>

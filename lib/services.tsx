@@ -170,8 +170,8 @@ export const insertCoverLetter = async (id: string, cover: any) => {
     const datas = {
         coverLetter: cover
     };
-   const promise = await updateDocuments(id, datas);
-   return promise
+    const promise = await updateDocuments(id, datas);
+    return promise;
 };
 export const addSector = (sectors: string, id: string) => {
     const datas = {
@@ -430,14 +430,15 @@ export const getRole = async (id: string) => {
     const usersRole = await databases.listDocuments(DATABASE_ID, USER_ROLE, [Query.equal('userId', id)]);
     return usersRole;
 };
-export const defineRole = async (id: string, role: string) => {
+export const defineRole = async (id: string, role: string, name: string) => {
     const sendRole = {
         userId: id,
         userRole: role
     };
     if (role == 'candidate') {
         const createId = await databases.createDocument(DATABASE_ID, CANDIDATE_DATA, ID.unique(), {
-            Id: id
+            Id: id,
+            name
         });
     }
     if (role == 'employer') {

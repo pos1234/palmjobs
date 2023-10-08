@@ -53,7 +53,7 @@ const RegisterComponent = (props: any) => {
                 Register(register.email, register.password, fullName)
                     .then((res) => {
                         /*                         console.log(res);
-                         */ defineRole(res.$id, props.role);
+                         */ defineRole(res.$id, props.role, fullName);
                     })
                     .catch((error) => {
                         console.log(error);

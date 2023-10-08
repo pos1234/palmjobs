@@ -195,41 +195,46 @@ const PJobs = (props: any) => {
                             className="text-[2.5rem] focus:ring-0 focus:border-0 focus:outline-0 -mt-1 cursor-pointer"
                         />
                     </Popover.Button>
-
-                    {!openShare && !openJobEdit && !openPreview && (
-                        <Popover.Panel className="absolute -ml-28 sm:ml-0 w-[10rem] sm:w-full border-2 rounded-2xl flex flex-col gap-y-3 bg-textW py-3 px-3 bg-white shadow z-10">
-                            <div
-                                onClick={() => setOpenJobEdit(true)}
-                                className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                            >
-                                <ModeEditIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                <span>Quick Edit</span>
-                            </div>
-                            <div
-                                onClick={() => {
-                                    props.setEditedJobId(props.jobId);
-                                }}
-                                className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                            >
-                                <BorderColorIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                <span>Full Edit</span>
-                            </div>
-                            <div
-                                onClick={() => setOpenPreview(true)}
-                                className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                            >
-                                <VisibilityIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                <span>View Details</span>
-                            </div>
-                            <div
-                                onClick={() => setOpenShare(true)}
-                                className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                            >
-                                <ShareOutlinedIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                <span>Share</span>
-                            </div>
-                        </Popover.Panel>
-                    )}
+                    {/*                     {openShare == false && openJobEdit == false && openPreview == false && (
+                     */}{' '}
+                    <Popover.Panel
+                        className={
+                            openShare == false && openJobEdit == false && openPreview == false
+                                ? 'absolute -ml-28 sm:ml-0 w-[10rem] sm:w-full border-2 rounded-2xl flex flex-col gap-y-3 bg-textW py-3 px-3 bg-white shadow z-10'
+                                : 'hidden'
+                        }
+                    >
+                        <div
+                            onClick={() => setOpenJobEdit(true)}
+                            className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <ModeEditIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <span>Quick Edit</span>
+                        </div>
+                        <div
+                            onClick={() => {
+                                props.setEditedJobId(props.jobId);
+                            }}
+                            className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <BorderColorIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <span>Full Edit</span>
+                        </div>
+                        <div
+                            onClick={() => setOpenPreview(true)}
+                            className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <VisibilityIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <span>View Details</span>
+                        </div>
+                        <div
+                            onClick={() => setOpenShare(!openShare)}
+                            className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <ShareOutlinedIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <span>Share</span>
+                        </div>
+                    </Popover.Panel>
                 </Popover>
             </div>
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.jobId} />

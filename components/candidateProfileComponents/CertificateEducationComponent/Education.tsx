@@ -59,7 +59,7 @@ const Education = () => {
                 <EditIcon
                     onClick={() => setOpenEducation(true)}
                     sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                    className="w-7 h-7 p-1.5 mr-2"
+                    className="w-7 h-7 p-1.5 mr-2 cursor-pointer"
                 />
             </div>
             <div className="col-span-12 mt-8">
@@ -228,7 +228,7 @@ const Education = () => {
                                             setEducation({ ...education, fieldStudy: e.currentTarget.value })
                                         }
                                         placeholder="Enter Field of Study/Major"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2">
@@ -240,19 +240,20 @@ const Education = () => {
                                             setEducation({ ...education, university: e.currentTarget.value })
                                         }
                                         placeholder="Enter Your University / Institution"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Graduation year</p>
                                     <input
+                                        max={new Date().toISOString().split('T')[0]}
                                         value={education.yearIssued}
                                         type="date"
                                         onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                             setEducation({ ...education, yearIssued: e.currentTarget.value })
                                         }
                                         placeholder="Year Issued"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
                                     />
                                 </div>
 
@@ -319,7 +320,7 @@ const Education = () => {
                                             setEditedEducation({ ...EditedEducation, fieldStudy: e.currentTarget.value })
                                         }
                                         placeholder="Enter Field of Study/Major"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2">
@@ -331,22 +332,22 @@ const Education = () => {
                                             setEditedEducation({ ...EditedEducation, university: e.currentTarget.value })
                                         }
                                         placeholder="Enter Your University / Institution"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Graduation year</p>
                                     <input
+                                        max={new Date().toISOString().split('T')[0]}
                                         value={EditedEducation.yearIssued}
                                         type="date"
                                         onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                             setEditedEducation({ ...EditedEducation, yearIssued: e.currentTarget.value })
                                         }
                                         placeholder="Year Issued"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
                                     />
                                 </div>
-
                                 <div className="col-span-12 grid justify-items-end pr-3 mt-5">
                                     {loadings == true ? (
                                         <img

@@ -105,7 +105,8 @@ const Login = () => {
                     </div>
                     {forgotPassword == false && (
                         <p className="font-shW text-shS md:text-dshS">
-                            Right Fit! <br /> The Perfect Job on <span className="text-gradientFirst">YES</span>
+                            Connect <br /> Grow, <span className="text-gradientFirst">succeed</span>
+                            {/* <span className="text-gradientFirst">YES</span> */}
                         </p>
                     )}
                     {forgotPassword == false && (

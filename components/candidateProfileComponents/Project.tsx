@@ -199,7 +199,7 @@ const Project = () => {
                                             setProjectData({ ...projectData, name: e.currentTarget.value })
                                         }
                                         placeholder="Project Name"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Project Link</p>
                                     <input
@@ -209,7 +209,7 @@ const Project = () => {
                                             setProjectData({ ...projectData, url: e.currentTarget.value })
                                         }
                                         placeholder="Project Link"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
 
@@ -284,7 +284,7 @@ const Project = () => {
                                             setEditedProject({ ...editedProject, projectName: e.currentTarget.value })
                                         }
                                         placeholder="Project Name"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 sm:col-span-6">
@@ -298,7 +298,7 @@ const Project = () => {
                                                 setEditedProject({ ...editedProject, link: e.currentTarget.value })
                                             }
                                             placeholder="Project Link"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                 </div>
@@ -309,7 +309,7 @@ const Project = () => {
                                         value={editedProject.detail}
                                         onChange={(e) => setEditedProject({ ...editedProject, detail: e })}
                                         placeholder="Add description...."
-                                        className="h-28 text-addS"
+                                        className="h-28 text-addS "
                                     />
                                 </div>
                                 <div className="col-span-12 grid justify-items-end mt-20">
