@@ -105,8 +105,7 @@ const Login = () => {
                     </div>
                     {forgotPassword == false && (
                         <p className="font-shW text-shS md:text-dshS">
-                            Connect <br /> Grow, <span className="text-gradientFirst">succeed</span>
-                            {/* <span className="text-gradientFirst">YES</span> */}
+                            Connect. <br /> Grow. <span className="text-gradientFirst">Succeed.</span>
                         </p>
                     )}
                     {forgotPassword == false && (
@@ -138,7 +137,7 @@ const Login = () => {
                     )}
                     {!register && forgotPassword == false && (
                         <p className="text-midRS font-midRW leading-midRL text-[#5B5B5B]">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim suscipit autem.
+                            Building bridges, paving pathways. Dive into Palm Jobs.
                         </p>
                     )}
                     {registerForm && (

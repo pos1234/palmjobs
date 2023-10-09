@@ -298,7 +298,6 @@ const WorkHitory = () => {
                                             onChange={(e) => setEditedWork({ ...editedWork, jobDescription: e })}
                                         />
                                     </div>
-
                                     <div className="col-span-12 grid justify-items-end pr-3 mt-10 md:mt-16">
                                         {loadings == true ? (
                                             <img
@@ -363,7 +362,6 @@ const WorkHitory = () => {
                                             className="focus:ring-orange-500 focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
-
                                     {!isChecked && (
                                         <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
                                             <p className="font-fhW text-smS mt-5 mb-2 leading-shL">End Date</p>

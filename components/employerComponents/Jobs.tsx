@@ -10,6 +10,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import { Popover } from '@headlessui/react';
 import HeightIcon from '@mui/icons-material/Height';
 import StraightIcon from '@mui/icons-material/Straight';
+import { fetchDraftedJobs, fetchPostedJobs } from '@/lib/services';
 const Jobs = (props: any) => {
     const [opened, setOpened] = useState(true);
     const [draft, setDraft] = useState(false);
@@ -18,6 +19,9 @@ const Jobs = (props: any) => {
     const [allLoading, setAllLoading] = useState(false);
     const [editFullJob, setEditFullJob] = useState(false);
     const [editedJobId, setEditedJobId] = useState('');
+    const [noDraft, setNoDraft] = useState(false);
+    const [noPosted, setNoPosted] = useState(false);
+    const [noClosed, setNoClosed] = useState(false);
     const toggleTabs = (name: string) => {
         if (name === 'opened') {
             setOpened(true);
@@ -47,6 +51,29 @@ const Jobs = (props: any) => {
     useEffect(() => {
         handleFullEdit();
     }, [editedJobId]);
+    useEffect(() => {
+        fetchDraftedJobs()
+            .then((res) => {
+                res && res.total > 0 && setNoDraft(true);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        fetchPostedJobs()
+            .then((res) => {
+                res && res.total > 0 && setNoPosted(true);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        fetchPostedJobs()
+            .then((res) => {
+                res && res.total > 0 && setNoClosed(true);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
     return (
         <>
             <ToastContainer />
@@ -64,39 +91,45 @@ const Jobs = (props: any) => {
                     <div className="flex gap-y-3 justify-between">
                         <div className="bg-forBack py-2 px-1">
                             <div className="flex bg-textW">
-                                <div
-                                    onClick={() => toggleTabs('opened')}
-                                    className={
-                                        opened
-                                            ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
-                                            : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-orange-500'
-                                    }
-                                >
-                                    Opened
-                                </div>
-                                <div
-                                    onClick={() => toggleTabs('draft')}
-                                    className={
-                                        draft
-                                            ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
-                                            : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-orange-500'
-                                    }
-                                >
-                                    Drafted
-                                </div>
-                                <div
-                                    onClick={() => toggleTabs('closed')}
-                                    className={
-                                        closed
-                                            ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
-                                            : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-orange-500'
-                                    }
-                                >
-                                    Closed
-                                </div>
+                                {noPosted && (
+                                    <div
+                                        onClick={() => toggleTabs('opened')}
+                                        className={
+                                            opened
+                                                ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
+                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-orange-500'
+                                        }
+                                    >
+                                        Opened
+                                    </div>
+                                )}
+                                {noDraft && (
+                                    <div
+                                        onClick={() => toggleTabs('draft')}
+                                        className={
+                                            draft
+                                                ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
+                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-orange-500'
+                                        }
+                                    >
+                                        Drafted
+                                    </div>
+                                )}
+                                {noClosed && (
+                                    <div
+                                        onClick={() => toggleTabs('closed')}
+                                        className={
+                                            closed
+                                                ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
+                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-orange-500'
+                                        }
+                                    >
+                                        Closed
+                                    </div>
+                                )}
                             </div>
                         </div>
-                        {opened && (
+                        {opened && noPosted && (
                             <div className="flex max-sm:pl-5 items-center gap-x-2 md:w-40">
                                 <Popover className=" sm:relative focus:ring-0 focus:border-0 focus:outline-0 md:w-full">
                                     <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex md:w-full justify-end">

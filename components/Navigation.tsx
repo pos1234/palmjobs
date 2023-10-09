@@ -57,10 +57,6 @@ const Navigation = (props: any) => {
             router.push('/');
         });
     };
-
-    useEffect(() => {
-        console.log(userData);
-    }, [userData]);
     useEffect(() => {
         getUserData();
     }, []);
@@ -127,7 +123,7 @@ const Navigation = (props: any) => {
                                 <Link href="/jobs" className=" text-left">
                                     Find a Job
                                 </Link>
-                                <p>Build Resume</p>
+                                <p>Craft Resume</p>
                                 {!userData && (
                                     <>
                                         <div className="">
@@ -186,10 +182,10 @@ const Navigation = (props: any) => {
                     <Link href="/jobs" className=" col-span-4 lg:col-span-4 xl:col-span-4">
                         Find a Job
                     </Link>
-                    <p className="col-span-5 lg:col-span-5 xl:col-span-5">Build Resume</p>
+                    <p className="col-span-5 lg:col-span-5 xl:col-span-5">Craft Resume</p>
                     {userRole == 'candidate' ? (
                         <Link href="/users/candidate" className=" col-span-3 lg:col-span-3 xl:col-span-3 cursor-poniter">
-                            my jobs
+                            My jobs
                         </Link>
                     ) : userRole == 'employer' ? (
                         <Link href="/users/employer" className=" col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">

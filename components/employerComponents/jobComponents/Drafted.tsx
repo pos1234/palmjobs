@@ -11,7 +11,7 @@ const DraftedJobs = (props: any) => {
         deleteDraftedJobs(id).then((res) => {
             toast.success('Successfully Removed');
             fetchDraftedJobs().then((res: any) => {
-                props.setterActiveJobs(res.documents);
+                props.setterFuntion(res.documents);
             });
         });
     };

@@ -138,6 +138,7 @@ const PJobs = (props: any) => {
     useEffect(() => {
         getCompInfo();
     }, [empId]);
+
     return (
         <div className="bg-textW grid grid-cols-12 relative py-5 pl-2 xl:pl-9">
             <div className=" flex flex-col justify-center col-span-10 sm:col-span-7 lg:col-span-3">
@@ -468,6 +469,7 @@ const Active = (props: any) => {
     const [activeJobs, setActiveJobs] = useState<any>();
     const [allLoading, setAllLoading] = useState(false);
     const [editedJobId, setEditedJobId] = useState('');
+    const [noActive, setNoActive] = useState(false);
     const SortData = (sort: any) => {
         if (sort == 'asc') {
             const sortedData =
@@ -501,6 +503,7 @@ const Active = (props: any) => {
         setAllLoading(true);
         fetchActivePostedJobs().then((res: any) => {
             res && res.documents && setActiveJobs(res.documents);
+            res && res.total > 0 && setNoActive(true);
             setAllLoading(false);
         });
     };
@@ -521,6 +524,11 @@ const Active = (props: any) => {
                 <div className="flex flex-col gap-y-10 pt-5">
                     <EmployerJobShimmer />
                     <EmployerJobShimmer />
+                </div>
+            )}
+            {!allLoading && !noActive && (
+                <div className="flex flex-col gap-y-10 pt-5 text-center text-[2rem] pt-20">
+                    <h1>You haven't posted a job yet</h1>
                 </div>
             )}
             {!allLoading && (

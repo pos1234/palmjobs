@@ -5,6 +5,7 @@ import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import { useEffect, useState } from 'react';
 import JobImage from '../JobImage';
+import Link from 'next/link';
 const CompanyName = (props: any) => {
     const [compData, setCompData] = useState<any>();
     const getCompData = () => {
@@ -22,8 +23,11 @@ const Applied = (props: any) => {
     const [appliedJobId, setAppliedJobId] = useState<any[]>([]);
     const [appliedJobs, setAppliedJobs] = useState<any[]>([]);
     const [appliedJobData, setAppliedData] = useState<any[]>([]);
+    const [allLoading, setAllLoading] = useState(false);
     const appliedJobsId = async () => {
+        setAllLoading(true);
         const res = await fetchAppliedJobIds();
+        res && res.total == 0 && setAllLoading(false);
         if (res) {
             for (let i = 0; i < res.documents.length; i++) {
                 if (appliedJobId.indexOf(res.documents[i].jobId) === -1) {
@@ -32,6 +36,7 @@ const Applied = (props: any) => {
                         const responseData = await fetchAppliedJobsData(res.documents[i].jobId);
                         if (responseData) {
                             appliedJobs.push(responseData);
+                            setAllLoading(false);
                         }
                     }
                 }
@@ -43,6 +48,17 @@ const Applied = (props: any) => {
     }, [appliedJobs, appliedJobId]);
     return (
         <>
+            {!allLoading && appliedJobs.length == 0 && props.view && (
+                <div className="col-span-12 text-center flex flex-col items-center gap-y-3">
+                    <p>No applied jobs under your palm tree yet. Browse the listings to find your next opportunity.</p>
+                    <Link
+                        href="/jobs"
+                        className="w-60 bg-gradient-to-r from-gradientFirst to-gradientSecond px-10 py-5 rounded-full text-textW cursor-pointer"
+                    >
+                        Find Job
+                    </Link>
+                </div>
+            )}
             {appliedJobs &&
                 appliedJobs.map((datas: any, index) => {
                     return (

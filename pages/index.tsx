@@ -66,7 +66,7 @@ const Home = () => {
                     </p>
                 </div>
                 <p className="font-shW text-shS text-center text-[40px] sm:text-[60px] md:text-[72px] md:leading-[92px]">
-                    Connect <br /> Grow, Succeed. {/* <span className="text-gradientFirst">YES</span> */}
+                    Connect. Grow. <span className="text-gradientFirst">Succeed.</span>
                 </p>
                 <p className="text-center text-[#393D48] max-sm:mt-3 sm:max-md:mb-5">Find your next job. Easy as a breeze.</p>
                 <div className="grid grid-cols-12 gap-y-4 max-sm:px-5 max-sm:pt-10 sm:space-x-5 md:space-x-2 lg:space-x-5 lg:px-10 xl:px-40 md:py-5 md:pt-10">

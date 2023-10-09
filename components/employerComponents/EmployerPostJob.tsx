@@ -531,15 +531,6 @@ const PostAJob = (props: any) => {
 
     useEffect(() => {
         initialData();
-        fetchDraftedJobs()
-            .then((res) => {
-                res && res.total > 0 && setNoDraft(true);
-                res && res.total > 0 && setChooseJob(true);
-                res && res.total == 0 && setFirst(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
         fetchPostedJobs()
             .then((res) => {
                 res && res.total > 0 && setNoJobs(true);
@@ -549,14 +540,23 @@ const PostAJob = (props: any) => {
             .catch((error) => {
                 console.log(error);
             });
+        /* fetchDraftedJobs()
+            .then((res) => {
+                res && res.total > 0 && setNoDraft(true);
+                res && res.total > 0 && setChooseJob(true);
+                res && res.total == 0 && setFirst(true);
+            })
+            .catch((error) => {
+                console.log(error);
+            }); */
     }, []);
     const todaysDate = new Date();
     const maxDate = new Date();
     maxDate.setMonth(today.getMonth() + 1);
     return (
         <div className="pt-5 px-3 pb-10 bg-textW min-h-screen md:pl-10 xl:pr-28 xl:px-20">
-            {!chooseJob && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
-            {!chooseJob && (
+            {!chooseJob && noJobs && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
+            {!chooseJob && noJobs && (
                 <div
                     className="col-span-12 grid grid-cols-12 gap-x-2 mt-1 md:pr-20 lg:pr-40
              xl:pr-60"
@@ -966,7 +966,7 @@ const PostAJob = (props: any) => {
                     </>
                 )}
                 <div className="flex flex-col pt-2 gap-y-4 pb-7">
-                    <RequiredTextLabel text="Job Deadline" req="nReq" />
+                    <RequiredTextLabel text="Closing Date" req="nReq" />
                     <input
                         value={deadline}
                         type="date"
@@ -1106,7 +1106,7 @@ const PostAJob = (props: any) => {
                                     }
                                 />
                                 <Jobtype
-                                    salary="Deadline"
+                                    salary="Closing Date"
                                     money={new Date(deadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                     icon={
                                         <CalendarToday className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
@@ -7,12 +7,14 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { getAccount, getCandidateInfo, getProfileData, getProfilePicture, getRole, signOut } from '@/lib/services';
+import Link from 'next/link';
 const LinkList = (props: any) => {
     return (
         <li>
-            <a href={props.link} className="text-midRS font-midRW leading-midRL text-lightGrey block">
+            <Link href={props.link || '/'} className="text-midRS font-midRW leading-midRL text-lightGrey block cursor-pointer">
                 {props.text}
-            </a>
+            </Link>
         </li>
     );
 };
@@ -21,6 +23,9 @@ const Footer = () => {
     const [forEmp, setForEmp] = useState(false);
     const [forCan, setForCan] = useState(false);
     const [forGt, setForGt] = useState(false);
+    const [userData, setUserData] = useState<any>();
+    const [userRole, setUserRole] = useState('');
+    const [userDetail, setUserDetail] = useState<any>();
     const openForEmp = () => {
         setForEmp(!forEmp);
     };
@@ -30,6 +35,30 @@ const Footer = () => {
     const openForGt = () => {
         setForGt(!forGt);
     };
+    const getUserData = async () => {
+        const userInfo = await getAccount();
+        if (userInfo !== 'failed') {
+            setUserData(userInfo);
+            const role = await getRole(userInfo.$id);
+            setUserRole(role.documents[0].userRole);
+            console.log(role.documents[0].userRole);
+            if (role.documents[0].userRole == 'candidate') {
+                const candidate = await getCandidateInfo();
+                if (candidate) {
+                    setUserDetail(candidate.documents[0]);
+                }
+            }
+            if (role.documents[0].userRole == 'employer') {
+                const employer = await getProfileData();
+                if (employer) {
+                    setUserDetail(employer.documents[0]);
+                }
+            }
+        }
+    };
+    useEffect(() => {
+        getUserData();
+    }, []);
     return (
         <>
             <div className="mt-28">
@@ -55,58 +84,88 @@ const Footer = () => {
                         </ul>
                     </div>
                     <div className="col-span-12 mt-5 pl-5 cursor-pointer md:cursor-default md:mt-2 md:col-span-4 md:grid md:justify-items-center lg:col-span-3">
-                        <div className="grid grid-cols-2 mt-3 md:mt-0 " onClick={openForEmp}>
-                            <p className="text-thS font-thW leading-thL text-textR md:text-dfhS font-dfhW leading-dfhL md:col-span-2">
-                                For Employers
-                            </p>
-                            <p className="text-right pr-3 md:hidden">
-                                {forEmp == true ? (
-                                    <KeyboardArrowUpIcon sx={{ fontSize: '1.8rem' }} onClick={openForEmp} />
-                                ) : (
-                                    <KeyboardArrowDownIcon sx={{ fontSize: '1.8rem' }} onClick={openForEmp} />
-                                )}
-                            </p>
-                        </div>
-                        <ul className="hidden  md:flex flex-col space-y-4 pt-3 md:-ml-2">
-                            <LinkList text="Post Job" />
-                            <LinkList text="Submit Job Order" />
-                            <LinkList text="Our Services" />
-                            <LinkList text="My YES" />
-                        </ul>
-                        {forEmp && (
-                            <ul className="flex flex-col space-y-4 pt-3 md:hidden ">
-                                <LinkList text="Post Job" />
+                        {(!userRole || userRole == 'employer') && (
+                            <div className="grid grid-cols-2 mt-3 md:mt-0 " onClick={openForEmp}>
+                                <p className="text-thS font-thW leading-thL text-textR md:text-dfhS font-dfhW leading-dfhL md:col-span-2">
+                                    For Employers
+                                </p>
+                                <p className="text-right pr-3 md:hidden">
+                                    {forEmp == true ? (
+                                        <KeyboardArrowUpIcon sx={{ fontSize: '1.8rem' }} onClick={openForEmp} />
+                                    ) : (
+                                        <KeyboardArrowDownIcon sx={{ fontSize: '1.8rem' }} onClick={openForEmp} />
+                                    )}
+                                </p>
+                            </div>
+                        )}
+                        {!userRole && (
+                            <ul className="hidden  md:flex flex-col space-y-4 pt-0 -mt-8 md:-ml-2">
+                                <LinkList link="/users/employer/" text="Post Job" />
                                 <LinkList text="Submit Job Order" />
-                                <LinkList text="Our Services" />
-                                <LinkList text="My YES" />
+                            </ul>
+                        )}
+                        {userRole == 'employer' && (
+                            <ul className="hidden  md:flex flex-col space-y-4 pt-3 md:-ml-2">
+                                <LinkList link="/users/employer/" text="Post Job" />
+                                <LinkList text="Submit Job Order" />
+                                <LinkList link="/users/employer/" text="My Dashboard" />
+                            </ul>
+                        )}
+                        {forEmp && !userRole && (
+                            <ul className="flex flex-col space-y-4 pt-3 md:hidden ">
+                                <LinkList link="/users/employer/" text="Post Job" />
+                                <LinkList link="/" text="Submit Job Order" />
+                            </ul>
+                        )}
+                        {forEmp && userRole == 'employer' && (
+                            <ul className="flex flex-col space-y-4 pt-3 md:hidden ">
+                                <LinkList link="/users/employer/" text="Post Job" />
+                                <LinkList link="/" text="Submit Job Order" />
+                                <LinkList link="/users/employer/" text="My Dashboard" />
                             </ul>
                         )}
                     </div>
                     <div className="col-span-12 mt-3 pl-5 cursor-pointer md:cursor-default md:mt-2 md:col-span-4 lg:col-span-3 ">
-                        <div className="grid grid-cols-3 md:grid-cols-2 my-3 md:mt-0" onClick={openForCan}>
-                            <p className="text-thS font-thW leading-thL col-span-2 text-textR md:text-dfhS font-dfhW leading-dfhL md:col-span-2">
-                                For Job Seekers
-                            </p>
-                            <p className="text-right pr-3 md:hidden">
-                                {forCan == true ? (
-                                    <KeyboardArrowUpIcon sx={{ fontSize: '1.8rem' }} onClick={openForCan} />
-                                ) : (
-                                    <KeyboardArrowDownIcon sx={{ fontSize: '1.8rem' }} onClick={openForCan} />
-                                )}
-                            </p>
-                        </div>
-                        <ul className="hidden  md:flex flex-col space-y-4 pt-3 ">
-                            <LinkList text="Find a Job" />
-                            <LinkList text="Build Resume" />
-                            <LinkList text="Upload Resume" />
-                            <LinkList text="My YES" />
-                        </ul>
-                        {forCan && (
+                        {!userRole || userRole == 'candidate' ? (
+                            <div className="grid grid-cols-3 md:grid-cols-2 my-3 md:mt-0" onClick={openForCan}>
+                                <p className="text-thS font-thW leading-thL col-span-2 text-textR md:text-dfhS font-dfhW leading-dfhL md:col-span-2">
+                                    For Job Seekers
+                                </p>
+                                <p className="text-right pr-3 md:hidden">
+                                    {forCan == true ? (
+                                        <KeyboardArrowUpIcon sx={{ fontSize: '1.8rem' }} onClick={openForCan} />
+                                    ) : (
+                                        <KeyboardArrowDownIcon sx={{ fontSize: '1.8rem' }} onClick={openForCan} />
+                                    )}
+                                </p>
+                            </div>
+                        ) : null}
+                        {!userRole ? (
+                            <ul className="hidden  md:flex flex-col space-y-4 pt-3 ">
+                                <LinkList link="/jobs" text="Find a Job" />
+                                <LinkList link="/" text="Craft Resume" />
+                            </ul>
+                        ) : null}
+                        {userRole == 'candidate' && (
+                            <ul className="hidden  md:flex flex-col space-y-4 pt-3 ">
+                                <LinkList link="/jobs" text="Find a Job" />
+                                <LinkList link="/" text="Craft Resume" />
+                                <LinkList link="/users/candidate/profile" text="Upload Resume" />
+                                <LinkList link="/users/candidate/" text="My Jobs" />
+                            </ul>
+                        )}
+                        {forCan && !userRole && (
                             <ul className="flex flex-col space-y-4 pt-3 md:hidden ">
-                                <LinkList text="Find a Job" />
-                                <LinkList text="Build Resume" />
-                                <LinkList text="Upload Resume" />
-                                <LinkList text="My YES" />
+                                <LinkList link="/jobs" text="Find a Job" />
+                                <LinkList link="/" text="Carft Resume" />
+                            </ul>
+                        )}
+                        {forCan && userRole == 'candidate' && (
+                            <ul className="flex flex-col space-y-4 pt-3 md:hidden ">
+                                <LinkList link="/jobs" text="Find a Job" />
+                                <LinkList link="/" text="Carft Resume" />
+                                <LinkList link="/users/candidate/profile" text="Upload Resume" />
+                                <LinkList link="/users/candidate/" text="My Jobs" />
                             </ul>
                         )}
                     </div>

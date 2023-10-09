@@ -211,7 +211,7 @@ const singleJob = () => {
                         )}
                         {jobDetails.applicationDeadline && (
                             <JobCard
-                                salary="Deadline"
+                                salary="Closing Date"
                                 money={new Date(jobDetails.applicationDeadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                 icon={
                                     <CalendarTodayOutlinedIcon

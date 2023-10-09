@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobImage from '../JobImage';
 import SingleJobShimmer from '../shimmer/SingleJobShimmer';
+import Link from 'next/link';
 const CompanyName = (props: any) => {
     const [compData, setCompData] = useState<any>();
     const getCompData = () => {
@@ -32,6 +33,7 @@ const SavedJobs = (props: any) => {
     useEffect(() => {
         setAllLoading(true);
         fetchSavedJobIds().then((res: any) => {
+            res && res.total == 0 && setAllLoading(false);
             for (let i = 0; i < res.documents.length; i++) {
                 if (!savedJobId.includes(res.documents[i].jobId)) {
                     savedJobId.push(res.documents[i].jobId);
@@ -71,7 +73,6 @@ const SavedJobs = (props: any) => {
                 });
         });
     };
-
     return (
         <>
             <ToastContainer />
@@ -105,6 +106,17 @@ const SavedJobs = (props: any) => {
                             </div>
                         </div>
                     </div>
+                </div>
+            )}
+            {!allLoading && savedJobs.length == 0 && props.view && (
+                <div className="col-span-12 text-center flex flex-col items-center gap-y-3">
+                    <p>No saved jobs under your palm tree yet. Browse the listings to find your next opportunity.</p>
+                    <Link
+                        href="/jobs"
+                        className="w-60 bg-gradient-to-r from-gradientFirst to-gradientSecond px-10 py-5 rounded-full text-textW cursor-pointer"
+                    >
+                        Find Job
+                    </Link>
                 </div>
             )}
             {savedJobs &&

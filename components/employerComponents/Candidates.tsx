@@ -146,10 +146,7 @@ const Candidates = (props: any) => {
                                         <SearchIcon className="text-[1.7rem]" />
                                     </div>
                                     <div className="col-span-11 sm:col-span-11 md:col-span-10 xl:col-span-9">
-                                        <input
-                                            className="h-full w-full bg-[#F8F8F8] pl-5 border-none outline-none focus:ring-0 focus:border-none focus:outline-none"
-                                            placeholder="Marketing Manager"
-                                        />
+                                        <input className="h-full w-full bg-[#F8F8F8] pl-5 border-none outline-none focus:ring-0 focus:border-none focus:outline-none" />
                                     </div>
                                 </div>
                                 <div

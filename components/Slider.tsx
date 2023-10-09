@@ -47,7 +47,7 @@ const Slider = () => {
             </div>
             <div className="w-full text-left flex flex-col mb-20">
                 <p className="text-zinc-900 pb-5 font-medium max-h-18 overflow-hidden text-xl sm:text-2xl xl:text-3xl leading-7">
-                    Behind every thriving company is a team of dedicated professionals. find yours on PalmJobs.
+                    Behind every thriving company is a team of dedicated professionals. Find yours on Palm Jobs.
                 </p>
                 {/* <div className="grid grid-cols-12">
                     <img src={profile} className="w-full h-full col-span-2" />

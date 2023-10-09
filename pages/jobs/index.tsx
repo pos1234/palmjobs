@@ -101,6 +101,7 @@ const Jobs = () => {
     const [savedJobs, setSavedJobs] = useState<any[]>([]);
     const [allLoading, setAllLoading] = useState(false);
     const [openShare, setOpenShare] = useState(false);
+    const [applyEmp, setApplyEmp] = useState(false);
     useEffect(() => {
         setAllLoading(true);
         fetchJobs().then((res) => {
@@ -222,6 +223,9 @@ const Jobs = () => {
                 setApplyJobId(jobId);
                 setApplyEmployerId(employerId);
             }
+            if (role.documents[0].userRole == 'employer') {
+                setApplyEmp(true);
+            }
         }
         if (accountInfo == 'failed') {
             router.push('/account');
@@ -306,7 +310,7 @@ const Jobs = () => {
                                                 setSearchWord(e.currentTarget.value);
                                             }}
                                             className="h-full w-full bg-[#F8F8F8] pl-5 border-none outline-none focus:ring-0 focus:border-none focus:outline-none sm:w-1/2"
-                                            placeholder="Marketing Manager"
+                                            placeholder="What"
                                         />
                                         <div className="border-r-1 h-full w-[2px] bg-stone-300 mr-3 max-sm:hidden"></div>
                                         <PinDropOutlinedIcon className="text-[1.3rem] text-stone-400 max-sm:hidden" />
@@ -317,7 +321,7 @@ const Jobs = () => {
                                                 setAddressHolder(e.currentTarget.value);
                                             }}
                                             className="h-full w-full bg-[#F8F8F8] max-sm:hidden pl-5 border-none outline-none focus:ring-0 focus:border-none focus:outline-none sm:w-1/2"
-                                            placeholder="Remote"
+                                            placeholder="Where"
                                         />
                                         <div
                                             onClick={() => setOpenfilter(true)}
@@ -496,7 +500,7 @@ const Jobs = () => {
                                                 >
                                                     Back To Search
                                                 </p>
-                                                <div className="col-span-12 grid grid-cols-12 mb-5 gap-y-3 pt-0.5 rounded-b-xl bg-textW xl:pr-5">
+                                                <div className="col-span-12 grid grid-cols-12 mb-0 gap-y-3 pt-0.5 rounded-b-xl bg-textW xl:pr-5">
                                                     <div className="hidden col-span-12 gap-x-2 md:flex">
                                                         {datePosted !== 'Date Posted' && (
                                                             <div className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-[3.75rem]">
@@ -639,7 +643,7 @@ const Jobs = () => {
                                                         )}
                                                         {jobDetails.applicationDeadline && (
                                                             <JobCard
-                                                                salary="Deadline"
+                                                                salary="Closing Date"
                                                                 money={new Date(jobDetails.applicationDeadline)
                                                                     .toLocaleDateString('en-GB')
                                                                     .replace(/\//g, '-')}
@@ -915,6 +919,23 @@ const Jobs = () => {
                             >
                                 Find Result
                             </div>
+                        </div>
+                    </div>
+                </ConfirmModal>
+            )}
+            {applyEmp && (
+                <ConfirmModal isOpen={applyEmp} handleClose={() => setApplyEmp(!applyEmp)}>
+                    <div className="mx-2 pb-10 pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
+                        <div className="col-span-12 flex justify-end pr-7">
+                            <button onClick={() => setApplyEmp(!applyEmp)}>
+                                <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
+                            </button>
+                        </div>
+                        <div className="col-span-12 flex justify-end pr-7">
+                            <p className="text-center md:px-10 text-bigS text-lightGrey">
+                                Oops! You've set roots as an employer. To branch out and apply for jobs, consider a job seeker account.
+                                <br /> Thanks.
+                            </p>
                         </div>
                     </div>
                 </ConfirmModal>
