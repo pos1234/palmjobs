@@ -105,7 +105,7 @@ const Login = () => {
                     </div>
                     {forgotPassword == false && (
                         <p className="font-shW text-shS md:text-dshS">
-                            Connect. <br /> Grow. <span className="text-gradientFirst">Succeed.</span>
+                            Connect. Grow. <span className="text-gradientFirst">Succeed.</span>
                         </p>
                     )}
                     {forgotPassword == false && (

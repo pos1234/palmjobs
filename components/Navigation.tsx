@@ -10,9 +10,10 @@ import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlin
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import ConfirmModal from './ConfirmModal';
 import { useRouter } from 'next/dist/client/router';
+import { toast, ToastContainer } from 'react-toastify';
 const Navigation = (props: any) => {
     const logo = '/images/logo.svg';
-    const profile = '/images/profile.svg';
+    const loadingIn = '/images/loading.svg';
     const [choosen, setChoosen] = useState('');
     const [menu, setMenu] = useState(false);
     const [userData, setUserData] = useState<any>();
@@ -20,6 +21,7 @@ const Navigation = (props: any) => {
     const [userDetail, setUserDetail] = useState<any>();
     const [openLogout, setOpenLogout] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [logLoading, setLogLoading] = useState(false);
     const router = useRouter();
     const getUserData = async () => {
         const userInfo = await getAccount();
@@ -52,9 +54,13 @@ const Navigation = (props: any) => {
         return href;
     };
     const handleLogout = () => {
+        setLogLoading(true);
         signOut().then((res) => {
+            setLogLoading(false);
+            toast.success('Successfully Logged Out');
             setOpenLogout(false);
             router.push('/');
+            router.reload();
         });
     };
     useEffect(() => {
@@ -62,6 +68,7 @@ const Navigation = (props: any) => {
     }, []);
     return (
         <div>
+            <ToastContainer />
             <div className="grid grid-cols-12 pt-3  md:border-b-2">
                 <div className="col-span-6 md:col-span-12 md:max-lg:flex md:max-lg:justify-center lg:col-span-2">
                     <Link href="/">
@@ -295,23 +302,25 @@ const Navigation = (props: any) => {
                         >
                             No
                         </button>
-                        <button
-                            onClick={handleLogout}
-                            type="button"
-                            className="bg-gradientSecond hover:bg-gradient-to-r text-textW hover:from-gradientFirst hover:to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                        >
-                            Yes
-                        </button>
+                        {logLoading && (
+                            <img
+                                src={loadingIn}
+                                className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
+                            />
+                        )}
+                        {!logLoading && (
+                            <button
+                                onClick={handleLogout}
+                                type="button"
+                                className="bg-gradientSecond hover:bg-gradient-to-r text-textW hover:from-gradientFirst hover:to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
+                            >
+                                Yes
+                            </button>
+                        )}
                     </div>
                 </div>
             </ConfirmModal>
         </div>
     );
 };
-
 export default Navigation;
-{
-    /* <button type="button" onClick={signOut}>
-            logout
-        </button> */
-}

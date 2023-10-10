@@ -278,7 +278,8 @@ export const fetchJobs = async () => {
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
         Query.limit(100),
         Query.offset(0),
-        Query.equal('jobStatus', 'Active')
+        Query.equal('jobStatus', 'Active'),
+        Query.orderAsc('datePosted')
     ]);
     return promise;
 };

@@ -22,10 +22,11 @@ import { useRouter } from 'next/dist/client/router';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { getAccount, getProfileData, getProfilePicture, signOut } from '@/lib/services';
 import Link from 'next/link';
+import { toast, ToastContainer } from 'react-toastify';
 const AdminJob = () => {
     const logo = '/images/logo.svg';
     const router = useRouter();
-    const profile = '/images/profile.svg';
+    const loadingIn = '/images/loading.svg';
     const [postJob, setPostJob] = useState(true);
     const [dashboard, setDashboard] = useState(false);
     const [jobs, setJobs] = useState(false);
@@ -38,6 +39,7 @@ const AdminJob = () => {
     const [userDetail, setUserDetail] = useState<any>();
     const [menu, setMenu] = useState(false);
     const [editedJobId, setEditedJobId] = useState('');
+    const [logLoading, setLogLoading] = useState(false);
     const handleNavigation = (name: string) => {
         'dashboard';
         if (name === 'postJob') {
@@ -96,8 +98,13 @@ const AdminJob = () => {
         }
     };
     const handleLogout = () => {
+        setLogLoading(true);
         signOut().then((res) => {
+            setLogLoading(false);
+            toast.success('Successfully Logged Out');
+            setOpenLogout(false);
             router.push('/');
+            router.reload();
         });
     };
     const getUserData = async () => {
@@ -119,6 +126,7 @@ const AdminJob = () => {
     }, []);
     return (
         <>
+            <ToastContainer />
             <div className="flex justify-between items-center pr-5">
                 <Link href="/">
                     <img src={logo} alt="palmjobs logo" className=" h-20" />
@@ -351,13 +359,21 @@ const AdminJob = () => {
                         >
                             No
                         </button>
-                        <button
-                            onClick={handleLogout}
-                            type="button"
-                            className="bg-gradientSecond hover:bg-gradient-to-r text-textW hover:from-gradientFirst hover:to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                        >
-                            Yes
-                        </button>
+                        {logLoading && (
+                            <img
+                                src={loadingIn}
+                                className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
+                            />
+                        )}
+                        {!logLoading && (
+                            <button
+                                onClick={handleLogout}
+                                type="button"
+                                className="bg-gradientSecond hover:bg-gradient-to-r text-textW hover:from-gradientFirst hover:to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
+                            >
+                                Yes
+                            </button>
+                        )}
                     </div>
                 </div>
             </ConfirmModal>

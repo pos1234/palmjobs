@@ -1078,13 +1078,13 @@ const PostAJob = (props: any) => {
                                         }
                                         icon={
                                             currency == 'euro' ? (
-                                                <EuroIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                <EuroIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                             ) : currency == 'usd' ? (
-                                                <AttachMoneyOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                <AttachMoneyOutlined sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                             ) : currency == 'gpb' ? (
-                                                <CurrencyPoundIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                <CurrencyPoundIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                             ) : currency == 'rnp' ? (
-                                                <CurrencyRupeeIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                <CurrencyRupeeIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                             ) : (
                                                 <span className="mr-2">ETB</span>
                                             )
@@ -1094,23 +1094,17 @@ const PostAJob = (props: any) => {
                                 <Jobtype
                                     salary="Job Type"
                                     money={worktype}
-                                    icon={
-                                        <AccessTimeOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
-                                    }
+                                    icon={<AccessTimeOutlined sx={{ fontSize: '1.2rem' }} className="mt-[0.2rem] mr-1 sm:mt-0.5" />}
                                 />
                                 <Jobtype
                                     salary="Date Posted"
                                     money={new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}
-                                    icon={
-                                        <CalendarToday className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
-                                    }
+                                    icon={<CalendarToday sx={{ fontSize: '1.2rem' }} className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5" />}
                                 />
                                 <Jobtype
                                     salary="Closing Date"
                                     money={new Date(deadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
-                                    icon={
-                                        <CalendarToday className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
-                                    }
+                                    icon={<CalendarToday sx={{ fontSize: '1.2rem' }} className="mt-[0.2rem] mr-1 sm:mt-0.5" />}
                                 />
                             </div>
                             <div className="col-span-12 grid grid-cols-12 border-[1px] mx-3 rounded-full">
@@ -1124,7 +1118,6 @@ const PostAJob = (props: any) => {
                                 >
                                     Job Description
                                 </div>
-
                                 <div
                                     className={
                                         company == true

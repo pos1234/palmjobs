@@ -102,6 +102,7 @@ const Jobs = () => {
     const [allLoading, setAllLoading] = useState(false);
     const [openShare, setOpenShare] = useState(false);
     const [applyEmp, setApplyEmp] = useState(false);
+    
     useEffect(() => {
         setAllLoading(true);
         fetchJobs().then((res) => {
@@ -130,7 +131,6 @@ const Jobs = () => {
             }
         });
     }, [employerId]);
-
     const filData =
         data &&
         data.filter((item: any) => {
@@ -739,17 +739,21 @@ const Jobs = () => {
                             <img src={uploadResume} className="h-[20rem] self-center md:w-[14rem] md:h-[14rem]" />
                         </div> */}
                                 <div className="justify-center items-center md:pt-10 xl:flex-col xl:text-center xl:mt-5 max-h-[20rem] pb-10 bg-textW rounded-xl hidden lg:flex">
-                                    <img src={profile} className="self-center w-[8rem] h-[8rem]" />
-                                    <div className=" px-5 flex flex-col gap-y-2 mt-2 xl:w-full">
-                                        <p className="text-[1.5rem] font-fhW">John Doe</p>
-                                        <p className="text-fadedText">Let employers find you</p>
-                                        <Link
-                                            href="/users/candidate/profile"
-                                            className="text-textW font-fhW bg-gradient-to-r from-gradientFirst to-gradientSecond  py-3 rounded-full mt-4 xl:w-2/3 self-center"
-                                        >
-                                            Edit Your Profile
-                                        </Link>
-                                    </div>
+                                    {
+                                        <>
+                                            <img src={profile} className="self-center w-[8rem] h-[8rem]" />
+                                            <div className=" px-5 flex flex-col gap-y-2 mt-2 xl:w-full">
+                                                <p className="text-[1.5rem] font-fhW">John Doe</p>
+                                                <p className="text-fadedText">Complete your profile to be found by employers.</p>
+                                                <Link
+                                                    href="/users/candidate/profile"
+                                                    className="text-textW font-fhW bg-gradient-to-r from-gradientFirst to-gradientSecond  py-3 rounded-full mt-4 xl:w-2/3 self-center"
+                                                >
+                                                    Edit Your Profile
+                                                </Link>
+                                            </div>
+                                        </>
+                                    }
                                 </div>
                             </div>
                         </div>
