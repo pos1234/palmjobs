@@ -13,9 +13,9 @@ export default function Document() {
                 name="keywords"
                 content="job search engine, jobs, job listings, jobs in ethiopia, employment opportunity, safaricom ethiopia vacancy, NGO jobs, online job sites,resumes, salaries, simple hire,job search, indeed, jobs,search engine for jobs, search jobs, career, employment, work, find jobs, rss job feed xml"
             />
-            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
             <link rel="preconnect" href="https://fonts.gstatic.com" />
-            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" /> */}
             <body>
                 <div id="portal-root"></div>
                 <Main />
