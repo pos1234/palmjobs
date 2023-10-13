@@ -46,7 +46,7 @@ const Share = (props: any) => {
                             defaultValue={`${VERIFY}jobs/${props.link}`}
                         />
                         <div
-                            onClick={() => copyToClipboard(`${VERIFY}jobs/${props.link}`)}
+                            onClick={() => copyToClipboard(`${VERIFY}/jobs/${props.link}`)}
                             className="cursor-pointer text-stone-500 hover:text-stone-700"
                         >
                             <ContentPasteIcon />

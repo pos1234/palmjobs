@@ -860,6 +860,7 @@ const Jobs = () => {
                             }
                         >
                             <button
+                                name="paginationBackWardButton"
                                 className={
                                     maxPaginate > 5 && pageCount > 5
                                         ? 'border bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 text-center'
@@ -867,7 +868,7 @@ const Jobs = () => {
                                 }
                                 onClick={previousPage}
                             >
-                                <ArrowBackIosIcon className="text-sm" />
+                                <ArrowBackIosIcon sx={{ fontSize: '1rem' }} />
                             </button>
                             {[...Array(pageCount)].map((_, index) => (
                                 <button
@@ -892,6 +893,7 @@ const Jobs = () => {
                                 </button>
                             ))}
                             <button
+                                name="paginationForwardButton"
                                 className={
                                     maxPaginate < pageCount
                                         ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 '
@@ -899,7 +901,7 @@ const Jobs = () => {
                                 }
                                 onClick={nextPage}
                             >
-                                <ArrowForwardIosIcon className="text-sm" />
+                                <ArrowForwardIosIcon sx={{ fontSize: '1rem' }} />
                             </button>
                         </div>
                     </div>

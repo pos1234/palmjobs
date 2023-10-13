@@ -176,13 +176,25 @@ const singleJob = () => {
                                 }
                                 icon={
                                     jobDetails.currency == 'euro' ? (
-                                        <EuroIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
+                                        <EuroIcon
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     ) : jobDetails.currency == 'usd' ? (
-                                        <AttachMoneyOutlined sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
+                                        <AttachMoneyOutlined
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     ) : jobDetails.currency == 'gpb' ? (
-                                        <CurrencyPoundIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
+                                        <CurrencyPoundIcon
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     ) : jobDetails.currency == 'rnp' ? (
-                                        <CurrencyRupeeIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
+                                        <CurrencyRupeeIcon
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     ) : (
                                         <span className="mr-2">ETB</span>
                                     )
