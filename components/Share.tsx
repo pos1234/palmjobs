@@ -43,7 +43,7 @@ const Share = (props: any) => {
                     <div className="flex border-2 p-3 rounded-2xl justify-between items-center">
                         <input
                             className="border-r-2 pr-3 mr-3 overflow-hidden w-full border-0 outline-0 focus:ring-0 focus:border-0"
-                            defaultValue={`${VERIFY}jobs/${props.link}`}
+                            defaultValue={`${VERIFY}/jobs/${props.link}`}
                         />
                         <div
                             onClick={() => copyToClipboard(`${VERIFY}/jobs/${props.link}`)}
