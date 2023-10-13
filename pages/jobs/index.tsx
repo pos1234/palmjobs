@@ -874,9 +874,9 @@ const Jobs = () => {
                             </button>
                             {[...Array(pageCount)].map((_, index) => (
                                 <button
-                                    id="paginationNumber"
-                                    name="paginationNumber"
-                                    aria-labelledby="paginationNumber"
+                                    id={`${index}`}
+                                    name={`${index}`}
+                                    aria-labelledby={`${index}`}
                                     key={index}
                                     /* className={
                                         index < maxPaginate  &&  index + 1 > minPaginate
