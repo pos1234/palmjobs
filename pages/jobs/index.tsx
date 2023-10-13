@@ -860,6 +860,7 @@ const Jobs = () => {
                             }
                         >
                             <button
+                                id="paginationBackWardButton"
                                 name="paginationBackWardButton"
                                 className={
                                     maxPaginate > 5 && pageCount > 5
@@ -872,6 +873,8 @@ const Jobs = () => {
                             </button>
                             {[...Array(pageCount)].map((_, index) => (
                                 <button
+                                    id="paginationNumber"
+                                    name="paginationNumber"
                                     key={index}
                                     /* className={
                                         index < maxPaginate  &&  index + 1 > minPaginate
@@ -893,6 +896,7 @@ const Jobs = () => {
                                 </button>
                             ))}
                             <button
+                                id="paginationForwardButton"
                                 name="paginationForwardButton"
                                 className={
                                     maxPaginate < pageCount
