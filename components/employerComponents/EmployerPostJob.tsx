@@ -410,6 +410,12 @@ const PostAJob = (props: any) => {
             }
         }
     };
+    const validateLink = (link: string) => {
+        if (link && !link.startsWith('https://')) {
+            link = 'https://' + link;
+        }
+        return link;
+    };
     const handleFourthSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         if (email && emailSent == '') {
@@ -418,9 +424,8 @@ const PostAJob = (props: any) => {
             setLinkError('please provide link');
         } else {
             setLoading(true);
-            const link = externalLink && !externalLink.startsWith('https://') && 'https://' + externalLink;
 
-            postFourthTab(postingJobId, deadline, '', emailSent, link)
+            postFourthTab(postingJobId, deadline, '', emailSent, validateLink(externalLink))
                 .then((res: any) => {
                     setLoading(false);
                     toast.success('Job posted successfully');
