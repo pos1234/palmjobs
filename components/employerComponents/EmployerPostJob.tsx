@@ -418,7 +418,9 @@ const PostAJob = (props: any) => {
             setLinkError('please provide link');
         } else {
             setLoading(true);
-            postFourthTab(postingJobId, deadline, '', emailSent, externalLink)
+            const link = externalLink && !externalLink.startsWith('https://') && 'https://' + externalLink;
+
+            postFourthTab(postingJobId, deadline, '', emailSent, link)
                 .then((res: any) => {
                     setLoading(false);
                     toast.success('Job posted successfully');
