@@ -22,7 +22,7 @@ import { useRouter } from 'next/dist/client/router';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { getAccount, getProfileData, getProfilePicture, signOut } from '@/lib/services';
 import Link from 'next/link';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 const AdminJob = () => {
     const logo = '/images/logo.svg';
     const router = useRouter();
@@ -126,10 +126,9 @@ const AdminJob = () => {
     }, []);
     return (
         <>
-            <ToastContainer />
-            <div className="flex justify-between items-center pr-5">
+            <div className="flex justify-between items-center pr-5 md:pr-0 md:flex md:pl-16 md:pt-5">
                 <Link href="/">
-                    <img src={logo} alt="palmjobs logo" className=" h-20" />
+                    <img src={logo} alt="palmjobs logo" className=" h-24" />
                 </Link>
                 <div
                     onClick={() => {
@@ -273,7 +272,7 @@ const AdminJob = () => {
                             setOpenLogout(!openLogout);
                             setMenu(false);
                         }}
-                        className="left-0 flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer md:absolute md:bottom-3 lg:pl-9"
+                        className="left-0 flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer  lg:pl-9"
                     >
                         <div className=" rounded-md border-0">
                             <LogoutIcon sx={{ fontSize: '1.9rem' }} />

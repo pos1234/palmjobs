@@ -23,7 +23,7 @@ import { candidateAuth } from '@/components/withAuth';
 import PhonelinkIcon from '@mui/icons-material/Phonelink';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import CandidateProfileShimmer from '@/components/shimmer/CandidateProfileShimmer';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TextInput from '@/components/TextInput';
 interface Data {
@@ -40,6 +40,7 @@ const Profile = () => {
     const [behanceError, setBehanceError] = useState('');
     const [linkedError, setLinkedError] = useState('');
     const [portfolioError, setPortfolioError] = useState('');
+    const [profileLoading, setProfileLoading] = useState(false);
     const userData: any = accountData();
     const {
         allLoading,
@@ -93,36 +94,21 @@ const Profile = () => {
                     return false;
                 }
                 setProfileError(' ');
-                return functionName(uploadedFile && uploadedFile[0]);
+                functionName(uploadedFile && uploadedFile[0]).then(() => {
+                    setProfileLoading(false);
+                });
             });
         }
     };
-    const documentUploadChecker = (functionName: any, uploadedFile: any) => {
-        if (uploadedFile) {
-            const fileList = Array.from(uploadedFile);
-            const maxSize = 1 * 1024 * 1024;
-            const allowedExtensions = ['.pdf', 'docx'];
-            const filteredFiles: any = fileList.filter((file: any) => {
-                if (file.size > maxSize) {
-                    console.log(`File ${file.name} exceeds the maximum size limit.`);
-                    return false;
-                }
-                const fileExtension = `.${file.name.split('.').pop()}`;
-                if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
-                    console.log(`File ${file.name} has an invalid extension.`);
-                    return false;
-                }
 
-                return functionName(uploadedFile && uploadedFile[0]);
-            });
-        }
-    };
     const updatePic = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
+        setProfileLoading(true);
         imageUploadChecker(updateProfilePictures, e.currentTarget.files);
     };
     const uploadPic = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
+        setProfileLoading(true);
         imageUploadChecker(uploadProfilePictures, e.currentTarget.files);
     };
     const uploadSupportDoc = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -217,7 +203,6 @@ const Profile = () => {
     };
     return (
         <div className="px-3 md:px-16">
-            <ToastContainer />
             <Navigation />
             {allLoading && <CandidateProfileShimmer />}
             {!allLoading && (
@@ -228,34 +213,52 @@ const Profile = () => {
                                 <div className="profilePictureContainer w-40 h-40 col-span-2 rounded-3xl cursor-pointer">
                                     {image ? (
                                         <>
-                                            <img src={image} className="w-40 h-40 col-span-2 rounded-3xl cursor-pointer" />
-                                            <DeleteIcon
-                                                onClick={deleteProfilePicture}
-                                                sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                                className="w-7 h-7 p-1.5 mr-0 absolute right-0 top-0 -mr-[0.7rem] mt-3 cursor-pointer"
-                                            />
-                                            <div className="uploadProfile">
-                                                <label htmlFor="photo-upload" className="custom-file-upload">
-                                                    <div className="img-wrap img-upload">
-                                                        <CameraAltOutlinedIcon className="text-black" />
+                                            {!profileLoading && (
+                                                <>
+                                                    <img src={image} className="w-40 h-40 col-span-2 rounded-3xl cursor-pointer" />
+                                                    <DeleteIcon
+                                                        onClick={deleteProfilePicture}
+                                                        sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
+                                                        className="w-7 h-7 p-1.5 mr-0 absolute right-0 top-0 -mr-[0.7rem] mt-3 cursor-pointer"
+                                                    />
+                                                    <div className="uploadProfile">
+                                                        <label htmlFor="photo-upload" className="custom-file-upload">
+                                                            <div className="img-wrap img-upload">
+                                                                <CameraAltOutlinedIcon className="text-black" />
+                                                            </div>
+                                                            <input id="photo-upload" type="file" value={file} onChange={updatePic} />
+                                                        </label>
                                                     </div>
-                                                    <input id="photo-upload" type="file" value={file} onChange={updatePic} />
-                                                </label>
-                                            </div>
+                                                </>
+                                            )}
+                                            {profileLoading && (
+                                                <div className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer">
+                                                    <img src={loadingIn} className="flex items-center justify-centerh-16 w-1/2" />
+                                                </div>
+                                            )}
                                         </>
                                     ) : (
                                         <>
-                                            <p className="w-40 h-40 col-span-2 rounded-3xl pt-5 cursor-pointer bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex text-center justify-center text-[5rem] font-frhW">
-                                                {firstLetter}
-                                            </p>
-                                            <div className="uploadProfile">
-                                                <label htmlFor="photo-upload" className="custom-file-upload">
-                                                    <div className="img-wrap img-upload">
-                                                        <CameraAltOutlinedIcon className="text-textW" />
+                                            {!profileLoading && (
+                                                <>
+                                                    <p className="w-40 h-40 col-span-2 rounded-3xl pt-5 cursor-pointer bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex text-center justify-center text-[5rem] font-frhW">
+                                                        {firstLetter}
+                                                    </p>
+                                                    <div className="uploadProfile">
+                                                        <label htmlFor="photo-upload" className="custom-file-upload">
+                                                            <div className="img-wrap img-upload">
+                                                                <CameraAltOutlinedIcon className="text-textW" />
+                                                            </div>
+                                                            <input id="photo-upload" type="file" onChange={uploadPic} />
+                                                        </label>
                                                     </div>
-                                                    <input id="photo-upload" type="file" onChange={uploadPic} />
-                                                </label>
-                                            </div>
+                                                </>
+                                            )}
+                                            {profileLoading && (
+                                                <div className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer">
+                                                    <img src={loadingIn} className="flex items-center justify-centerh-16 w-1/2" />
+                                                </div>
+                                            )}
                                         </>
                                     )}
                                 </div>

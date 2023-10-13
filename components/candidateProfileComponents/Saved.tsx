@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds, getCompanyData } from '@/lib/services';
 import { useEffect, useState } from 'react';
 import ApplyToJob from './ApplyToJobs';
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobImage from '../JobImage';
 import SingleJobShimmer from '../shimmer/SingleJobShimmer';
@@ -30,6 +30,8 @@ const SavedJobs = (props: any) => {
     const [jobId, setJobId] = useState();
     const [employerId, setEmployerId] = useState();
     const [allLoading, setAllLoading] = useState(false);
+    const [companyName, setCompanyName] = useState('');
+    const [jobTitle, setJobTitle] = useState('');
     useEffect(() => {
         setAllLoading(true);
         fetchSavedJobIds().then((res: any) => {
@@ -75,7 +77,6 @@ const SavedJobs = (props: any) => {
     };
     return (
         <>
-            <ToastContainer />
             {allLoading && (
                 <div className="col-span-12 flex flex-col gap-3 gap-y-10 p-3">
                     <div className="flex gap-x-5">
@@ -144,18 +145,19 @@ const SavedJobs = (props: any) => {
                                         <AccessTimeOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1  md:text-[1.2rem]" />
                                         {datas.jobType}
                                     </li>
-                                    <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-3 md:bg-textW md:text-fadedText md:p-0">
+                                    {/* <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-3 md:bg-textW md:text-fadedText md:p-0">
                                         <AttachMoneyOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " />
                                         {datas.salaryRange}
-                                    </li>
+                                    </li> */}
                                     <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-4 md:bg-textW md:text-fadedText md:p-0">
-                                        <CalendarTodayOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " /> 29 min ago
+                                        <CalendarTodayOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " />
+                                        {new Date(datas.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                     </li>
                                 </ul>
-                                <div
+                                {/* <div
                                     className="col-span-12 text-fhS text-darkBlue leading-[24px]  text-fadedText my-5 md:my-0 md:mt-2 md:text-darkBlue"
                                     dangerouslySetInnerHTML={{ __html: datas.jobDescription }}
-                                />
+                                /> */}
                             </div>
                             <div className="col-span-12 flex items-center justify-center md:col-span-12 md:max-lg:pt-10 md:max-lg:px-20 lg:col-span-3 lg:px-10">
                                 <button>
@@ -172,6 +174,8 @@ const SavedJobs = (props: any) => {
                                         setApply(true);
                                         setJobId(datas.$id);
                                         setEmployerId(datas.employerId);
+                                        setJobTitle(datas.jobTitle);
+                                        setCompanyName(datas.companyName);
                                     }}
                                     className=" h-[4.5rem] w-full bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW rounded-full cursor-pointer md:full"
                                 >
@@ -181,7 +185,9 @@ const SavedJobs = (props: any) => {
                         </div>
                     );
                 })}
-            {apply && <ApplyToJob jobId={jobId} employerId={employerId} setterFunction={setApply} />}
+            {apply && (
+                <ApplyToJob jobId={jobId} employerId={employerId} setterFunction={setApply} jobTitle={jobTitle} companyName={companyName} />
+            )}
         </>
     );
 };

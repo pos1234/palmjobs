@@ -24,6 +24,8 @@ import {
     getAccount
 } from '@/lib/services';
 import { toast } from 'react-toastify';
+import { SendJobAppliedEmail } from '../SendEmail';
+const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -152,6 +154,9 @@ const ApplyToJob = (props: any) => {
         } else {
             applyToJobs(userData.Id, props.jobId, props.employerId, newEmail, phone, cover, currentResumeId)
                 .then((res) => {
+                    getAccount().then((res: any) => {
+                        res && SendJobAppliedEmail(res.email, props.jobTitle, `${VERIFY}jobs/`, res.name, props.companyName);
+                    });
                     setOpenApply(false);
                     setOpenNotify(true);
                     setFailed(false);
@@ -166,6 +171,11 @@ const ApplyToJob = (props: any) => {
                 });
         }
     };
+    /* const handleSendEmail = () => {
+        getAccount().then((res: any) => {
+            res && SendJobAppliedEmail(res.email, 'Angular Developer', `${VERIFY}jobs/`, res.name, 'nylos');
+        });
+    }; */
     return (
         <>
             {!failed && (
@@ -207,7 +217,6 @@ const ApplyToJob = (props: any) => {
                             </div>
                         </div>
                     )}
-
                     {!loading && appliedJob && (
                         <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl flex flex-col gap-y-5 items-center justify-center pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0">
                             <p className="col-span-12 text-black text-3xl font-semibold leading-10 ">Already applied to this job</p>
@@ -236,6 +245,8 @@ const ApplyToJob = (props: any) => {
                                         Apply Job
                                     </p>
                                 </div>
+                                {/*                                 <button type='button' onClick={handleSendEmail}>Send Email</button>
+                                 */}
                                 <div className="col-span-12 grid grid-cols-12 gap-x-2 pr-3 mt-5">
                                     <div className="rounded-2xl bg-gradientFirst h-1.5 col-span-3"></div>
                                     <div

@@ -198,7 +198,7 @@ const Education = () => {
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Level of Education</p>
                                     <div className="relative border-2 rounded-full" /* onClick={() => setSelected(!selected)} */>
                                         <select
-                                            className="w-full rounded-full appearance-none px-4 p-3"
+                                            className="w-full rounded-full appearance-none px-4 p-3 focus:ring-orange-500 focus:border-0 cursor-pointer"
                                             value={education.educationLevel}
                                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                                                 setEducation({ ...education, educationLevel: e.currentTarget.value })
@@ -206,7 +206,7 @@ const Education = () => {
                                         >
                                             <option value="High School Diploma">High School Diploma</option>
                                             <option value="Vocational Training/Certificate">Vocational Training/Certificate</option>
-                                            <option value="Associate Degrer">Associate Degrer</option>
+                                            <option value="Associate Degree">Associate Degree</option>
                                             <option value="Bachelor's Degree">Bachelor's Degree</option>
                                             <option value="Postgraduate Certificate/Diploma">Postgraduate Certificate/Diploma</option>
                                             <option value="Master's Degree">Master's Degree</option>
@@ -290,7 +290,7 @@ const Education = () => {
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Level of Education</p>
                                     <div className="relative border-2 rounded-full" /* onClick={() => setSelected(!selected)} */>
                                         <select
-                                            className="w-full rounded-full appearance-none px-4 p-3"
+                                            className="w-full rounded-full appearance-none px-4 p-3 focus:ring-orange-500 focus:border-0 cursor-pointer"
                                             value={EditedEducation.educationLevel}
                                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                                                 setEditedEducation({ ...EditedEducation, educationLevel: e.currentTarget.value })
@@ -298,7 +298,7 @@ const Education = () => {
                                         >
                                             <option value="High School Diploma">High School Diploma</option>
                                             <option value="Vocational Training/Certificate">Vocational Training/Certificate</option>
-                                            <option value="Associate Degrer">Associate Degree</option>
+                                            <option value="Associate Degree">Associate Degree</option>
                                             <option value="Bachelor's Degree">Bachelor's Degree</option>
                                             <option value="Postgraduate Certificate/Diploma">Postgraduate Certificate/Diploma</option>
                                             <option value="Master's Degree">Master's Degree</option>

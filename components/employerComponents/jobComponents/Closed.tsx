@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import dynamic from 'next/dynamic';
 import { Popover } from '@headlessui/react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import VisibilityIcon from '@mui/icons-material/Visibility';

@@ -101,26 +101,30 @@ const Footer = () => {
                         {!userRole && (
                             <ul className="hidden  md:flex flex-col space-y-4 pt-0 -mt-8 md:-ml-2">
                                 <LinkList link="/users/employer/" text="Post Job" />
-                                <LinkList text="Submit Job Order" />
+                                {/*                                 <LinkList text="Submit Job Order" />
+                                 */}{' '}
                             </ul>
                         )}
                         {userRole == 'employer' && (
                             <ul className="hidden  md:flex flex-col space-y-4 pt-3 md:-ml-2">
                                 <LinkList link="/users/employer/" text="Post Job" />
-                                <LinkList text="Submit Job Order" />
+                                {/*                                 <LinkList text="Submit Job Order" />
+                                 */}{' '}
                                 <LinkList link="/users/employer/" text="My Dashboard" />
                             </ul>
                         )}
                         {forEmp && !userRole && (
                             <ul className="flex flex-col space-y-4 pt-3 md:hidden ">
                                 <LinkList link="/users/employer/" text="Post Job" />
-                                <LinkList link="/" text="Submit Job Order" />
+                                {/*                                 <LinkList link="/" text="Submit Job Order" />
+                                 */}{' '}
                             </ul>
                         )}
                         {forEmp && userRole == 'employer' && (
                             <ul className="flex flex-col space-y-4 pt-3 md:hidden ">
                                 <LinkList link="/users/employer/" text="Post Job" />
-                                <LinkList link="/" text="Submit Job Order" />
+                                {/*                                 <LinkList link="/" text="Submit Job Order" />
+                                 */}{' '}
                                 <LinkList link="/users/employer/" text="My Dashboard" />
                             </ul>
                         )}

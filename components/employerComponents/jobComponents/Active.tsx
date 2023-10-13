@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import dynamic from 'next/dynamic';
 import { Popover } from '@headlessui/react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import EuroIcon from '@mui/icons-material/Euro';
@@ -28,6 +28,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Share from '@/components/Share';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import JobImage from '@/components/JobImage';
+import Link from 'next/link';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -142,7 +143,9 @@ const PJobs = (props: any) => {
     return (
         <div className="bg-textW grid grid-cols-12 relative py-5 pl-2 xl:pl-9">
             <div className=" flex flex-col justify-center col-span-10 sm:col-span-7 lg:col-span-3">
-                <p className="text-neutral-900 text-lg font-medium leading-normal">{props.title}</p>
+                <Link href={`/jobs/${props.jobId}`} target='_blank' className="text-neutral-900 text-lg font-medium leading-normal">
+                    {props.title}
+                </Link>
                 <div className="flex flex-wrap text-stone-400 text-[0.8rem] gap-x-4 gap-y-1 mt-1 pr-3">
                     <div>
                         <PinDropOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" /> <span>{props.location}</span>

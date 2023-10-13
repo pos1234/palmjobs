@@ -25,7 +25,6 @@ const CandSmall = (props: any) => {
             if (imageLink) {
                 setImageHref(imageLink.href);
             }
-
             setSkill(res.documents[0] && res.documents[0].skills && parsed);
         });
     }, []);

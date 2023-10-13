@@ -277,9 +277,10 @@ export const MiddleWare = () => {
             console.log(href);
             href && setImage(href);
         });
+        return resultProfile;
     };
-    const updateProfilePictures = (file: any) => {
-        const results = deleteProfileImage(profilePictureId);
+    const updateProfilePictures = async (file: any) => {
+        const results = await deleteProfileImage(profilePictureId);
         const resultProfile = createImage(file);
         resultProfile.then((res: any) => {
             setProfilePictureId(res.$id);
@@ -287,6 +288,7 @@ export const MiddleWare = () => {
             const { href } = res && getProfilePicture(res.$id);
             href && setImage(href);
         });
+        return resultProfile;
     };
 
     const deleteProfilePicture = () => {

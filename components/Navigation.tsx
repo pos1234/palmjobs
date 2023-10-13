@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { getAccount, getCandidateInfo, getProfileData, getProfilePicture, getRole, signOut } from '@/lib/services';
 import styles from '@/styles/navigation.module.css';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
-import Link from 'next/link';
+/* import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+ */ import Link from 'next/link';
 import { Popover } from '@headlessui/react';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import ConfirmModal from './ConfirmModal';
 import { useRouter } from 'next/dist/client/router';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 const Navigation = (props: any) => {
     const logo = '/images/logo.svg';
     const loadingIn = '/images/loading.svg';
@@ -68,7 +68,6 @@ const Navigation = (props: any) => {
     }, []);
     return (
         <div>
-            <ToastContainer />
             <div className="grid grid-cols-12 pt-3  md:border-b-2">
                 <div className="col-span-6 md:col-span-12 md:max-lg:flex md:max-lg:justify-center lg:col-span-2">
                     <Link href="/">
@@ -204,8 +203,8 @@ const Navigation = (props: any) => {
                     {!userData && !loading && (
                         <>
                             <div className="max-md:hidden md:col-span-12 lg:col-span-7 flex items-center">
-                                <div className="text-right pt-1 text-fhS leading-fhL font-fhW text-textR md:max-lg:text-left lg:text-dfhS lg:leading-dfhL lg:font-bigW md:pr-3 lg:-mt-1">
-                                    <Link href="/account">Sign in</Link>
+                                <div className="text-right pt-1 text-fhS leading-fhL font-fhW text-textR lg:text-bigS lg:font-bigW lg:leading-bigL lg:text-textR md:pr-3 lg:-mt-1">
+                                    <Link href="/account">Sign In</Link>
                                 </div>
                             </div>
                             <div className="hidden justify-items-end col-span-3 md:flex md:items-center mb-[2px] md:col-span-12 lg:col-span-5 ">
@@ -220,9 +219,9 @@ const Navigation = (props: any) => {
                     )}
                     {userData && (
                         <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
-                            <div className="px-2 py-1 text-stone-500 border-r-2 border-stone-300 hover:text-orange-500 cursor-pointer">
+                            {/* <div className="px-2 py-1 text-stone-500 border-r-2 border-stone-300 hover:text-orange-500 cursor-pointer">
                                 <NotificationsOutlinedIcon />
-                            </div>
+                            </div> */}
 
                             <div className="flex items-center pl-0 sm:pl-2 lg:text-[0.9rem] px-2 py-1 text-stone-500 ">
                                 <Popover className="focus:ring-0 focus:border-0 focus:outline-0">

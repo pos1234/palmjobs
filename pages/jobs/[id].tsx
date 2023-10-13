@@ -42,6 +42,8 @@ const singleJob = () => {
     const [applyEmployerId, setApplyEmployerId] = useState('');
     const [jobDetails, setJobDetails] = useState<any>();
     const [openShare, setOpenShare] = useState(false);
+    const [companyName, setCompanyName] = useState('');
+    const [jobTitle, setJobTitle] = useState('');
     const handleSearch = () => {
         router.push({
             pathname: '/jobs',
@@ -68,7 +70,7 @@ const singleJob = () => {
             }
         });
     }, [employerId]);
-    const handleApply = async (jobId: string, employerId: string) => {
+    const handleApply = async (jobId: string, employerId: string, compName: string, jobTitle: string) => {
         setApply(false);
         const accountInfo = await getAccount();
         if (accountInfo !== 'failed') {
@@ -77,6 +79,8 @@ const singleJob = () => {
                 setApply(true);
                 setApplyJobId(jobId);
                 setApplyEmployerId(employerId);
+                setCompanyName(compName);
+                setJobTitle(jobTitle);
             }
         }
         if (accountInfo == 'failed') {
@@ -100,7 +104,7 @@ const singleJob = () => {
                         <input
                             onChange={(e) => setSearchText(e.currentTarget.value)}
                             type="text"
-                            placeholder="What are you looking for?"
+                            placeholder="What"
                             className="h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8] sm:h-[90%]"
                         />
                     </div>
@@ -113,7 +117,7 @@ const singleJob = () => {
                         <input
                             onChange={(e) => setAddress(e.currentTarget.value)}
                             type="text"
-                            placeholder="Remote"
+                            placeholder="Where"
                             className="h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8] sm:h-[90%]"
                         />
                     </div>
@@ -172,13 +176,13 @@ const singleJob = () => {
                                 }
                                 icon={
                                     jobDetails.currency == 'euro' ? (
-                                        <EuroIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <EuroIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                     ) : jobDetails.currency == 'usd' ? (
-                                        <AttachMoneyOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <AttachMoneyOutlined sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                     ) : jobDetails.currency == 'gpb' ? (
-                                        <CurrencyPoundIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <CurrencyPoundIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                     ) : jobDetails.currency == 'rnp' ? (
-                                        <CurrencyRupeeIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <CurrencyRupeeIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                     ) : (
                                         <span className="mr-2">ETB</span>
                                     )
@@ -271,7 +275,7 @@ const singleJob = () => {
                             ) : (
                                 <div
                                     onClick={() => {
-                                        handleApply(jobDetails.$id, jobDetails.employerId);
+                                        handleApply(jobDetails.$id, jobDetails.employerId, jobDetails.companyName, jobDetails.jobTitle);
                                     }}
                                     className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
                                 >
@@ -291,7 +295,15 @@ const singleJob = () => {
                     )}
                 </div>
             )}
-            {apply && <ApplyToJob jobId={applyJobId} employerId={applyEmployerId} setterFunction={setApply} />}
+            {apply && (
+                <ApplyToJob
+                    jobId={applyJobId}
+                    employerId={applyEmployerId}
+                    setterFunction={setApply}
+                    jobTitle={jobTitle}
+                    companyName={companyName}
+                />
+            )}
         </div>
     );
 };

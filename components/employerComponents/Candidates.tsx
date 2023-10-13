@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SearchIcon from '@mui/icons-material/Search';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -14,7 +14,6 @@ import {
 import CandSmall from './candidateComponents/CandSmall';
 import CandidateDetail from './candidateComponents/CandidateDetail';
 import JobsShimmer from '../shimmer/JobsShimmer';
-
 const Candidates = (props: any) => {
     const [postedJobs, setPostedJobs] = useState<any>();
     const [candidateDetail, setCandidateDetail] = useState<any>();
@@ -26,6 +25,7 @@ const Candidates = (props: any) => {
     const [allCandidates, setAllCandidates] = useState('All Candidates');
     const [imageUrl, setImageUrl] = useState('');
     const [allLoading, setAllLoading] = useState(false);
+    const [searchName, setSearchName] = useState('');
     const handleJobSelection = async (id: string) => {
         const applied = await fetchAppliedCandidatesSingleJob(id);
         /*         applied.then((res) => console.log(res.documents));
@@ -80,6 +80,16 @@ const Candidates = (props: any) => {
     const handleNav = (text: string) => {
         props.postJob(text);
     };
+    /* const filData =
+        shortListed &&
+        shortListed.filter((item: any) => {
+            let isMatch = true;
+            if (searchName.toLocaleLowerCase()) {
+                const searchRegex = new RegExp(searchName, 'i');
+                isMatch = isMatch && searchRegex.test(item.jobTitle);
+            }
+            return isMatch;
+        }); */
     return (
         <div className="bg-textW min-h-screen">
             <div
@@ -242,7 +252,6 @@ const Candidates = (props: any) => {
                     </div>
                 </div>
             )}
-            <ToastContainer />
         </div>
     );
 };

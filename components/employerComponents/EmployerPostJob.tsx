@@ -29,7 +29,8 @@ import {
     postThirdTab,
     postFourthTab,
     fetchDraftedJobs,
-    updateFirstTab
+    updateFirstTab,
+    getAccount
 } from '@/lib/services';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
@@ -46,6 +47,9 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { useRouter } from 'next/router';
 import EmployerProfile from './EmployerProfile';
 import TextInput from '../TextInput';
+import { SendJobPostedEmail } from '../SendEmail';
+const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
+
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -418,6 +422,9 @@ const PostAJob = (props: any) => {
                 .then((res: any) => {
                     setLoading(false);
                     toast.success('Job posted successfully');
+                    getAccount().then((result: any) => {
+                        result && SendJobPostedEmail(result.email, jobTitle, `${VERIFY}jobs/${res.$id}`, result.name);
+                    });
                     router.push(`/jobs/${res.$id}`);
                 })
                 .catch((error) => {
@@ -513,6 +520,7 @@ const PostAJob = (props: any) => {
                     res.documents[0].companyName == ''
                 ) {
                     setProfileFilled(true);
+                    setCompName(res.documents[0].companyName);
                 }
             }
         });
@@ -553,8 +561,15 @@ const PostAJob = (props: any) => {
     const todaysDate = new Date();
     const maxDate = new Date();
     maxDate.setMonth(today.getMonth() + 1);
+    /* const handleSendEmail = () => {
+        getAccount().then((res: any) => {
+            res && SendJobPostedEmail(res.email, jobTitle, `${VERIFY}jobs/${postingJobId}`, res.name);
+        });
+    }; */
     return (
         <div className="pt-5 px-3 pb-10 bg-textW min-h-screen md:pl-10 xl:pr-28 xl:px-20">
+            {/*             <button onClick={handleSendEmail}>Send Email</button>
+             */}
             {!chooseJob && noJobs && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
             {!chooseJob && noJobs && (
                 <div
@@ -918,7 +933,7 @@ const PostAJob = (props: any) => {
                         }
                     >
                         <ArticleIcon className="-ml-0.5" />
-                        <p className="absolute bottom-1">Palmjobs</p>
+                        <p className="absolute bottom-1">Palm Jobs</p>
                     </div>
                     <div
                         onClick={() => {
@@ -948,7 +963,7 @@ const PostAJob = (props: any) => {
                         }
                     >
                         <InsertLinkIcon className="-ml-2" />
-                        <p className="absolute bottom-1">External</p>
+                        <p className="absolute bottom-1">External Link</p>
                     </div>
                 </div>
                 {email && (
@@ -976,7 +991,20 @@ const PostAJob = (props: any) => {
                         className="rounded-full  border-stone-300 py-3 cursor-pointer focus:border-orange-500 focus:ring-0 w-full px-20 md:px-28 md:w-96"
                     />
                 </div>
-                <div className="flex pt-10 max-md:flex-col max-md:gap-y-8">
+                <div className="flex pt-10 max-md:flex-col max-md:gap-y-8 gap-y-5 flex-wrap justify-between">
+                    <div className="w-full">
+                        <div
+                            onClick={() => setOpenPreview(true)}
+                            className={
+                                fourth
+                                    ? 'text-orange-600 border flex items-center justify-center cursor-pointer h-16 rounded-full w-full block  md:w-5/12 lg:w-3/12'
+                                    : 'hidden'
+                            }
+                        >
+                            See Preview &nbsp; <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                        </div>
+                    </div>
+
                     <div
                         onClick={handleBack}
                         className={
@@ -986,16 +1014,6 @@ const PostAJob = (props: any) => {
                         }
                     >
                         <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
-                    </div>
-                    <div
-                        onClick={() => setOpenPreview(true)}
-                        className={
-                            fourth
-                                ? 'text-orange-600 flex items-center justify-center cursor-pointer h-16 rounded-full  max-md:order-2 w-full md:ml-40 md:w-5/12 lg:w-3/12'
-                                : 'hidden'
-                        }
-                    >
-                        See Preview &nbsp; <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
                     </div>
                     {loading && (
                         <img

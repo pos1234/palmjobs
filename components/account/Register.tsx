@@ -176,7 +176,7 @@ const RegisterComponent = (props: any) => {
                     placeholder="Project Name"
                     className="pl-5 text-addS max-h-[1rem]"
                 />
-                <span className="font-addW text-addS leading-addL pl-2">I agree to the Terms of Service and Privacy Policy</span>
+                <span className="font-addW text-addS leading-addL pl-2">To continue please accept our Terms and Conditions. Thanks!</span>
                 {checkError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{checkError}</p>}
             </div>
             <div className="col-span-12 grid grid-cols-12 justify-items-end pr-2">

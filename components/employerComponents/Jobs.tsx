@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../shimmer/EmpJobShimmer';
 import Active from './jobComponents/Active';
@@ -76,7 +75,6 @@ const Jobs = (props: any) => {
     }, []);
     return (
         <>
-            <ToastContainer />
             <div className="bg-textW min-h-screen">
                 <div className="relative flex justify-between pt-10 items-center px-2 lg:pl-10">
                     <p className="text-black text-3xl font-[700]">Jobs</p>
