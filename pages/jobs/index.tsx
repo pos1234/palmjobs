@@ -862,6 +862,7 @@ const Jobs = () => {
                             <button
                                 id="paginationBackWardButton"
                                 name="paginationBackWardButton"
+                                aria-labelledby="paginationBackWardButton"
                                 className={
                                     maxPaginate > 5 && pageCount > 5
                                         ? 'border bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 text-center'
@@ -875,6 +876,7 @@ const Jobs = () => {
                                 <button
                                     id="paginationNumber"
                                     name="paginationNumber"
+                                    aria-labelledby="paginationNumber"
                                     key={index}
                                     /* className={
                                         index < maxPaginate  &&  index + 1 > minPaginate
@@ -896,6 +898,7 @@ const Jobs = () => {
                                 </button>
                             ))}
                             <button
+                                aria-labelledby="paginationForwardButton"
                                 id="paginationForwardButton"
                                 name="paginationForwardButton"
                                 className={
