@@ -30,7 +30,6 @@ const Navigation = (props: any) => {
             setUserData(userInfo);
             const role = await getRole(userInfo.$id);
             setUserRole(role.documents[0].userRole);
-            console.log(role.documents[0].userRole);
 
             if (role.documents[0].userRole == 'candidate') {
                 const candidate = await getCandidateInfo();

@@ -41,7 +41,6 @@ const Footer = () => {
             setUserData(userInfo);
             const role = await getRole(userInfo.$id);
             setUserRole(role.documents[0].userRole);
-            console.log(role.documents[0].userRole);
             if (role.documents[0].userRole == 'candidate') {
                 const candidate = await getCandidateInfo();
                 if (candidate) {
@@ -66,21 +65,21 @@ const Footer = () => {
                     <div className="col-span-12 md:col-span-4 lg:col-span-3 xl:col-span-2">
                         <img src={logo} alt="palmjobs logo" className=" h-16 md:h-20" />
                         <ul className="flex space-x-5 text-gradientFirst pl-5 pt-4">
-                            <li>
+                            <Link href="https://www.facebook.com/youremploymentsolutionsethiopia/" target="_blank">
                                 <FacebookIcon />
-                            </li>
-                            <li>
+                            </Link>
+                            <Link href="https://www.linkedin.com/company/10353818?trk=prof-exp-company-name" target="_blank">
                                 <LinkedInIcon />
-                            </li>
-                            <li>
+                            </Link>
+                            {/* <Link href="" target="_blank">
                                 <InstagramIcon />
-                            </li>
-                            <li>
+                            </Link> */}
+                            <Link href="https://twitter.com/yesethiopia" target="_blank">
                                 <TwitterIcon />
-                            </li>
-                            <li>
+                            </Link>
+                            {/* <Link href="" target="_blank">
                                 <YouTubeIcon />
-                            </li>
+                            </Link> */}
                         </ul>
                     </div>
                     <div className="col-span-12 mt-5 pl-5 cursor-pointer md:cursor-default md:mt-2 md:col-span-4 md:grid md:justify-items-center lg:col-span-3">

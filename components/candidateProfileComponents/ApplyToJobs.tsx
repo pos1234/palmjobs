@@ -155,7 +155,7 @@ const ApplyToJob = (props: any) => {
             applyToJobs(userData.Id, props.jobId, props.employerId, newEmail, phone, cover, currentResumeId)
                 .then((res) => {
                     getAccount().then((res: any) => {
-                        res && SendJobAppliedEmail(res.email, props.jobTitle, `${VERIFY}jobs/`, res.name, props.companyName);
+                        res && SendJobAppliedEmail(res.email, props.jobTitle, `${VERIFY}/jobs/`, res.name, props.companyName);
                     });
                     setOpenApply(false);
                     setOpenNotify(true);

@@ -430,7 +430,7 @@ const PostAJob = (props: any) => {
                     setLoading(false);
                     toast.success('Job posted successfully');
                     getAccount().then((result: any) => {
-                        result && SendJobPostedEmail(result.email, jobTitle, `${VERIFY}jobs/${res.$id}`, result.name);
+                        result && SendJobPostedEmail(result.email, jobTitle, `${VERIFY}/jobs/${res.$id}`, result.name);
                     });
                     router.push(`/jobs/${res.$id}`);
                 })

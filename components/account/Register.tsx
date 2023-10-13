@@ -74,6 +74,7 @@ const RegisterComponent = (props: any) => {
                                     firstName: '',
                                     lastName: ''
                                 });
+                                setRetypedPassword('');
                                 setLoading(false);
                             })
                             .catch((error) => {

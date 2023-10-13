@@ -150,7 +150,7 @@ const Candidates = (props: any) => {
                                 {/* <JobTab text="All Candidates" active="true" />
                                 <JobTab text="Best Match" /> */}
                             </select>
-                            <div className="flex">
+                            <div className="flex gap-x-5">
                                 <div className="bg-stone-50 px-2 grid grid-cols-12 rounded-2xl md:rounded-3xl md:col-span-6 xl:col-span-7">
                                     <div className="hidden col-span-2 text-fadedText items-center justify-center md:col-span-1 md:justify-end md:flex ">
                                         <SearchIcon className="text-[1.7rem]" />

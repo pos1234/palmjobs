@@ -17,6 +17,7 @@ import EuroIcon from '@mui/icons-material/Euro';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import Share from '@/components/Share';
+import Footer from '@/components/Footer';
 const JobCard = (props: any) => {
     return (
         <div className="col-span-6 flex flex-col max-md:pl-2 py-2 rounded-2xl gap-y-2 bg-textW sm:col-span-3 items-center">
@@ -35,7 +36,7 @@ const singleJob = () => {
     const [searchText, setSearchText] = useState('');
     const [address, setAddress] = useState('');
     const [company, setCompany] = useState(false);
-    const [compnayDes, setCompanyDes] = useState('');
+    const [companyDes, setCompanyDes] = useState('');
     const [employerId, setEmployerId] = useState('');
     const [apply, setApply] = useState(false);
     const [applyJobId, setApplyJobId] = useState('');
@@ -56,6 +57,7 @@ const singleJob = () => {
             if (id) {
                 fetchSinglePostedJobs(id.toString()).then((res) => {
                     setJobDetails(res.documents[0]);
+                    setEmployerId(res.documents[0].employerId);
                 });
             }
         }
@@ -65,8 +67,10 @@ const singleJob = () => {
         documents.then(async (res) => {
             if (res.documents && res.documents[0] && res.documents[0].description) {
                 setCompanyDes(res.documents[0].description);
+                setCompanyName(res.documents[0].companyName);
             } else {
                 setCompanyDes('');
+                setCompanyName('');
             }
         });
     }, [employerId]);
@@ -79,7 +83,6 @@ const singleJob = () => {
                 setApply(true);
                 setApplyJobId(jobId);
                 setApplyEmployerId(employerId);
-                setCompanyName(compName);
                 setJobTitle(jobTitle);
             }
         }
@@ -135,9 +138,7 @@ const singleJob = () => {
                     <div className="col-span-12 grid grid-cols-12 gap-0f">
                         <JobImage id={jobDetails.employerId} className="col-span-2 sm:h-[5.8rem]" />
                         <div className="col-span-8 flex flex-col max-sm:pl-3 sm:pl-2 xl:pl-1">
-                            {jobDetails.companyName && (
-                                <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">{jobDetails.companyName}</p>
-                            )}
+                            {companyName && <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">{companyName}</p>}
                             {jobDetails.jobTitle && (
                                 <p className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-dfvhS xl:text-[1.5rem]">
                                     {jobDetails.jobTitle}
@@ -287,7 +288,7 @@ const singleJob = () => {
                             ) : (
                                 <div
                                     onClick={() => {
-                                        handleApply(jobDetails.$id, jobDetails.employerId, jobDetails.companyName, jobDetails.jobTitle);
+                                        handleApply(jobDetails.$id, jobDetails.employerId, companyName, jobDetails.jobTitle);
                                     }}
                                     className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
                                 >
@@ -299,9 +300,10 @@ const singleJob = () => {
                     {company && (
                         <div className="col-span-12 mx-3">
                             <p className="font-thW text-frhS">Company's Detail</p>
+                            {!companyDes && <p className="text-lightGrey">Stay tuned for more about this company!</p>}
                             <div
-                                dangerouslySetInnerHTML={{ __html: compnayDes }}
-                                className="text-midRS text-fadedText max-h-96 overflow-y-auto hideScrollBar border-b-2 min-h-[200px] max-h-96 overflow-y-auto hideScrollBar"
+                                dangerouslySetInnerHTML={{ __html: companyDes }}
+                                className="text-midRS text-lightGrey max-h-96 overflow-y-auto hideScrollBar border-b-2 min-h-[200px] max-h-96 overflow-y-auto hideScrollBar"
                             />
                         </div>
                     )}
@@ -316,6 +318,7 @@ const singleJob = () => {
                     companyName={companyName}
                 />
             )}
+            <Footer />
         </div>
     );
 };

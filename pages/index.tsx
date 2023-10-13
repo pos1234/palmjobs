@@ -140,9 +140,9 @@ const Home = () => {
                 </div> */}
                 <div className="mt-10">
                     <p className="text-center mb-10">
-                        <span className="bg-gradient-to-r from-gradientFirst to-gradientSecond text-center px-3 text-textW py-1 rounded-full mr-5 block max-sm:mx-20 max-sm:mt-10 max-sm:mb-4 sm:inline cursor-pointer">
+                        {/* <span className="bg-gradient-to-r from-gradientFirst to-gradientSecond text-center px-3 text-textW py-1 rounded-full mr-5 block max-sm:mx-20 max-sm:mt-10 max-sm:mb-4 sm:inline cursor-pointer">
                             New
-                        </span>
+                        </span> */}
                         Apply with ease
                         <Link
                             href="users/candidate/profile"

@@ -51,8 +51,8 @@ const TextInput = (props: any) => {
                 onChange={(e) => props.setFunction(e.currentTarget.value)}
                 className={
                     props.errorMessage
-                        ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full md:w-96'
-                        : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96'
+                        ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full grow md:w-96'
+                        : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full grow md:w-96'
                 }
             />
             {props.errorMessage && <p className="text-red-500 text-[13px]">{props.errorMessage}</p>}
@@ -139,11 +139,15 @@ const PJobs = (props: any) => {
     useEffect(() => {
         getCompInfo();
     }, [empId]);
-
+    const handleDateChange = (date: string) => {
+        const [year, month, day] = date.split('-');
+        const formattedDate = `${day}-${month}-${year}`;
+        return formattedDate;
+    };
     return (
         <div className="bg-textW grid grid-cols-12 relative py-5 pl-2 xl:pl-9">
             <div className=" flex flex-col justify-center col-span-10 sm:col-span-7 lg:col-span-3">
-                <Link href={`/jobs/${props.jobId}`} target='_blank' className="text-neutral-900 text-lg font-medium leading-normal">
+                <Link href={`/jobs/${props.jobId}`} target="_blank" className="text-neutral-900 text-lg font-medium leading-normal">
                     {props.title}
                 </Link>
                 <div className="flex flex-wrap text-stone-400 text-[0.8rem] gap-x-4 gap-y-1 mt-1 pr-3">
@@ -384,8 +388,8 @@ const PJobs = (props: any) => {
                 <ConfirmModal isOpen={openJobEdit} handleClose={() => setOpenJobEdit(!openJobEdit)}>
                     <div className="mx-2 pb-5 w-full px-5 bg-textW rounded-2xl grid grid-cols-12 pt-6 overflow-auto h-full md:pl-8 md:w-2/3 lg:w-1/2">
                         <div className="col-span-12 grid grid-cols-12">
-                            <div className="col-span-10  flex items-center text-2xl font-[600] text-orange-500">Edit Job Post</div>
-                            <div className="col-span-2 md:col-span-1 grid pr-2 justify-items-end">
+                            <div className="col-span-11  flex items-center text-2xl font-[600] text-orange-500">Edit Job Post</div>
+                            <div className="col-span-2 mb-4 md:col-span-1 grid pr-2 justify-items-end">
                                 <button onClick={() => setOpenJobEdit(!openJobEdit)}>
                                     <CloseIcon
                                         sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
@@ -393,74 +397,75 @@ const PJobs = (props: any) => {
                                     />
                                 </button>
                             </div>
-                            <div className="col-span-12 grid grid-cols-12">
-                                <form className="col-span-12 flex flex-col gap-y-5" onSubmit={updateFullJob}>
-                                    <div className="flex gap-x-20 max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Job Title</p>
-                                        <TextInput value={jobTitle} setFunction={setJobTitle} errorMessage={jobTitleError} />
-                                    </div>
-                                    <div className="flex gap-x-20 max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Location</p>
-                                        <TextInput value={location} setFunction={setLocation} errorMessage={locationError} />
-                                    </div>
-                                    <div className="flex gap-x-6 max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Open Positions</p>
-                                        <TextInput value={openRoles} setFunction={setOpenRoles} errorMessage={openRolesError} />
-                                    </div>
-                                    <div className="flex gap-x-[4.5rem] max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Job Type</p>
-                                        <select
-                                            onChange={(e) => setJobType(e.currentTarget.value)}
-                                            className="h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96"
-                                        >
-                                            <option value="Internship">Internship</option>
-                                            <option value="Internship">Full Time</option>
-                                            <option value="Internship">Part Time</option>
-                                            <option value="Internship">Remote</option>
-                                            <option value="Internship">Contract</option>
-                                        </select>
-                                    </div>
-                                    <div className="flex gap-x-24 max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Salary</p>
-                                        <TextInput value={jobSalary} setFunction={setJobSalary} errorMessage={salaryError} />
-                                    </div>
-                                    <div className="flex gap-x-[4.5rem] max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Deadline</p>
-                                        <input
-                                            type="date"
-                                            className="h-12 pl-5 bg-white cursor-pointer rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96"
-                                            value={jobDeadline}
-                                            onChange={(e) => setJobDeadline(e.currentTarget.value)}
-                                        />
-                                    </div>
-                                    <div className="flex flex-col mb-20 md:mb-10 md:pr-20">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">
-                                            Job Description
-                                        </p>
-                                        <ReactQuill
-                                            className="h-28 text-addS"
-                                            value={jobDesc}
-                                            onChange={(e) => setJobDesc(e)}
-                                            placeholder="Add Description"
-                                        />
-                                        {jobDescError && <p className="text-red-500 absolute bottom-3 text-[13px] ">{jobDescError}</p>}
-                                    </div>
-                                    {!loading && (
-                                        <button
-                                            type="submit"
-                                            className="text-textW bg-gradient-to-r flex self-end items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-full md:mr-20 md:w-5/12 lg:w-3/12"
-                                        >
-                                            Update Job
-                                        </button>
-                                    )}
-                                    {loading && (
-                                        <img
-                                            src={loadingIn}
-                                            className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-full md:mr-20 md:w-5/12 lg:w-3/12"
-                                        />
-                                    )}
-                                </form>
-                            </div>
+                            <form className="col-span-12 flex flex-col gap-y-5" onSubmit={updateFullJob}>
+                                <div className="flex gap-x-20 max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Job Title</p>
+                                    <TextInput
+                                        value={jobTitle}
+                                        setFunction={setJobTitle}
+                                        errorMessage={jobTitleError}
+                                        className="flex-grow grow"
+                                    />
+                                </div>
+                                <div className="flex gap-x-20 max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Location</p>
+                                    <TextInput value={location} setFunction={setLocation} errorMessage={locationError} />
+                                </div>
+                                <div className="flex gap-x-6 max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Open Positions</p>
+                                    <TextInput value={openRoles} setFunction={setOpenRoles} errorMessage={openRolesError} />
+                                </div>
+                                <div className="flex gap-x-[4.5rem] max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Job Type</p>
+                                    <select
+                                        onChange={(e) => setJobType(e.currentTarget.value)}
+                                        className="h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full grow md:w-96"
+                                    >
+                                        <option value="Internship">Internship</option>
+                                        <option value="Internship">Full Time</option>
+                                        <option value="Internship">Part Time</option>
+                                        <option value="Internship">Remote</option>
+                                        <option value="Internship">Contract</option>
+                                    </select>
+                                </div>
+                                <div className="flex gap-x-24 max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Salary</p>
+                                    <TextInput value={jobSalary} setFunction={setJobSalary} errorMessage={salaryError} />
+                                </div>
+                                <div className="flex gap-x-[4.5rem] max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Deadline</p>
+                                    <input
+                                        type="date"
+                                        className="h-12 pl-5 bg-white cursor-pointer rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full grow md:w-96"
+                                        value={handleDateChange(jobDeadline)}
+                                        onChange={(e) => setJobDeadline(e.currentTarget.value)}
+                                    />
+                                </div>
+                                <div className="flex flex-col mb-20 md:mb-10">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Job Description</p>
+                                    <ReactQuill
+                                        className="h-28 text-addS"
+                                        value={jobDesc}
+                                        onChange={(e) => setJobDesc(e)}
+                                        placeholder="Add Description"
+                                    />
+                                    {jobDescError && <p className="text-red-500 absolute bottom-3 text-[13px] ">{jobDescError}</p>}
+                                </div>
+                                {!loading && (
+                                    <button
+                                        type="submit"
+                                        className="text-textW bg-gradient-to-r flex self-end items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-full md:w-5/12 lg:w-3/12"
+                                    >
+                                        Update Job
+                                    </button>
+                                )}
+                                {loading && (
+                                    <img
+                                        src={loadingIn}
+                                        className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-full md:w-5/12 lg:w-3/12"
+                                    />
+                                )}
+                            </form>
                         </div>
                     </div>
                 </ConfirmModal>
