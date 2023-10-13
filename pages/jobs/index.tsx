@@ -199,7 +199,7 @@ const Jobs = () => {
             return isMatch;
         });
     const [filtered, setFiltered] = useState(data);
-    const itemsPerPage = 1;
+    const itemsPerPage = 8;
     const pageCount = filData && Math.ceil(filData.length / itemsPerPage);
     const currentData = filData && filData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const [checked, setChecked] = useState(false);
