@@ -25,6 +25,7 @@ import {
 } from '@/lib/services';
 import { toast } from 'react-toastify';
 import { SendJobAppliedEmail } from '../SendEmail';
+import Link from 'next/link';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
@@ -220,7 +221,7 @@ const ApplyToJob = (props: any) => {
                     {!loading && appliedJob && (
                         <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl flex flex-col gap-y-5 items-center justify-center pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0">
                             <p className="col-span-12 text-black text-3xl font-semibold leading-10 ">Already applied to this job</p>
-                            <button
+                            <Link href="/jobs/"
                                 onClick={() => {
                                     props.setterFunction(false);
                                     /*                                     setLoading(true);
@@ -230,7 +231,7 @@ const ApplyToJob = (props: any) => {
                                 className="text-textW bg-gradient-to-r  from-gradientFirst to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
                             >
                                 Explore Jobs
-                            </button>
+                            </Link>
                         </div>
                     )}
                     {!appliedJob && !loading && (

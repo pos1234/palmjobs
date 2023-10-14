@@ -18,6 +18,7 @@ import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import Share from '@/components/Share';
 import Footer from '@/components/Footer';
+import Head from 'next/head';
 const JobCard = (props: any) => {
     return (
         <div className="col-span-6 flex flex-col max-md:pl-2 py-2 rounded-2xl gap-y-2 bg-textW sm:col-span-3 items-center">
@@ -95,8 +96,42 @@ const singleJob = () => {
         const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
         window.location.href = mailtoLink;
     };
+    const sanitizeHTML = (text: string) => {
+        return text.replace(/<[^>]*>/g, '');
+    };
+    const structuredData = jobDetails
+        ? `{
+        "@context": "http://schema.org",
+        "@type": "JobPosting",
+        "title": "${jobDetails && jobDetails.jobTitle}" ,
+        "hiringOrganization": {
+          "@type":"Organization",
+          "name":"${companyName && companyName}",
+          "logo": "${
+              <JobImage id={jobDetails.employerId} className="col-span-2 sm:h-[5.8rem]" /> ||
+              'https://www.yes.et/jobs/wp-content/uploads/wp-job-board-pro-uploads/_employer_featured_image/2023/01/YES_logo-150x150.png'
+          }"
+        },
+        "jobLocation": {
+          "@type": "Place",
+          "address": "${jobDetails && jobDetails.jobLocation}"
+        },
+        "datePosted": "${jobDetails && new Date(jobDetails.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}",
+        "description": "${jobDetails && sanitizeHTML(jobDetails.jobDescription)}",
+        "employmentType":"${jobDetails && jobDetails.jobType}"
+       }`
+        : null;
     return (
         <div className="px-3 pb-20 md:px-16">
+            <Head>
+                <script
+                    key="structured-data"
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify(structuredData)
+                    }}
+                />
+            </Head>
             <Navigation />
             <div className="grid grid-cols-12 gap-y-4 max-sm:px-5 max-sm:pt-10 border-b-2 sm:space-x-5 md:space-x-2 lg:space-x-5 lg:px-10 xl:px-40 py-10">
                 <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 sm:h-16  sm:col-span-6 md:col-span-6 lg:col-span-4">

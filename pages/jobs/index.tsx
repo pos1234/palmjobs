@@ -32,7 +32,8 @@ import {
     getProfileData,
     getProfilePicture,
     getRole,
-    saveJobs
+    saveJobs,
+    signOut
 } from '@/lib/services';
 import ApplyToJob from '@/components/candidateProfileComponents/ApplyToJobs';
 import JobImage from '@/components/JobImage';
@@ -303,6 +304,15 @@ const Jobs = () => {
     const getHref = (id: string) => {
         const { href } = getProfilePicture(id);
         return href;
+    };
+    const createCandidateAccount = () => {
+        signOut()
+            .then(() => {
+                router.push('/account');
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
     return (
         <>
@@ -593,7 +603,6 @@ const Jobs = () => {
                                                                     </p>
                                                                 )}
                                                             </div>
-
                                                             <div className="col-span-2 flex flex-grow gap-x-5 text-lightGrey justify-end items-center">
                                                                 <ShareOutlinedIcon
                                                                     onClick={() => setOpenShare(true)}
@@ -721,14 +730,14 @@ const Jobs = () => {
                                                                         href={jobDetails.externalLink}
                                                                         target="_blank"
                                                                     >
-                                                                        ApplyL
+                                                                        Apply
                                                                     </a>
                                                                 ) : jobDetails.emailApplication ? (
                                                                     <div
                                                                         onClick={() => handleEmailApply(jobDetails.emailApplication)}
                                                                         className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
                                                                     >
-                                                                        ApplyE
+                                                                        Apply
                                                                     </div>
                                                                 ) : (
                                                                     <div
@@ -1036,11 +1045,18 @@ const Jobs = () => {
                                 <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
                             </button>
                         </div>
-                        <div className="col-span-12 flex justify-end pr-7">
+                        <div className="col-span-12 flex flex-col items-center justify-end pr-7 gap-3">
                             <p className="text-center md:px-10 text-bigS text-lightGrey">
                                 Oops! You've set roots as an employer. To branch out and apply for jobs, consider a job seeker account.
                                 <br /> Thanks.
                             </p>
+                            <button
+                                onClick={() => createCandidateAccount()}
+                                type="button"
+                                className="text-textW bg-gradient-to-r flex items-center justify-center from-gradientFirst to-gradientSecond h-16 w-full rounded-full md:w-1/2"
+                            >
+                                Create a candidate profile
+                            </button>
                         </div>
                     </div>
                 </ConfirmModal>

@@ -801,31 +801,23 @@ export const fetchSinglePostedJobs = (id: string) => {
 export const updateJobs = (
     id: string,
     title: string,
-    /*     category: string,
-     */ openRoles: string,
+    openRoles: string,
     location: string,
     jobType: string,
-    /*     reqExp: string,
-     */ /*     skills: string,
-     */ salary: string,
+    minSalary: string,
+    maxSalary: string,
     deadline: string,
-    /*     education: string
-     */ jobDes: string
+    jobDes: string
 ) => {
-    /*     databases.updateDocument('[DATABASE_ID]', '[COLLECTION_ID]', '[DOCUMENT_ID]');
-     */ const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
+    const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
         jobTitle: title,
-        /*         jobIndustry: category,
-         */ openPositions: openRoles,
+        openPositions: openRoles,
         jobLocation: location,
-        jobType: jobType,
-        /*         expreienceLevel: reqExp,
-         */ /*         requiredSkills: skills,
-         */ salaryRange: salary,
+        jobType,
+        minSalary,
+        maxSalary,
         applicationDeadline: deadline,
         jobDescription: jobDes
-        /*         educationLevel: education
-         */
     });
     return promise;
 };

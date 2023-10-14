@@ -7,7 +7,7 @@ export default function App({ Component, pageProps }: AppProps) {
     return (
         <>
             <ToastContainer
-                position="bottom-left"
+                position="top-right"
                 autoClose={5000}
                 hideProgressBar={true}
                 newestOnTop={false}
@@ -17,10 +17,14 @@ export default function App({ Component, pageProps }: AppProps) {
                 draggable
                 pauseOnHover
                 theme="light"
-                toastStyle={{ height: '200px' }}
+                toastStyle={{
+                    /* height: '60px',
+                    width: '250px', */ // default width for desktop
+                    padding: '5%',
+                    borderRadius: '15px'
+                }}
             />
             <Component {...pageProps} />
         </>
     );
 }
-

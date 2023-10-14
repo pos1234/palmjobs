@@ -70,7 +70,8 @@ const PJobs = (props: any) => {
     const [location, setLocation] = useState(props.location);
     const [openRoles, setOpenRoles] = useState(props.openRoles);
     const [jobType, setJobType] = useState(props.jobType);
-    const [jobSalary, setJobSalary] = useState(props.salary);
+    const [minJobSalary, setMinJobSalary] = useState(props.minSalary);
+    const [maxJobSalary, setMaxJobSalary] = useState(props.maxSalary);
     const [jobDesc, setJobDesc] = useState(props.jobDes);
     const [jobDeadline, setJobDeadline] = useState(props.deadline);
     const [jobTitleError, setJobTitleError] = useState('');
@@ -83,6 +84,7 @@ const PJobs = (props: any) => {
     const [noApplicant, setNoApplicant] = useState(0);
     const [empId, setEmpId] = useState('');
     const [compnayDes, setCompanyDes] = useState<any>();
+
     const updateStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
         updateJobStatus(props.jobId, e.currentTarget.value)
@@ -106,12 +108,15 @@ const PJobs = (props: any) => {
             openRoles || props.openRoles,
             location || props.location,
             jobType || props.jobType,
-            jobSalary || props.salary,
+            minJobSalary || props.minSalary,
+            maxJobSalary || props.maxSalary,
             jobDeadline || props.deadline,
             jobDesc || props.jobDes
         )
             .then((res) => {
                 setLoading(false);
+                console.log(res);
+
                 toast.success('Successfully Updated Job');
                 setOpenJobEdit(false);
             })
@@ -157,10 +162,10 @@ const PJobs = (props: any) => {
                     <div>
                         <AccessTimeOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" /> <span>{props.jobType}</span>
                     </div>
-                    {props.salary && (
+                    {props.jobSalary && (
                         <div>
                             <AttachMoneyOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" />
-                            <span>{props.salary}</span>
+                            <span>{props.jobSalary}</span>
                         </div>
                     )}
                     <div className="flex items-center flex gap-x-2 lg:hidden ">
@@ -430,7 +435,30 @@ const PJobs = (props: any) => {
                                 </div>
                                 <div className="flex gap-x-24 max-md:flex-col md:items-center">
                                     <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Salary</p>
-                                    <TextInput value={jobSalary} setFunction={setJobSalary} errorMessage={salaryError} />
+                                    <div className="flex justify-between grow gap-x-2">
+                                        <input
+                                            value={minJobSalary}
+                                            onChange={(e) => setMinJobSalary(e.currentTarget.value)}
+                                            type="number"
+                                            className={
+                                                props.errorMessage
+                                                    ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full md:w-auto hideIncrease'
+                                                    : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-auto hideIncrease'
+                                            }
+                                            placeholder="Minimum Salary"
+                                        />
+                                        <input
+                                            placeholder="Maximum Salary"
+                                            value={maxJobSalary}
+                                            onChange={(e) => setMaxJobSalary(e.currentTarget.value)}
+                                            type="number"
+                                            className={
+                                                props.errorMessage
+                                                    ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full md:w-auto hideIncrease'
+                                                    : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-auto hideIncrease'
+                                            }
+                                        />
+                                    </div>
                                 </div>
                                 <div className="flex gap-x-[4.5rem] max-md:flex-col md:items-center">
                                     <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Deadline</p>

@@ -7,7 +7,7 @@ import ForgotPassword from '@/components/account/ForgotPassword';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getAccount, getRole, signIn, signOut } from '@/lib/services';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
 import RegisterComponent from '@/components/account/Register';
@@ -84,7 +84,6 @@ const Login = () => {
     };
     return (
         <>
-            <ToastContainer />
             <div className="grid grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
                 <div className="col-span-12  flex items-center bg-skillColor rounded-tr-[5.75rem] rounded-br-[5.75rem] order-2 max-md:mt-10 md:col-span-6 md:order-1">
                     <div
@@ -154,7 +153,7 @@ const Login = () => {
                                         value={name}
                                         onChange={(e) => setName(e.currentTarget.value)}
                                         type="text"
-                                        className="outline-0 ml-2 border-0 border-b-2 border-dashed border-[#141417] w-40 focus:ring-0 focus:ring-b-0 focus:outline-0 mb-3 sm:mb-0"
+                                        className="outline-0 ml-2 border-0 border-b-2 border-[#141417] focus:border-orange-500 w-40 focus:ring-0 focus:ring-b-0 focus:outline-0 mb-3 sm:mb-0"
                                     />
                                     ! Tell us why you're here.
                                 </p>
