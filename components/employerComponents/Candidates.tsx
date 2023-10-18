@@ -167,7 +167,7 @@ const Candidates = (props: any) => {
                                 </div>
                             </div>
                             <p className="flex justify-end flex-grow items-center text-stone-600 text-2xl font-semibold leading-10 hidden xl:flex">
-                                ShortListed
+                                Shortlisted
                             </p>
                         </div>
                     </div>

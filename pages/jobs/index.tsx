@@ -46,6 +46,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import JobsShimmer from '@/components/shimmer/JobsShimmer';
 import Share from '@/components/Share';
 import Link from 'next/link';
+import LaunchIcon from '@mui/icons-material/Launch';
 const sortByData = [{ name: 'Best Match' }, { name: 'Most Recent' }, { name: 'Featured' }];
 const datePostedData = ['Date Posted', 'Any time', 'Past 24hrs', 'Past Week', 'Past Month'];
 const experienceData = ['Experience Level', 'Internship', 'Entry Level', 'Associate', 'Mid-senior Level', 'Senior'];
@@ -94,7 +95,7 @@ const Jobs = () => {
     const [data, setData] = useState<any>();
     const [maxPaginate, setMaxPaginate] = useState(5);
     const [minPaginate, setMinPaginate] = useState(1);
-    const [compnayDes, setCompanyDes] = useState('');
+    const [compnayData, setCompanyData] = useState<any>();
     const [companyName, setCompanyName] = useState('');
     const [employerId, setEmployerId] = useState('');
     const [apply, setApply] = useState(false);
@@ -153,11 +154,10 @@ const Jobs = () => {
     useEffect(() => {
         const documents = getCompanyData(employerId);
         documents.then(async (res) => {
-            if (res.documents && res.documents[0] && res.documents[0].description) {
-                setCompanyDes(res.documents[0].description);
+            if (res.documents && res.documents[0]) {
+                setCompanyData(res.documents[0]);
                 setCompanyName(res.documents[0].companyName);
             } else {
-                setCompanyDes('');
                 setCompanyName('');
             }
         });
@@ -390,7 +390,7 @@ const Jobs = () => {
                                         />
                                     </div>
                                 </div>
-                                <div className="col-span-12 flex gap-3 p-3 pb-0 rounded-x-2xl bg-forBack">
+                                <div className="col-span-12 flex gap-3 p-3 pb-0 rounded-x-2xl">
                                     {/* <div className={openJobDetail == true ? 'hidden' : 'col-span-12 bg-textW md:hidden md:col-span-3'}>
                                         <div className="flex gap-x-3 md:pt-10">
                                             <img
@@ -422,11 +422,11 @@ const Jobs = () => {
                                                         key={index}
                                                         className={
                                                             items.$id == jobDetailId
-                                                                ? 'cursor-pointer max-h-[18rem] bg-textW grid grid-cols-12 py-3 px-4 bg-white rounded-3xl shadow border border-t-red-200 border-gradientSecond rounded-2xl xl:pr-0 xl:pl-4 xl:py-7 '
-                                                                : 'cursor-pointer max-h-[18rem] bg-textW grid grid-cols-12 py-3 px-4 bg-white rounded-3xl shadow border rounded-2xl xl:pr-0 xl:pl-4 xl:py-7 '
+                                                                ? 'cursor-pointer max-h-[18rem]  grid grid-cols-12 py-3 px-4 bg-[#edf2ee] rounded-3xl shadow  rounded-lg xl:pr-0 xl:pl-4 xl:py-7 '
+                                                                : 'cursor-pointer max-h-[18rem] bg-textW grid grid-cols-12 py-3 px-4  hover:bg-[#edf2ee] rounded-3xl shadow border border-fadedText hover:border-[#edf2ee] rounded-lg xl:pr-0 xl:pl-4 xl:py-7 '
                                                         }
                                                     >
-                                                        <JobImage id={items.employerId} className="col-span-2 md:col-span-3" />
+                                                        <JobImage id={items.employerId} className="col-span-2 md:col-span-3 max-w-full max-h-full" />
                                                         <div className="col-span-9 flex flex-col pl-2 justify-center sm:max-md:col-span-8 sm:max-md:pl-3">
                                                             <ReturnName id={items.employerId} />
                                                             {items.jobTitle && (
@@ -480,8 +480,8 @@ const Jobs = () => {
                                                                         {!items.minSalary && items.maxSalary
                                                                             ? items.maxSalary
                                                                             : items.minSalary && !items.maxSalary
-                                                                            ? items.minSalary
-                                                                            : items.minSalary + '-' + items.maxSalary}
+                                                                                ? items.minSalary
+                                                                                : items.minSalary + '-' + items.maxSalary}
                                                                     </li>
                                                                 )}
                                                                 {items.datePosted && (
@@ -532,7 +532,7 @@ const Jobs = () => {
                                                 <div className="col-span-12 flex flex-col">
                                                     <p
                                                         onClick={() => setOpenJobDetail(false)}
-                                                        className="p-3 border-2 rounded-full flex justify-center cursor-pointer md:hidden"
+                                                        className="p-3 border-2 rounded-full flex justify-center cursor-pointer mb-5 md:hidden"
                                                     >
                                                         Back To Search
                                                     </p>
@@ -581,7 +581,7 @@ const Jobs = () => {
                                                         <div className="col-span-12 flex grid-cols-12 gap-0">
                                                             <JobImage
                                                                 id={jobDetails.employerId}
-                                                                className="col-span-2 h-[4rem] sm:h-[5.8rem]"
+                                                                className="col-span-2 h-[4rem] max-h-[4rem] sm:h-[5.8rem] sm:max-h-[5rem]"
                                                             />
                                                             <div className="col-span-8 flex flex-col max-sm:pl-3 sm:pl-2 xl:pl-1">
                                                                 {companyName && (
@@ -614,7 +614,7 @@ const Jobs = () => {
                                                                 />
                                                             </div>
                                                         </div>
-                                                        <div className="col-span-12 grid grid-cols-12 bg-forBack gap-x-1 gap-y-2 md:gap-x-2 md:p-2 xl:mx-2">
+                                                        <div className="col-span-12 p-3 gap-x-3 gap-y-3 grid grid-cols-12 bg-forBack gap-x-1 gap-y-2 md:gap-x-2 md:p-2 xl:mx-2">
                                                             {(jobDetails.minSalary || jobDetails.maxSalary) && (
                                                                 <JobCard
                                                                     salary="Salary"
@@ -622,8 +622,8 @@ const Jobs = () => {
                                                                         !jobDetails.minSalary && jobDetails.maxSalary
                                                                             ? jobDetails.maxSalary
                                                                             : jobDetails.minSalary && !jobDetails.maxSalary
-                                                                            ? jobDetails.minSalary
-                                                                            : jobDetails.minSalary + '-' + jobDetails.maxSalary
+                                                                                ? jobDetails.minSalary
+                                                                                : jobDetails.minSalary + '-' + jobDetails.maxSalary
                                                                     }
                                                                     icon={
                                                                         jobDetails.currency == 'euro' ? (
@@ -647,7 +647,7 @@ const Jobs = () => {
                                                                                 className="mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
                                                                             />
                                                                         ) : (
-                                                                            <p>ETB</p>
+                                                                            <p className='mr-1'>ETB </p>
                                                                         )
                                                                     }
                                                                 />
@@ -755,16 +755,45 @@ const Jobs = () => {
                                                                 )}
                                                             </div>
                                                         )}
-                                                        {company && (
+                                                        {company && compnayData && (
                                                             <div className="col-span-12 mx-3">
-                                                                <p className="font-thW text-frhS">Company's Detail</p>
-                                                                {!compnayDes && (
+                                                                <p className="font-thW text-frhS">Company's Overview</p>
+                                                                {/*  {!compnayData && (
                                                                     <p className="text-lightGrey">
                                                                         Stay tuned for more about this company!
                                                                     </p>
-                                                                )}
+                                                                )} */}
+
+                                                                <div className='flex gap-3 my-5 flex-wrap justify-between'>
+                                                                    {
+                                                                        compnayData.sector && <div className='flex gap-5 '>
+                                                                            <p className='font-bold text-lightGrey text-md'>Sector</p>
+                                                                            <p className='text-lightGrey'>{compnayData.sector}</p>
+                                                                        </div>
+                                                                    }
+                                                                    {
+                                                                        compnayData.location && <div className='flex gap-5 '>
+                                                                            <p className='font-bold text-lightGrey text-md'>location</p>
+                                                                            <p className='text-lightGrey'>{compnayData.location}</p>
+                                                                        </div>
+                                                                    }
+                                                                    {
+                                                                        compnayData.noOfEmployee && <div className='flex gap-5 '>
+                                                                            <p className='font-bold text-lightGrey text-md'>Size</p>
+                                                                            <p className='text-lightGrey'>{compnayData.noOfEmployee}</p>
+                                                                        </div>
+                                                                    }
+                                                                    {
+                                                                        compnayData.websiteLink && <div className='flex gap-5 '>
+                                                                            <p className='font-bold text-lightGrey text-md'>Website</p>
+                                                                            <a href={compnayData.websiteLink}><LaunchIcon /></a>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+
+
                                                                 <div
-                                                                    dangerouslySetInnerHTML={{ __html: compnayDes }}
+                                                                    dangerouslySetInnerHTML={{ __html: compnayData.description }}
                                                                     className="text-midRS text-lightGrey max-h-96 overflow-y-auto hideScrollBar border-b-2 min-h-[200px] max-h-96 overflow-y-auto hideScrollBar"
                                                                 />
                                                             </div>
@@ -930,7 +959,7 @@ const Jobs = () => {
                         <div className="col-span-12 grid grid-cols-12">
                             <div className="col-span-12 grid grid-cols-12">
                                 <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                    <TuneIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem', fontSize: '2rem' }} /> Filter
+                                    <TuneIcon sx={{ color: '#00A82D', marginRight: '0.5rem', fontSize: '2rem' }} /> Filter
                                 </p>
                                 <div className="col-span-2 md:col-span-1 grid pr-2 justify-items-end md:justify-items-center">
                                     <button onClick={() => setOpenfilter(!openFilter)}>

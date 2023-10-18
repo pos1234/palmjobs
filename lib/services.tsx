@@ -647,14 +647,14 @@ export const updateEducation = async (education: string, id: string) => {
 };
 
 //EMPLOYER
-export const postFirstTab = async (title: string, category: string, openRoles: string, location: string) => {
+export const postFirstTab = async (title: string, /* category: string, */ openRoles: string, location: string) => {
     const userAccount = await getAccount();
     const stat = 'Draft';
     if (userAccount !== 'failed') {
         const promise = databases.createDocument(DATABASE_ID, POSTED_JOBS, ID.unique(), {
             jobTitle: title,
-            jobIndustry: category,
-            openPositions: openRoles,
+/*             jobIndustry: category,
+ */            openPositions: openRoles,
             jobLocation: location,
             jobStatus: stat,
             employerId: userAccount.$id
@@ -664,13 +664,13 @@ export const postFirstTab = async (title: string, category: string, openRoles: s
         return promise;
     }
 };
-export const updateFirstTab = async (title: string, category: string, openRoles: string, location: string, id: string) => {
+export const updateFirstTab = async (title: string, /* category: string, */ openRoles: string, location: string, id: string) => {
     const userAccount = await getAccount();
     if (userAccount !== 'failed') {
         const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
             jobTitle: title,
-            jobIndustry: category,
-            openPositions: openRoles,
+/*             jobIndustry: category,
+ */            openPositions: openRoles,
             jobLocation: location
         });
         return promise;

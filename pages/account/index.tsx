@@ -108,7 +108,7 @@ const Login = () => {
                         </p>
                     )}
                     {forgotPassword == false && (
-                        <div className="bg-skillColor w-80 h-14 rounded-full p-2 grid grid-cols-12">
+                        <div className="bg-[#E9FDF1] w-80 h-14 rounded-full p-2 grid grid-cols-12">
                             <button
                                 className={
                                     register == false
@@ -153,12 +153,12 @@ const Login = () => {
                                         value={name}
                                         onChange={(e) => setName(e.currentTarget.value)}
                                         type="text"
-                                        className="outline-0 ml-2 border-0 border-b-2 border-[#141417] focus:border-orange-500 w-40 focus:ring-0 focus:ring-b-0 focus:outline-0 mb-3 sm:mb-0"
+                                        className="outline-0 ml-2 border-0 border-b-2 border-[#141417] focus:border-gradientSecond w-40 focus:ring-0 focus:ring-b-0 focus:outline-0 mb-3 sm:mb-0"
                                     />
                                     ! Tell us why you're here.
                                 </p>
                             </div>
-                            <div className="bg-[#ffa06e0d] w-full lg:max-xl:bg-red-500 grid grid-cols-12 py-3 px-2 gap-x-3 gap-y-5 md:gap-y-0 md:gap-x-5 xl:gap-x-10">
+                            <div className="bg-skillColor w-full grid grid-cols-12 py-3 px-2 gap-x-3 gap-y-5 rounded-lg md:gap-y-0 md:gap-x-5 xl:gap-x-10">
                                 <div
                                     onClick={() => {
                                         setGetJob(true);
@@ -166,8 +166,8 @@ const Login = () => {
                                     }}
                                     className={
                                         getJob
-                                            ? 'col-span-12 rounded-2xl text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
-                                            : 'col-span-12 text-[#141417] hover:rounded-2xl hover:text-textW cursor-pointer hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond bg-textW flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
+                                            ? 'col-span-12 rounded-lg text-textW bg-gradient-to-r from-gradientFirst rounded-lg to-gradientSecond flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
+                                            : 'col-span-12 text-[#141417] rounded-lg hover:text-textW cursor-pointer hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond bg-textW flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
                                     }
                                 >
                                     <BusinessCenterOutlinedIcon />
@@ -180,8 +180,8 @@ const Login = () => {
                                     }}
                                     className={
                                         hireTalent
-                                            ? 'col-span-12 rounded-2xl text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
-                                            : 'col-span-12 text-[#141417] hover:rounded-2xl hover:text-textW cursor-pointer hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond bg-textW flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
+                                            ? 'col-span-12 rounded-lg text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
+                                            : 'col-span-12 text-[#141417] rounded-lg hover:text-textW cursor-pointer hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond bg-textW flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
                                     }
                                 >
                                     <PersonAddAltOutlinedIcon />
@@ -229,7 +229,7 @@ const Login = () => {
                                     className={
                                         emailError
                                             ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS sm:col-span-10'
-                                            : 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS sm:col-span-10'
+                                            : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS sm:col-span-10'
                                     }
                                 />
                                 {emailError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{emailError}</p>}
@@ -243,7 +243,7 @@ const Login = () => {
                                     className={
                                         passwordError
                                             ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS sm:col-span-10'
-                                            : 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS sm:col-span-10'
+                                            : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS sm:col-span-10'
                                     }
                                 />
                                 <span

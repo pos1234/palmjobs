@@ -110,8 +110,8 @@ const PostAJob = (props: any) => {
     const [compError, setCompError] = useState('');
     const [jobTitle, setJobTitle] = useState('');
     const [jobTitleError, setJobTitleError] = useState('');
-    const [category, setCategory] = useState('');
-    const [categoryError, setCategoryError] = useState('');
+    /* const [category, setCategory] = useState('');
+    const [categoryError, setCategoryError] = useState(''); */
     const [remote, setRemote] = useState(false);
     const [hybrid, setHybrid] = useState(false);
     const [location, setLocation] = useState('');
@@ -205,14 +205,14 @@ const PostAJob = (props: any) => {
         if (first && !second && !third && !fourth) {
             /*             setCompError('');
              */ setJobTitleError('');
-            setCategoryError('');
-            /*  if (compName == '') {
+/*             setCategoryError('');
+ */            /*  if (compName == '') {
                 setCompError('Company Name is required');
             } else  */ if (jobTitle == '') {
                 setJobTitleError('Job Titile is required');
-            } else if (category == '') {
+            } /* else if (category == '') {
                 setCategoryError('Job Titile is required');
-            } else if (location == '') {
+            } */ else if (location == '') {
                 setLocationError('Please Provide Location');
             } else {
                 setFourth(false);
@@ -309,17 +309,17 @@ const PostAJob = (props: any) => {
         e.preventDefault();
         if (first && !second && !third && !fourth) {
             setJobTitleError('');
-            setCategoryError('');
-            if (jobTitle == '') {
+/*             setCategoryError('');
+ */            if (jobTitle == '') {
                 setJobTitleError('Job Titile is required');
-            } else if (category == '') {
+            } /* else if (category == '') {
                 setCategoryError('Job Titile is required');
-            } else if (location == '') {
+            } */ else if (location == '') {
                 setLocationError('Please Provide Location');
             } else {
                 if (postingJobId) {
                     setLoading(true);
-                    updateFirstTab(jobTitle, category, openPositions.toString(), location, postingJobId)
+                    updateFirstTab(jobTitle, /* category, */ openPositions.toString(), location, postingJobId)
                         .then((res: any) => {
                             setLoading(false);
                             toast.success('Saved as Draft');
@@ -336,7 +336,7 @@ const PostAJob = (props: any) => {
                         });
                 } else {
                     setLoading(true);
-                    postFirstTab(jobTitle, category, openPositions.toString(), location)
+                    postFirstTab(jobTitle, /* category, */ openPositions.toString(), location)
                         .then((res: any) => {
                             setPostingJobId(res.$id);
                             console.log(res);
@@ -445,8 +445,8 @@ const PostAJob = (props: any) => {
         setPostingJobId(id);
         fetchSinglePostedJobs(id).then((res: any) => {
             setJobTitle(res.documents[0].jobTitle);
-            setCategory(res.documents[0].jobIndustry);
-            if (res.documents[0].jobLocation.toLowerCase() == 'remote') {
+/*             setCategory(res.documents[0].jobIndustry);
+ */            if (res.documents[0].jobLocation.toLowerCase() == 'remote') {
                 setRemote(true);
                 setHybrid(false);
                 setAddLocation(false);
@@ -662,9 +662,9 @@ const PostAJob = (props: any) => {
                 <div className="text-neutral-900  font-semibold leading-10 text-xl md:text-3xl">Provide Basic Information</div>
                 <RequiredTextLabel text="Job Title" />
                 <TextInput errorMessage={jobTitleError} placeHolder="Job Position" value={jobTitle} setFunction={setJobTitle} />
-                <RequiredTextLabel text="Job Category" />
-
-                <select
+                {/*                 <RequiredTextLabel text="Job Category" />
+ */}
+                {/* <select
                     value={category}
                     style={{ maxHeight: '200px' }}
                     onChange={(e) => setCategory(e.currentTarget.value)}
@@ -689,14 +689,14 @@ const PostAJob = (props: any) => {
                     <option value="Pharmaceuticals">Pharmaceuticals</option>
                     <option value="Telecommunications">Telecommunications</option>
                     <option value="Food & Beverage">Food & Beverage</option>
-                </select>
+                </select> */}
                 <RequiredTextLabel text="How many open roles ?" />
                 <div className="flex gap-x-5 items-center mt-3">
                     <div
                         onClick={() => {
                             if (openPositions > 1) setOpenPositions(openPositions - 1);
                         }}
-                        className="text-orange-600 rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-orange-500"
+                        className="text-gradientFirst rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-orange-500"
                     >
                         <RemoveIcon />
                     </div>
@@ -708,7 +708,7 @@ const PostAJob = (props: any) => {
                     />
                     <div
                         onClick={() => setOpenPositions(openPositions + 1)}
-                        className="text-orange-600 rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-orange-500"
+                        className="text-gradientFirst rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-orange-500"
                     >
                         <AddIcon />
                     </div>
@@ -725,7 +725,7 @@ const PostAJob = (props: any) => {
                         className={
                             addLocation
                                 ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
                         <EditLocationAltOutlinedIcon className="-ml-2" />
@@ -741,7 +741,7 @@ const PostAJob = (props: any) => {
                         className={
                             remote
                                 ? 'flex rounded-md flex-col relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
                         <SettingsRemoteIcon className="-ml-2" />
@@ -757,7 +757,7 @@ const PostAJob = (props: any) => {
                         className={
                             hybrid
                                 ? 'flex rounded-md flex-col relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
                         <GroupWorkIcon className="-ml-2" />
@@ -936,7 +936,7 @@ const PostAJob = (props: any) => {
                         className={
                             palm
                                 ? 'flex rounded-md flex-col relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20 text-stone-400'
+                                : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20 text-stone-400'
                         }
                     >
                         <ArticleIcon className="-ml-0.5" />
@@ -951,7 +951,7 @@ const PostAJob = (props: any) => {
                         className={
                             email
                                 ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor hover:text-orange-600 text-stone-400 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor hover:text-gradientFirst text-stone-400 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
                         <AlternateEmailIcon className="-ml-2" />
@@ -966,7 +966,7 @@ const PostAJob = (props: any) => {
                         className={
                             link
                                 ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor text-stone-400 hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor text-stone-400 hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
                         <InsertLinkIcon className="-ml-2" />
@@ -1004,7 +1004,7 @@ const PostAJob = (props: any) => {
                             onClick={() => setOpenPreview(true)}
                             className={
                                 fourth
-                                    ? 'text-orange-600 border flex items-center justify-center cursor-pointer h-16 rounded-full w-full block  md:w-5/12 lg:w-3/12'
+                                    ? 'text-gradientFirst border flex items-center justify-center cursor-pointer h-16 rounded-full w-full block  md:w-5/12 lg:w-3/12'
                                     : 'hidden'
                             }
                         >
@@ -1098,8 +1098,8 @@ const PostAJob = (props: any) => {
                                             minSalary == '' && maxSalary !== ''
                                                 ? maxSalary
                                                 : minSalary !== '' && maxSalary == ''
-                                                ? minSalary
-                                                : minSalary + '-' + maxSalary
+                                                    ? minSalary
+                                                    : minSalary + '-' + maxSalary
                                         }
                                         icon={
                                             currency == 'euro' ? (

@@ -67,7 +67,7 @@ const Certificate = () => {
                 <div className="grid grid-cols-12 ">
                     <div className="col-span-7 lg:col-span-8">
                         <p className=" font-fhW text-fhS leading-fhL pl-1">
-                            <WorkspacePremiumIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                            <WorkspacePremiumIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                             Certificates
                         </p>
                     </div>
@@ -107,7 +107,7 @@ const Certificate = () => {
                         <div className="col-span-12 grid grid-cols-12 mt-5 sm:gap-y-5 xl:gap-y-2">
                             <div className="col-span-12 grid grid-cols-12 ">
                                 <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                    <WorkspacePremiumIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                                    <WorkspacePremiumIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                                     Certificates
                                     <span className="float-right text-smS text-fadedText">
                                         {certificateArray.length} / {maximumCertificates}
@@ -134,7 +134,7 @@ const Certificate = () => {
                                             setEditedCertificate({ ...editedCertificate, name: e.currentTarget.value })
                                         }
                                         placeholder="Add Certificate Name"
-                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2">
@@ -146,7 +146,7 @@ const Certificate = () => {
                                             setEditedCertificate({ ...editedCertificate, issuedBy: e.currentTarget.value })
                                         }
                                         placeholder="Certificate Issued By"
-                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
@@ -160,7 +160,7 @@ const Certificate = () => {
                                                 setEditedCertificate({ ...editedCertificate, year: selectedDate });
                                         }}
                                         placeholder="Year Issued"
-                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
                                         max={new Date().toISOString().split('T')[0]}
                                     />
                                 </div>
@@ -256,7 +256,7 @@ const Certificate = () => {
                                                 setCertificateData({ ...certificateData, name: e.currentTarget.value })
                                             }
                                             placeholder="Add Certificate Name"
-                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-7 pr-2 md:pl-2">
@@ -268,7 +268,7 @@ const Certificate = () => {
                                                 setCertificateData({ ...certificateData, issuedBy: e.currentTarget.value })
                                             }
                                             placeholder="Certificate Issued By"
-                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
@@ -282,7 +282,7 @@ const Certificate = () => {
                                                     setCertificateData({ ...certificateData, year: selectedDate });
                                             }}
                                             placeholder="Year Issued"
-                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
                                             max={new Date().toISOString().split('T')[0]}
                                         />
                                     </div>

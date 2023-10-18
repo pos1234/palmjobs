@@ -23,7 +23,7 @@ body {
     border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: #e8b69c;
+    background-color: #74d18d;
     border-radius: 10px;
 }
 .hideScrollBar::-webkit-scrollbar {
@@ -57,9 +57,10 @@ body {
     animation-fill-mode: forwards;
 }
 .employerBack {
-    background: url('../public/images/leafWhite.svg') repeat-y;
-    background-position-x: 100%;
-    background-size: 10%;
+    background: url('../public/images/jobsBack.svg') repeat-y;
+    background-position-x: -55%;
+    
+    
 }
 .loginCoursel {
     background: url('../public/images/loginCricle.svg') no-repeat;

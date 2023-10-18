@@ -274,7 +274,7 @@ const Profile = () => {
                                         <input
                                             placeholder="Enter Address"
                                             type="text"
-                                            className="-ml-5 z-[1] rounded-full w-full pl-10 py-3 group border-stone-200 focus:ring-orange-300 focus:outline-0 focus:border-0 "
+                                            className="-ml-5 z-[1] rounded-full w-full pl-10 py-3 group border-stone-200 focus:ring-gradientSecond focus:outline-0 focus:border-0 "
                                             value={locate}
                                             onChange={(e) => {
                                                 if (e.currentTarget.value.length <= 50) {
@@ -291,7 +291,7 @@ const Profile = () => {
                                         <input
                                             placeholder="Enter phone number"
                                             type="text"
-                                            className="-ml-5 z-[1] rounded-full w-full pl-10 py-3 group border-stone-200 focus:ring-orange-300 focus:outline-0 focus:border-0 "
+                                            className="-ml-5 z-[1] rounded-full w-full pl-10 py-3 group border-stone-200 focus:ring-gradientSecond focus:outline-0 focus:border-0 "
                                             value={call}
                                             onChange={(e) => {
                                                 if (e.currentTarget.value.length <= 10) {
@@ -304,22 +304,22 @@ const Profile = () => {
                                     <div className="flex gap-x-5 text-[#618c61]">
                                         {linked && (
                                             <Link target="_blank" title="linkedIn" href={linked}>
-                                                <LinkedInIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                                                <LinkedInIcon className="w-7 h-7 hover:text-[#00A82D]" />
                                             </Link>
                                         )}
                                         {githubLink && (
                                             <Link target="_blank" title="github" href={githubLink}>
-                                                <GitHubIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                                                <GitHubIcon className="w-7 h-7 hover:text-[#00A82D]" />
                                             </Link>
                                         )}
                                         {behan && (
                                             <Link target="_blank" title="behance" href={behan}>
-                                                <FormatBoldIcon className="w-8 h-8 hover:text-[#FE5E0A]" />
+                                                <FormatBoldIcon className="w-8 h-8 hover:text-[#00A82D]" />
                                             </Link>
                                         )}
                                         {portfolio && (
                                             <Link target="_blank" title="portifolio" href={portfolio}>
-                                                <PhonelinkIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                                                <PhonelinkIcon className="w-7 h-7 hover:text-[#00A82D]" />
                                             </Link>
                                         )}
                                         <EditIcon
@@ -364,9 +364,9 @@ const Profile = () => {
                             </p>
                         </div>
                     </div>
-                    <div className={about ? 'col-span-12 grid grid-cols-12 bg-forBack gap-5 px-1 pt-2 mt-10 rounded-2xl' : 'hidden'}>
-                        <Bio />
-                        <Certificate />
+                    <div className={about ? 'col-span-12 grid grid-cols-12 bg-[#F9FBF9] gap-5 px-1 py-2 mt-10 rounded-2xl' : 'hidden'}>
+{/*                         <Bio />
+ */}                        <Certificate />
                         <Project />
                         <Skills />
                     </div>

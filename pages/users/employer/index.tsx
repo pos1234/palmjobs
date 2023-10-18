@@ -126,9 +126,9 @@ const AdminJob = () => {
     }, []);
     return (
         <>
-            <div className="flex justify-between items-center pr-5 md:pr-0 md:flex md:pl-16 md:pt-5">
+            <div className="flex justify-between items-center pr-5 md:pr-0 md:flex md:pl-5 md:pt-5">
                 <Link href="/">
-                    <img src={logo} alt="palmjobs logo" className=" h-24" />
+                    <img src={logo} alt="palmjobs logo" className=" h-20" />
                 </Link>
                 <div
                     onClick={() => {
@@ -172,8 +172,8 @@ const AdminJob = () => {
                         }}
                         className={
                             postJob
-                                ? 'flex pl-5 items-center bg-orange-100 py-3 gap-x-4 text-orange-600 cursor-pointer w-full lg:pl-10'
-                                : 'flex pl-5 text-stone-400 items-center group py-3 gap-x-4 cursor-pointer w-full hover:bg-orange-100 hover:text-orange-600 lg:pl-10'
+                                ? 'flex pl-5 items-center bg-skillColor py-3 gap-x-4 text-gradientFirst cursor-pointer w-full lg:pl-10'
+                                : 'flex pl-5 text-stone-400 items-center group py-3 gap-x-4 cursor-pointer w-full hover:bg-skillColor hover:text-gradientFirst lg:pl-10'
                         }
                     >
                         <div
@@ -194,8 +194,8 @@ const AdminJob = () => {
                         }}
                         className={
                             dashboard
-                                ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
+                                ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
+                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
                         }
                     >
                         <div className=" rounded-md border-0">
@@ -210,8 +210,8 @@ const AdminJob = () => {
                         }}
                         className={
                             jobs
-                                ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
+                                ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
+                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
                         }
                     >
                         <div className=" rounded-md border-0">
@@ -226,8 +226,8 @@ const AdminJob = () => {
                         }}
                         className={
                             candidates
-                                ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
+                                ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
+                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
                         }
                     >
                         <div className=" rounded-md border-0">
@@ -242,8 +242,8 @@ const AdminJob = () => {
                         }}
                         className={
                             profileSetting
-                                ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
+                                ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
+                                : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
                         }
                     >
                         <div className=" rounded-md border-0">
@@ -258,8 +258,8 @@ const AdminJob = () => {
                         }}
                         className={
                             privacy
-                                ? 'flex pl-4 items-center bg-orange-100 text-orange-600 py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer lg:pl-9'
+                                ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
+                                : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
                         }
                     >
                         <div className=" rounded-md border-0">
@@ -272,7 +272,7 @@ const AdminJob = () => {
                             setOpenLogout(!openLogout);
                             setMenu(false);
                         }}
-                        className="left-0 flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-orange-100 hover:text-orange-600 cursor-pointer  lg:pl-9"
+                        className="left-0 flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer  lg:pl-9"
                     >
                         <div className=" rounded-md border-0">
                             <LogoutIcon sx={{ fontSize: '1.9rem' }} />

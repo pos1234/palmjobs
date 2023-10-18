@@ -131,7 +131,7 @@ const ApplyToJob = (props: any) => {
         setErrorMessage(err);
         console.log(err);
     };
-    useEffect(() => {}, [userData]);
+    useEffect(() => { }, [userData]);
     const apply = async (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadingApply(true);
@@ -243,7 +243,7 @@ const ApplyToJob = (props: any) => {
                                 <div className="col-span-12 grid grid-cols-12 mb-5">
                                     <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
                                         <BusinessCenterIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
-                                        Apply Job
+                                        Apply
                                     </p>
                                 </div>
                                 {/*                                 <button type='button' onClick={handleSendEmail}>Send Email</button>

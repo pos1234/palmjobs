@@ -11,16 +11,16 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                gradientFirst: '#FE5E0A',
-                gradientSecond: '#FE5E0A78',
+                gradientFirst: '#00A82D'/* '#CEDC00' *//* '#FE5E0A' */,
+                gradientSecond: '#00A82D'/* '#FE5E0A78' */,
                 textR: '#0E121D',
                 textW: '#FFFFFF',
                 lightGrey: '#141414B2',
                 lightGreen: '#E5ECEC',
-                skillColor: '#FFA06E26',
+                skillColor: '#E9FDF1 '/*#FFA06E26' */,
                 fadedText: '#C4C4C4',
                 modalTitle: '#3B3B3B',
-                forBack: '#ffa06e0d',
+                forBack:'#F9FBF9'/* '#E9FDF1' */ /* '#ffa06e0d' */,
                 darkBlue: '#141414B2',
                 /*                 darkBlue: '#141414'
                  */

@@ -10,7 +10,7 @@ const TextInput = (props: any) => {
                         ? ` ${'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full '} ${
                               !props.class && 'md:w-96'
                           }`
-                        : ` ${'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full'} ${
+                        : ` ${'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientSecond focus:border-0 w-full'} ${
                               !props.class && 'md:w-96'
                           }`
                 }

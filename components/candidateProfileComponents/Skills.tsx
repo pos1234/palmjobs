@@ -38,7 +38,7 @@ const Skills = () => {
     return (
         <div className="col-span-12 pt-7 grid grid-cols-12 bg-textW rounded-3xl pb-5 lg:pl-10">
             <p className="font-fhW text-fhS leading-fhL pl-1 col-span-8 lg:pl-5">
-                <LocalFireDepartmentOutlinedIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                <LocalFireDepartmentOutlinedIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                 Skills
             </p>
             <div className="col-span-4 md:col-span-1 grid justify-items-end md:hidden">

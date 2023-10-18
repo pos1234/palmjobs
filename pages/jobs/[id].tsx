@@ -107,10 +107,9 @@ const singleJob = () => {
         "hiringOrganization": {
           "@type":"Organization",
           "name":"${companyName && companyName}",
-          "logo": "${
-              <JobImage id={jobDetails.employerId} className="col-span-2 sm:h-[5.8rem]" /> ||
-              'https://www.yes.et/jobs/wp-content/uploads/wp-job-board-pro-uploads/_employer_featured_image/2023/01/YES_logo-150x150.png'
-          }"
+          "logo": "${<JobImage id={jobDetails.employerId} className="col-span-2 sm:h-[5.8rem]" /> ||
+        'https://www.yes.et/jobs/wp-content/uploads/wp-job-board-pro-uploads/_employer_featured_image/2023/01/YES_logo-150x150.png'
+        }"
         },
         "jobLocation": {
           "@type": "Place",
@@ -207,8 +206,8 @@ const singleJob = () => {
                                     !jobDetails.minSalary && jobDetails.maxSalary
                                         ? jobDetails.maxSalary
                                         : jobDetails.minSalary && !jobDetails.maxSalary
-                                        ? jobDetails.minSalary
-                                        : jobDetails.minSalary + '-' + jobDetails.maxSalary
+                                            ? jobDetails.minSalary
+                                            : jobDetails.minSalary + '-' + jobDetails.maxSalary
                                 }
                                 icon={
                                     jobDetails.currency == 'euro' ? (
@@ -303,7 +302,7 @@ const singleJob = () => {
                         <div className="col-span-12 mx-3 flex flex-col">
                             <div
                                 dangerouslySetInnerHTML={{ __html: jobDetails.jobDescription }}
-                                className="text-midRS text-fadedText min-h-[200px] max-h-96 mb-3 overflow-y-auto hideScrollBar"
+                                className="text-midRS text-lightGrey min-h-[200px] max-h-96 mb-3 overflow-y-auto hideScrollBar"
                             />
                             {jobDetails.externalLink ? (
                                 <a
@@ -334,7 +333,7 @@ const singleJob = () => {
                     )}
                     {company && (
                         <div className="col-span-12 mx-3">
-                            <p className="font-thW text-frhS">Company's Detail</p>
+                            <p className="font-thW text-frhS">Company's Overview</p>
                             {!companyDes && <p className="text-lightGrey">Stay tuned for more about this company!</p>}
                             <div
                                 dangerouslySetInnerHTML={{ __html: companyDes }}

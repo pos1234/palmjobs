@@ -28,7 +28,7 @@ const ElementWithIcon = (props: any) => {
                         <div className="w-14 h-14 bg-skillColor flex items-center justify-center rounded-[1rem]">
                             <BusinessCenterOutlinedIcon
                                 sx={{
-                                    color: '#FE5E0A',
+                                    color: '#00A82D',
                                     height: '1.5rem'
                                 }}
                             />
@@ -126,7 +126,7 @@ const WorkHitory = () => {
         <div className="col-span-12 rounded-3xl bg-textW grid grid-cols-12 py-8 md:pr-5 lg:col-span-8">
             <div className="col-span-6">
                 <p className="font-fhW text-fhS leading-fhL pl-1 col-span-12 lg:pl-7 xl:pl-9">
-                    <BusinessCenterIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                    <BusinessCenterIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                     Work History
                 </p>
             </div>
@@ -156,7 +156,7 @@ const WorkHitory = () => {
                         <div className="col-span-12 grid grid-cols-12 ">
                             <div className="col-span-12 grid grid-cols-12 mb-5">
                                 <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                    <BusinessCenterIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                                    <BusinessCenterIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                                     Work History
                                 </p>
                                 <div className="col-span-2 md:col-span-1 grid pr-2 justify-items-end md:justify-items-center">
@@ -177,7 +177,7 @@ const WorkHitory = () => {
                                             <div className="w-16 h-16 bg-skillColor flex items-center justify-center rounded-[1rem]">
                                                 <BusinessCenterOutlinedIcon
                                                     sx={{
-                                                        color: '#FE5E0A',
+                                                        color: '#00A82D',
                                                         height: '1.5rem'
                                                     }}
                                                 />
@@ -248,7 +248,7 @@ const WorkHitory = () => {
                                                 setEditedWork({ ...editedWork, title: e.currentTarget.value })
                                             }
                                             placeholder="Add Title"
-                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
@@ -260,7 +260,7 @@ const WorkHitory = () => {
                                                 setEditedWork({ ...editedWork, companyName: e.currentTarget.value })
                                             }
                                             placeholder="Add Company Name"
-                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
@@ -271,7 +271,7 @@ const WorkHitory = () => {
                                             onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                                 setEditedWork({ ...editedWork, startDate: e.currentTarget.value })
                                             }
-                                            className="focus:ring-orange-500 focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     {editedWork.endDate && (
@@ -284,7 +284,7 @@ const WorkHitory = () => {
                                                 onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                                     setEditedWork({ ...editedWork, endDate: e.currentTarget.value })
                                                 }
-                                                className="focus:ring-orange-500 focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                                className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                             />
                                         </div>
                                     )}
@@ -329,7 +329,7 @@ const WorkHitory = () => {
                                                 }
                                             }}
                                             placeholder="Add Title"
-                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
@@ -341,13 +341,13 @@ const WorkHitory = () => {
                                                 setWorkHistoryData({ ...workHistoryData, companyName: e.currentTarget.value })
                                             }
                                             placeholder="Add Company Name"
-                                            className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 pr-2 md:pl-2 flex items-center mt-3">
                                         <input
                                             type="checkbox"
-                                            className="focus:ring-orange-500 focus:border-0 border-[1px] rounded-xl h-4 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] rounded-xl h-4 pl-5 text-addS"
                                             checked={isChecked}
                                             onChange={handleCheckboxChange}
                                         />
@@ -359,7 +359,7 @@ const WorkHitory = () => {
                                             value={workHistoryData.startDate}
                                             type="date"
                                             onChange={(e) => setWorkHistoryData({ ...workHistoryData, startDate: e.currentTarget.value })}
-                                            className="focus:ring-orange-500 focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     {!isChecked && (
@@ -374,7 +374,7 @@ const WorkHitory = () => {
                                                         ? setWorkHistoryData({ ...workHistoryData, endDate: 'present' })
                                                         : setWorkHistoryData({ ...workHistoryData, endDate: e.currentTarget.value })
                                                 }
-                                                className="focus:ring-orange-500 focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                                className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                             />
                                         </div>
                                     )}

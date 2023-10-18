@@ -101,7 +101,7 @@ const RegisterComponent = (props: any) => {
                     className={
                         firstNameError
                             ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                            : 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                            : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
                     }
                     /*                     className="col-span-12 border-[1px] w-full rounded-full h-12 pl-5 text-addS sm:col-span-12"
                      */
@@ -118,7 +118,7 @@ const RegisterComponent = (props: any) => {
                     className={
                         lastNameError
                             ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                            : 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                            : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
                     }
                 />
                 {lastNameError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{lastNameError}</p>}
@@ -132,7 +132,7 @@ const RegisterComponent = (props: any) => {
                 className={
                     emailError
                         ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                        : 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                        : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
                 }
             />
             {emailError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{emailError}</p>}
@@ -147,7 +147,7 @@ const RegisterComponent = (props: any) => {
                         className={
                             passwordError
                                 ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                                : 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                                : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
                         }
                     />
                     <span onClick={() => setVisible(!visible)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
@@ -165,7 +165,7 @@ const RegisterComponent = (props: any) => {
                     className={
                         passwordError
                             ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                            : 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                            : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
                     }
                 />
             </div>
@@ -174,7 +174,6 @@ const RegisterComponent = (props: any) => {
                 <input
                     onChange={(e) => setChecked(e.currentTarget.checked)}
                     type="checkbox"
-                    placeholder="Project Name"
                     className="pl-5 text-addS max-h-[1rem]"
                 />
                 <span className="font-addW text-addS leading-addL pl-2">To continue please accept our Terms and Conditions. Thanks!</span>

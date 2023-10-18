@@ -10,6 +10,7 @@ import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlin
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import ConfirmModal from './ConfirmModal';
 import { useRouter } from 'next/dist/client/router';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { toast } from 'react-toastify';
 const Navigation = (props: any) => {
     const logo = '/images/logo.svg';
@@ -123,44 +124,49 @@ const Navigation = (props: any) => {
                                 </div>
                             )}
                         </div>
-                        <div className="flex justify-center">
-                            <div className="flex flex-col gap-y-5 pt-7 text-[1.5rem]">
-                                <Link href="/jobs" className=" text-left">
+                        <div className="flex justify-left px-3">
+                            <div className="flex flex-col gap-y-5 pt-7 text-[1.5rem] w-full">
+                                <Link href="/jobs" className="border-b-2 pb-2 text-xl">
                                     Find a Job
                                 </Link>
-                                <p>Craft Resume</p>
+                                <p className="border-b-2 pb-2 text-xl">Craft Resume</p>
                                 {!userData && (
                                     <>
-                                        <div className="">
-                                            <Link href="/account">Sign in</Link>
-                                        </div>
-
+                                        <Link href="/account" className="border-b-2 pb-2 text-xl">Sign in</Link>
                                         <Link
                                             href="/users/employer"
-                                            className="text-textW flex items-center justify-center bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-56 rounded-xl md:w-32 md:max-lg:h-12  lg:w-40 xl:w-56"
+                                            className="text-textW text-xl flex items-center justify-center bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-56 rounded-xl md:w-32 md:max-lg:h-12  lg:w-40 xl:w-56"
                                         >
                                             <BorderColorIcon sx={{ fontSize: '1.2rem', marginRight: '0.2rem' }} /> Hire Talent
                                         </Link>
                                     </>
                                 )}
                                 {userRole == 'candidate' ? (
-                                    <Link href="/users/candidate" className=" col-span-3 lg:col-span-3 xl:col-span-3 cursor-poniter">
+                                    <Link href="/users/candidate" className="border-b-2 text-xl pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-poniter">
                                         my jobs
                                     </Link>
                                 ) : userRole == 'employer' ? (
-                                    <Link href="/users/employer" className=" col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
-                                        Dashboard
+                                    <Link href="/users/employer" className="border-b-2 text-xl pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
+                                        Employer Center
                                     </Link>
                                 ) : null}
                                 {userRole == 'candidate' ? (
-                                    <Link
-                                        href="/users/candidate/profile"
-                                        className=" col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer"
-                                    >
-                                        <span>Profile</span>
-                                    </Link>
+                                    <>
+                                        <Link
+                                            href="/users/candidate/profile"
+                                            className="border-b-2 pb-2 col-span-3 text-xl lg:col-span-3 xl:col-span-3 cursor-pointer"
+                                        >
+                                            <span>Profile</span>
+                                        </Link>
+                                        <Link
+                                            href="/users/candidate/settings"
+                                            className="border-b-2 pb-2 col-span-3 text-xl lg:col-span-3 xl:col-span-3 cursor-pointer"
+                                        >
+                                            <span>Setting</span>
+                                        </Link>
+                                    </>
                                 ) : userRole == 'employer' ? (
-                                    <Link href="/users/employer/" className=" col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
+                                    <Link href="/users/employer/" className="border-b-2 text-xl pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
                                         <span>Profile</span>
                                     </Link>
                                 ) : null}
@@ -169,7 +175,7 @@ const Navigation = (props: any) => {
                                 {userData && (
                                     <div
                                         onClick={() => setOpenLogout(!openLogout)}
-                                        className="flex gap-x-3 text-[1.5rem] cursor-pointer items-center"
+                                        className="flex gap-x-3 text-[1.5rem] text-xl cursor-pointer items-center"
                                     >
                                         <span>Logout</span>
                                     </div>
@@ -194,7 +200,7 @@ const Navigation = (props: any) => {
                         </Link>
                     ) : userRole == 'employer' ? (
                         <Link href="/users/employer" className=" col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
-                            Dashboard
+                            Employer Center
                         </Link>
                     ) : null}
                 </div>
@@ -257,13 +263,23 @@ const Navigation = (props: any) => {
                                     </Popover.Button>
                                     <Popover.Panel className="absolute right-0 border-2 rounded-2xl flex flex-col gap-y-3 p-3 bg-textW shadow z-10 w-[8rem] md:mt-3 lg:mt-8">
                                         {userRole == 'candidate' ? (
-                                            <Link
-                                                href="/users/candidate/profile"
-                                                className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                                            >
-                                                <ManageAccountsOutlinedIcon sx={{ fontSize: '1rem' }} />
-                                                <span>Profile</span>
-                                            </Link>
+                                            <>
+                                                {' '}
+                                                <Link
+                                                    href="/users/candidate/profile"
+                                                    className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                                                >
+                                                    <ManageAccountsOutlinedIcon sx={{ fontSize: '1rem' }} />
+                                                    <span>Profile</span>
+                                                </Link>
+                                                <Link
+                                                    href="/users/candidate/settings"
+                                                    className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                                                >
+                                                    <SettingsOutlinedIcon sx={{ fontSize: '1rem' }} />
+                                                    <span>Setting</span>
+                                                </Link>
+                                            </>
                                         ) : userRole == 'employer' ? (
                                             <Link
                                                 href="/users/employer/"
