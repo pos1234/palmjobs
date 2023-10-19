@@ -11,17 +11,17 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                gradientFirst: '#00A82D'/* '#CEDC00' *//* '#FE5E0A' */,
-                gradientSecond: '#00A82D'/* '#FE5E0A78' */,
+                gradientFirst: '#00A82D' /* '#CEDC00' */ /* '#FE5E0A' */,
+                gradientSecond: '#00A82D' /* '#FE5E0A78' */,
                 textR: '#0E121D',
                 textW: '#FFFFFF',
                 lightGrey: '#141414B2',
                 lightGreen: '#E5ECEC',
-                skillColor: '#E9FDF1 '/*#FFA06E26' */,
+                skillColor: '#E9FDF1 ' /*#FFA06E26' */,
                 fadedText: '#C4C4C4',
                 modalTitle: '#3B3B3B',
-                forBack:'#F9FBF9'/* '#E9FDF1' */ /* '#ffa06e0d' */,
-                darkBlue: '#141414B2',
+                forBack: '#F9FBF9' /* '#E9FDF1' */ /* '#ffa06e0d' */,
+                darkBlue: '#141414B2'
                 /*                 darkBlue: '#141414'
                  */
             },
@@ -43,16 +43,16 @@ module.exports = {
                 adW: '400'
             },
             fontSize: {
-                frhS: '2rem',
-                shS: '1.5rem',
-                thS: '1.375rem',
+                frhS: '1.5rem' /* '2rem' */,
+                shS: '1rem' /* '1.5rem' */,
+                thS: '1rem' /* '1.375rem' */,
                 fhS: '1.125rem',
                 dfrhS: '3rem',
                 dshS: '2.25rem',
                 dthS: '2rem',
                 dfhS: '1.5rem',
                 dfvhS: '1.375rem',
-                bigS: '1.25rem',
+                bigS: '1rem' /* '1.25rem' */,
                 midS: '1.125rem',
                 midRS: '1.125rem',
                 smS: '1rem',

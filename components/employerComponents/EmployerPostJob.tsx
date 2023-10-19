@@ -927,7 +927,7 @@ const PostAJob = (props: any) => {
             >
                 <div className="text-neutral-900 text-[1.3rem] font-semibold leading-10 md:text-[1.6rem]">Set application Preference</div>
                 <div className="flex bg-forBack w-full p-2 gap-x-5 md:w-1/2">
-                    <div
+                    <div title='Recieve Application Through Palmjobs'
                         onClick={() => {
                             setPalm(true);
                             setEmail(false);
@@ -943,6 +943,7 @@ const PostAJob = (props: any) => {
                         <p className="absolute bottom-1">Palm Jobs</p>
                     </div>
                     <div
+                        title='Recieve Application Through Email'
                         onClick={() => {
                             setPalm(false);
                             setEmail(true);
@@ -957,7 +958,7 @@ const PostAJob = (props: any) => {
                         <AlternateEmailIcon className="-ml-2" />
                         <p className="absolute bottom-1">Email</p>
                     </div>
-                    <div
+                    <div title='Recieve Application Through External Link'
                         onClick={() => {
                             setPalm(false);
                             setEmail(false);

@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds, getCompanyData } from '@/lib/services';
 import { useEffect, useState } from 'react';
 import ApplyToJob from './ApplyToJobs';
-import {  toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobImage from '../JobImage';
 import SingleJobShimmer from '../shimmer/SingleJobShimmer';
@@ -132,7 +132,7 @@ const SavedJobs = (props: any) => {
                                     <CompanyName id={datas.employerId} />
                                     {/*                                     <p className="text-[12px] text-darkBlue sm:text-fhS">{datas.companyName}</p>
                                      */}{' '}
-                                    <p className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-frhS">{datas.jobTitle}</p>
+                                    <Link href={`/jobs/${datas.$id}`} target="_blank" className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-frhS">{datas.jobTitle}</Link>
                                     <p className="text-fadedText rounded-full md:hidden">
                                         <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} /> {datas.jobLocation}
                                     </p>

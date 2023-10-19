@@ -68,7 +68,7 @@ const Applied = (props: any) => {
                                 <JobImage id={datas.employerId} className="col-span-2 h-full md:hidden" />
                                 <div className="col-span-10 pl-1">
                                     <CompanyName id={datas.employerId} />
-                                    <p className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-frhS">{datas.jobTitle}</p>
+                                    <Link href={`/jobs/${datas.$id}`} target="_blank" className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-frhS">{datas.jobTitle}</Link>
                                     <p className="text-fadedText rounded-full md:hidden">
                                         <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} /> {datas.jobLocation}
                                     </p>

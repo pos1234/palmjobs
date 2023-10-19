@@ -44,13 +44,13 @@ const CandSmall = (props: any) => {
                     ? `bg-textW shadow flex flex-col p-3 rounded-2xl cursor-pointer max-md:hidden ${
                           (props.short !== 'true' && props.index === props.indexValue) ||
                           (props.viewShort === false && props.index === props.indexValue)
-                              ? 'border-[1px] bg-textW shadow border-orange-500 max-md:hidden'
+                              ? 'border-[1px] bg-textW shadow border-gradientFirst max-md:hidden'
                               : 'border-[1px] bg-textW shadow border-stone-200 max-md:hidden'
                       }`
                     : `bg-textW shadow flex flex-col p-3 rounded-2xl cursor-pointer ${
                           (props.short !== 'true' && props.index === props.indexValue) ||
                           (props.viewShort === false && props.index === props.indexValue)
-                              ? 'border-[1px] bg-textW shadow border-orange-500'
+                              ? 'border-[1px] bg-textW shadow border-gradientFirst'
                               : 'border-[1px] bg-textW shadow border-stone-200'
                       }`
             }

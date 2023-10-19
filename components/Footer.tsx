@@ -109,7 +109,7 @@ const Footer = () => {
                                 <LinkList link="/users/employer/" text="Post Job" />
                                 {/*                                 <LinkList text="Submit Job Order" />
                                  */}{' '}
-                                <LinkList link="/users/employer/" text="Employer Center" />
+                                <LinkList link="/users/employer/" text="Dashboard" />
                             </ul>
                         )}
                         {forEmp && !userRole && (
@@ -124,7 +124,7 @@ const Footer = () => {
                                 <LinkList link="/users/employer/" text="Post Job" />
                                 {/*                                 <LinkList link="/" text="Submit Job Order" />
                                  */}{' '}
-                                <LinkList link="/users/employer/" text="Employer Center" />
+                                <LinkList link="/users/employer/" text="Dashboard" />
                             </ul>
                         )}
                     </div>

@@ -1,26 +1,31 @@
 import { useState } from 'react';
 import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 const WorkDetail = (props: any) => {
     const [desc, setDesc] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const toggleDescription = () => {
+        setIsOpen(!isOpen);
+    };
     return (
-        <div onClick={() => setDesc(!desc)} className="col-span-12 pb-2 border-b-2 flex md:max-xl:flex-col my-4">
+        <div onClick={() => setDesc(!desc)} className="col-span-12 pb-2 border-b-2 flex items-between justify-between md:max-xl:flex-col my-4">
             <div className="w-12 h-12  bg-skillColor flex items-center justify-center rounded-[1rem] md:max-xl:w-full md:max-xl:bg-textW md:flex md:max-xl:justify-start md:max-xl:gap-x-2">
                 <div className="w-12 h-12 bg-skillColor  items-center justify-center rounded-[1rem] hidden md:max-xl:flex">
                     <BusinessCenterOutlinedIcon
                         sx={{
-                            color: '#FE5E0A',
                             height: '1.5rem'
                         }}
+                        className='text-gradientFirst'
+
                     />
                 </div>
                 <BusinessCenterOutlinedIcon
                     sx={{
-                        color: '#FE5E0A',
                         height: '1.5rem'
                     }}
-                    className="md:max-xl:hidden"
+                    className="md:max-xl:hidden text-gradientFirst"
                 />
                 <p className="text-fhS font-fhW leading-fhL md:text-[1rem] md:font-smRW hidden md:max-xl:flex">
                     {props && props.detail && props.detail.companyName}
@@ -44,6 +49,19 @@ const WorkDetail = (props: any) => {
                     <div
                         className="col-span-12 text-[13px] text-stone-500"
                         dangerouslySetInnerHTML={{ __html: props.detail.jobDescription }}
+                    />
+                )}
+            </div>
+            <div className="flex items-center justify-end pr-1 ">
+                {desc ? (
+                    <KeyboardArrowUpIcon
+                        sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
+                        className="w-7 h-7 p-1.5 "
+                    />
+                ) : (
+                    <KeyboardArrowDownIcon
+                        sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
+                        className="w-7 h-7 p-1.5 "
                     />
                 )}
             </div>

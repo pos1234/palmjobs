@@ -33,7 +33,7 @@ const Slider = () => {
             autoPlay={true}
             interval={9000}
             showThumbs={false}
-            className="flex flex-col pt-10 px-20 max-md:mb-10 md:px-20 lg:px-32 overflow-hidden"
+            className="flex flex-col justify-center px-5 max-md:mb-10 sm:px-20 md:px-20 lg:px-32 overflow-hidden"
         >
             <div className="w-full text-left flex flex-col mb-20">
                 <p className="text-zinc-900 pb-5 font-medium max-h-18 overflow-hidden text-xl sm:text-2xl xl:text-3xl leading-7">

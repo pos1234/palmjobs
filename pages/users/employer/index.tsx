@@ -233,7 +233,7 @@ const AdminJob = () => {
                         <div className=" rounded-md border-0">
                             <PeopleIcon sx={{ fontSize: '1.9rem' }} />
                         </div>
-                        <p className="text-xl font-medium leading-loose">Candidates</p>
+                        <p className="text-xl font-medium leading-loose">Applicants</p>
                     </div>
                     <div
                         onClick={() => {

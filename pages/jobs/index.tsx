@@ -54,11 +54,11 @@ const jobTypeData = ['Job Type', 'Internship', 'Full Time', 'Part Time', 'Remote
 const JobCard = (props: any) => {
     return (
         <div className="col-span-6 flex flex-col max-md:pl-2 py-2 rounded-2xl gap-y-2 bg-textW sm:col-span-3 items-center">
-            <p className="font-fhW sm:max-md:text-[0.8rem] md:text-fhS md:max-lg:text-[1rem]"> {props.salary}</p>
-            <p className=" text-fadedText sm:max-md:text-[12px] flex md:max-lg:text-[0.7rem] lg:text-[14px]">
+            <div className="font-fhW sm:max-md:text-[0.8rem] md:text-fhS md:max-lg:text-[1rem]"> {props.salary}</div>
+            <div className=" text-fadedText sm:max-md:text-[12px] flex md:max-lg:text-[0.7rem] lg:text-[14px]">
                 {props.icon}
                 {props.money}
-            </p>
+            </div>
         </div>
     );
 };
@@ -72,13 +72,16 @@ const ReturnName = (props: any) => {
             setCompanyName('');
         }
     });
-    return <p className="text-[13px] text-darkBlue sm:text-[1.5rem] md:text-[0.9rem] xl:text-[0.9rem]">{companyName}</p> || null;
+    return <div className="text-[13px] text-darkBlue sm:text-[1.5rem] md:text-[0.9rem] xl:text-[0.9rem]">{companyName}</div> || null;
 };
 const Jobs = () => {
     const router = useRouter();
     const [datePosted, setDatePosted] = useState(datePostedData[0]);
     const [expLevel, setExpLevel] = useState(experienceData[0]);
     const [jobType, setJobType] = useState(jobTypeData[0]);
+    const [datePostedHolder, setDatePostedHolder] = useState(datePostedData[0]);
+    const [expLevelHolder, setExpLevelHolder] = useState(experienceData[0]);
+    const [jobTypeHolder, setJobTypeHolder] = useState(jobTypeData[0]);
     const [sortBy, setSortBy] = useState('Best Match');
     const profile = '/images/profile.svg';
     const uploadResume = '/images/uploadResume.svg';
@@ -110,14 +113,13 @@ const Jobs = () => {
     const [userData, setUserData] = useState<any>();
     const [userRole, setUserRole] = useState('');
     const [userDetail, setUserDetail] = useState<any>();
+
     const getUserData = async () => {
         const userInfo = await getAccount();
         if (userInfo !== 'failed') {
             setUserData(userInfo);
             const role = await getRole(userInfo.$id);
             setUserRole(role.documents[0].userRole);
-            console.log(role.documents[0].userRole);
-
             if (role.documents[0].userRole == 'candidate') {
                 const candidate = await getCandidateInfo();
                 if (candidate) {
@@ -176,26 +178,26 @@ const Jobs = () => {
                 const searchRegex = new RegExp(searchQuery, 'i');
                 isMatch = isMatch && searchRegex.test(item.jobTitle);
             }
-            if (address !== '' && address.toLocaleLowerCase()) {
-                const searchRegex = new RegExp(address, 'i');
+            if (addressHolder !== '' && address.toLocaleLowerCase()) {
+                const searchRegex = new RegExp(addressHolder, 'i');
                 isMatch = isMatch && searchRegex.test(item.jobLocation);
             }
-            if (datePosted !== 'Any time') {
-                if (datePosted == 'Past 24hrs') {
+            if (datePostedHolder !== 'Any time' && datePostedHolder !== 'Date Posted') {
+                if (datePostedHolder == 'Past 24hrs') {
                     isMatch = isMatch && postedDate == new Date();
                 }
-                if (datePosted == 'Past week') {
+                if (datePostedHolder == 'Past week') {
                     isMatch = isMatch && postedDate >= startOfWeek && postedDate <= endOfWeek;
                 }
-                if (datePosted == 'Past month') {
+                if (datePostedHolder == 'Past month') {
                     isMatch = isMatch && postedDate >= thirtyDaysAgo && postedDate <= now;
                 }
             }
-            if (expLevel !== 'Experience Level') {
-                isMatch = isMatch && item.expreienceLevel == expLevel;
+            if (expLevelHolder !== 'Experience Level') {
+                isMatch = isMatch && item.expreienceLevel == expLevelHolder;
             }
-            if (jobType !== 'Job Type') {
-                isMatch = isMatch && item.jobType == jobType;
+            if (jobTypeHolder !== 'Job Type') {
+                isMatch = isMatch && item.jobType == jobTypeHolder;
             }
             return isMatch;
         });
@@ -219,6 +221,11 @@ const Jobs = () => {
         /*         setOpenfilter(false);
          */
     };
+    const handleFilter = () => {
+        setDatePostedHolder(datePosted);
+        setExpLevelHolder(expLevel);
+        setJobTypeHolder(jobType);
+    }
     const showPage = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
@@ -323,7 +330,7 @@ const Jobs = () => {
                     <div className="grid grid-cols-12 sm:gap-x-10 mt-8 md:mt-16">
                         <div className="col-span-12 grid grid-cols-12 gap-x-2 xl:gap-x-5">
                             <div className="col-span-12 grid grid-cols-12 gap-x-2 gap-y-4">
-                                <div className="col-span-12 flex sm:justify-center max-sm:flex-wrap gap-2 ">
+                                <div className="col-span-12 flex sm:justify-center gap-2 ">
                                     <div
                                         className={
                                             openJobDetail == true
@@ -371,7 +378,7 @@ const Jobs = () => {
                                     >
                                         <SearchIcon className="text-[1.5rem] cursor-pointer md:max-lg:text-[2rem] lg:text-3xl" />
                                     </div>
-                                    <div
+                                   {/*  <div
                                         className={
                                             openJobDetail == true
                                                 ? 'hidden'
@@ -388,7 +395,7 @@ const Jobs = () => {
                                             className="h-full w-full bg-[#F8F8F8] pl-5 border-none outline-none focus:ring-0 focus:border-none focus:outline-none sm:w-1/2"
                                             placeholder="Where"
                                         />
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="col-span-12 flex gap-3 p-3 pb-0 rounded-x-2xl">
                                     {/* <div className={openJobDetail == true ? 'hidden' : 'col-span-12 bg-textW md:hidden md:col-span-3'}>
@@ -538,39 +545,48 @@ const Jobs = () => {
                                                     </p>
                                                     <div className="col-span-12 grid grid-cols-12 mb-0 gap-y-3 rounded-b-xl bg-textW xl:pr-5">
                                                         <div className="hidden col-span-12 gap-x-2 md:flex">
-                                                            {datePosted !== 'Date Posted' && (
+                                                            {datePostedHolder !== 'Date Posted' && (
                                                                 <div className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-[3.75rem]">
-                                                                    <p> {datePosted} </p>
+                                                                    <p> {datePostedHolder} </p>
                                                                     <p className="ml-5 ">
                                                                         <CloseIcon
                                                                             sx={{ color: 'green' }}
                                                                             className="h-7 cursor-pointer p-1"
-                                                                            onClick={() => setDatePosted('Date Posted')}
+                                                                            onClick={() => {
+                                                                                setDatePosted('Date Posted')
+                                                                                setDatePostedHolder('Date Posted')
+                                                                            }}
                                                                         />
                                                                     </p>
                                                                 </div>
                                                             )}
-                                                            {expLevel !== 'Experience Level' && (
+                                                            {expLevelHolder !== 'Experience Level' && (
                                                                 <div className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-[3.75rem]">
-                                                                    <p> {expLevel} </p>
+                                                                    <p> {expLevelHolder} </p>
                                                                     <p className="ml-5 ">
                                                                         <CloseIcon
                                                                             sx={{ color: 'green' }}
                                                                             className="h-7 cursor-pointer p-1"
-                                                                            onClick={() => setExpLevel('Experience Level')}
+                                                                            onClick={() => {
+                                                                                setExpLevel('Experience Level')
+                                                                                setExpLevelHolder('Experience Level')
+                                                                            }}
                                                                         />
                                                                     </p>
                                                                 </div>
                                                             )}
-                                                            {jobType !== 'Job Type' && (
+                                                            {jobTypeHolder !== 'Job Type' && (
                                                                 <div className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-[3.75rem]">
-                                                                    <p> {jobType} </p>
+                                                                    <p> {jobTypeHolder} </p>
 
                                                                     <p className="ml-5 ">
                                                                         <CloseIcon
                                                                             sx={{ color: 'green' }}
                                                                             className="h-7 cursor-pointer p-1"
-                                                                            onClick={() => setJobType(jobTypeData[0])}
+                                                                            onClick={() => {
+                                                                                setJobType(jobTypeData[0])
+                                                                                setJobTypeHolder(jobTypeData[0])
+                                                                            }}
                                                                         />
                                                                     </p>
                                                                 </div>
@@ -721,8 +737,9 @@ const Jobs = () => {
                                                         {!company && (
                                                             <div className="col-span-12 mx-3 flex flex-col">
                                                                 <div
+
                                                                     dangerouslySetInnerHTML={{ __html: jobDetails.jobDescription }}
-                                                                    className="text-midRS text-lightGrey min-h-[200px] max-h-96 mb-16 overflow-y-auto hideScrollBar"
+                                                                    className="text-midRS text-lightGrey min-h-[200px] max-h-96 mb-16 overflow-y-auto thinScrollBar"
                                                                 />
                                                                 {jobDetails.externalLink ? (
                                                                     <a
@@ -764,34 +781,35 @@ const Jobs = () => {
                                                                     </p>
                                                                 )} */}
 
-                                                                <div className='flex gap-3 my-5 flex-wrap justify-between'>
-                                                                    {
-                                                                        compnayData.sector && <div className='flex gap-5 '>
-                                                                            <p className='font-bold text-lightGrey text-md'>Sector</p>
-                                                                            <p className='text-lightGrey'>{compnayData.sector}</p>
-                                                                        </div>
-                                                                    }
-                                                                    {
-                                                                        compnayData.location && <div className='flex gap-5 '>
-                                                                            <p className='font-bold text-lightGrey text-md'>location</p>
-                                                                            <p className='text-lightGrey'>{compnayData.location}</p>
-                                                                        </div>
-                                                                    }
-                                                                    {
-                                                                        compnayData.noOfEmployee && <div className='flex gap-5 '>
-                                                                            <p className='font-bold text-lightGrey text-md'>Size</p>
-                                                                            <p className='text-lightGrey'>{compnayData.noOfEmployee}</p>
-                                                                        </div>
-                                                                    }
-                                                                    {
-                                                                        compnayData.websiteLink && <div className='flex gap-5 '>
-                                                                            <p className='font-bold text-lightGrey text-md'>Website</p>
-                                                                            <a href={compnayData.websiteLink}><LaunchIcon /></a>
-                                                                        </div>
-                                                                    }
+                                                                <div className='flex gap-3 my-5 flex-wrap justify-between border-b-2 pb-5'>
+                                                                    <div className='flex flex-col gap-y-5'>
+                                                                        {
+                                                                            compnayData.sector && <div className='flex gap-5 '>
+                                                                                <p className='font-bold text-lightGrey text-md'>Sector</p>
+                                                                                <p className='text-lightGrey'>{compnayData.sector}</p>
+                                                                            </div>
+                                                                        }
+                                                                        {
+                                                                            compnayData.location && <div className='flex gap-5 '>
+                                                                                <p className='font-bold text-lightGrey text-md'>location</p>
+                                                                                <p className='text-lightGrey'>{compnayData.location}</p>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                    <div className='flex flex-col gap-y-5'>
+                                                                        {
+                                                                            compnayData.noOfEmployee && <div className='flex gap-5 '>
+                                                                                <p className='font-bold text-lightGrey text-md'>Size</p>
+                                                                                <p className='text-lightGrey'>{compnayData.noOfEmployee}</p>
+                                                                            </div>
+                                                                        }
+                                                                        {
+                                                                            compnayData.websiteLink && <div className='flex gap-5 '>
+                                                                                <p className='font-bold text-lightGrey text-md'>Website</p>
+                                                                                <a className='text-lightGrey' href={compnayData.websiteLink} target='_blank'>view <LaunchIcon /></a>
+                                                                            </div>
+                                                                        }</div>
                                                                 </div>
-
-
                                                                 <div
                                                                     dangerouslySetInnerHTML={{ __html: compnayData.description }}
                                                                     className="text-midRS text-lightGrey max-h-96 overflow-y-auto hideScrollBar border-b-2 min-h-[200px] max-h-96 overflow-y-auto hideScrollBar"
@@ -1056,6 +1074,7 @@ const Jobs = () => {
                             </div>
                             <div
                                 onClick={() => {
+                                    handleFilter();
                                     setOpenfilter(false);
                                 }}
                                 className="w-full bg-gradient-to-r cursor-pointer from-gradientFirst to-gradientSecond rounded-full text-textW h-[3.5rem] flex items-center justify-center"

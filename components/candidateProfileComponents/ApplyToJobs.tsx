@@ -145,11 +145,12 @@ const ApplyToJob = (props: any) => {
                         setLoadingApply(false);
                     })
                     .catch((error) => {
-                        setOpenApply(false);
-                        setOpenNotify(true);
+/*                         setOpenApply(false);
+ */                        setOpenNotify(true);
                         setFailed(true);
                         setLoadingApply(false);
                         console.log(error);
+                        toast.error(error)
                     });
             });
         } else {
@@ -164,11 +165,13 @@ const ApplyToJob = (props: any) => {
                     setLoadingApply(false);
                 })
                 .catch((error) => {
-                    setOpenApply(false);
-                    setOpenNotify(true);
+/*                     setOpenApply(false);
+ */                    setOpenNotify(true);
                     setFailed(true);
                     setLoadingApply(false);
                     console.log(error);
+                    toast.error(error)
+
                 });
         }
     };

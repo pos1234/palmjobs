@@ -84,24 +84,24 @@ const Login = () => {
     };
     return (
         <>
-            <div className="grid grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
-                <div className="col-span-12  flex items-center bg-skillColor rounded-tr-[5.75rem] rounded-br-[5.75rem] order-2 max-md:mt-10 md:col-span-6 md:order-1">
+            <div className="flex max-md:flex-wrap grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
+                <div className="w-full md:w-1/2 flex flex-col max-md:gap-10 items-center bg-skillColor rounded-tr-[5.75rem] rounded-br-[5.75rem] order-2 max-md:mt-10 md:col-span-6 md:order-1">
+                    <div className={/* forgotPassword == false ? 'w-full flex justify-center' : */ 'w-full flex justify-center mt-10 sm:mt-28'}>
+                        <Link href="/">
+                            <img src={logo} className=" w-[15rem]" />
+                        </Link>
+                    </div>
                     <div
                         className={
                             forgotPassword || (register && !registerForm)
-                                ? 'loginCoursel w-full  lg:pt-[15%] flex item-center justify-center md:h-[45%] lg:h-[75%] xl:h-[80%]'
-                                : 'loginCoursel w-full  lg:pt-[15%] flex item-center justify-center md:h-[40%] lg:h-[60%] xl:h-[65%]'
+                                ? 'loginCoursel w-full  lg:pt-[5%] flex justify-center md:h-[45%] lg:h-[75%] xl:h-[80%]'
+                                : 'loginCoursel w-full  lg:pt-[5%] flex justify-center md:h-[40%] lg:h-[60%] xl:h-[6 5%]'
                         }
                     >
                         <Slider />
                     </div>
                 </div>
-                <div className="col-span-12  order-1 md:order-2 text-center flex flex-col gap-y-5 items-center md:px-5 lg:px-10 xl:px-20 md:col-span-6 employerBack">
-                    <div className={forgotPassword == false ? 'flex justify-center' : 'flex justify-center mt-20 sm:mt-28'}>
-                        <Link href="/">
-                            <img src={logo} className=" w-[15rem]" />
-                        </Link>
-                    </div>
+                <div className="w-full md:w-1/2 order-1 justify-center md:order-2 text-center flex flex-col gap-y-5 items-center md:px-5 lg:px-10 xl:px-20 md:col-span-6 pt-20 employerBack">
                     {forgotPassword == false && (
                         <p className="font-shW text-shS md:text-dshS">
                             Connect. Grow. <span className="text-gradientFirst">Succeed.</span>

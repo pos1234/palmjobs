@@ -140,14 +140,14 @@ const Jobs = (props: any) => {
                                             className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
                                         >
                                             <HeightIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                            <span>Ascending</span>
+                                            <span>Latest</span>
                                         </div>
                                         <div
                                             onClick={() => setSort('desc')}
                                             className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
                                         >
                                             <StraightIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                            <span>Descending</span>
+                                            <span>Oldest</span>
                                         </div>
                                     </Popover.Panel>
                                 </Popover>

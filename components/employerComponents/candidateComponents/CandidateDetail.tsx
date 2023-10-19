@@ -38,22 +38,22 @@ const CandidateDetail = (props: any) => {
                 <div className="flex gap-x-5 text-[#618c61]">
                     {props.detailData.linkedIn && (
                         <Link target="_blank" title="linkedIn" href={props.detailData.linkedIn}>
-                            <LinkedInIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                            <LinkedInIcon className="w-7 h-7 hover:text-gradientSecond" />
                         </Link>
                     )}
                     {props.detailData.github && (
                         <Link target="_blank" title="github" href={props.detailData.github}>
-                            <GitHubIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                            <GitHubIcon className="w-7 h-7 hover:text-gradientSecond" />
                         </Link>
                     )}
                     {props.detailData.behance && (
                         <Link target="_blank" title="behance" href={props.detailData.behance}>
-                            <FormatBoldIcon className="w-8 h-8 hover:text-[#FE5E0A]" />
+                            <FormatBoldIcon className="w-8 h-8 hover:text-gradientSecond" />
                         </Link>
                     )}
                     {props.detailData.protfolio && (
                         <Link target="_blank" title="portifolio" href={props.detailData.protfolio}>
-                            <PhonelinkIcon className="w-7 h-7 hover:text-[#FE5E0A]" />
+                            <PhonelinkIcon className="w-7 h-7 hover:text-gradientSecond" />
                         </Link>
                     )}
                 </div>
@@ -61,7 +61,7 @@ const CandidateDetail = (props: any) => {
             {props && props.detailData && props.detailData.coverLetter && (
                 <div className="pb-5 flex-grow max-sm:h-60">
                     <p className="font-fhW text-fhS leading-fhL">
-                        <TextSnippetIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                        <TextSnippetIcon sx={{ marginRight: '0.5rem' }} className='text-gradientFirst' />
                         Cover Letter
                     </p>
                     <div
@@ -72,7 +72,7 @@ const CandidateDetail = (props: any) => {
             )}
             <div className="flex gap-2 gap-y-3 flex-wrap my-2">
                 <p className="font-fhW text-fhS leading-fhL w-full">
-                    <LocalFireDepartmentOutlinedIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                    <LocalFireDepartmentOutlinedIcon sx={{ marginRight: '0.5rem' }} className='text-gradientFirst' />
                     Skills
                 </p>
                 {props &&
@@ -92,7 +92,7 @@ const CandidateDetail = (props: any) => {
             {props.detailData && props.detailData.workHistory && (
                 <div className="grid grid-cols-12 cursor-pointer md:mb-5 sm:max-md:gap-x-2">
                     <p className="font-fhW text-fhS leading-fhL col-span-12 mb-3">
-                        <BusinessCenterIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                        <BusinessCenterIcon sx={{ marginRight: '0.5rem' }} className='text-gradientFirst' />
                         Work History
                     </p>
                     {props &&
@@ -106,7 +106,7 @@ const CandidateDetail = (props: any) => {
             {props && props.detailData && props.detailData.educations && (
                 <div className="grid grid-cols-12 cursor-pointer md:mb-5 sm:max-md:gap-x-2">
                     <p className="font-fhW text-fhS leading-fhL col-span-12 mb-3">
-                        <SchoolOutlinedIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                        <SchoolOutlinedIcon sx={{ marginRight: '0.5rem' }} className='text-gradientFirst' />
                         Education
                     </p>
                     {props &&
@@ -120,7 +120,7 @@ const CandidateDetail = (props: any) => {
             {props && props.detailData && props.detailData.projects && (
                 <div className="col-span-12 grid grid-cols-12 bg-textW rounded-3xl">
                     <p className="font-fhW text-fhS leading-fhL col-span-12">
-                        <AttachFileIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem', rotate: '40deg' }} />
+                        <AttachFileIcon sx={{ marginRight: '0.5rem', rotate: '40deg' }} className='text-gradientFirst' />
                         Projects
                     </p>
                     {props &&

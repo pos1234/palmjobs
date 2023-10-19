@@ -95,8 +95,8 @@ const Candidates = (props: any) => {
             <div
                 className={
                     openCanDetail
-                        ? 'relative flex justify-between pt-10 items-center px-1 max-md:hidden lg:pl-10'
-                        : 'relative flex justify-between pt-10 items-center px-1 lg:pl-10'
+                        ? 'relative flex justify-between pt-0 items-center px-1 max-md:hidden lg:pl-10'
+                        : 'relative flex justify-between pt-0 items-center px-1 lg:pl-10'
                 }
             >
                 <p className="text-black text-3xl font-[700]">Candidates</p>
@@ -115,7 +115,7 @@ const Candidates = (props: any) => {
                             openCanDetail ? 'flex flex-col gap-y-3 justify-between max-md:hidden' : 'flex flex-col gap-y-3 justify-between'
                         }
                     >
-                        <div className="flex max-sm:pl-5 items-center gap-x-2">
+                        {/*  <div className="flex max-sm:pl-5 items-center gap-x-2">
                             <div className=" p-1 rounded-2xl border-[1px] border-stone-300 flex items-center gap-x-3 rounded-2xl px-3">
                                 <p>Job</p>
                                 <select
@@ -138,19 +138,9 @@ const Candidates = (props: any) => {
                                     <WorkOutlineIcon />
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="p-1 flex flex-col max-sm:px-5 md:flex-row gap-2 gap-x-6">
-                            <select
-                                onChange={(e) => setAllCandidates(e.currentTarget.value)}
-                                className="cursor-pointer border-stone-300 max-w-[20rem] focus:border-0 focus:ring-orange-300 max-md:h-14 h-16 rounded-2xl"
-                            >
-                                <option value="All Candidates">All Candidates</option>
-                                <option value="Best Match">Best Match</option>
-                                <option value="Shortlisted">Shortlisted</option>
-                                {/* <JobTab text="All Candidates" active="true" />
-                                <JobTab text="Best Match" /> */}
-                            </select>
-                            <div className="flex gap-x-5">
+                           <div className="flex gap-x-5">
                                 <div className="bg-stone-50 px-2 grid grid-cols-12 rounded-2xl md:rounded-3xl md:col-span-6 xl:col-span-7">
                                     <div className="hidden col-span-2 text-fadedText items-center justify-center md:col-span-1 md:justify-end md:flex ">
                                         <SearchIcon className="text-[1.7rem]" />
@@ -166,6 +156,17 @@ const Candidates = (props: any) => {
                                     <SearchIcon className="text-[1.5rem] cursor-pointer md:max-lg:text-[2rem] lg:text-3xl" />
                                 </div>
                             </div>
+                             <select
+                                onChange={(e) => setAllCandidates(e.currentTarget.value)}
+                                className="cursor-pointer border-stone-300 max-w-[20rem] focus:border-0 focus:ring-gradientFirst max-md:h-14 h-16 rounded-2xl"
+                            >
+                                <option value="All Candidates">All Candidates</option>
+                                {/*                                 <option value="Best Match">Best Match</option>
+ */}                                <option value="Shortlisted">Shortlisted</option>
+                                {/* <JobTab text="All Candidates" active="true" />
+                                <JobTab text="Best Match" /> */}
+                            </select>
+                            
                             <p className="flex justify-end flex-grow items-center text-stone-600 text-2xl font-semibold leading-10 hidden xl:flex">
                                 Shortlisted
                             </p>
@@ -202,7 +203,7 @@ const Candidates = (props: any) => {
                             onClick={() => setOpenCanDetail(false)}
                             className={
                                 openCanDetail == true
-                                    ? 'col-start-2 col-end-12 cursor-pointer rounded-full text-orange-500 text-center border-2 py-3 md:hidden'
+                                    ? 'col-start-2 col-end-12 cursor-pointer rounded-full text-gradientFirst text-center border-2 py-3 md:hidden'
                                     : 'hidden'
                             }
                         >
@@ -227,6 +228,7 @@ const Candidates = (props: any) => {
                                     : 'col-span-12 order-3 hidden overflow-y-auto max-h-screen flex flex-col gap-y-4 md:col-span-3 xl:flex'
                             }
                         >
+                            {shortListed && shortListed.length == 0 && <p className='text-lightGrey pt-10'>Candidates shortlisted will show up here</p>}
                             {shortListed &&
                                 shortListed.map((item: any, index: number) => {
                                     return (

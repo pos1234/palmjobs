@@ -107,7 +107,7 @@ const Navigation = (props: any) => {
                         </div>
                         <div className="relative flex mt-5 items-center justify-center gap-x-2">
                             {userDetail && userDetail.profilePictureId && (
-                                <div className="w-16 h-16 ">
+                                <div className="w-14 h-14 ">
                                     <img
                                         className="w-full h-full border-0 rounded-xl outline-0 ring-none"
                                         src={getHref(userDetail.profilePictureId)}
@@ -147,7 +147,7 @@ const Navigation = (props: any) => {
                                     </Link>
                                 ) : userRole == 'employer' ? (
                                     <Link href="/users/employer" className="border-b-2 text-xl pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
-                                        Employer Center
+                                        Dashboard
                                     </Link>
                                 ) : null}
                                 {userRole == 'candidate' ? (
@@ -200,7 +200,7 @@ const Navigation = (props: any) => {
                         </Link>
                     ) : userRole == 'employer' ? (
                         <Link href="/users/employer" className=" col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
-                            Employer Center
+                            Dashboard
                         </Link>
                     ) : null}
                 </div>
