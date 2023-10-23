@@ -314,8 +314,8 @@ const ApplyToJob = (props: any) => {
                                             <p className="text-neutral-400">{phone}</p>
                                         </div>
                                         {fileName && (
-                                            <div className="col-span-12 grid grid-cols-12 shadow border border-orange-500 rounded-3xl mt-2">
-                                                <div className=" flex items-center justify-center bg-orange-500 rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
+                                            <div className="col-span-12 grid grid-cols-12 shadow border border-gradientFirst rounded-3xl mt-2">
+                                                <div className=" flex items-center justify-center bg-gradientFirst rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
                                                     <img src={pdfIcon} className="w-10 h-16 relative" />
                                                 </div>
                                                 <div className="col-span-9 flex items-center pl-3">
@@ -393,9 +393,9 @@ const ApplyToJob = (props: any) => {
                                                 <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
                                                     PDF, DOCX or DOC, file size no more than 1MB
                                                 </div>
-                                                <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-orange-300 border-opacity-25 justify-start items-center flex  text-center">
+                                                <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
                                                     <div className="cursor-pointer absolute z-0 top-3 w-full">
-                                                        <div className="text-orange-600 text-xs font-normal uppercase">Replace</div>
+                                                        <div className="text-gradientFirst text-xs font-normal uppercase">Replace</div>
                                                     </div>
                                                 </div>
                                                 {errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}
@@ -421,8 +421,8 @@ const ApplyToJob = (props: any) => {
                                             </div> */}
                                         </div>
                                         {fileName && (
-                                            <div className="col-span-12 grid grid-cols-12 shadow border border-orange-500 rounded-3xl mt-5">
-                                                <div className="py-4 flex items-center justify-center bg-orange-500 rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
+                                            <div className="col-span-12 grid grid-cols-12 shadow border border-gradientFirst rounded-3xl mt-5">
+                                                <div className="py-4 flex items-center justify-center bg-gradientFirst rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
                                                     <img src={pdfIcon} className="w-12 h-5 relative" />
                                                 </div>
                                                 <div className="col-span-8 flex items-center pl-3 break-all">

@@ -87,7 +87,7 @@ const Jobs = () => {
     const uploadResume = '/images/uploadResume.svg';
     const [jobDetailId, setJobDetailId] = useState('');
     const [openJobDetail, setOpenJobDetail] = useState(false);
-    const [jobDetails, setJobDetails] = useState<any>();
+    const [jobDetails, setJobDetails] = useState<any>(null);
     const [company, setCompany] = useState(false);
     const [openFilter, setOpenfilter] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -98,7 +98,7 @@ const Jobs = () => {
     const [data, setData] = useState<any>();
     const [maxPaginate, setMaxPaginate] = useState(5);
     const [minPaginate, setMinPaginate] = useState(1);
-    const [compnayData, setCompanyData] = useState<any>();
+    const [companyData, setCompanyData] = useState<any>();
     const [companyName, setCompanyName] = useState('');
     const [employerId, setEmployerId] = useState('');
     const [apply, setApply] = useState(false);
@@ -137,22 +137,7 @@ const Jobs = () => {
     useEffect(() => {
         getUserData();
     }, []);
-    useEffect(() => {
-        setAllLoading(true);
-        fetchJobs().then((res) => {
-            setData(res.documents);
-            setJobDetails(res.documents[0]);
-            setJobDetailId(res.documents[0].$id);
-            setAllLoading(false);
-        });
-        if (Object.keys(router.query).length > 0) {
-            const { param1, param2 } = router.query;
-            param1 && setSearchQuery(param1.toString());
-            param1 && setSearchWord(param1.toString());
-            param2 && setAddress(param2.toString());
-            param2 && setAddressHolder(param2.toString());
-        }
-    }, [router.query]);
+
     useEffect(() => {
         const documents = getCompanyData(employerId);
         documents.then(async (res) => {
@@ -201,6 +186,7 @@ const Jobs = () => {
             }
             return isMatch;
         });
+
     const [filtered, setFiltered] = useState(data);
     const itemsPerPage = 8;
     const pageCount = filData && Math.ceil(filData.length / itemsPerPage);
@@ -213,6 +199,23 @@ const Jobs = () => {
         setSearchQuery(searchWord);
         setAddress(addressHolder);
     };
+    useEffect(() => {
+        setAllLoading(true);
+        fetchJobs().then((res) => {
+            setData(res.documents);
+            filData && filData.length !== 0 && setJobDetails(res.documents[0]);
+            filData && filData.length !== 0 && setJobDetailId(res.documents[0].$id);
+            filData && filData.length == 0 && setJobDetails(null)
+            setAllLoading(false);
+        });
+        if (Object.keys(router.query).length > 0) {
+            const { param1, param2 } = router.query;
+            param1 && setSearchQuery(param1.toString());
+            param1 && setSearchWord(param1.toString());
+            param2 && setAddress(param2.toString());
+            param2 && setAddressHolder(param2.toString());
+        }
+    }, [router.query]);
     const handleReset = () => {
         setDatePosted(datePostedData[0]);
         setExpLevel(experienceData[0]);
@@ -257,7 +260,8 @@ const Jobs = () => {
         setMinPaginate(minPaginate + 1);
     };
     useEffect(() => {
-        data && setJobDetails(data.find((items: any) => items.$id == jobDetailId));
+        data && data.length !== 0 && setJobDetails(data.find((items: any) => items.$id == jobDetailId));
+        filData && filData.length == 0 && setJobDetails(null)
     }, [jobDetailId]);
     useEffect(() => {
         if (searchQuery == '') {
@@ -378,7 +382,7 @@ const Jobs = () => {
                                     >
                                         <SearchIcon className="text-[1.5rem] cursor-pointer md:max-lg:text-[2rem] lg:text-3xl" />
                                     </div>
-                                   {/*  <div
+                                    {/*  <div
                                         className={
                                             openJobDetail == true
                                                 ? 'hidden'
@@ -772,10 +776,10 @@ const Jobs = () => {
                                                                 )}
                                                             </div>
                                                         )}
-                                                        {company && compnayData && (
+                                                        {company && companyData && (
                                                             <div className="col-span-12 mx-3">
                                                                 <p className="font-thW text-frhS">Company's Overview</p>
-                                                                {/*  {!compnayData && (
+                                                                {/*  {!companyData && (
                                                                     <p className="text-lightGrey">
                                                                         Stay tuned for more about this company!
                                                                     </p>
@@ -784,40 +788,41 @@ const Jobs = () => {
                                                                 <div className='flex gap-3 my-5 flex-wrap justify-between border-b-2 pb-5'>
                                                                     <div className='flex flex-col gap-y-5'>
                                                                         {
-                                                                            compnayData.sector && <div className='flex gap-5 '>
+                                                                            companyData.sector && <div className='flex gap-5 '>
                                                                                 <p className='font-bold text-lightGrey text-md'>Sector</p>
-                                                                                <p className='text-lightGrey'>{compnayData.sector}</p>
+                                                                                <p className='text-lightGrey'>{companyData.sector}</p>
                                                                             </div>
                                                                         }
                                                                         {
-                                                                            compnayData.location && <div className='flex gap-5 '>
+                                                                            companyData.location && <div className='flex gap-5 '>
                                                                                 <p className='font-bold text-lightGrey text-md'>location</p>
-                                                                                <p className='text-lightGrey'>{compnayData.location}</p>
+                                                                                <p className='text-lightGrey'>{companyData.location}</p>
                                                                             </div>
                                                                         }
                                                                     </div>
                                                                     <div className='flex flex-col gap-y-5'>
                                                                         {
-                                                                            compnayData.noOfEmployee && <div className='flex gap-5 '>
+                                                                            companyData.noOfEmployee && <div className='flex gap-5 '>
                                                                                 <p className='font-bold text-lightGrey text-md'>Size</p>
-                                                                                <p className='text-lightGrey'>{compnayData.noOfEmployee}</p>
+                                                                                <p className='text-lightGrey'>{companyData.noOfEmployee}</p>
                                                                             </div>
                                                                         }
                                                                         {
-                                                                            compnayData.websiteLink && <div className='flex gap-5 '>
+                                                                            companyData.websiteLink && <div className='flex gap-5 '>
                                                                                 <p className='font-bold text-lightGrey text-md'>Website</p>
-                                                                                <a className='text-lightGrey' href={compnayData.websiteLink} target='_blank'>view <LaunchIcon /></a>
+                                                                                <a className='text-lightGrey' href={companyData.websiteLink} target='_blank'>view <LaunchIcon /></a>
                                                                             </div>
                                                                         }</div>
                                                                 </div>
                                                                 <div
-                                                                    dangerouslySetInnerHTML={{ __html: compnayData.description }}
+                                                                    dangerouslySetInnerHTML={{ __html: companyData.description }}
                                                                     className="text-midRS text-lightGrey max-h-96 overflow-y-auto hideScrollBar border-b-2 min-h-[200px] max-h-96 overflow-y-auto hideScrollBar"
                                                                 />
                                                             </div>
                                                         )}
                                                     </div>
                                                 </div>
+                                                {jobDetails.$id}
                                                 <Share openShare={openShare} setOpenShare={setOpenShare} link={jobDetails.$id} />
                                             </div>
                                         )}

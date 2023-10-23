@@ -95,7 +95,7 @@ const Jobs = (props: any) => {
                                         className={
                                             opened
                                                 ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
-                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-orange-500'
+                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-gradientFirst'
                                         }
                                     >
                                         Opened
@@ -107,7 +107,7 @@ const Jobs = (props: any) => {
                                         className={
                                             draft
                                                 ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
-                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-orange-500'
+                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-gradientFirst'
                                         }
                                     >
                                         Drafted
@@ -119,7 +119,7 @@ const Jobs = (props: any) => {
                                         className={
                                             closed
                                                 ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
-                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-orange-500'
+                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-gradientFirst'
                                         }
                                     >
                                         Closed
@@ -160,7 +160,7 @@ const Jobs = (props: any) => {
                             <EmployerJobShimmer />
                         </div>
                     )}
-                    {opened && <Active sort={sort} setJobId={setEditedJobId} />}
+                    {opened && <Active sort={sort} setJobId={setEditedJobId} applicants={props.applicants} />}
                     {draft && <Drafted setJobId={setEditedJobId} />}
                     {closed && <Closed />}
                 </div>

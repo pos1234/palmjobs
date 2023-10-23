@@ -100,6 +100,7 @@ const Footer = () => {
                         {!userRole && (
                             <ul className="hidden  md:flex flex-col space-y-4 pt-0 -mt-8 md:-ml-2">
                                 <LinkList link="/users/employer/" text="Post Job" />
+                                <LinkList link="/users/employer/" text="employer account" />
                                 {/*                                 <LinkList text="Submit Job Order" />
                                  */}{' '}
                             </ul>

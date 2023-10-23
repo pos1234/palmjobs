@@ -19,6 +19,7 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import Share from '@/components/Share';
 import Footer from '@/components/Footer';
 import Head from 'next/head';
+import LaunchIcon from '@mui/icons-material/Launch';
 const JobCard = (props: any) => {
     return (
         <div className="col-span-6 flex flex-col max-md:pl-2 py-2 rounded-2xl gap-y-2 bg-textW sm:col-span-3 items-center">
@@ -37,7 +38,7 @@ const singleJob = () => {
     const [searchText, setSearchText] = useState('');
     const [address, setAddress] = useState('');
     const [company, setCompany] = useState(false);
-    const [companyDes, setCompanyDes] = useState('');
+    const [companyData, setCompanyData] = useState<any>();
     const [employerId, setEmployerId] = useState('');
     const [apply, setApply] = useState(false);
     const [applyJobId, setApplyJobId] = useState('');
@@ -46,6 +47,7 @@ const singleJob = () => {
     const [openShare, setOpenShare] = useState(false);
     const [companyName, setCompanyName] = useState('');
     const [jobTitle, setJobTitle] = useState('');
+    const [accountId, setAccountId] = useState('')
     const handleSearch = () => {
         router.push({
             pathname: '/jobs',
@@ -63,17 +65,28 @@ const singleJob = () => {
             }
         }
     }, [router]);
+    const userId = async () => {
+        const accountInfo = await getAccount();
+        if (accountInfo !== 'failed') {
+            setAccountId(accountInfo.$id)
+            /* const role = await getRole(accountInfo.$id);
+            if (role.documents[0].userRole == 'candidate') {
+                setApply(true);
+                setApplyEmployerId(employerId);
+            } */
+        }
+    }
     useEffect(() => {
         const documents = getCompanyData(employerId);
         documents.then(async (res) => {
-            if (res.documents && res.documents[0] && res.documents[0].description) {
-                setCompanyDes(res.documents[0].description);
+            if (res.documents && res.documents[0] && res.documents[0]) {
+                setCompanyData(res.documents[0]);
                 setCompanyName(res.documents[0].companyName);
             } else {
-                setCompanyDes('');
                 setCompanyName('');
             }
         });
+        userId()
     }, [employerId]);
     const handleApply = async (jobId: string, employerId: string, compName: string, jobTitle: string) => {
         setApply(false);
@@ -304,39 +317,70 @@ const singleJob = () => {
                                 dangerouslySetInnerHTML={{ __html: jobDetails.jobDescription }}
                                 className="text-midRS text-lightGrey min-h-[200px] max-h-96 mb-3 overflow-y-auto hideScrollBar"
                             />
-                            {jobDetails.externalLink ? (
-                                <a
-                                    className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer"
-                                    href={jobDetails.externalLink}
-                                    target="_blank"
-                                >
-                                    Apply
-                                </a>
-                            ) : jobDetails.emailApplication ? (
-                                <div
-                                    onClick={() => handleEmailApply(jobDetails.emailApplication)}
-                                    className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
-                                >
-                                    Apply
-                                </div>
-                            ) : (
-                                <div
-                                    onClick={() => {
-                                        handleApply(jobDetails.$id, jobDetails.employerId, companyName, jobDetails.jobTitle);
-                                    }}
-                                    className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
-                                >
-                                    Apply
-                                </div>
-                            )}
+                            {employerId !== accountId && <>
+
+
+                                {jobDetails.externalLink ? (
+                                    <a
+                                        className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer"
+                                        href={jobDetails.externalLink}
+                                        target="_blank"
+                                    >
+                                        Apply
+                                    </a>
+                                ) : jobDetails.emailApplication ? (
+                                    <div
+                                        onClick={() => handleEmailApply(jobDetails.emailApplication)}
+                                        className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
+                                    >
+                                        Apply
+                                    </div>
+                                ) : (
+                                    <div
+                                        onClick={() => {
+                                            handleApply(jobDetails.$id, jobDetails.employerId, companyName, jobDetails.jobTitle);
+                                        }}
+                                        className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
+                                    >
+                                        Apply
+                                    </div>
+                                )}</>}
                         </div>
                     )}
                     {company && (
                         <div className="col-span-12 mx-3">
                             <p className="font-thW text-frhS">Company's Overview</p>
-                            {!companyDes && <p className="text-lightGrey">Stay tuned for more about this company!</p>}
+                            <div className='flex gap-3 my-5 flex-wrap justify-between border-b-2 pb-5'>
+                                <div className='flex flex-col gap-y-5'>
+                                    {
+                                        companyData.sector && <div className='flex gap-5 '>
+                                            <p className='font-bold text-lightGrey text-md'>Sector</p>
+                                            <p className='text-lightGrey'>{companyData.sector}</p>
+                                        </div>
+                                    }
+                                    {
+                                        companyData.location && <div className='flex gap-5 '>
+                                            <p className='font-bold text-lightGrey text-md'>location</p>
+                                            <p className='text-lightGrey'>{companyData.location}</p>
+                                        </div>
+                                    }
+                                </div>
+                                <div className='flex flex-col gap-y-5'>
+                                    {
+                                        companyData.noOfEmployee && <div className='flex gap-5 '>
+                                            <p className='font-bold text-lightGrey text-md'>Size</p>
+                                            <p className='text-lightGrey'>{companyData.noOfEmployee}</p>
+                                        </div>
+                                    }
+                                    {
+                                        companyData.websiteLink && <div className='flex gap-5 '>
+                                            <p className='font-bold text-lightGrey text-md'>Website</p>
+                                            <a className='text-lightGrey' href={companyData.websiteLink} target='_blank'>view <LaunchIcon /></a>
+                                        </div>
+                                    }</div>
+                            </div>
                             <div
-                                dangerouslySetInnerHTML={{ __html: companyDes }}
+                                dangerouslySetInnerHTML={{ __html: companyData.description }}
                                 className="text-midRS text-lightGrey max-h-96 overflow-y-auto hideScrollBar border-b-2 min-h-[200px] max-h-96 overflow-y-auto hideScrollBar"
                             />
                         </div>

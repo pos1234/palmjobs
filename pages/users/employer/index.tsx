@@ -40,8 +40,14 @@ const AdminJob = () => {
     const [menu, setMenu] = useState(false);
     const [editedJobId, setEditedJobId] = useState('');
     const [logLoading, setLogLoading] = useState(false);
+    const [applicants, setApplicant] = useState('')
+    useEffect(() => {
+        if (applicants !== '') {
+            setJobs(false);
+            setCandidates(true)
+        }
+    }, [applicants])
     const handleNavigation = (name: string) => {
-        'dashboard';
         if (name === 'postJob') {
             setPostJob(true);
             setDashboard(false);
@@ -285,8 +291,8 @@ const AdminJob = () => {
                         view && postJob
                             ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
                             : postJob
-                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32 employerBack'
-                            : 'hidden'
+                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32 employerBack'
+                                : 'hidden'
                     }
                 >
                     <PostAJob editedJobId={editedJobId} />
@@ -296,8 +302,8 @@ const AdminJob = () => {
                         view && dashboard
                             ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
                             : dashboard
-                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : 'hidden'
+                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : 'hidden'
                     }
                 >
                     <Dashboard changeFunction={handleNavigation} />
@@ -307,30 +313,30 @@ const AdminJob = () => {
                         view && jobs
                             ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
                             : jobs
-                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : 'hidden'
+                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : 'hidden'
                     }
                 >
-                    <Jobs postJob={handleNavigation} setEditedJobId={setEditedJobId} />
+                    <Jobs postJob={handleNavigation} setEditedJobId={setEditedJobId} applicants={setApplicant} />
                 </div>
                 <div
                     className={
                         view && candidates
                             ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
                             : candidates
-                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : 'hidden'
+                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : 'hidden'
                     }
                 >
-                    <Candidates postJob={handleNavigation} />
+                    <Candidates postJob={handleNavigation} applicantJobId={applicants} />
                 </div>
                 <div
                     className={
                         view && profileSetting
                             ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
                             : profileSetting
-                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : 'hidden'
+                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : 'hidden'
                     }
                 >
                     <EmployerProfile />
@@ -340,8 +346,8 @@ const AdminJob = () => {
                         view && privacy
                             ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
                             : privacy
-                            ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : 'hidden'
+                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : 'hidden'
                     }
                 >
                     <Privacy />

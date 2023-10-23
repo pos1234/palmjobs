@@ -22,6 +22,7 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
 import AccessTimeOutlined from '@mui/icons-material/AccessTimeOutlined';
+import PeopleIcon from '@mui/icons-material/People';
 import LocalFireDepartmentOutlined from '@mui/icons-material/LocalFireDepartmentOutlined';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -51,8 +52,8 @@ const TextInput = (props: any) => {
                 onChange={(e) => props.setFunction(e.currentTarget.value)}
                 className={
                     props.errorMessage
-                        ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full grow md:w-96'
-                        : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full grow md:w-96'
+                        ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96'
+                        : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96'
                 }
             />
             {props.errorMessage && <p className="text-red-500 text-[13px]">{props.errorMessage}</p>}
@@ -84,7 +85,6 @@ const PJobs = (props: any) => {
     const [noApplicant, setNoApplicant] = useState(0);
     const [empId, setEmpId] = useState('');
     const [compnayDes, setCompanyDes] = useState<any>();
-
     const updateStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
         updateJobStatus(props.jobId, e.currentTarget.value)
@@ -192,8 +192,8 @@ const PJobs = (props: any) => {
                     onChange={updateStatus}
                     className={
                         jobStatus == 'Close'
-                            ? 'bg-red-50 text-red-500 border-0 rounded-2xl text-sm cursor-pointer gap-y-4 focus:ring-orange-500 selector'
-                            : 'bg-lightGreen text-green border-0 rounded-2xl text-sm cursor-pointer gap-y-4 focus:ring-orange-500 selector'
+                            ? 'bg-red-50 text-red-500 border-0 rounded-2xl text-sm cursor-pointer gap-y-4 focus:ring-gradientFirst selector'
+                            : 'bg-lightGreen text-green border-0 rounded-2xl text-sm cursor-pointer gap-y-4 focus:ring-gradientFirst selector'
                     }
                 >
                     <option value="Active">Active</option>
@@ -217,6 +217,14 @@ const PJobs = (props: any) => {
                                 : 'hidden'
                         }
                     >
+                        <select
+                            value={jobStatus}
+                            onChange={updateStatus}
+                            className="md:hidden flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <ModeEditIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <option value="Close">Close Job</option>
+                        </select>
                         <div
                             onClick={() => setOpenJobEdit(true)}
                             className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
@@ -246,6 +254,13 @@ const PJobs = (props: any) => {
                         >
                             <ShareOutlinedIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
                             <span>Share</span>
+                        </div>
+                        <div
+                            onClick={() => props.applicants(props.jobId)}
+                            className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <PeopleIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <span>Applicants</span>
                         </div>
                     </Popover.Panel>
                 </Popover>
@@ -285,8 +300,8 @@ const PJobs = (props: any) => {
                                             !props.minSalary && props.maxSalary
                                                 ? props.maxSalary
                                                 : props.minSalary && !props.maxSalary
-                                                ? props.minSalary
-                                                : props.minSalary + '-' + props.maxSalary
+                                                    ? props.minSalary
+                                                    : props.minSalary + '-' + props.maxSalary
                                         }
                                         icon={
                                             props.currency == 'euro' ? (
@@ -393,7 +408,7 @@ const PJobs = (props: any) => {
                 <ConfirmModal isOpen={openJobEdit} handleClose={() => setOpenJobEdit(!openJobEdit)}>
                     <div className="mx-2 pb-5 w-full px-5 bg-textW rounded-2xl grid grid-cols-12 pt-6 overflow-auto h-full md:pl-8 md:w-2/3 lg:w-1/2">
                         <div className="col-span-12 grid grid-cols-12">
-                            <div className="col-span-11  flex items-center text-2xl font-[600] text-orange-500">Edit Job Post</div>
+                            <div className="col-span-11  flex items-center text-2xl font-[600] text-gradientFirst">Edit Job Post</div>
                             <div className="col-span-2 mb-4 md:col-span-1 grid pr-2 justify-items-end">
                                 <button onClick={() => setOpenJobEdit(!openJobEdit)}>
                                     <CloseIcon
@@ -424,7 +439,7 @@ const PJobs = (props: any) => {
                                     <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Job Type</p>
                                     <select
                                         onChange={(e) => setJobType(e.currentTarget.value)}
-                                        className="h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full grow md:w-96"
+                                        className="h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96"
                                     >
                                         <option value="Internship">Internship</option>
                                         <option value="Internship">Full Time</option>
@@ -442,8 +457,8 @@ const PJobs = (props: any) => {
                                             type="number"
                                             className={
                                                 props.errorMessage
-                                                    ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full md:w-auto hideIncrease'
-                                                    : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-auto hideIncrease'
+                                                    ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
+                                                    : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
                                             }
                                             placeholder="Minimum Salary"
                                         />
@@ -454,8 +469,8 @@ const PJobs = (props: any) => {
                                             type="number"
                                             className={
                                                 props.errorMessage
-                                                    ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full md:w-auto hideIncrease'
-                                                    : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-auto hideIncrease'
+                                                    ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
+                                                    : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
                                             }
                                         />
                                     </div>
@@ -464,7 +479,7 @@ const PJobs = (props: any) => {
                                     <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Deadline</p>
                                     <input
                                         type="date"
-                                        className="h-12 pl-5 bg-white cursor-pointer rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full grow md:w-96"
+                                        className="h-12 pl-5 bg-white cursor-pointer rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96"
                                         value={handleDateChange(jobDeadline)}
                                         onChange={(e) => setJobDeadline(e.currentTarget.value)}
                                     />
@@ -609,6 +624,7 @@ const Active = (props: any) => {
                                         openRoles={item.openPositions}
                                         deadline={new Date(item.applicationDeadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                         setterActiveJobs={setActiveJobs}
+                                        applicants={props.applicants}
                                     />
                                 );
                             })}

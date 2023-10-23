@@ -26,10 +26,7 @@ export const getServerSideProps = async (context: NextPageContext) => {
 const ConfirmAccount = ({ queryParams }: MyPageProps) => {
     const userId = queryParams.userId;
     const secret = queryParams.secret;
-    console.log(secret);
     useEffect(() => {
-        console.log(typeof secret);
-
         try {
             verfiyAccount(userId, secret);
         } catch (e) {

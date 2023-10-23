@@ -24,8 +24,35 @@ client
 const storage = new Storage(client);
 // Go to OAuth provider login page
 export const googleSignIn = () => {
-    account.createOAuth2Session('google', 'http://localhost:3000/users/candidate/profile', 'http://localhost:3000/account/register');
+    account.createOAuth2Session('google', `${VERIFY}/jobs`, `${VERIFY}/account/`)
 };
+export const googleRegister = async (userRole: string) => {
+    if (userRole == 'candidate') {
+        account.createOAuth2Session('google', `${VERIFY}/jobs`, `${VERIFY}/account/`);
+    }
+    if (userRole == 'employer') {
+        account.createOAuth2Session('google', `${VERIFY}/users/employer`, `${VERIFY}/account/`);
+    }
+    await new Promise<void>((resolve) => {
+        const checkAccount = async () => {
+            const userAccount = await getAccount();
+            if (userAccount !== 'failed') {
+                resolve();
+            } else {
+                setTimeout(checkAccount, 1000); // Check again after 1 second
+            }
+        };
+        checkAccount();
+    });
+
+    // After the OAuth2 session is complete, fetch the user account
+    const userAccount = await getAccount();
+
+    if (userAccount !== 'failed') {
+        defineRole(userAccount.$id, userRole);
+    }
+};
+
 // Jobs page
 export const getAccount = async () => {
     try {
@@ -431,7 +458,7 @@ export const getRole = async (id: string) => {
     const usersRole = await databases.listDocuments(DATABASE_ID, USER_ROLE, [Query.equal('userId', id)]);
     return usersRole;
 };
-export const defineRole = async (id: string, role: string, name: string) => {
+export const defineRole = async (id: string, role: string, name?: string) => {
     const sendRole = {
         userId: id,
         userRole: role

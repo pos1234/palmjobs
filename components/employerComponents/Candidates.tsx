@@ -26,16 +26,53 @@ const Candidates = (props: any) => {
     const [imageUrl, setImageUrl] = useState('');
     const [allLoading, setAllLoading] = useState(false);
     const [searchName, setSearchName] = useState('');
-    const handleJobSelection = async (id: string) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [suggestions, setSuggestions] = useState<any>([]);
+    const [openDrop, setOpenDrop] = useState(false)
+    useEffect(() => {
+        if (props.applicantJobId !== '') {
+            handleJobSelection(props.applicantJobId)
+        }
+    }, [props.applicantJobId])
+    /* const clickMe = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        searchTerm &&
+            !props.array.some((data: any) => data.toLowerCase() === searchTerm.toLowerCase()) &&
+            addSuggestedSkill(searchTerm);
+        setSearchTerm('');
+    }; */
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = event.target.value;
+        setSearchTerm(inputValue);
+        const filteredSuggestions = postedJobs && postedJobs.filter((data: any) => data.jobTitle.toLowerCase().includes(inputValue.toLowerCase()));
+        setSuggestions(filteredSuggestions);
+    };
+    const handleJobSelection = async (id: string, title?: string) => {
+        console.log(id, title);
+
+        setOpenDrop(false)
+        title && setSearchTerm(title)
         const applied = await fetchAppliedCandidatesSingleJob(id);
         /*         applied.then((res) => console.log(res.documents));
-         */ if (applied && applied.documents) {
-            setAppliedCan(applied.documents.length > 0 && applied.documents);
+         */
+        if (applied && applied.total == 0) {
+            setAppliedCan(null)
+            setCandidateDetail(null)
+        }
+        if (applied && applied.total > 0) {
+            setAppliedCan(applied.documents);
         }
         const shortList = await fetchShortListed(id);
-        if (shortList && shortList.documents) {
+        /* if (shortList && shortList.documents) {
             setShortListed(shortList.documents.length > 0 && shortList.documents);
+        } */
+        if (shortList && shortList.total == 0) {
+            setShortListed(null)
         }
+        if (shortList && shortList.total > 0) {
+            setAppliedCan(shortList.documents);
+        }
+
     };
     const handleShortList = async (id: string) => {
         const result = await shortListedCandidate(jobId, id);
@@ -77,6 +114,7 @@ const Candidates = (props: any) => {
     useEffect(() => {
         getPosted();
     }, []);
+
     const handleNav = (text: string) => {
         props.postJob(text);
     };
@@ -108,7 +146,7 @@ const Candidates = (props: any) => {
                 </div>
             </div>
             {allLoading && <JobsShimmer />}
-            {!allLoading && (
+            {!allLoading && postedJobs && postedJobs.length !== 0 && (
                 <div className="max-md:mt-3 lg:pl-10">
                     <div
                         className={
@@ -121,7 +159,7 @@ const Candidates = (props: any) => {
                                 <select
                                     onChange={(e) => {
                                         setJobId(e.currentTarget.value);
-                                        handleJobSelection(e.currentTarget.value);
+                                        handleJobSelection(jobId);
                                     }}
                                     className="border-x-[2px] border-stone-300 w-full sm:max-w-[20rem] focus:border-stone-300 focus:ring-0 bg-stone-50 py-3 border-0 cursor-pointer"
                                 >
@@ -140,23 +178,29 @@ const Candidates = (props: any) => {
                             </div>
                         </div> */}
                         <div className="p-1 flex flex-col max-sm:px-5 md:flex-row gap-2 gap-x-6">
-                           <div className="flex gap-x-5">
+                            <div className="flex gap-x-5">
                                 <div className="bg-stone-50 px-2 grid grid-cols-12 rounded-2xl md:rounded-3xl md:col-span-6 xl:col-span-7">
                                     <div className="hidden col-span-2 text-fadedText items-center justify-center md:col-span-1 md:justify-end md:flex ">
                                         <SearchIcon className="text-[1.7rem]" />
                                     </div>
                                     <div className="col-span-11 sm:col-span-11 md:col-span-10 xl:col-span-9">
-                                        <input className="h-full w-full bg-[#F8F8F8] pl-5 border-none outline-none focus:ring-0 focus:border-none focus:outline-none" />
+                                        <input value={searchTerm}
+                                            onChange={handleInputChange}
+                                            type="text"
+                                            onFocus={() => setOpenDrop(true)}
+                                            className="h-full w-full bg-[#F8F8F8] pl-5 border-none outline-none focus:ring-0 focus:border-none focus:outline-none" />
                                     </div>
                                 </div>
-                                <div
-                                    /*                             onClick={setTheSearchTerm}
-                                     */ className="self-center max-md:py-3 bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-xl text-textW flex items-center justify-center h-14 w-14 md:rounded-2xl md:col-span-1"
+
+
+                                {/* <div
+                                    onClick={setTheSearchTerm}
+                                    className="self-center max-md:py-3 bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-xl text-textW flex items-center justify-center h-14 w-14 md:rounded-2xl md:col-span-1"
                                 >
                                     <SearchIcon className="text-[1.5rem] cursor-pointer md:max-lg:text-[2rem] lg:text-3xl" />
-                                </div>
+                                </div> */}
                             </div>
-                             <select
+                            <select
                                 onChange={(e) => setAllCandidates(e.currentTarget.value)}
                                 className="cursor-pointer border-stone-300 max-w-[20rem] focus:border-0 focus:ring-gradientFirst max-md:h-14 h-16 rounded-2xl"
                             >
@@ -166,7 +210,7 @@ const Candidates = (props: any) => {
                                 {/* <JobTab text="All Candidates" active="true" />
                                 <JobTab text="Best Match" /> */}
                             </select>
-                            
+
                             <p className="flex justify-end flex-grow items-center text-stone-600 text-2xl font-semibold leading-10 hidden xl:flex">
                                 Shortlisted
                             </p>
@@ -176,28 +220,47 @@ const Candidates = (props: any) => {
                         <div
                             className={
                                 allCandidates == 'All Candidates'
-                                    ? 'col-span-12 max-sm:pr-2 order-1 flex flex-col gap-y-4 overflow-y-auto max-h-screen pr-2 md:pr-0 md:col-span-6 xl:col-span-3'
-                                    : 'col-span-12 max-sm:pr-2 hidden flex flex-col gap-y-4 overflow-y-auto max-h-screen pr-2 md:pr-0 md:col-span-6 xl:col-span-3'
+                                    ? 'col-span-12 relative max-sm:pr-2 order-1 flex flex-col gap-y-4 overflow-y-auto max-h-screen pr-2 md:pr-0 md:col-span-6 xl:col-span-3'
+                                    : 'col-span-12 relative max-sm:pr-2 hidden flex flex-col gap-y-4 overflow-y-auto max-h-screen pr-2 md:pr-0 md:col-span-6 xl:col-span-3'
                             }
-                        >
+                        >{searchTerm && openDrop && suggestions.length !== 0 && (
+                            <div className="col-span-12 absolute top-0 pl-3 h-40 border-2 bg-textW z-[1] rounded-sm text-left overflow-auto overflow-x-hidden w-full">
+                                {suggestions &&
+                                    suggestions.map((item: any, index: number) => (
+                                        <p
+                                            className="cursor-pointer my-2 w-60 p-2 hover:bg-skillColor"
+                                            key={item.$id}
+                                            onClick={() => handleJobSelection(item.$id, item.jobTitle)}
+                                        >
+                                            {item.jobTitle}
+                                        </p>
+                                    ))}
+                            </div>
+                        )}
                             {appliedCan &&
                                 appliedCan.map((item: any, index: number) => {
                                     return (
-                                        <CandSmall
-                                            indexValue={jobDetailIndex}
-                                            indexSetter={setJobDetailIndex}
-                                            detailValue={openCanDetail}
-                                            imageLinkSetter={setImageUrl}
-                                            detailSetter={setOpenCanDetail}
-                                            detailHolder={setCandidateDetail}
-                                            key={index}
-                                            index={index}
-                                            canId={item.candidateId}
-                                            jobId={item.jobId}
-                                            handleFunction={handleShortList}
-                                        />
+                                        <div className='relative'>
+
+                                            <CandSmall
+                                                indexValue={jobDetailIndex}
+                                                indexSetter={setJobDetailIndex}
+                                                detailValue={openCanDetail}
+                                                imageLinkSetter={setImageUrl}
+                                                detailSetter={setOpenCanDetail}
+                                                detailHolder={setCandidateDetail}
+                                                key={index}
+                                                index={index}
+                                                canId={item.candidateId}
+                                                jobId={item.jobId}
+                                                handleFunction={handleShortList}
+                                            /> </div>
                                     );
                                 })}
+                            {
+                                !appliedCan && <p>Currently there are no applied applicants.</p>
+                            }
+
                         </div>
                         <p
                             onClick={() => setOpenCanDetail(false)}
@@ -209,7 +272,6 @@ const Candidates = (props: any) => {
                         >
                             Back To Candidate List
                         </p>
-
                         <div
                             className={
                                 openCanDetail == true

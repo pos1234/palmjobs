@@ -6,7 +6,7 @@ import Link from 'next/link';
 import ForgotPassword from '@/components/account/ForgotPassword';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { getAccount, getRole, signIn, signOut } from '@/lib/services';
+import { getAccount, getRole, googleRegister, googleSignIn, signIn, signOut } from '@/lib/services';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
@@ -82,6 +82,17 @@ const Login = () => {
             }
         }
     };
+    const handleGoogleLogin = () => {
+        googleSignIn()
+    }
+    const handleGoogleRegister = () => {
+        if (getJob == true) {
+            googleRegister('candidate')
+        }
+        if (hireTalent == true) {
+            googleRegister('employer')
+        }
+    }
     return (
         <>
             <div className="flex max-md:flex-wrap grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
@@ -207,12 +218,16 @@ const Login = () => {
                     )}
                     {(register == false || registerForm == true) && forgotPassword == false && (
                         <div className="w-full p-2 grid gap-x-2 grid-cols-12 gap-y-4 lg:gap-y-0">
-                            <button className="col-span-12 border-2 rounded-full cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-start-4 sm:col-end-10 md:max-lg:col-span-12">
-                                <p> Sign in with Google</p> <img src={google} alt="google" className="w-[2rem] h-[2rem] inline ml-3" />
-                            </button>
-                            {/* <button className="text-addS text-fadedText col-span-12 border-2 rounded-full cursor-pointer py-[0.93rem] flex justify-evenly items-center sm:col-span-6 md:max-lg:col-span-12">
-                                Sign in with Facebook <img src={facebook} alt="google" className="w-[2rem] h-[2rem] inline ml-3 -mt-1" />
-                            </button> */}
+                            {
+                                registerForm == false && <button type='button' onClick={() => handleGoogleLogin()} className="col-span-12 border-2 rounded-full cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-start-4 sm:col-end-10 md:max-lg:col-span-12">
+                                    <p> Sign in with Google</p> <img src={google} alt="google" className="w-[2rem] h-[2rem] inline ml-3" />
+                                </button>
+                            }
+                            {
+                                registerForm == true && <button type='button' onClick={() => handleGoogleRegister()} className="col-span-12 border-2 rounded-full cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-start-4 sm:col-end-10 md:max-lg:col-span-12">
+                                    <p>Continue with Google</p> <img src={google} alt="google" className="w-[2rem] h-[2rem] inline ml-3" />
+                                </button>
+                            }
                         </div>
                     )}
                     {registerForm && <RegisterComponent name={name} role={getJob ? 'candidate' : 'employer'} />}
