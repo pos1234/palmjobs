@@ -203,8 +203,8 @@ const Jobs = () => {
         setAllLoading(true);
         fetchJobs().then((res) => {
             setData(res.documents);
-            filData && filData.length !== 0 && setJobDetails(res.documents[0]);
-            filData && filData.length !== 0 && setJobDetailId(res.documents[0].$id);
+            res.total !== 0 && setJobDetails(res.documents[0]);
+            res.total !== 0 && setJobDetailId(res.documents[0].$id);
             filData && filData.length == 0 && setJobDetails(null)
             setAllLoading(false);
         });
@@ -261,8 +261,8 @@ const Jobs = () => {
     };
     useEffect(() => {
         data && data.length !== 0 && setJobDetails(data.find((items: any) => items.$id == jobDetailId));
-        filData && filData.length == 0 && setJobDetails(null)
-    }, [jobDetailId]);
+/*         filData && filData.length == 0 && setJobDetails(null)
+ */    }, [jobDetailId]);
     useEffect(() => {
         if (searchQuery == '') {
             setFiltered(data);
@@ -338,38 +338,45 @@ const Jobs = () => {
                                     <div
                                         className={
                                             openJobDetail == true
-                                                ? 'bg-[#F8F8F8] max-md:hidden grid max-h-[4rem] grid-cols-12 rounded-2xl max-lg:w-full md:rounded-3xl'
-                                                : 'grid grid-cols-12 bg-[#F8F8F8] max-h-[4rem] rounded-2xl md:rounded-3xl max-lg:w-full'
+                                                ? 'max-md:hidden grid max-h-[4rem] grid-cols-12 rounded-2xl max-lg:w-full md:rounded-3xl'
+                                                : 'grid grid-cols-12 gap-0 max-h-[4rem] rounded-2xl md:rounded-3xl max-lg:w-full'
                                         }
                                     >
-                                        <div className="col-span-12 w-full px-3 py-2 max-h-[5rem] flex items-center">
-                                            <SearchIcon className="text-[1.3rem] text-stone-400" />
-                                            <input
-                                                name="search text"
-                                                value={searchWord}
-                                                onChange={(e) => {
-                                                    setSearchWord(e.currentTarget.value);
-                                                }}
-                                                className="h-full w-full bg-[#F8F8F8] pl-5 border-none outline-none focus:ring-0 focus:border-none focus:outline-none sm:w-1/2"
-                                                placeholder="What"
-                                            />
-                                            <div className="border-r-1 h-full w-[2px] bg-stone-300 mr-3 max-sm:hidden"></div>
-                                            <PinDropOutlinedIcon className="text-[1.3rem] text-stone-400 max-sm:hidden" />
-                                            <input
-                                                name="search location"
-                                                value={addressHolder}
-                                                onChange={(e) => {
-                                                    setAddressHolder(e.currentTarget.value);
-                                                }}
-                                                className="h-full w-full bg-[#F8F8F8] max-sm:hidden pl-5 border-none outline-none focus:ring-0 focus:border-none focus:outline-none sm:w-1/2"
-                                                placeholder="Where"
-                                            />
-                                            <div
-                                                onClick={() => setOpenfilter(true)}
-                                                className="col-span-1 text-darkBlue flex items-center justify-center md:justify-start xl:pl-5 xl:justify-end xl:col-span-2"
-                                            >
-                                                <TuneIcon className="text-[1.7rem] cursor-pointer" />
+                                        <div className="col-span-12 w-full h-full max-h-[5rem] flex p-0 items-center">
+                                            <div className='relative'>
+                                                <SearchIcon className="text-[1.3rem] text-stone-400 absolute top-[35%] left-2" />
+                                                <input
+                                                    name="search text"
+                                                    value={searchWord}
+                                                    onChange={(e) => {
+                                                        setSearchWord(e.currentTarget.value);
+                                                    }}
+                                                    className="h-full w-full bg-[#F8F8F8] rounded-l-2xl pl-8 px-3 py-5 border-2 border-[#F8F8F8] outline-none focus:ring-gradientFirst focus:border-none focus:outline-none"
+                                                    placeholder="What"
+                                                />
                                             </div>
+                                            <div className='relative border-l-2 border-gradientFirst'>
+                                                <PinDropOutlinedIcon className="text-[1.3rem] text-stone-400 absolute top-[35%] left-3 max-sm:hidden" />
+                                                <input
+                                                    name="search location"
+                                                    value={addressHolder}
+                                                    onChange={(e) => {
+                                                        setAddressHolder(e.currentTarget.value);
+                                                    }}
+                                                    className="h-full w-full bg-[#F8F8F8] max-sm:hidden px-10 py-5 rounded-r-2xl border-2 border-[#F8F8F8] outline-none focus:ring-gradientFirst focus:border-none focus:outline-none"
+                                                    placeholder="Where"
+                                                />
+                                                <div
+                                                    onClick={() => setOpenfilter(true)}
+                                                    className="col-span-1 absolute top-[32%] right-3 text-darkBlue flex items-center justify-center md:justify-start xl:pl-5 xl:justify-end xl:col-span-2"
+                                                >
+                                                    <TuneIcon sx={{fontSize:'1.5rem'}} className="cursor-pointer hover:text-gradientFirst" />
+                                                </div>
+                                            </div>
+                                            {/*  */}
+                                            {/*                                             <div className="border-r-1 h-full w-[2px] bg-stone-300 mr-3 max-sm:hidden"></div>
+ */}
+
                                         </div>
                                     </div>
                                     <div
@@ -822,7 +829,6 @@ const Jobs = () => {
                                                         )}
                                                     </div>
                                                 </div>
-                                                {jobDetails.$id}
                                                 <Share openShare={openShare} setOpenShare={setOpenShare} link={jobDetails.$id} />
                                             </div>
                                         )}

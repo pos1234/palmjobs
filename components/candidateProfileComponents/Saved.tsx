@@ -62,7 +62,6 @@ const SavedJobs = (props: any) => {
                         fetchSavedJobsData(savedJobId)
                             .then((responseData) => {
                                 setSavedJobs(responseData);
-                                // console.log(responseData);
                             })
                             .catch((error) => {
                                 console.error('Error fetching data from Appwrite:', error);

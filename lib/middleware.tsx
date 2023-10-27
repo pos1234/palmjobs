@@ -165,8 +165,6 @@ export const MiddleWare = () => {
     };
 
     const getDatas = async () => {
-        /* const usersRole = await assignRole();
-         console.log(usersRole); */
         setAllLoading(true);
         const userId = await getAccount();
         if (userId !== 'failed') {
@@ -268,13 +266,11 @@ export const MiddleWare = () => {
     const uploadProfilePictures = (file: any) => {
         const resultProfile = createImage(file);
         resultProfile.then((res: any) => {
-            console.log(res);
 
             setProfilePictureId(res.$id);
             const response = updateProfileId(documentId, res.$id);
 
             const { href } = res && getProfilePicture(res.$id);
-            console.log(href);
             href && setImage(href);
         });
         return resultProfile;
@@ -387,8 +383,6 @@ export const MiddleWare = () => {
                 .then((res: any) => {
                     setLoadings(false);
                     setOpenProjectModal(false);
-                    console.log('hey');
-
                     toast.success('Project Added Successfully');
                     const project = JSON.parse(res.projects);
                     setProjectsArray(project);
@@ -593,7 +587,6 @@ export const MiddleWare = () => {
         const updateLink = addAddressPhone(call, locate, documentId);
         updateLink
             .then((res) => {
-                console.log(res);
             })
             .catch((error) => {
                 console.log(error);
@@ -748,8 +741,6 @@ export const MiddleWare = () => {
     };
     const updateResume = (file: any) => {
         const results = deleteResume(resumeId);
-        console.log(resumeId);
-
         const resultResume = uploadResume(file);
         resultResume
             .then((res: any) => {
@@ -777,7 +768,6 @@ export const MiddleWare = () => {
     };
     const updateSupportDoc = (file: any) => {
         const results = deleteSupportDoc(supportDocumentId);
-        console.log(resumeId);
         const resultResume = uploadResume(file);
         resultResume.then((res: any) => {
             setSupportDocumentId(res.$id);
@@ -803,8 +793,7 @@ export const MiddleWare = () => {
         setLocate,
         openProjectModal,
         setOpenProjectModal,
-        /* success,
-        setSuccess, */
+
         loadings,
         setLoadings,
         addSocialLink,

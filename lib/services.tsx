@@ -143,8 +143,6 @@ export const addWebsites = (webLink: string, id: string) => {
     const datas = {
         websiteLink: webLink
     };
-    console.log(id);
-
     return updateDocuments(id, datas);
 };
 export const deleteWebsites = (id: string) => {
@@ -161,8 +159,6 @@ export const addBehance = (webLink: string, id: string) => {
     const datas = {
         behance: webLink
     };
-    console.log(id);
-
     return updateDocuments(id, datas);
 };
 export const deleteBehance = (id: string) => {
@@ -179,8 +175,6 @@ export const addPortfolio = (webLink: string, id: string) => {
     const datas = {
         protfolio: webLink
     };
-    console.log(id);
-
     return updateDocuments(id, datas);
 };
 export const deletePortfolio = (id: string) => {
@@ -221,8 +215,6 @@ export const addEmployee = (employees: string, id: string) => {
     const datas = {
         noOfEmployee: employees
     };
-    console.log(id);
-
     return updateDocuments(id, datas);
 };
 export const deleteEmployee = (id: string) => {
@@ -950,7 +942,6 @@ export const fetchInterview = (empId: string, jobId: string) => {
         Query.equal('jobId', jobId),
         Query.equal('interview', 'true')
     ]);
-    promise.then((res) => console.log(res.documents[0]));
     return promise;
 };
 export const interviewStatus = (id: string, status: string, dates?: string) => {
@@ -1000,6 +991,17 @@ export const getProfileData = async () => {
         userAccount !== 'failed' &&
         (await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userAccount.$id)]));
     return promise;
+};
+export const updateEmailNotification = async (notify: boolean) => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const datas = {
+            receiveEmailNotification: notify
+        };
+        const { documents } = await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userAccount.$id)]);
+        const promise = databases.updateDocument(DATABASE_ID, COMPANY_DATA, documents[0].$id, datas);
+        return promise;
+    }
 };
 export const getCompanyData = (id: string) => {
     const promise = databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', id)]);

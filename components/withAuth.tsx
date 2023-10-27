@@ -16,7 +16,6 @@ export function candidateAuth(WrappedComponent: React.ComponentType<any>) {
             }
             // Check if user is authenticated
             if (loggedIn == 'failed') {
-                console.log('not successfull');
                 router.push('/account');
             }
         };
@@ -38,7 +37,6 @@ export function employeeAuth(WrappedComponent: React.ComponentType<any>) {
             }
             // Check if user is authenticated
             if (loggedIn == 'failed') {
-                console.log('not successfull');
                 router.push('/account');
             }
         };

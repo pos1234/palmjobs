@@ -5,7 +5,7 @@ export const SendJobPostedEmail = (userEmail: string, jobTitle: string, jobLink:
     const templateParams = {
         htmlMessage: `
         <div>
-          <div style="padding: 12px; border-left: 4px solid #FE5E0A; margin-bottom: 2rem">
+          <div style="padding: 12px; border-left: 4px solid #00A82D; margin-bottom: 2rem">
             <p>Greetings from Palm Jobs!</p>
             <p>
               We're excited to let you know that your job listing for the position of ${jobTitle} is now live on our platform. We understand how vital it is to find the right talent, and we're here to make sure that happens.
@@ -17,7 +17,7 @@ export const SendJobPostedEmail = (userEmail: string, jobTitle: string, jobLink:
           </div>
           <div style="display: flex; column-gap: 1rem; flex-wrap: wrap">
             <p>To view or edit your job post.</p>
-            <a href="${jobLink}" style="padding: 1rem; width: 7rem; border-radius: 50px; border: none; color: white; background: #FE5E0A; text-decoration: none; text-align: center">
+            <a href="${jobLink}" style="padding: 1rem; width: 7rem; border-radius: 50px; border: none; color: white; background: #00A82D; text-decoration: none; text-align: center">
               View Job
             </a>
           </div>
@@ -42,7 +42,7 @@ export const SendJobAppliedEmail = (userEmail: string, jobTitle: string, jobLink
     const templateParams = {
         htmlMessage: `
         <div>
-          <div style="padding: 12px; border-left: 4px solid #FE5E0A; margin-bottom: 2rem">
+          <div style="padding: 12px; border-left: 4px solid #00A82D; margin-bottom: 2rem">
             <p>Good day from Palm Jobs!</p>
             <p>
               We're delighted to confirm that your application for the position ${jobTitle} at ${companyName} has been successfully submitted.
@@ -56,7 +56,7 @@ export const SendJobAppliedEmail = (userEmail: string, jobTitle: string, jobLink
             <p>The Palm Jobs Team</p>
             </div>
           <div style="display: flex; column-gap: 1rem; flex-wrap: wrap">
-            <a href="${jobLink}" style="padding: 1rem; width: 7rem; border-radius: 50px; border: none; color: white; background: #FE5E0A; text-decoration: none; text-align: center">
+            <a href="${jobLink}" style="padding: 1rem; width: 7rem; border-radius: 50px; border: none; color: white; background: #00A82D; text-decoration: none; text-align: center">
               Find Jobs
             </a>
           </div>

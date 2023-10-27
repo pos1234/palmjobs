@@ -21,7 +21,8 @@ import {
     unSaveJobs,
     uploadResume,
     downLoadResume,
-    getAccount
+    getAccount,
+    getProfilePicture
 } from '@/lib/services';
 import { toast } from 'react-toastify';
 import { SendJobAppliedEmail } from '../SendEmail';
@@ -56,6 +57,8 @@ const ApplyToJob = (props: any) => {
     const [openNotify, setOpenNotify] = useState(false);
     const [failed, setFailed] = useState(false);
     const [loadingApply, setLoadingApply] = useState(false);
+    const [skillLength, setSkillLength] = useState(0)
+    const [educationLength, setEducationLength] = useState(0)
     const toggleTabs = () => {
         if (fisrt == true) {
             setFirst(false);
@@ -88,6 +91,12 @@ const ApplyToJob = (props: any) => {
             setPhone(res.documents[0].phoneNumber);
             setLinked(res.documents[0].linkedIn);
             setCover(res.documents[0].coverLetter);
+            if (res.documents[0].skills == null || res.documents[0].skills && res.documents[0].skills.length == 0) {
+                setSkillLength(0)
+            }
+            if (res.documents[0].educations == null || res.documents[0].educations && res.documents[0].educations.length == 0) {
+                setEducationLength(0)
+            }
             return res;
         }
     };
@@ -125,11 +134,9 @@ const ApplyToJob = (props: any) => {
     };
     const displayError = (err: any) => {
         setErrorMessage(err);
-        console.log(err);
     };
     const sizeError = (err: any) => {
         setErrorMessage(err);
-        console.log(err);
     };
     useEffect(() => { }, [userData]);
     const apply = async (e: React.FormEvent<HTMLElement>) => {
@@ -175,11 +182,10 @@ const ApplyToJob = (props: any) => {
                 });
         }
     };
-    /* const handleSendEmail = () => {
-        getAccount().then((res: any) => {
-            res && SendJobAppliedEmail(res.email, 'Angular Developer', `${VERIFY}jobs/`, res.name, 'nylos');
-        });
-    }; */
+    const projectImage = (id: string) => {
+        const { href } = getProfilePicture(id);
+        return href;
+    };
     return (
         <>
             {!failed && (
@@ -231,7 +237,7 @@ const ApplyToJob = (props: any) => {
                                      */
                                 }}
                                 type="button"
-                                className="text-textW bg-gradient-to-r  from-gradientFirst to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
+                                className="text-textW bg-gradient-to-r flex justify-center items-center from-gradientFirst to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
                             >
                                 Explore Jobs
                             </Link>
@@ -245,7 +251,7 @@ const ApplyToJob = (props: any) => {
                             <div className="col-span-12 grid grid-cols-12 ">
                                 <div className="col-span-12 grid grid-cols-12 mb-5">
                                     <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                        <BusinessCenterIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                                        <BusinessCenterIcon sx={{ marginRight: '0.5rem' }} className='text-gradientFirst' />
                                         Apply
                                     </p>
                                 </div>
@@ -356,7 +362,7 @@ const ApplyToJob = (props: any) => {
                                 <div className={third ? 'col-span-12 pt-5 mb-5 md:mb-10 lg:mb-5' : 'hidden'}>
                                     <p className="col-span-12 text-black text-3xl font-semibold leading-10">Cover Letter</p>
                                     <p className="text-neutral-400 text-sm font-light mb-5">
-                                        Describe the responsibilities of this job, required work experience, skills, or education.
+                                        Write a cover letter describing your skill and education.
                                     </p>
                                     <ReactQuill
                                         className="h-28 text-addS"
@@ -445,8 +451,11 @@ const ApplyToJob = (props: any) => {
                                     <div className="col-span-12 md:col-span-5 xl:col-span-6 pt-5">
                                         <p className="text-black text-3xl font-semibold leading-10 ">Contact info</p>
                                         <div className="flex gap-x-2 md:max-xl:flex-col pt-3">
-                                            <img className="w-24 h-24 rounded-2xl" src={profile} />
-                                            <div className="flex flex-col gap-0.5">
+                                            {userData.profilePictureId && (
+                                                <img src={projectImage(userData.profilePictureId)} className="w-24 h-24 rounded-2xl" />
+                                            )}
+                                            {/*                                             <img className="w-24 h-24 rounded-2xl" src={profile} />
+ */}                                            <div className="flex flex-col gap-0.5">
                                                 <div className="text-neutral-900 text-xl font-medium leading-7">{newName}</div>
                                                 <div className="text-stone-300 text-lg font-normal leading-relaxed">
                                                     {userData.bioHeadline}
@@ -490,15 +499,15 @@ const ApplyToJob = (props: any) => {
                                 >
                                     Discard
                                 </button>
-                                {!fourth && (
+                                {!fourth && !(second == true && (skillLength == 0 || educationLength == 0) && !fileName) ?
                                     <button
                                         onClick={toggleTabs}
                                         type="button"
                                         className="text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
                                     >
                                         Continue
-                                    </button>
-                                )}
+                                    </button> : null
+                                }
 
                                 {fourth && (
                                     <>

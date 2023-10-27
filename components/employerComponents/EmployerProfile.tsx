@@ -52,13 +52,11 @@ const EmployerProfile = (props: any) => {
             const allowedExtensions = ['.jpg', '.jpeg', '.png'];
             const filteredFiles = fileList.filter((file: any) => {
                 if (file.size > maxSize) {
-                    console.log(`File ${file.name} exceeds the maximum size limit.`);
                     setProfileError('File size must be <1 mb');
                     return false;
                 }
                 const fileExtension = `.${file.name.split('.').pop()}`;
                 if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
-                    console.log(`File ${file.name} has an invalid extension.`);
                     setProfileError('Invalid file extenstion');
                     return false;
                 }

@@ -115,8 +115,6 @@ const PJobs = (props: any) => {
         )
             .then((res) => {
                 setLoading(false);
-                console.log(res);
-
                 toast.success('Successfully Updated Job');
                 setOpenJobEdit(false);
             })

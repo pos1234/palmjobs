@@ -93,7 +93,6 @@ const PJobs = (props: any) => {
         const formattedDate = `${year}-${month}-${day}`;
         const today = new Date().toISOString().split('T')[0];
         if (today <= formattedDate) {
-            console.log('Today is before the deadline.');
             updateJobStatus(props.jobId, e.currentTarget.value)
                 .then((res) => {
                     toast.success('Status Updated Successfully');

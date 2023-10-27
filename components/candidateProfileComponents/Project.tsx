@@ -30,11 +30,9 @@ const Project = () => {
     };
     const displayError = (err: any) => {
         setErrorMessage(err);
-        console.log(err);
     };
     const sizeError = (err: any) => {
         setErrorMessage(err);
-        console.log(err);
     };
     const {
         projectIndex,

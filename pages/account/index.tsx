@@ -12,7 +12,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
 import RegisterComponent from '@/components/account/Register';
 import Slider from '@/components/Slider';
-
 const Login = () => {
     const router = useRouter();
     const logo = '/images/logo.svg';

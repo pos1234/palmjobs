@@ -152,7 +152,7 @@ const PostAJob = (props: any) => {
     const [postingJobId, setPostingJobId] = useState('');
     const [noDraft, setNoDraft] = useState(false);
     const [noJobs, setNoJobs] = useState(false);
-
+    const [emailNotify, setEmailNotify] = useState('')
     const initialData = () => {
         const result = getProfileData();
         if (result) {
@@ -339,7 +339,6 @@ const PostAJob = (props: any) => {
                     postFirstTab(jobTitle, /* category, */ openPositions.toString(), location)
                         .then((res: any) => {
                             setPostingJobId(res.$id);
-                            console.log(res);
                             setLoading(false);
                             toast.success('Saved as Draft');
                             setFourth(false);
@@ -424,13 +423,13 @@ const PostAJob = (props: any) => {
             setLinkError('please provide link');
         } else {
             setLoading(true);
-
             postFourthTab(postingJobId, deadline, '', emailSent, validateLink(externalLink))
                 .then((res: any) => {
                     setLoading(false);
                     toast.success('Job posted successfully');
                     getAccount().then((result: any) => {
-                        result && SendJobPostedEmail(result.email, jobTitle, `${VERIFY}/jobs/${res.$id}`, result.name);
+
+                        result && emailNotify !== 'false' && SendJobPostedEmail(result.email, jobTitle, `${VERIFY}/jobs/${res.$id}`, result.name);
                     });
                     router.push(`/jobs/${res.$id}`);
                 })
@@ -511,8 +510,6 @@ const PostAJob = (props: any) => {
     const getDrafted = async () => {
         const posted = await fetchDraftedJobs();
         if (posted && posted.documents) {
-            console.log(posted);
-
             posted && setPostedJobs(posted.documents);
             posted && setJobId(posted.documents[0] && posted.documents[0].$id);
         }
@@ -528,6 +525,13 @@ const PostAJob = (props: any) => {
                 ) {
                     setProfileFilled(true);
                     setCompName(res.documents[0].companyName);
+                    if (res.documents[0].receiveEmailNotification !== false) {
+                        setEmailNotify('true')
+                    }
+                    if (res.documents[0].receiveEmailNotification == false) {
+                        setEmailNotify('false')
+
+                    }
                 }
             }
         });
@@ -662,34 +666,6 @@ const PostAJob = (props: any) => {
                 <div className="text-neutral-900  font-semibold leading-10 text-xl md:text-3xl">Provide Basic Information</div>
                 <RequiredTextLabel text="Job Title" />
                 <TextInput errorMessage={jobTitleError} placeHolder="Job Position" value={jobTitle} setFunction={setJobTitle} />
-                {/*                 <RequiredTextLabel text="Job Category" />
- */}
-                {/* <select
-                    value={category}
-                    style={{ maxHeight: '200px' }}
-                    onChange={(e) => setCategory(e.currentTarget.value)}
-                    className="h-12 max-h-[10px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96"
-                >
-                    <option value="Agriculture">Agriculture</option>
-                    <option value="Construction">Construction</option>
-                    <option value="Education">Education</option>
-                    <option value="Energy">Energy</option>
-                    <option value="Finance & Insurance">Finance & Insurance</option>
-                    <option value="HealthCare">HealthCare</option>
-                    <option value="Hospital and Tourism">Hospital and Tourism</option>
-                    <option value="Information Technology">Information Technology</option>
-                    <option value="Manufacturing">Manufacturing</option>
-                    <option value="Mining">Mining</option>
-                    <option value="Public Administration">Public Administration</option>
-                    <option value="Real State">Real State</option>
-                    <option value="Transportation & Logisitics">Transportation & Logisitics</option>
-                    <option value="Wholesale Trade">Wholesale Trade</option>
-                    <option value="Creative & Media">Creative & Media</option>
-                    <option value="Automative">Automative</option>
-                    <option value="Pharmaceuticals">Pharmaceuticals</option>
-                    <option value="Telecommunications">Telecommunications</option>
-                    <option value="Food & Beverage">Food & Beverage</option>
-                </select> */}
                 <RequiredTextLabel text="How many open roles ?" />
                 <div className="flex gap-x-5 items-center mt-3">
                     <div

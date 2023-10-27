@@ -48,13 +48,9 @@ const Candidates = (props: any) => {
         setSuggestions(filteredSuggestions);
     };
     const handleJobSelection = async (id: string, title?: string) => {
-        console.log(id, title);
-
         setOpenDrop(false)
         title && setSearchTerm(title)
         const applied = await fetchAppliedCandidatesSingleJob(id);
-        /*         applied.then((res) => console.log(res.documents));
-         */
         if (applied && applied.total == 0) {
             setAppliedCan(null)
             setCandidateDetail(null)
