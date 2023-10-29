@@ -134,7 +134,7 @@ const AdminJob = () => {
         <>
             <div className="flex justify-between items-center pr-5 md:pr-0 md:flex md:pl-5 md:pt-5">
                 <Link href="/">
-                    <img src={logo} alt="palmjobs logo" className=" h-20" />
+                    <img src={logo} alt="palmjobs logo" className="h-20 md:hidden" />
                 </Link>
                 <div
                     onClick={() => {
@@ -147,210 +147,217 @@ const AdminJob = () => {
                     <div className={styles['bar']}></div>
                 </div>
             </div>
-            <div className="grid grid-cols-12 gap-x-5 bg-forBack">
-                <div
-                    className={
-                        menu
-                            ? 'fixed top-0 h-screen overflow-auto flex flex-col w-full z-40 bg-textW gap-y-2 col-span-12 pt-16 h-screen px-20 flex-col md:min-h-screen md:px-0 md:col-span-3 xl:col-span-2'
-                            : 'hidden md:relative md:flex md:flex-col bg-textW md:gap-y-2 md:pt-16 md:min-h-screen md:col-span-3 xl:col-span-2'
-                    }
-                >
+            <div className="grid grid-cols-12 gap-x-5 bg-forBack relative">
+                <div className=' md:fixed bg-textW md:w-3/12 xl:w-2/12'>
+                    <Link href="/">
+                        <img src={logo} alt="palmjobs logo" className=" h-20 max-md:hidden" />
+                    </Link>
                     <div
-                        onClick={() => setMenu(!menu)}
-                        className="absolute top-0 right-0 flex items-center md:hidden justify-end pb-4 pr-2 cursor-pointer"
-                    >
-                        <CloseOutlinedIcon className="text-[3rem]" />
-                    </div>
-                    <div className="flex flex-col items-center gap-y-3 mb-5 md:hidden">
-                        {userDetail && userDetail.profilePictureId && (
-                            <img className="w-28 h-28 self-center" src={getHref(userDetail.profilePictureId)} alt="profile" />
-                        )}
-                        {userDetail && (
-                            <div className="text-neutral-900 text-lg font-normal leading-normal">
-                                {userDetail.companyName && userDetail.companyName}
-                            </div>
-                        )}
-                    </div>
-                    <div
-                        onClick={() => {
-                            handleNavigation('postJob');
-                            setMenu(false);
-                        }}
                         className={
-                            postJob
-                                ? 'flex pl-5 items-center bg-skillColor py-3 gap-x-4 text-gradientFirst cursor-pointer w-full lg:pl-10'
-                                : 'flex pl-5 text-stone-400 items-center group py-3 gap-x-4 cursor-pointer w-full hover:bg-skillColor hover:text-gradientFirst lg:pl-10'
+                            menu
+                                ? 'fixed top-0 h-screen overflow-auto flex flex-col w-screen z-40 bg-textW gap-y-2 col-span-12 pt-16 px-20 flex-col md:min-h-screen md:px-0 md:col-span-3 xl:col-span-2'
+                                : 'hidden md:relative md:flex md:flex-col bg-textW md:gap-y-2 md:pt-16 md:min-h-screen md:col-span-3 xl:col-span-2'
                         }
                     >
                         <div
+                            onClick={() => setMenu(!menu)}
+                            className="absolute top-0 right-0 flex items-center md:hidden justify-end pb-4 pr-2 cursor-pointer"
+                        >
+                            <CloseOutlinedIcon className="text-[3rem]" />
+                        </div>
+                        <div className="flex flex-col items-center gap-y-3 mb-5 md:hidden">
+                            {userDetail && userDetail.profilePictureId && (
+                                <img className="w-28 h-28 self-center" src={getHref(userDetail.profilePictureId)} alt="profile" />
+                            )}
+                            {userDetail && (
+                                <div className="text-neutral-900 text-lg font-normal leading-normal">
+                                    {userDetail.companyName && userDetail.companyName}
+                                </div>
+                            )}
+                        </div>
+                        <div
+                            onClick={() => {
+                                handleNavigation('postJob');
+                                setMenu(false);
+                            }}
                             className={
                                 postJob
-                                    ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW rounded-md border-0'
-                                    : 'group-hover:bg-gradient-to-r group-hover:from-gradientFirst group-hover:to-gradientSecond bg-stone-400 text-textW rounded-md border-0 '
+                                    ? 'flex pl-5 items-center bg-skillColor py-3 gap-x-4 text-gradientFirst cursor-pointer w-full lg:pl-10'
+                                    : 'flex pl-5 text-stone-400 items-center group py-3 gap-x-4 cursor-pointer w-full hover:bg-skillColor hover:text-gradientFirst lg:pl-10'
                             }
                         >
-                            <AddIcon />
+                            <div
+                                className={
+                                    postJob
+                                        ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW rounded-md border-0'
+                                        : 'group-hover:bg-gradient-to-r group-hover:from-gradientFirst group-hover:to-gradientSecond bg-stone-400 text-textW rounded-md border-0 '
+                                }
+                            >
+                                <AddIcon />
+                            </div>
+                            <p className=" text-xl font-medium leading-loose">Post Job</p>
                         </div>
-                        <p className=" text-xl font-medium leading-loose">Post Job</p>
+                        <div
+                            onClick={() => {
+                                handleNavigation('dashboard');
+                                setMenu(false);
+                            }}
+                            className={
+                                dashboard
+                                    ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
+                                    : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            }
+                        >
+                            <div className=" rounded-md border-0">
+                                <AssessmentIcon sx={{ fontSize: '1.9rem' }} />
+                            </div>
+                            <p className="text-xl font-medium leading-loose">Analytics</p>
+                        </div>
+                        <div
+                            onClick={() => {
+                                handleNavigation('jobs');
+                                setMenu(false);
+                            }}
+                            className={
+                                jobs
+                                    ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
+                                    : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            }
+                        >
+                            <div className=" rounded-md border-0">
+                                <BusinessCenterIcon sx={{ fontSize: '1.9rem' }} />
+                            </div>
+                            <p className="text-xl font-medium leading-loose">Jobs</p>
+                        </div>
+                        <div
+                            onClick={() => {
+                                handleNavigation('candidates');
+                                setMenu(false);
+                            }}
+                            className={
+                                candidates
+                                    ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
+                                    : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            }
+                        >
+                            <div className=" rounded-md border-0">
+                                <PeopleIcon sx={{ fontSize: '1.9rem' }} />
+                            </div>
+                            <p className="text-xl font-medium leading-loose">Applicants</p>
+                        </div>
+                        <div
+                            onClick={() => {
+                                handleNavigation('profileSetting');
+                                setMenu(false);
+                            }}
+                            className={
+                                profileSetting
+                                    ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
+                                    : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            }
+                        >
+                            <div className=" rounded-md border-0">
+                                <SettingsSuggestIcon sx={{ fontSize: '1.9rem' }} />
+                            </div>
+                            <p className="text-xl font-medium leading-loose">Profile</p>
+                        </div>
+                        <div
+                            onClick={() => {
+                                handleNavigation('privacy');
+                                setMenu(false);
+                            }}
+                            className={
+                                privacy
+                                    ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
+                                    : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            }
+                        >
+                            <div className=" rounded-md border-0">
+                                <ShieldIcon sx={{ fontSize: '1.9rem' }} />
+                            </div>
+                            <p className="text-xl font-medium leading-loose">Security</p>
+                        </div>
+                        <div
+                            onClick={() => {
+                                setOpenLogout(!openLogout);
+                                setMenu(false);
+                            }}
+                            className="left-0 flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer  lg:pl-9"
+                        >
+                            <div className=" rounded-md border-0">
+                                <LogoutIcon sx={{ fontSize: '1.9rem' }} />
+                            </div>
+                            <p className="text-xl font-medium leading-loose">Logout</p>
+                        </div>
                     </div>
+                </div>
+                <div className='col-span-12 md:col-start-4 xl:col-start-3 md:col-end-13'>
                     <div
-                        onClick={() => {
-                            handleNavigation('dashboard');
-                            setMenu(false);
-                        }}
                         className={
-                            dashboard
-                                ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            view && postJob
+                                ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : postJob
+                                    ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32 employerBack'
+                                    : 'hidden'
                         }
                     >
-                        <div className=" rounded-md border-0">
-                            <AssessmentIcon sx={{ fontSize: '1.9rem' }} />
-                        </div>
-                        <p className="text-xl font-medium leading-loose">Analytics</p>
+                        <PostAJob editedJobId={editedJobId} />
                     </div>
                     <div
-                        onClick={() => {
-                            handleNavigation('jobs');
-                            setMenu(false);
-                        }}
                         className={
-                            jobs
-                                ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            view && dashboard
+                                ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : dashboard
+                                    ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                    : 'hidden'
                         }
                     >
-                        <div className=" rounded-md border-0">
-                            <BusinessCenterIcon sx={{ fontSize: '1.9rem' }} />
-                        </div>
-                        <p className="text-xl font-medium leading-loose">Jobs</p>
+                        <Dashboard changeFunction={handleNavigation} />
                     </div>
                     <div
-                        onClick={() => {
-                            handleNavigation('candidates');
-                            setMenu(false);
-                        }}
                         className={
-                            candidates
-                                ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            view && jobs
+                                ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : jobs
+                                    ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                    : 'hidden'
                         }
                     >
-                        <div className=" rounded-md border-0">
-                            <PeopleIcon sx={{ fontSize: '1.9rem' }} />
-                        </div>
-                        <p className="text-xl font-medium leading-loose">Applicants</p>
+                        <Jobs postJob={handleNavigation} setEditedJobId={setEditedJobId} applicants={setApplicant} />
                     </div>
                     <div
-                        onClick={() => {
-                            handleNavigation('profileSetting');
-                            setMenu(false);
-                        }}
                         className={
-                            profileSetting
-                                ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            view && candidates
+                                ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : candidates
+                                    ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                    : 'hidden'
                         }
                     >
-                        <div className=" rounded-md border-0">
-                            <SettingsSuggestIcon sx={{ fontSize: '1.9rem' }} />
-                        </div>
-                        <p className="text-xl font-medium leading-loose">Profile</p>
+                        <Candidates postJob={handleNavigation} applicantJobId={applicants} />
                     </div>
                     <div
-                        onClick={() => {
-                            handleNavigation('privacy');
-                            setMenu(false);
-                        }}
                         className={
-                            privacy
-                                ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            view && profileSetting
+                                ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : profileSetting
+                                    ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                    : 'hidden'
                         }
                     >
-                        <div className=" rounded-md border-0">
-                            <ShieldIcon sx={{ fontSize: '1.9rem' }} />
-                        </div>
-                        <p className="text-xl font-medium leading-loose">Security</p>
+                        <EmployerProfile />
                     </div>
                     <div
-                        onClick={() => {
-                            setOpenLogout(!openLogout);
-                            setMenu(false);
-                        }}
-                        className="left-0 flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer  lg:pl-9"
+                        className={
+                            view && privacy
+                                ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                : privacy
+                                    ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
+                                    : 'hidden'
+                        }
                     >
-                        <div className=" rounded-md border-0">
-                            <LogoutIcon sx={{ fontSize: '1.9rem' }} />
-                        </div>
-                        <p className="text-xl font-medium leading-loose">Logout</p>
+                        <Privacy />
                     </div>
-                </div>
-                <div
-                    className={
-                        view && postJob
-                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : postJob
-                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32 employerBack'
-                                : 'hidden'
-                    }
-                >
-                    <PostAJob editedJobId={editedJobId} />
-                </div>
-                <div
-                    className={
-                        view && dashboard
-                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : dashboard
-                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                                : 'hidden'
-                    }
-                >
-                    <Dashboard changeFunction={handleNavigation} />
-                </div>
-                <div
-                    className={
-                        view && jobs
-                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : jobs
-                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                                : 'hidden'
-                    }
-                >
-                    <Jobs postJob={handleNavigation} setEditedJobId={setEditedJobId} applicants={setApplicant} />
-                </div>
-                <div
-                    className={
-                        view && candidates
-                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : candidates
-                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                                : 'hidden'
-                    }
-                >
-                    <Candidates postJob={handleNavigation} applicantJobId={applicants} />
-                </div>
-                <div
-                    className={
-                        view && profileSetting
-                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : profileSetting
-                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                                : 'hidden'
-                    }
-                >
-                    <EmployerProfile />
-                </div>
-                <div
-                    className={
-                        view && privacy
-                            ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                            : privacy
-                                ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
-                                : 'hidden'
-                    }
-                >
-                    <Privacy />
                 </div>
             </div>
             <ConfirmModal isOpen={openLogout} handleClose={() => setOpenLogout(!openLogout)}>
