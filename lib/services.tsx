@@ -24,8 +24,35 @@ client
 const storage = new Storage(client);
 // Go to OAuth provider login page
 export const googleSignIn = () => {
-    account.createOAuth2Session('google', 'http://localhost:3000/users/candidate/profile', 'http://localhost:3000/account/register');
+    account.createOAuth2Session('google', `${VERIFY}/jobs`, `${VERIFY}/account/`)
 };
+export const googleRegister = async (userRole: string) => {
+    if (userRole == 'candidate') {
+        account.createOAuth2Session('google', `${VERIFY}/jobs`, `${VERIFY}/account/`);
+    }
+    if (userRole == 'employer') {
+        account.createOAuth2Session('google', `${VERIFY}/users/employer`, `${VERIFY}/account/`);
+    }
+    await new Promise<void>((resolve) => {
+        const checkAccount = async () => {
+            const userAccount = await getAccount();
+            if (userAccount !== 'failed') {
+                resolve();
+            } else {
+                setTimeout(checkAccount, 1000); // Check again after 1 second
+            }
+        };
+        checkAccount();
+    });
+
+    // After the OAuth2 session is complete, fetch the user account
+    const userAccount = await getAccount();
+
+    if (userAccount !== 'failed') {
+        defineRole(userAccount.$id, userRole);
+    }
+};
+
 // Jobs page
 export const getAccount = async () => {
     try {
@@ -116,8 +143,6 @@ export const addWebsites = (webLink: string, id: string) => {
     const datas = {
         websiteLink: webLink
     };
-    console.log(id);
-
     return updateDocuments(id, datas);
 };
 export const deleteWebsites = (id: string) => {
@@ -134,8 +159,6 @@ export const addBehance = (webLink: string, id: string) => {
     const datas = {
         behance: webLink
     };
-    console.log(id);
-
     return updateDocuments(id, datas);
 };
 export const deleteBehance = (id: string) => {
@@ -152,8 +175,6 @@ export const addPortfolio = (webLink: string, id: string) => {
     const datas = {
         protfolio: webLink
     };
-    console.log(id);
-
     return updateDocuments(id, datas);
 };
 export const deletePortfolio = (id: string) => {
@@ -166,11 +187,12 @@ export const deletePortfolio = (id: string) => {
         console.log(e);
     }
 };
-export const insertCoverLetter = (id: string, cover: any) => {
+export const insertCoverLetter = async (id: string, cover: any) => {
     const datas = {
         coverLetter: cover
     };
-    updateDocuments(id, datas);
+    const promise = await updateDocuments(id, datas);
+    return promise;
 };
 export const addSector = (sectors: string, id: string) => {
     const datas = {
@@ -193,8 +215,6 @@ export const addEmployee = (employees: string, id: string) => {
     const datas = {
         noOfEmployee: employees
     };
-    console.log(id);
-
     return updateDocuments(id, datas);
 };
 export const deleteEmployee = (id: string) => {
@@ -277,7 +297,8 @@ export const fetchJobs = async () => {
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
         Query.limit(100),
         Query.offset(0),
-        Query.equal('jobStatus', 'Active')
+        Query.equal('jobStatus', 'Active'),
+        Query.orderAsc('datePosted')
     ]);
     return promise;
 };
@@ -345,9 +366,12 @@ export const fetchAppliedJobsData = async (ids: string) => {
     const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, ids);
     return response;
 };
+export const getNoApplicants = async (id: string) => {
+    const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('jobId', id)]);
+    return results;
+};
 export const getAppliedJobId = async (id: string) => {
     try {
-        const userAccount = await account.get();
         const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('jobId', id)]);
         return results;
     } catch (e) {
@@ -426,14 +450,15 @@ export const getRole = async (id: string) => {
     const usersRole = await databases.listDocuments(DATABASE_ID, USER_ROLE, [Query.equal('userId', id)]);
     return usersRole;
 };
-export const defineRole = async (id: string, role: string) => {
+export const defineRole = async (id: string, role: string, name?: string) => {
     const sendRole = {
         userId: id,
         userRole: role
     };
     if (role == 'candidate') {
         const createId = await databases.createDocument(DATABASE_ID, CANDIDATE_DATA, ID.unique(), {
-            Id: id
+            Id: id,
+            name
         });
     }
     if (role == 'employer') {
@@ -641,14 +666,14 @@ export const updateEducation = async (education: string, id: string) => {
 };
 
 //EMPLOYER
-export const postFirstTab = async (title: string, category: string, openRoles: string, location: string) => {
+export const postFirstTab = async (title: string, /* category: string, */ openRoles: string, location: string) => {
     const userAccount = await getAccount();
     const stat = 'Draft';
     if (userAccount !== 'failed') {
         const promise = databases.createDocument(DATABASE_ID, POSTED_JOBS, ID.unique(), {
             jobTitle: title,
-            jobIndustry: category,
-            openPositions: openRoles,
+/*             jobIndustry: category,
+ */            openPositions: openRoles,
             jobLocation: location,
             jobStatus: stat,
             employerId: userAccount.$id
@@ -658,13 +683,13 @@ export const postFirstTab = async (title: string, category: string, openRoles: s
         return promise;
     }
 };
-export const updateFirstTab = async (title: string, category: string, openRoles: string, location: string, id: string) => {
+export const updateFirstTab = async (title: string, /* category: string, */ openRoles: string, location: string, id: string) => {
     const userAccount = await getAccount();
     if (userAccount !== 'failed') {
         const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
             jobTitle: title,
-            jobIndustry: category,
-            openPositions: openRoles,
+/*             jobIndustry: category,
+ */            openPositions: openRoles,
             jobLocation: location
         });
         return promise;
@@ -795,31 +820,23 @@ export const fetchSinglePostedJobs = (id: string) => {
 export const updateJobs = (
     id: string,
     title: string,
-    /*     category: string,
-     */ openRoles: string,
+    openRoles: string,
     location: string,
     jobType: string,
-    /*     reqExp: string,
-     */ /*     skills: string,
-     */ salary: string,
+    minSalary: string,
+    maxSalary: string,
     deadline: string,
-    /*     education: string
-     */ jobDes: string
+    jobDes: string
 ) => {
-    /*     databases.updateDocument('[DATABASE_ID]', '[COLLECTION_ID]', '[DOCUMENT_ID]');
-     */ const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
+    const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, id, {
         jobTitle: title,
-        /*         jobIndustry: category,
-         */ openPositions: openRoles,
+        openPositions: openRoles,
         jobLocation: location,
-        jobType: jobType,
-        /*         expreienceLevel: reqExp,
-         */ /*         requiredSkills: skills,
-         */ salaryRange: salary,
+        jobType,
+        minSalary,
+        maxSalary,
         applicationDeadline: deadline,
         jobDescription: jobDes
-        /*         educationLevel: education
-         */
     });
     return promise;
 };
@@ -925,7 +942,6 @@ export const fetchInterview = (empId: string, jobId: string) => {
         Query.equal('jobId', jobId),
         Query.equal('interview', 'true')
     ]);
-    promise.then((res) => console.log(res.documents[0]));
     return promise;
 };
 export const interviewStatus = (id: string, status: string, dates?: string) => {
@@ -975,6 +991,17 @@ export const getProfileData = async () => {
         userAccount !== 'failed' &&
         (await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userAccount.$id)]));
     return promise;
+};
+export const updateEmailNotification = async (notify: boolean) => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const datas = {
+            receiveEmailNotification: notify
+        };
+        const { documents } = await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userAccount.$id)]);
+        const promise = databases.updateDocument(DATABASE_ID, COMPANY_DATA, documents[0].$id, datas);
+        return promise;
+    }
 };
 export const getCompanyData = (id: string) => {
     const promise = databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', id)]);

@@ -17,15 +17,15 @@ const TextInput = (props: any) => {
             placeholder={props.placeHolder}
             value={props.value}
             onChange={(e) => props.setFunction(e.currentTarget.value)}
-            className="w-96 h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0"
+            className=" h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 w-full md:w-96"
         />
     );
 };
 const RequiredTextLabel = (props: any) => {
     return (
         <div>
-            <span className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose md:text-xl">{props.text} </span>
-            <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 text-2xl font-medium leading-loose'}>*</span>
+            <span className="text-neutral-900 text-opacity-70 text-md font-medium sm:leading-loose md:text-xl">{props.text} </span>
+            <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 text-2xl font-medium sm:leading-loose'}>*</span>
         </div>
     );
 };
@@ -42,6 +42,7 @@ const EmployerProfile = (props: any) => {
     const [profileError, setProfileError] = useState('');
     const [webLink, setWebLink] = useState('');
     const [loading, setLoading] = useState(false);
+    const [profileLoading, setProfileLoading] = useState(false);
     const { file, image, deleteProfilePicture, updateProfilePictures, uploadProfilePictures } = MiddleWare();
 
     const imageUploadChecker = (functionName: any, uploadedFile: any) => {
@@ -51,27 +52,30 @@ const EmployerProfile = (props: any) => {
             const allowedExtensions = ['.jpg', '.jpeg', '.png'];
             const filteredFiles = fileList.filter((file: any) => {
                 if (file.size > maxSize) {
-                    console.log(`File ${file.name} exceeds the maximum size limit.`);
                     setProfileError('File size must be <1 mb');
                     return false;
                 }
                 const fileExtension = `.${file.name.split('.').pop()}`;
                 if (!allowedExtensions.includes(fileExtension.toLowerCase())) {
-                    console.log(`File ${file.name} has an invalid extension.`);
                     setProfileError('Invalid file extenstion');
                     return false;
                 }
                 setProfileError(' ');
-                return functionName(uploadedFile && uploadedFile[0]);
+                functionName(uploadedFile && uploadedFile[0]).then(() => {
+                    setProfileLoading(false);
+                });
             });
+            return filteredFiles;
         }
     };
     const updatePic = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
+        setProfileLoading(true);
         imageUploadChecker(updateProfilePictures, e.currentTarget.files);
     };
     const uploadPic = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
+        setProfileLoading(true);
         imageUploadChecker(uploadProfilePictures, e.currentTarget.files);
     };
     const initialData = async () => {
@@ -118,7 +122,9 @@ const EmployerProfile = (props: any) => {
     };
     useEffect(() => {
         initialData();
-        getUserData().then((res: any) => setUserName(res.name));
+        getUserData().then((res: any) => {
+            res && res.name && setUserName(res.name);
+        });
     }, []);
     const handleProfile = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
@@ -139,53 +145,71 @@ const EmployerProfile = (props: any) => {
             });
     };
     return (
-        <form className="pt-5 pl-10 pb-10 bg-textW  xl:pr-28 xl:px-20" onSubmit={handleProfile}>
+        <form className="pt-5  pb-10 bg-textW px-2 sm:pl-10 xl:pr-28 xl:px-20" onSubmit={handleProfile}>
             <div className="col-span-12 pt-5 space-y-3 mb-3">
                 <div className="col-span-12 relative md:col-span-4 xl:col-span-4">
                     <div className="profilePictureContainer w-28 h-28 col-span-2 rounded-3xl cursor-pointer">
                         {image ? (
                             <>
-                                <img src={image} className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer" />
-                                <DeleteIcon
-                                    onClick={deleteProfilePicture}
-                                    sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                    className="w-7 h-7 p-1.5 mr-0 absolute right-0 top-0 -mr-[0.7rem] mt-3 cursor-pointer"
-                                />
-                                <div className="uploadProfile">
-                                    <label htmlFor="photo-upload" className="custom-file-upload">
-                                        <div className="img-wrap img-upload">
-                                            <CameraAltOutlinedIcon className="text-black" />
+                                {!profileLoading && (
+                                    <>
+                                        <img src={image} className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer" />
+                                        <DeleteIcon
+                                            onClick={deleteProfilePicture}
+                                            sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
+                                            className="w-7 h-7 p-1.5 mr-0 absolute right-0 top-0 -mr-[0.7rem] mt-3 cursor-pointer"
+                                        />
+                                        <div className="uploadProfile">
+                                            <label htmlFor="photo-upload" className="custom-file-upload">
+                                                <div className="img-wrap img-upload">
+                                                    <CameraAltOutlinedIcon className="text-black" />
+                                                </div>
+                                                <input id="photo-upload" type="file" value={file} onChange={updatePic} />
+                                            </label>
                                         </div>
-                                        <input id="photo-upload" type="file" value={file} onChange={updatePic} />
-                                    </label>
-                                </div>
+                                    </>
+                                )}
+                                {profileLoading && (
+                                    <div className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer">
+                                        <img src={loadingIn} className="flex items-center justify-centerh-16 w-1/2" />
+                                    </div>
+                                )}
                             </>
                         ) : (
                             <>
-                                <p className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex text-center justify-center text-[5rem] font-frhW">
-                                    {companyName.charAt(0)}
-                                </p>
-                                <div className="uploadProfile">
-                                    <label htmlFor="photo-upload" className="custom-file-upload">
-                                        <div className="img-wrap img-upload">
-                                            <CameraAltOutlinedIcon className="text-textW" />
+                                {!profileLoading && (
+                                    <>
+                                        <p className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex text-center justify-center text-[5rem] font-frhW">
+                                            {companyName && companyName.charAt(0)}
+                                        </p>
+                                        <div className="uploadProfile">
+                                            <label htmlFor="photo-upload" className="custom-file-upload">
+                                                <div className="img-wrap img-upload">
+                                                    <CameraAltOutlinedIcon className="text-textW" />
+                                                </div>
+                                                <input id="photo-upload" type="file" onChange={uploadPic} />
+                                            </label>
                                         </div>
-                                        <input id="photo-upload" type="file" onChange={uploadPic} />
-                                    </label>
-                                </div>
+                                    </>
+                                )}
+                                {profileLoading && (
+                                    <div className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer">
+                                        <img src={loadingIn} className="flex items-center justify-centerh-16 w-1/2" />
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>
                     {profileError && <p className="text-gradientFirst pt-3 pl-2 text-[12px]">{profileError}</p>}
                 </div>
-                <div className="text-neutral-900 text-3xl font-semibold leading-10">Create employer account</div>
+                <div className="text-neutral-900  font-semibold text-2xl leading-10 md:text-3xl">Create employer account</div>
                 <RequiredTextLabel text="Your Company Name?" />
                 <TextInput placeHolder="company name" value={companyName} setFunction={setCompanyName} />
                 <RequiredTextLabel text="Your Name?" />
                 <TextInput placeHolder="your name" value={userName} setFunction={setUserName} />
                 <RequiredTextLabel text="Your Company's Industry?" />
                 <select
-                    className="w-96 h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 cursor-pointer"
+                    className=" h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 cursor-pointer w-full md:w-96"
                     value={industry}
                     onChange={(e) => {
                         setIndustry(e.currentTarget.value);
@@ -214,7 +238,7 @@ const EmployerProfile = (props: any) => {
                 <RequiredTextLabel text="Your Company's number of employee?" />
                 <input
                     type="number"
-                    className="w-96 h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 hideIncrease"
+                    className=" h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 hideIncrease w-full md:w-96"
                     value={noEmployee}
                     onChange={(e) => setNoEmployee(e.currentTarget.value)}
                 />
@@ -238,7 +262,7 @@ const EmployerProfile = (props: any) => {
                 {!loading && (
                     <button
                         type="submit"
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16  rounded-full w-7/12 md:w-5/12 lg:w-3/12"
                     >
                         Save
                     </button>
@@ -246,7 +270,7 @@ const EmployerProfile = (props: any) => {
                 {loading && (
                     <img
                         src={loadingIn}
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-full lg:w-3/12"
+                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-7/12 md:w-5/12 lg:w-3/12"
                     />
                 )}
             </div>

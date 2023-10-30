@@ -1,44 +1,31 @@
-import { updatePassword } from '@/lib/services';
-import { useState } from 'react';
-import { NextPageContext } from 'next/types';
+import { changePassword } from '@/lib/services';
+import React, { useState } from 'react';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { toast } from 'react-toastify';
-import Slider from '@/components/Slider';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-interface myQueryParams {
-    userId: string;
-    secret: string;
-}
-interface MyPageProps {
-    queryParams: myQueryParams;
-}
-export const getServerSideProps = async (context: NextPageContext) => {
-    const { query } = context;
-    const queryParams = {
-        userId: query.userId as string,
-        secret: query.secret as string
-    };
-    return {
-        props: {
-            queryParams
-        }
-    };
+const RequiredTextLabel = (props: any) => {
+    return (
+        <div>
+            <span className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose md:text-xl">{props.text} </span>
+            <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 text-2xl font-medium leading-loose'}>*</span>
+        </div>
+    );
 };
-const sendReset = ({ queryParams }: MyPageProps) => {
-    const router = useRouter();
+const ChangePassword = () => {
     const loadingIn = '/images/loading.svg';
-    const logo = '/images/logo.svg';
+    const [oldPassword, setOldPassword] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfrimPassword] = useState('');
-    const [hide, setHide] = useState(true);
-    const [visible, setVisible] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [passwordError, setPasswordError] = useState('');
+    const [oldPasswordError, setOldPasswordError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [visibleOld, setVisibleOld] = useState(false);
     const handleReset = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-        if (password == '') {
+        if (oldPassword == '') {
+            setOldPasswordError('Please provide old password');
+        } else if (password == '') {
             setPasswordError('Please Enter Password');
         } else if (password.length < 8) {
             setPasswordError('Password must be more than 8 charachters');
@@ -48,15 +35,15 @@ const sendReset = ({ queryParams }: MyPageProps) => {
             setPasswordError('Password does not match');
         } else {
             setLoading(true);
-            const userId = queryParams.userId.toString();
-            const secret = queryParams.secret.toString();
-            updatePassword(userId, secret, password)
+            changePassword(password, oldPassword)
                 .then((res) => {
                     toast.success('Password Updated Successfully');
                     setLoading(false);
                     setPassword('');
                     setConfrimPassword('');
-                    router.push('/account/')
+                    setOldPassword('');
+                    setOldPasswordError('');
+                    setPasswordError('');
                 })
                 .catch((error) => {
                     setLoading(false);
@@ -65,39 +52,32 @@ const sendReset = ({ queryParams }: MyPageProps) => {
                 });
         }
     };
-    /*  const changeHide = () => {
-        setHide(!hide);
-    }; */
     return (
-        /*  <form onSubmit={handleReset}>
-            <input
-                type={hide ? 'password' : 'text'}
-                onChange={(e: React.FormEvent<HTMLInputElement>) => setPassword(e.currentTarget.value)}
-            />
-            <input
-                type={hide ? 'password' : 'text'}
-                onChange={(e: React.FormEvent<HTMLInputElement>) => setConfrimPassword(e.currentTarget.value)}
-            />
-            <button type="submit">update password</button>
-            <button onClick={changeHide}>{hide ? 'unhide' : 'hide'}</button>
-        </form> */
-        <div className="grid grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
-            <div className="col-span-12 md:col-span-6 order-2 md:order-1 flex items-center bg-skillColor rounded-tr-[5.75rem] rounded-br-[5.75rem] ">
-                <div className="loginCoursel w-full  lg:pt-[15%] flex item-center justify-center md:h-[45%] lg:h-[75%] xl:h-[80%]">
-                    <Slider />
-                </div>
-            </div>
+        <div className="pt-5 pb-10 bg-textW grid grid-cols-12 max-sm:px-5 sm:pl-10 xl:pr-28 xl:px-20">
             <form
                 onSubmit={handleReset}
-                className="col-span-12  order-1 md:order-2 flex flex-col gap-y-5 md:px-5 lg:px-10 xl:px-20 md:col-span-6 employerBack"
+                className="col-span-12  order-1 md:order-2 flex flex-col gap-y-2 md:px-5 lg:px-10 xl:px-20 md:col-span-6 xl:col-span-9"
             >
-                <div className="flex justify-center mt-20 sm:mt-28">
-                    <Link href="/">
-                        <img src={logo} className=" w-[15rem]" />
-                    </Link>
+                <p className="col-span-12 font-frhW  text-[#0E121D] text-[1.5rem] xl:text-frhS">Change your password</p>
+                <RequiredTextLabel text="Old Password" />
+                <div className="col-span-12 flex">
+                    <input
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.currentTarget.value)}
+                        type={visibleOld ? 'text' : 'password'}
+                        placeholder="Enter password"
+                        className={
+                            oldPasswordError
+                                ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
+                                : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                        }
+                    />
+                    <span onClick={() => setVisibleOld(!visibleOld)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
+                        {visibleOld ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    </span>
                 </div>
-                <p className="col-span-12 font-frhW text-frhS text-center text-[#0E121D]">Reset your password</p>
-                <p className="col-span-12 float-left font-thW text-smS mt-5 mb-0 leading-shL">New Password</p>
+                {oldPasswordError && <p className="col-span-12 pt-3 text-[13px] text-red-500 text-left">{oldPasswordError}</p>}
+                <RequiredTextLabel text="New Password" />
                 <div className="col-span-12 flex">
                     <input
                         value={password}
@@ -139,7 +119,7 @@ const sendReset = ({ queryParams }: MyPageProps) => {
                             type="submit"
                             className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full"
                         >
-                            Continue
+                            Reset
                         </button>
                     )}
                 </div>
@@ -147,4 +127,5 @@ const sendReset = ({ queryParams }: MyPageProps) => {
         </div>
     );
 };
-export default sendReset;
+
+export default ChangePassword;

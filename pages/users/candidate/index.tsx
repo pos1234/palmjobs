@@ -10,8 +10,6 @@ import Applied from '@/components/candidateProfileComponents/Applied';
 const CandidateJobs = () => {
     const [saved, setSaved] = useState(true);
     const [applied, setApplied] = useState(false);
-    const [archive, setArchive] = useState(false);
-    const profile = '/images/profile.svg';
     return (
         <div className="px-3 md:px-16">
             <Navigation />
@@ -30,7 +28,6 @@ const CandidateJobs = () => {
                         onClick={() => {
                             setSaved(true);
                             setApplied(false);
-                            setArchive(false);
                         }}
                     >
                         Saved
@@ -44,7 +41,6 @@ const CandidateJobs = () => {
                         onClick={() => {
                             setSaved(false);
                             setApplied(true);
-                            setArchive(false);
                         }}
                     >
                         Applied

@@ -165,8 +165,6 @@ export const MiddleWare = () => {
     };
 
     const getDatas = async () => {
-        /* const usersRole = await assignRole();
-         console.log(usersRole); */
         setAllLoading(true);
         const userId = await getAccount();
         if (userId !== 'failed') {
@@ -257,23 +255,28 @@ export const MiddleWare = () => {
         updateSkills(newArray, documentId);
     };
     const handleCoverLetter = () => {
-        insertCoverLetter(documentId, coverLetter);
+        insertCoverLetter(documentId, coverLetter)
+            .then((res) => {
+                toast.success('Successfully updated Cover Letter');
+            })
+            .catch((error) => {
+                toast.error('Cover Letter Not Updated');
+            });
     };
     const uploadProfilePictures = (file: any) => {
         const resultProfile = createImage(file);
         resultProfile.then((res: any) => {
-            console.log(res);
 
             setProfilePictureId(res.$id);
             const response = updateProfileId(documentId, res.$id);
 
             const { href } = res && getProfilePicture(res.$id);
-            console.log(href);
             href && setImage(href);
         });
+        return resultProfile;
     };
-    const updateProfilePictures = (file: any) => {
-        const results = deleteProfileImage(profilePictureId);
+    const updateProfilePictures = async (file: any) => {
+        const results = await deleteProfileImage(profilePictureId);
         const resultProfile = createImage(file);
         resultProfile.then((res: any) => {
             setProfilePictureId(res.$id);
@@ -281,6 +284,7 @@ export const MiddleWare = () => {
             const { href } = res && getProfilePicture(res.$id);
             href && setImage(href);
         });
+        return resultProfile;
     };
 
     const deleteProfilePicture = () => {
@@ -379,8 +383,6 @@ export const MiddleWare = () => {
                 .then((res: any) => {
                     setLoadings(false);
                     setOpenProjectModal(false);
-                    console.log('hey');
-
                     toast.success('Project Added Successfully');
                     const project = JSON.parse(res.projects);
                     setProjectsArray(project);
@@ -585,17 +587,15 @@ export const MiddleWare = () => {
         const updateLink = addAddressPhone(call, locate, documentId);
         updateLink
             .then((res) => {
-                console.log(res);
             })
             .catch((error) => {
                 console.log(error);
             });
     };
-    const addSocialLink = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        setLoadings(true);
+    const addSocialLink = (/* e: React.FormEvent<HTMLElement> */) => {
+        /*         e.preventDefault();
+         */ setLoadings(true);
         const updateLink = addSocials(linked, githubLink, behan, portfolio, documentId);
-
         updateLink
             .then((res) => {
                 setLoadings(false);
@@ -741,8 +741,6 @@ export const MiddleWare = () => {
     };
     const updateResume = (file: any) => {
         const results = deleteResume(resumeId);
-        console.log(resumeId);
-
         const resultResume = uploadResume(file);
         resultResume
             .then((res: any) => {
@@ -770,7 +768,6 @@ export const MiddleWare = () => {
     };
     const updateSupportDoc = (file: any) => {
         const results = deleteSupportDoc(supportDocumentId);
-        console.log(resumeId);
         const resultResume = uploadResume(file);
         resultResume.then((res: any) => {
             setSupportDocumentId(res.$id);
@@ -789,14 +786,14 @@ export const MiddleWare = () => {
         }
     }; */
     return {
+        documentId,
         allLoading,
         addPhoneAddress,
         locate,
         setLocate,
         openProjectModal,
         setOpenProjectModal,
-        /* success,
-        setSuccess, */
+
         loadings,
         setLoadings,
         addSocialLink,
