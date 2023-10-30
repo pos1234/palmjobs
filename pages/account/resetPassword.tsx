@@ -56,7 +56,7 @@ const sendReset = ({ queryParams }: MyPageProps) => {
                     setLoading(false);
                     setPassword('');
                     setConfrimPassword('');
-                    router.push('/account/')
+                    typeof window !== 'undefined' &&  router.push('/account/')
                 })
                 .catch((error) => {
                     setLoading(false);

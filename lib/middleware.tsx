@@ -536,7 +536,7 @@ export const MiddleWare = () => {
         setEditName(false);
         const updatedName = updateUserName(editedName);
         updatedName.then((res) => {
-            router.reload();
+            typeof window !== 'undefined' && router.reload();
         });
     };
     const addBehan = (e: React.FormEvent<HTMLElement>) => {
@@ -545,7 +545,7 @@ export const MiddleWare = () => {
         const updateLink = addBehance(behan, documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const deleteBehan = (e: React.FormEvent<HTMLElement>) => {
@@ -554,7 +554,7 @@ export const MiddleWare = () => {
         const updateLink = deleteBehance(documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const addPortf = (e: React.FormEvent<HTMLElement>) => {
@@ -563,7 +563,7 @@ export const MiddleWare = () => {
         const updateLink = addPortfolio(portf, documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const deletePortf = (e: React.FormEvent<HTMLElement>) => {
@@ -572,7 +572,7 @@ export const MiddleWare = () => {
         const updateLink = deletePortfolio(documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const addLinkedIn = (e: React.FormEvent<HTMLElement>) => {
@@ -580,7 +580,7 @@ export const MiddleWare = () => {
         const updateLink = addLinkedInLink(linked, documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const addPhoneAddress = () => {
@@ -612,7 +612,7 @@ export const MiddleWare = () => {
         const updateLink = deleteLinkedInLink(documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const addNewSector = (e: React.FormEvent<HTMLElement>) => {
@@ -621,7 +621,7 @@ export const MiddleWare = () => {
         const updateLink = addSector(sector, documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const deleteNewSector = (e: React.FormEvent<HTMLElement>) => {
@@ -630,7 +630,7 @@ export const MiddleWare = () => {
         const updateLink = deleteSector(documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const addNEmployee = (e: React.FormEvent<HTMLElement>) => {
@@ -638,7 +638,7 @@ export const MiddleWare = () => {
         const updateLink = addEmployee(nEmployee, documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const deleteNemployee = (e: React.FormEvent<HTMLElement>) => {
@@ -646,7 +646,7 @@ export const MiddleWare = () => {
         const updateLink = deleteEmployee(documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const addAddress = (e: React.FormEvent<HTMLElement>) => {
@@ -655,7 +655,7 @@ export const MiddleWare = () => {
         const updateLink = addLocation(address, documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const deleteAddress = (e: React.FormEvent<HTMLElement>) => {
@@ -664,7 +664,7 @@ export const MiddleWare = () => {
         const updateLink = deleteLocation(documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const addWeb = (e: React.FormEvent<HTMLElement>) => {
@@ -673,7 +673,7 @@ export const MiddleWare = () => {
         const updateLink = addWebsites(website, documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const deleteWeb = (e: React.FormEvent<HTMLElement>) => {
@@ -682,7 +682,7 @@ export const MiddleWare = () => {
         const updateLink = deleteWebsites(documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const addPhone = (e: React.FormEvent<HTMLElement>) => {
@@ -691,7 +691,7 @@ export const MiddleWare = () => {
         const updateLink = addPhoneNumber(call, documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const deletePhone = (e: React.FormEvent<HTMLElement>) => {
@@ -700,7 +700,7 @@ export const MiddleWare = () => {
         const updateLink = deletePhoneNumber(documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const addGithub = (e: React.FormEvent<HTMLElement>) => {
@@ -708,7 +708,7 @@ export const MiddleWare = () => {
         const updateLink = addGithubLink(githubLink, documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
 
@@ -717,7 +717,7 @@ export const MiddleWare = () => {
         const updateLink = deleteGithubLink(documentId);
         updateLink &&
             updateLink.then((res) => {
-                router.reload();
+                typeof window !== 'undefined' && router.reload();
             });
     };
     const addResume = (file: any) => {

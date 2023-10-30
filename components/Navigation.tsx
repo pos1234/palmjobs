@@ -9,7 +9,7 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import ConfirmModal from './ConfirmModal';
-import { useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/router';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { toast } from 'react-toastify';
 const Navigation = (props: any) => {
@@ -59,8 +59,8 @@ const Navigation = (props: any) => {
             setLogLoading(false);
             toast.success('Successfully Logged Out');
             setOpenLogout(false);
-            router.push('/');
-            router.reload();
+            typeof window !== 'undefined' && router.push('/');
+            typeof window !== 'undefined' && router.reload();
         });
     };
     useEffect(() => {

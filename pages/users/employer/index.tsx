@@ -109,8 +109,8 @@ const AdminJob = () => {
             setLogLoading(false);
             toast.success('Successfully Logged Out');
             setOpenLogout(false);
-            router.push('/');
-            router.reload();
+            typeof window !== 'undefined' &&  router.push('/');
+            typeof window !== 'undefined' && router.reload();
         });
     };
     const getUserData = async () => {

@@ -56,14 +56,14 @@ const Login = () => {
                     if (loggedIn !== 'failed') {
                         const role = await getRole(loggedIn.$id);
                         if (role.documents[0].userRole == 'candidate') {
-                            router.push('/users/candidate/profile');
+                            typeof window !== 'undefined' &&  router.push('/users/candidate/profile');
                         }
                         if (role.documents[0].userRole == 'employer') {
-                            router.push('/users/employer');
+                            typeof window !== 'undefined' &&  router.push('/users/employer');
                         }
                     }
                     if (loggedIn == 'failed') {
-                        router.push('/account');
+                        typeof window !== 'undefined' && router.push('/account');
                     }
                     /* const role = getRole();
                     role.then((rep) => {

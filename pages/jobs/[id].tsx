@@ -49,7 +49,7 @@ const singleJob = () => {
     const [jobTitle, setJobTitle] = useState('');
     const [accountId, setAccountId] = useState('')
     const handleSearch = () => {
-        router.push({
+        typeof window !== 'undefined' &&  router.push({
             pathname: '/jobs',
             query: { param1: searchText, param2: address }
         });
@@ -101,7 +101,7 @@ const singleJob = () => {
             }
         }
         if (accountInfo == 'failed') {
-            router.push('/account');
+            typeof window !== 'undefined' &&  router.push('/account');
         }
     };
     const handleEmailApply = (email: string) => {

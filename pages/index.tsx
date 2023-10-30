@@ -29,7 +29,7 @@ const Home = () => {
         setCategory(!category);
     };
     const handleSearch = () => {
-        router.push({
+        typeof window !== 'undefined' &&  router.push({
             pathname: '/jobs',
             query: { param1: searchText, param2: address }
         });

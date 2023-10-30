@@ -11,12 +11,12 @@ export function candidateAuth(WrappedComponent: React.ComponentType<any>) {
                 const role = await getRole(loggedIn.$id);
                 if (role.documents[0].userRole !== 'candidate') {
                     signOut();
-                    router.push('/account');
+                    typeof window !== 'undefined' &&  router.push('/account');
                 }
             }
             // Check if user is authenticated
             if (loggedIn == 'failed') {
-                router.push('/account');
+                typeof window !== 'undefined' && router.push('/account');
             }
         };
         checkAuth();
@@ -32,12 +32,12 @@ export function employeeAuth(WrappedComponent: React.ComponentType<any>) {
                 const role = await getRole(loggedIn.$id);
                 if (role.documents[0].userRole !== 'employer') {
                     signOut();
-                    router.push('/account');
+                    typeof window !== 'undefined' &&  router.push('/account');
                 }
             }
             // Check if user is authenticated
             if (loggedIn == 'failed') {
-                router.push('/account');
+                typeof window !== 'undefined' && router.push('/account');
             }
         };
 

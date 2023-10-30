@@ -431,7 +431,7 @@ const PostAJob = (props: any) => {
 
                         result && emailNotify !== 'false' && SendJobPostedEmail(result.email, jobTitle, `${VERIFY}/jobs/${res.$id}`, result.name);
                     });
-                    router.push(`/jobs/${res.$id}`);
+                    typeof window !== 'undefined' && router.push(`/jobs/${res.$id}`);
                 })
                 .catch((error) => {
                     setLoading(false);

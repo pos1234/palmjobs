@@ -193,7 +193,7 @@ const Jobs = () => {
     const currentData = filData && filData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const [checked, setChecked] = useState(false);
     const setTheSearchTerm = () => {
-        router.push({
+        typeof window !== 'undefined' &&  router.push({
             query: { param1: searchWord, param2: addressHolder }
         });
         setSearchQuery(searchWord);
@@ -284,7 +284,7 @@ const Jobs = () => {
             }
         }
         if (accountInfo == 'failed') {
-            router.push('/account');
+            typeof window !== 'undefined' &&  router.push('/account');
         }
     };
     const handleSaveJob = async (id: string) => {
@@ -304,7 +304,7 @@ const Jobs = () => {
             }
         }
         if (accountInfo == 'failed') {
-            router.push('/account');
+            typeof window !== 'undefined' &&  router.push('/account');
         }
     };
     const handleEmailApply = (email: string) => {
@@ -319,7 +319,7 @@ const Jobs = () => {
     const createCandidateAccount = () => {
         signOut()
             .then(() => {
-                router.push('/account');
+                typeof window !== 'undefined' &&   router.push('/account');
             })
             .catch((error) => {
                 console.log(error);
