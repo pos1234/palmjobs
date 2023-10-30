@@ -11,7 +11,7 @@ import Education from './CertificateEducationComponent/Education';
 const CertificateDetails = (props: any) => {
     return (
         <div
-            key={props.key}
+            /* key={props.keys} */
             className="col-span-12  grid grid-cols-12 bg-lightGreen rounded-2xl p-5 sm:max-md:col-span-6 md:max-lg:col-span-4 lg:col-span-11"
         >
             <div className="col-span-2">
@@ -21,8 +21,8 @@ const CertificateDetails = (props: any) => {
                 <p className="font-dfvW text-dfvS leading-dfvL">{props.certificateName}</p>
                 <p className="font-fhW text-fhS leading-fhL text-lightGrey">{props.givenBy}</p>
                 <p className="text-smRs mt-2">
-                    <CalendarTodayIcon sx={{ fontSize: '0.8rem', marginTop: '-0.3rem' }} />{' '}
-                    <span className="text-fadedText">{props.givenDate}</span>
+                    <CalendarTodayIcon sx={{ fontSize: '0.8rem', marginTop: '-0.3rem' }} />
+                    <span className="text-stone-700 ml-2">{props.givenDate}</span>
                 </p>
             </div>
         </div>
@@ -67,7 +67,7 @@ const Certificate = () => {
                 <div className="grid grid-cols-12 ">
                     <div className="col-span-7 lg:col-span-8">
                         <p className=" font-fhW text-fhS leading-fhL pl-1">
-                            <WorkspacePremiumIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                            <WorkspacePremiumIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                             Certificates
                         </p>
                     </div>
@@ -83,12 +83,7 @@ const Certificate = () => {
                     <div className="col-span-12 grid grid-cols-12 mt-6 sm:max-md:gap-x-3 md:max-lg:gap-x-2 gap-y-4">
                         {certificateArray &&
                             certificateArray.map((item, index) => (
-                                <CertificateDetails
-                                    key={item.index}
-                                    certificateName={item.name}
-                                    givenBy={item.issuedBy}
-                                    givenDate={item.year}
-                                />
+                                <CertificateDetails key={index} certificateName={item.name} givenBy={item.issuedBy} givenDate={item.year} />
                             ))}
                     </div>
 
@@ -112,7 +107,7 @@ const Certificate = () => {
                         <div className="col-span-12 grid grid-cols-12 mt-5 sm:gap-y-5 xl:gap-y-2">
                             <div className="col-span-12 grid grid-cols-12 ">
                                 <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                    <WorkspacePremiumIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                                    <WorkspacePremiumIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                                     Certificates
                                     <span className="float-right text-smS text-fadedText">
                                         {certificateArray.length} / {maximumCertificates}
@@ -139,7 +134,7 @@ const Certificate = () => {
                                             setEditedCertificate({ ...editedCertificate, name: e.currentTarget.value })
                                         }
                                         placeholder="Add Certificate Name"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2">
@@ -151,7 +146,7 @@ const Certificate = () => {
                                             setEditedCertificate({ ...editedCertificate, issuedBy: e.currentTarget.value })
                                         }
                                         placeholder="Certificate Issued By"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
@@ -165,7 +160,7 @@ const Certificate = () => {
                                                 setEditedCertificate({ ...editedCertificate, year: selectedDate });
                                         }}
                                         placeholder="Year Issued"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
                                         max={new Date().toISOString().split('T')[0]}
                                     />
                                 </div>
@@ -193,7 +188,7 @@ const Certificate = () => {
                                     !editOneCertificate &&
                                     certificateArray.map((item, index) => (
                                         <div
-                                            key={item.index}
+                                            key={index}
                                             className="col-span-12 grid grid-cols-12 border-2 rounded-2xl p-5 sm:max-md:col-span-6 lg:col-span-6"
                                         >
                                             <div className="col-span-2">
@@ -261,7 +256,7 @@ const Certificate = () => {
                                                 setCertificateData({ ...certificateData, name: e.currentTarget.value })
                                             }
                                             placeholder="Add Certificate Name"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-7 pr-2 md:pl-2">
@@ -273,7 +268,7 @@ const Certificate = () => {
                                                 setCertificateData({ ...certificateData, issuedBy: e.currentTarget.value })
                                             }
                                             placeholder="Certificate Issued By"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
@@ -287,7 +282,7 @@ const Certificate = () => {
                                                     setCertificateData({ ...certificateData, year: selectedDate });
                                             }}
                                             placeholder="Year Issued"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
                                             max={new Date().toISOString().split('T')[0]}
                                         />
                                     </div>

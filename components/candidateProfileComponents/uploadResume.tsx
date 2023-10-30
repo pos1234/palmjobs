@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MiddleWare } from '@/lib/middleware';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { getResumeName } from '@/lib/services';
@@ -26,11 +26,9 @@ const FileUploadForm = (props: any) => {
     };
     const displayError = (err: any) => {
         setErrorMessage(err);
-        console.log(err);
     };
     const sizeError = (err: any) => {
         setErrorMessage(err);
-        console.log(err);
     };
     return (
         <>
@@ -57,9 +55,9 @@ const FileUploadForm = (props: any) => {
                     <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
                         PDF, DOCX or DOC, file size no more than 1MB
                     </div>
-                    <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-orange-300 border-opacity-25 justify-start items-center flex  text-center">
+                    <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
                         <div className="cursor-pointer absolute z-0 top-3 w-full">
-                            <div className="text-orange-600 text-xs font-normal uppercase">Replace</div>
+                            <div className="text-gradientFirst text-xs font-normal uppercase">Replace</div>
                         </div>
                     </div>
                     {errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}
@@ -87,9 +85,9 @@ const FileUploadForm = (props: any) => {
                     <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
                         PDF, DOCX or DOC, file size no more than 1MB
                     </div>
-                    <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-orange-300 border-opacity-25 justify-start items-center flex  text-center">
+                    <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
                         <div className="cursor-pointer absolute z-0 top-3 w-full">
-                            <div className="text-orange-600 text-xs font-normal uppercase">Select file</div>
+                            <div className="text-gradientFirst text-xs font-normal uppercase">Select file</div>
                         </div>
                     </div>
                     {errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}

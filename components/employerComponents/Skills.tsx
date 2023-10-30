@@ -8,9 +8,7 @@ import skillsData from '@/lib/skillData';
 interface Data {
     word: string;
 }
-const Skills = () => {
-    const [array, setArray] = useState<any>([]);
-
+const Skills = (props: any) => {
     const [inputSkill, setInputSkill] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<Data[]>([]);
@@ -19,9 +17,9 @@ const Skills = () => {
     const clickMe = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setInputSkill(false);
-        array.length <= skillsMaxCharacters &&
+        props.array.length <= skillsMaxCharacters &&
             searchTerm &&
-            !array.some((data: any) => data.toLowerCase() === searchTerm.toLowerCase())  &&
+            !props.array.some((data: any) => data.toLowerCase() === searchTerm.toLowerCase()) &&
             addSuggestedSkill(searchTerm);
         setSearchTerm('');
     };
@@ -32,15 +30,15 @@ const Skills = () => {
         setSuggestions([]);
     };
     const addSuggestedSkill = async (suggesteSkill: string) => {
-        if (!array.includes(suggesteSkill)) array.push(suggesteSkill);
+        if (!props.array.includes(suggesteSkill)) props.array.push(suggesteSkill);
     };
     const deleteSkill = (index: number) => {
-        const newArray = array.filter((item: any, i: number) => i !== index);
-        setArray(newArray);
+        const newArray = props.array.filter((item: any, i: number) => i !== index);
+        props.setArray(newArray);
     };
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
-        if (array.length <= skillsMaxCharacters) setSearchTerm(inputValue);
+        if (props.array.length <= skillsMaxCharacters) setSearchTerm(inputValue);
         const filteredSuggestions = items.filter((data) => data.word.toLowerCase().includes(inputValue.toLowerCase()));
         setSuggestions(filteredSuggestions);
     };
@@ -48,7 +46,7 @@ const Skills = () => {
     return (
         <div className="col-span-12 grid grid-cols-12 bg-textW rounded-3xl">
             <div className="col-span-12 flex flex-wrap gap-5">
-                {array.map((item: any, index: number) => (
+                {props.array.map((item: any, index: number) => (
                     <div
                         className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-[3.75rem]"
                         key={index}
@@ -59,20 +57,17 @@ const Skills = () => {
                         </p>
                     </div>
                 ))}
-                {array.length < 6 && (
-                    <form
-                        onSubmit={clickMe}
-                        className="min-w-[9rem] h-12 font-midRW text-midRS leading-midRL bg-skillColor text-center grid grid-cols-12 rounded-[3.75rem]"
-                    >
+                {props.array.length < 7 && (
+                    <div className="min-w-[9rem] h-12 font-midRW text-midRS leading-midRL bg-skillColor text-center grid grid-cols-12 rounded-[3.75rem]">
                         <div className="col-span-12 min-w-[9rem] h-12 font-midRW text-midRS leading-midRL text-center grid grid-cols-12 rounded-[3.75rem]">
                             <input
                                 value={searchTerm}
                                 onChange={handleInputChange}
                                 type="text"
-                                className="w-[80%] pl-2 my-auto ml-[10%] col-span-10 border-[1px] border-gradientFirst focus:outline-none"
+                                className="w-[80%] h-8 pl-2 my-auto ml-[10%] col-span-10 border-[1px] rounded-full focus:border-gradientFirst focus:ring-0 focus:outline-none"
                             />
 
-                            <button type="submit" className="col-span-2 text-gradientFirst">
+                            <button onClick={clickMe} className="col-span-2 text-gradientFirst">
                                 <AddIcon />
                             </button>
                         </div>
@@ -90,7 +85,7 @@ const Skills = () => {
                                     ))}
                             </div>
                         )}
-                    </form>
+                    </div>
                 )}
             </div>
         </div>

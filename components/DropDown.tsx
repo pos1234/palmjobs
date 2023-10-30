@@ -5,7 +5,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 const DropDown = (props: any) => {
     return (
-        <div className="col-span-6 focus:ring-red-500  md:col-span-4 z-[1] rounded-full">
+        <div className="col-span-6 focus:ring-red-500  md:col-span-4 z-10 rounded-full">
             <Listbox value={props.selectedElement} onChange={props.setSelectedElement}>
                 <div
                     className={

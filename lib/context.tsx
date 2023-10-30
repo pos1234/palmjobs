@@ -37,12 +37,12 @@ export const UserProvider = ({ children }: { children: any }) => {
                 // Check if user is logged in
 
                 // Fetch user data
-                const { $id } = await account.get();
+               /*  const { $id } = await account.get();
                 if ($id) {
                     const { documents } = await databases.listDocuments(DATABASE_ID, USER_ROLE, [Query.equal('userId', $id)]);
                     setUser($id);
                     setRole(documents[0].userRole);
-                }
+                } */
                 // setRole('candidate');
 
                 /* const userRole = returnRole($id)

@@ -20,22 +20,21 @@ const ElementWithIcon = (props: any) => {
     const toggleDescription = () => {
         setIsOpen(!isOpen);
     };
-
     return (
         <>
-            <div className="grid grid-cols-12 pb-5 cursor-pointer md:mb-5 sm:max-md:gap-x-2 " onClick={toggleDescription} key={props.key}>
+            <div className="grid grid-cols-12 pb-5 cursor-pointer md:mb-5 sm:max-md:gap-x-2 " onClick={toggleDescription}>
                 <div className="col-span-12 pb-3 border-b-2 mr-2 max-lg:ml-1 grid grid-cols-12 lg:mr-1 lg:ml-7">
                     <div className="col-span-2 sm:col-span-1 md:col-span-1 lg:col-span-1">
                         <div className="w-14 h-14 bg-skillColor flex items-center justify-center rounded-[1rem]">
                             <BusinessCenterOutlinedIcon
                                 sx={{
-                                    color: '#FE5E0A',
+                                    color: '#00A82D',
                                     height: '1.5rem'
                                 }}
                             />
                         </div>
                     </div>
-                    <div className="col-span-8 grid grid-cols-12 sm:col-span-10 sm:max-lg:pl-4 md:col-span-10 lg:pl-5">
+                    <div className="col-span-8 grid grid-cols-12 pl-2 sm:col-span-10 sm:max-lg:pl-4 md:col-span-10 lg:pl-5">
                         <p className="col-span-12 text-fhS font-fhW leading-fhL flex items-center md:text-shS md:font-smRW">
                             {props.title}
                         </p>
@@ -127,7 +126,7 @@ const WorkHitory = () => {
         <div className="col-span-12 rounded-3xl bg-textW grid grid-cols-12 py-8 md:pr-5 lg:col-span-8">
             <div className="col-span-6">
                 <p className="font-fhW text-fhS leading-fhL pl-1 col-span-12 lg:pl-7 xl:pl-9">
-                    <BusinessCenterIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                    <BusinessCenterIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                     Work History
                 </p>
             </div>
@@ -142,22 +141,22 @@ const WorkHitory = () => {
                 {workHistoryArray &&
                     workHistoryArray.map((item, index) => (
                         <ElementWithIcon
+                            key={index}
                             title={item.title}
                             companyName={item.companyName}
                             startDate={item.startDate}
                             endDate={item.endDate}
                             workDescription={item.jobDescription}
-                            key={item.index}
                         />
                     ))}
             </div>
             {openWork && (
                 <ConfirmModal isOpen={openWork} handleClose={() => setOpenWork(!openWork)}>
-                    <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
+                    <div className="mx-2 pb-10 w-full overflow-scroll h-[100%] pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0 overflow-x-hidden">
                         <div className="col-span-12 grid grid-cols-12 ">
                             <div className="col-span-12 grid grid-cols-12 mb-5">
                                 <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                    <BusinessCenterIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                                    <BusinessCenterIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                                     Work History
                                 </p>
                                 <div className="col-span-2 md:col-span-1 grid pr-2 justify-items-end md:justify-items-center">
@@ -178,7 +177,7 @@ const WorkHitory = () => {
                                             <div className="w-16 h-16 bg-skillColor flex items-center justify-center rounded-[1rem]">
                                                 <BusinessCenterOutlinedIcon
                                                     sx={{
-                                                        color: '#FE5E0A',
+                                                        color: '#00A82D',
                                                         height: '1.5rem'
                                                     }}
                                                 />
@@ -249,7 +248,7 @@ const WorkHitory = () => {
                                                 setEditedWork({ ...editedWork, title: e.currentTarget.value })
                                             }
                                             placeholder="Add Title"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
@@ -261,7 +260,7 @@ const WorkHitory = () => {
                                                 setEditedWork({ ...editedWork, companyName: e.currentTarget.value })
                                             }
                                             placeholder="Add Company Name"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
@@ -272,23 +271,24 @@ const WorkHitory = () => {
                                             onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                                 setEditedWork({ ...editedWork, startDate: e.currentTarget.value })
                                             }
-                                            className="pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     {editedWork.endDate && (
                                         <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
                                             <p className="font-fhW text-smS mt-5 mb-2 leading-shL">End Date</p>
                                             <input
+                                                max={new Date().toISOString().split('T')[0]}
                                                 value={editedWork.endDate}
                                                 type="date"
                                                 onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                                     setEditedWork({ ...editedWork, endDate: e.currentTarget.value })
                                                 }
-                                                className="pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                                className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                             />
                                         </div>
                                     )}
-                                    <div className="col-span-12 pr-2 md:pl-2">
+                                    <div className="col-span-12 pr-2 max-md:mb-10 md:pl-2">
                                         <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Job Description</p>
                                         <ReactQuill
                                             className="h-28 text-addS"
@@ -298,7 +298,6 @@ const WorkHitory = () => {
                                             onChange={(e) => setEditedWork({ ...editedWork, jobDescription: e })}
                                         />
                                     </div>
-
                                     <div className="col-span-12 grid justify-items-end pr-3 mt-10 md:mt-16">
                                         {loadings == true ? (
                                             <img
@@ -330,7 +329,7 @@ const WorkHitory = () => {
                                                 }
                                             }}
                                             placeholder="Add Title"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
@@ -342,13 +341,13 @@ const WorkHitory = () => {
                                                 setWorkHistoryData({ ...workHistoryData, companyName: e.currentTarget.value })
                                             }
                                             placeholder="Add Company Name"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                     <div className="col-span-12 pr-2 md:pl-2 flex items-center mt-3">
                                         <input
                                             type="checkbox"
-                                            className="border-[1px] rounded-xl h-4 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] rounded-xl h-4 pl-5 text-addS"
                                             checked={isChecked}
                                             onChange={handleCheckboxChange}
                                         />
@@ -360,14 +359,14 @@ const WorkHitory = () => {
                                             value={workHistoryData.startDate}
                                             type="date"
                                             onChange={(e) => setWorkHistoryData({ ...workHistoryData, startDate: e.currentTarget.value })}
-                                            className="pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
-
                                     {!isChecked && (
                                         <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
                                             <p className="font-fhW text-smS mt-5 mb-2 leading-shL">End Date</p>
                                             <input
+                                                max={new Date().toISOString().split('T')[0]}
                                                 value={workHistoryData.endDate}
                                                 type="date"
                                                 onChange={(e) =>
@@ -375,11 +374,11 @@ const WorkHitory = () => {
                                                         ? setWorkHistoryData({ ...workHistoryData, endDate: 'present' })
                                                         : setWorkHistoryData({ ...workHistoryData, endDate: e.currentTarget.value })
                                                 }
-                                                className="pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                                className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                             />
                                         </div>
                                     )}
-                                    <div className="col-span-12 pr-2 md:pl-2">
+                                    <div className="col-span-12 pr-2 max-md:mb-10 md:pl-2">
                                         <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Job Description</p>
                                         <ReactQuill
                                             className="h-28 text-addS"
