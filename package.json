@@ -6,9 +6,11 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "deploy": "git pull source main --allow-unrelated-histories && git push source main"
     },
     "dependencies": {
+        "@emailjs/browser": "^3.11.0",
         "@emotion/react": "^11.10.8",
         "@emotion/styled": "^11.10.8",
         "@headlessui/react": "^1.7.17",

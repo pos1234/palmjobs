@@ -30,11 +30,9 @@ const Project = () => {
     };
     const displayError = (err: any) => {
         setErrorMessage(err);
-        console.log(err);
     };
     const sizeError = (err: any) => {
         setErrorMessage(err);
-        console.log(err);
     };
     const {
         projectIndex,
@@ -70,7 +68,7 @@ const Project = () => {
         <div className="col-span-12 pt-7 grid grid-cols-12 bg-textW rounded-3xl pb-8 lg:pl-10">
             <div className="col-span-8 md:col-span-3">
                 <p className="font-fhW text-fhS leading-fhL pl-1 col-span-12 lg:pl-5">
-                    <AttachFileIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem', rotate: '40deg' }} />
+                    <AttachFileIcon sx={{ color: '#00A82D', marginRight: '0.5rem', rotate: '40deg' }} />
                     Projects
                 </p>
             </div>
@@ -176,7 +174,7 @@ const Project = () => {
                         <div className="col-span-12 grid grid-cols-12">
                             <div className="col-span-12 grid grid-cols-12">
                                 <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                    <AttachFileIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem', rotate: '40deg' }} /> Project
+                                    <AttachFileIcon sx={{ color: '#00A82D', marginRight: '0.5rem', rotate: '40deg' }} /> Project
                                 </p>
                                 <div className="col-span-2 md:col-span-1 grid pr-2 justify-items-end md:justify-items-center">
                                     <button onClick={() => setOpenProject(!openProject)}>
@@ -199,7 +197,7 @@ const Project = () => {
                                             setProjectData({ ...projectData, name: e.currentTarget.value })
                                         }
                                         placeholder="Project Name"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Project Link</p>
                                     <input
@@ -209,7 +207,7 @@ const Project = () => {
                                             setProjectData({ ...projectData, url: e.currentTarget.value })
                                         }
                                         placeholder="Project Link"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
 
@@ -284,7 +282,7 @@ const Project = () => {
                                             setEditedProject({ ...editedProject, projectName: e.currentTarget.value })
                                         }
                                         placeholder="Project Name"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 sm:col-span-6">
@@ -298,7 +296,7 @@ const Project = () => {
                                                 setEditedProject({ ...editedProject, link: e.currentTarget.value })
                                             }
                                             placeholder="Project Link"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                         />
                                     </div>
                                 </div>
@@ -309,7 +307,7 @@ const Project = () => {
                                         value={editedProject.detail}
                                         onChange={(e) => setEditedProject({ ...editedProject, detail: e })}
                                         placeholder="Add description...."
-                                        className="h-28 text-addS"
+                                        className="h-28 text-addS "
                                     />
                                 </div>
                                 <div className="col-span-12 grid justify-items-end mt-20">

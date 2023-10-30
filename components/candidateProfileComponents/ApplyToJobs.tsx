@@ -21,9 +21,13 @@ import {
     unSaveJobs,
     uploadResume,
     downLoadResume,
-    getAccount
+    getAccount,
+    getProfilePicture
 } from '@/lib/services';
 import { toast } from 'react-toastify';
+import { SendJobAppliedEmail } from '../SendEmail';
+import Link from 'next/link';
+const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -53,6 +57,8 @@ const ApplyToJob = (props: any) => {
     const [openNotify, setOpenNotify] = useState(false);
     const [failed, setFailed] = useState(false);
     const [loadingApply, setLoadingApply] = useState(false);
+    const [skillLength, setSkillLength] = useState(0)
+    const [educationLength, setEducationLength] = useState(0)
     const toggleTabs = () => {
         if (fisrt == true) {
             setFirst(false);
@@ -85,6 +91,12 @@ const ApplyToJob = (props: any) => {
             setPhone(res.documents[0].phoneNumber);
             setLinked(res.documents[0].linkedIn);
             setCover(res.documents[0].coverLetter);
+            if (res.documents[0].skills == null || res.documents[0].skills && res.documents[0].skills.length == 0) {
+                setSkillLength(0)
+            }
+            if (res.documents[0].educations == null || res.documents[0].educations && res.documents[0].educations.length == 0) {
+                setEducationLength(0)
+            }
             return res;
         }
     };
@@ -122,13 +134,11 @@ const ApplyToJob = (props: any) => {
     };
     const displayError = (err: any) => {
         setErrorMessage(err);
-        console.log(err);
     };
     const sizeError = (err: any) => {
         setErrorMessage(err);
-        console.log(err);
     };
-    useEffect(() => {}, [userData]);
+    useEffect(() => { }, [userData]);
     const apply = async (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadingApply(true);
@@ -142,29 +152,39 @@ const ApplyToJob = (props: any) => {
                         setLoadingApply(false);
                     })
                     .catch((error) => {
-                        setOpenApply(false);
-                        setOpenNotify(true);
+/*                         setOpenApply(false);
+ */                        setOpenNotify(true);
                         setFailed(true);
                         setLoadingApply(false);
                         console.log(error);
+                        toast.error(error)
                     });
             });
         } else {
             applyToJobs(userData.Id, props.jobId, props.employerId, newEmail, phone, cover, currentResumeId)
                 .then((res) => {
+                    getAccount().then((res: any) => {
+                        res && SendJobAppliedEmail(res.email, props.jobTitle, `${VERIFY}/jobs/`, res.name, props.companyName);
+                    });
                     setOpenApply(false);
                     setOpenNotify(true);
                     setFailed(false);
                     setLoadingApply(false);
                 })
                 .catch((error) => {
-                    setOpenApply(false);
-                    setOpenNotify(true);
+/*                     setOpenApply(false);
+ */                    setOpenNotify(true);
                     setFailed(true);
                     setLoadingApply(false);
                     console.log(error);
+                    toast.error(error)
+
                 });
         }
+    };
+    const projectImage = (id: string) => {
+        const { href } = getProfilePicture(id);
+        return href;
     };
     return (
         <>
@@ -207,21 +227,20 @@ const ApplyToJob = (props: any) => {
                             </div>
                         </div>
                     )}
-
                     {!loading && appliedJob && (
                         <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl flex flex-col gap-y-5 items-center justify-center pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0">
                             <p className="col-span-12 text-black text-3xl font-semibold leading-10 ">Already applied to this job</p>
-                            <button
+                            <Link href="/jobs/"
                                 onClick={() => {
                                     props.setterFunction(false);
                                     /*                                     setLoading(true);
                                      */
                                 }}
                                 type="button"
-                                className="text-textW bg-gradient-to-r  from-gradientFirst to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
+                                className="text-textW bg-gradient-to-r flex justify-center items-center from-gradientFirst to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
                             >
                                 Explore Jobs
-                            </button>
+                            </Link>
                         </div>
                     )}
                     {!appliedJob && !loading && (
@@ -232,10 +251,12 @@ const ApplyToJob = (props: any) => {
                             <div className="col-span-12 grid grid-cols-12 ">
                                 <div className="col-span-12 grid grid-cols-12 mb-5">
                                     <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                        <BusinessCenterIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
-                                        Apply Job
+                                        <BusinessCenterIcon sx={{ marginRight: '0.5rem' }} className='text-gradientFirst' />
+                                        Apply
                                     </p>
                                 </div>
+                                {/*                                 <button type='button' onClick={handleSendEmail}>Send Email</button>
+                                 */}
                                 <div className="col-span-12 grid grid-cols-12 gap-x-2 pr-3 mt-5">
                                     <div className="rounded-2xl bg-gradientFirst h-1.5 col-span-3"></div>
                                     <div
@@ -299,8 +320,8 @@ const ApplyToJob = (props: any) => {
                                             <p className="text-neutral-400">{phone}</p>
                                         </div>
                                         {fileName && (
-                                            <div className="col-span-12 grid grid-cols-12 shadow border border-orange-500 rounded-3xl mt-2">
-                                                <div className=" flex items-center justify-center bg-orange-500 rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
+                                            <div className="col-span-12 grid grid-cols-12 shadow border border-gradientFirst rounded-3xl mt-2">
+                                                <div className=" flex items-center justify-center bg-gradientFirst rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
                                                     <img src={pdfIcon} className="w-10 h-16 relative" />
                                                 </div>
                                                 <div className="col-span-9 flex items-center pl-3">
@@ -341,7 +362,7 @@ const ApplyToJob = (props: any) => {
                                 <div className={third ? 'col-span-12 pt-5 mb-5 md:mb-10 lg:mb-5' : 'hidden'}>
                                     <p className="col-span-12 text-black text-3xl font-semibold leading-10">Cover Letter</p>
                                     <p className="text-neutral-400 text-sm font-light mb-5">
-                                        Describe the responsibilities of this job, required work experience, skills, or education.
+                                        Write a cover letter describing your skill and education.
                                     </p>
                                     <ReactQuill
                                         className="h-28 text-addS"
@@ -378,9 +399,9 @@ const ApplyToJob = (props: any) => {
                                                 <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
                                                     PDF, DOCX or DOC, file size no more than 1MB
                                                 </div>
-                                                <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-orange-300 border-opacity-25 justify-start items-center flex  text-center">
+                                                <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
                                                     <div className="cursor-pointer absolute z-0 top-3 w-full">
-                                                        <div className="text-orange-600 text-xs font-normal uppercase">Replace</div>
+                                                        <div className="text-gradientFirst text-xs font-normal uppercase">Replace</div>
                                                     </div>
                                                 </div>
                                                 {errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}
@@ -406,8 +427,8 @@ const ApplyToJob = (props: any) => {
                                             </div> */}
                                         </div>
                                         {fileName && (
-                                            <div className="col-span-12 grid grid-cols-12 shadow border border-orange-500 rounded-3xl mt-5">
-                                                <div className="py-4 flex items-center justify-center bg-orange-500 rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
+                                            <div className="col-span-12 grid grid-cols-12 shadow border border-gradientFirst rounded-3xl mt-5">
+                                                <div className="py-4 flex items-center justify-center bg-gradientFirst rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
                                                     <img src={pdfIcon} className="w-12 h-5 relative" />
                                                 </div>
                                                 <div className="col-span-8 flex items-center pl-3 break-all">
@@ -430,8 +451,11 @@ const ApplyToJob = (props: any) => {
                                     <div className="col-span-12 md:col-span-5 xl:col-span-6 pt-5">
                                         <p className="text-black text-3xl font-semibold leading-10 ">Contact info</p>
                                         <div className="flex gap-x-2 md:max-xl:flex-col pt-3">
-                                            <img className="w-24 h-24 rounded-2xl" src={profile} />
-                                            <div className="flex flex-col gap-0.5">
+                                            {userData.profilePictureId && (
+                                                <img src={projectImage(userData.profilePictureId)} className="w-24 h-24 rounded-2xl" />
+                                            )}
+                                            {/*                                             <img className="w-24 h-24 rounded-2xl" src={profile} />
+ */}                                            <div className="flex flex-col gap-0.5">
                                                 <div className="text-neutral-900 text-xl font-medium leading-7">{newName}</div>
                                                 <div className="text-stone-300 text-lg font-normal leading-relaxed">
                                                     {userData.bioHeadline}
@@ -475,15 +499,15 @@ const ApplyToJob = (props: any) => {
                                 >
                                     Discard
                                 </button>
-                                {!fourth && (
+                                {!fourth && !(second == true && (skillLength == 0 || educationLength == 0) && !fileName) ?
                                     <button
                                         onClick={toggleTabs}
                                         type="button"
                                         className="text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
                                     >
                                         Continue
-                                    </button>
-                                )}
+                                    </button> : null
+                                }
 
                                 {fourth && (
                                     <>

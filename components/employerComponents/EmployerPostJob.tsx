@@ -29,7 +29,8 @@ import {
     postThirdTab,
     postFourthTab,
     fetchDraftedJobs,
-    updateFirstTab
+    updateFirstTab,
+    getAccount
 } from '@/lib/services';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
@@ -45,6 +46,10 @@ import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { useRouter } from 'next/router';
 import EmployerProfile from './EmployerProfile';
+import TextInput from '../TextInput';
+import { SendJobPostedEmail } from '../SendEmail';
+const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
+
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -55,23 +60,6 @@ const salaryRangeData = [{ name: 'Range' }, { name: 'Starting amount' }, { name:
 const expData = ['0-2 years', '3-5 years', '6-8 years', '9-10 years', '10+ years'];
 const salaryPerData = [{ name: 'Per Month' }, { name: 'Per Hour' }, { name: 'Per Year' }];
 
-const TextInput = (props: any) => {
-    return (
-        <>
-            <input
-                placeholder={props.placeHolder}
-                value={props.value}
-                onChange={(e) => props.setFunction(e.currentTarget.value)}
-                className={
-                    props.errorMessage
-                        ? ' h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full md:w-96'
-                        : ' h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96'
-                }
-            />
-            {props.errorMessage && <p className="text-red-500 text-[13px]">{props.errorMessage}</p>}
-        </>
-    );
-};
 const RequiredTextLabel = (props: any) => {
     return (
         <div>
@@ -112,7 +100,7 @@ const PostAJob = (props: any) => {
     const loadingIn = '/images/loading.svg';
     const profile = '/images/profile.svg';
     const previewImage = '/images/previewImage.svg';
-    const [chooseJob, setChooseJob] = useState(true);
+    const [chooseJob, setChooseJob] = useState(false);
     const [selectedRadio, setSelectedRadio] = useState('empty');
     const [first, setFirst] = useState(false);
     const [second, setSecond] = useState(false);
@@ -122,8 +110,8 @@ const PostAJob = (props: any) => {
     const [compError, setCompError] = useState('');
     const [jobTitle, setJobTitle] = useState('');
     const [jobTitleError, setJobTitleError] = useState('');
-    const [category, setCategory] = useState('');
-    const [categoryError, setCategoryError] = useState('');
+    /* const [category, setCategory] = useState('');
+    const [categoryError, setCategoryError] = useState(''); */
     const [remote, setRemote] = useState(false);
     const [hybrid, setHybrid] = useState(false);
     const [location, setLocation] = useState('');
@@ -162,6 +150,9 @@ const PostAJob = (props: any) => {
     const [jobId, setJobId] = useState('');
     const [profileFilled, setProfileFilled] = useState(false);
     const [postingJobId, setPostingJobId] = useState('');
+    const [noDraft, setNoDraft] = useState(false);
+    const [noJobs, setNoJobs] = useState(false);
+    const [emailNotify, setEmailNotify] = useState('')
     const initialData = () => {
         const result = getProfileData();
         if (result) {
@@ -214,14 +205,14 @@ const PostAJob = (props: any) => {
         if (first && !second && !third && !fourth) {
             /*             setCompError('');
              */ setJobTitleError('');
-            setCategoryError('');
-            /*  if (compName == '') {
+/*             setCategoryError('');
+ */            /*  if (compName == '') {
                 setCompError('Company Name is required');
             } else  */ if (jobTitle == '') {
                 setJobTitleError('Job Titile is required');
-            } else if (category == '') {
+            } /* else if (category == '') {
                 setCategoryError('Job Titile is required');
-            } else if (location == '') {
+            } */ else if (location == '') {
                 setLocationError('Please Provide Location');
             } else {
                 setFourth(false);
@@ -318,17 +309,17 @@ const PostAJob = (props: any) => {
         e.preventDefault();
         if (first && !second && !third && !fourth) {
             setJobTitleError('');
-            setCategoryError('');
-            if (jobTitle == '') {
+/*             setCategoryError('');
+ */            if (jobTitle == '') {
                 setJobTitleError('Job Titile is required');
-            } else if (category == '') {
+            } /* else if (category == '') {
                 setCategoryError('Job Titile is required');
-            } else if (location == '') {
+            } */ else if (location == '') {
                 setLocationError('Please Provide Location');
             } else {
                 if (postingJobId) {
                     setLoading(true);
-                    updateFirstTab(jobTitle, category, openPositions.toString(), location, postingJobId)
+                    updateFirstTab(jobTitle, /* category, */ openPositions.toString(), location, postingJobId)
                         .then((res: any) => {
                             setLoading(false);
                             toast.success('Saved as Draft');
@@ -345,10 +336,9 @@ const PostAJob = (props: any) => {
                         });
                 } else {
                     setLoading(true);
-                    postFirstTab(jobTitle, category, openPositions.toString(), location)
+                    postFirstTab(jobTitle, /* category, */ openPositions.toString(), location)
                         .then((res: any) => {
                             setPostingJobId(res.$id);
-                            console.log(res);
                             setLoading(false);
                             toast.success('Saved as Draft');
                             setFourth(false);
@@ -419,6 +409,12 @@ const PostAJob = (props: any) => {
             }
         }
     };
+    const validateLink = (link: string) => {
+        if (link && !link.startsWith('https://')) {
+            link = 'https://' + link;
+        }
+        return link;
+    };
     const handleFourthSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         if (email && emailSent == '') {
@@ -427,10 +423,14 @@ const PostAJob = (props: any) => {
             setLinkError('please provide link');
         } else {
             setLoading(true);
-            postFourthTab(postingJobId, deadline, '', emailSent, externalLink)
+            postFourthTab(postingJobId, deadline, '', emailSent, validateLink(externalLink))
                 .then((res: any) => {
                     setLoading(false);
                     toast.success('Job posted successfully');
+                    getAccount().then((result: any) => {
+
+                        result && emailNotify !== 'false' && SendJobPostedEmail(result.email, jobTitle, `${VERIFY}/jobs/${res.$id}`, result.name);
+                    });
                     router.push(`/jobs/${res.$id}`);
                 })
                 .catch((error) => {
@@ -444,8 +444,8 @@ const PostAJob = (props: any) => {
         setPostingJobId(id);
         fetchSinglePostedJobs(id).then((res: any) => {
             setJobTitle(res.documents[0].jobTitle);
-            setCategory(res.documents[0].jobIndustry);
-            if (res.documents[0].jobLocation.toLowerCase() == 'remote') {
+/*             setCategory(res.documents[0].jobIndustry);
+ */            if (res.documents[0].jobLocation.toLowerCase() == 'remote') {
                 setRemote(true);
                 setHybrid(false);
                 setAddLocation(false);
@@ -510,8 +510,6 @@ const PostAJob = (props: any) => {
     const getDrafted = async () => {
         const posted = await fetchDraftedJobs();
         if (posted && posted.documents) {
-            console.log(posted);
-
             posted && setPostedJobs(posted.documents);
             posted && setJobId(posted.documents[0] && posted.documents[0].$id);
         }
@@ -526,6 +524,14 @@ const PostAJob = (props: any) => {
                     res.documents[0].companyName == ''
                 ) {
                     setProfileFilled(true);
+                    setCompName(res.documents[0].companyName);
+                    if (res.documents[0].receiveEmailNotification !== false) {
+                        setEmailNotify('true')
+                    }
+                    if (res.documents[0].receiveEmailNotification == false) {
+                        setEmailNotify('false')
+
+                    }
                 }
             }
         });
@@ -541,16 +547,42 @@ const PostAJob = (props: any) => {
             getDrafted();
         }
     }, [selectedRadio]);
+
     useEffect(() => {
         initialData();
+        fetchPostedJobs()
+            .then((res) => {
+                res && res.total > 0 && setNoJobs(true);
+                res && res.total > 0 && setChooseJob(true);
+                res && res.total == 0 && setFirst(true);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        /* fetchDraftedJobs()
+            .then((res) => {
+                res && res.total > 0 && setNoDraft(true);
+                res && res.total > 0 && setChooseJob(true);
+                res && res.total == 0 && setFirst(true);
+            })
+            .catch((error) => {
+                console.log(error);
+            }); */
     }, []);
     const todaysDate = new Date();
     const maxDate = new Date();
     maxDate.setMonth(today.getMonth() + 1);
+    /* const handleSendEmail = () => {
+        getAccount().then((res: any) => {
+            res && SendJobPostedEmail(res.email, jobTitle, `${VERIFY}jobs/${postingJobId}`, res.name);
+        });
+    }; */
     return (
         <div className="pt-5 px-3 pb-10 bg-textW min-h-screen md:pl-10 xl:pr-28 xl:px-20">
-            {!chooseJob && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
-            {!chooseJob && (
+            {/*             <button onClick={handleSendEmail}>Send Email</button>
+             */}
+            {!chooseJob && noJobs && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
+            {!chooseJob && noJobs && (
                 <div
                     className="col-span-12 grid grid-cols-12 gap-x-2 mt-1 md:pr-20 lg:pr-40
              xl:pr-60"
@@ -573,7 +605,11 @@ const PostAJob = (props: any) => {
                     ></div>
                 </div>
             )}
-            <div className={chooseJob && !first && !second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}>
+            <div
+                className={
+                    (noJobs || noDraft) && chooseJob && !first && !second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'
+                }
+            >
                 <div className="text-neutral-900 text-3xl font-semibold leading-10 h-20 flex items-center pl-5 md:h-32 jobsBack">
                     Create a job post
                 </div>
@@ -584,18 +620,22 @@ const PostAJob = (props: any) => {
                         radioValue="empty"
                         setFunction={setSelectedRadio}
                     />
-                    <RadioInput
-                        radioName="selectedRadio"
-                        radioText="Use a previous job as a template"
-                        radioValue="duplicate"
-                        setFunction={setSelectedRadio}
-                    />
-                    <RadioInput
-                        radioName="selectedRadio"
-                        radioText="Continue from Draft"
-                        radioValue="draft"
-                        setFunction={setSelectedRadio}
-                    />
+                    {noJobs && (
+                        <RadioInput
+                            radioName="selectedRadio"
+                            radioText="Use a previous job as a template"
+                            radioValue="duplicate"
+                            setFunction={setSelectedRadio}
+                        />
+                    )}
+                    {noDraft && (
+                        <RadioInput
+                            radioName="selectedRadio"
+                            radioText="Continue from Draft"
+                            radioValue="draft"
+                            setFunction={setSelectedRadio}
+                        />
+                    )}
                 </div>
                 <div>
                     {(selectedRadio == 'duplicate' || selectedRadio == 'draft') && (
@@ -626,41 +666,13 @@ const PostAJob = (props: any) => {
                 <div className="text-neutral-900  font-semibold leading-10 text-xl md:text-3xl">Provide Basic Information</div>
                 <RequiredTextLabel text="Job Title" />
                 <TextInput errorMessage={jobTitleError} placeHolder="Job Position" value={jobTitle} setFunction={setJobTitle} />
-                <RequiredTextLabel text="Job Category" />
-
-                <select
-                    value={category}
-                    style={{ maxHeight: '200px' }}
-                    onChange={(e) => setCategory(e.currentTarget.value)}
-                    className="h-12 max-h-[10px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96"
-                >
-                    <option value="Agriculture">Agriculture</option>
-                    <option value="Construction">Construction</option>
-                    <option value="Education">Education</option>
-                    <option value="Energy">Energy</option>
-                    <option value="Finance & Insurance">Finance & Insurance</option>
-                    <option value="HealthCare">HealthCare</option>
-                    <option value="Hospital and Tourism">Hospital and Tourism</option>
-                    <option value="Information Technology">Information Technology</option>
-                    <option value="Manufacturing">Manufacturing</option>
-                    <option value="Mining">Mining</option>
-                    <option value="Public Administration">Public Administration</option>
-                    <option value="Real State">Real State</option>
-                    <option value="Transportation & Logisitics">Transportation & Logisitics</option>
-                    <option value="Wholesale Trade">Wholesale Trade</option>
-                    <option value="Creative & Media">Creative & Media</option>
-                    <option value="Automative">Automative</option>
-                    <option value="Pharmaceuticals">Pharmaceuticals</option>
-                    <option value="Telecommunications">Telecommunications</option>
-                    <option value="Food & Beverage">Food & Beverage</option>
-                </select>
                 <RequiredTextLabel text="How many open roles ?" />
                 <div className="flex gap-x-5 items-center mt-3">
                     <div
                         onClick={() => {
                             if (openPositions > 1) setOpenPositions(openPositions - 1);
                         }}
-                        className="text-orange-600 rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-orange-500"
+                        className="text-gradientFirst rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-orange-500"
                     >
                         <RemoveIcon />
                     </div>
@@ -672,7 +684,7 @@ const PostAJob = (props: any) => {
                     />
                     <div
                         onClick={() => setOpenPositions(openPositions + 1)}
-                        className="text-orange-600 rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-orange-500"
+                        className="text-gradientFirst rounded-full p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-orange-500"
                     >
                         <AddIcon />
                     </div>
@@ -689,7 +701,7 @@ const PostAJob = (props: any) => {
                         className={
                             addLocation
                                 ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
                         <EditLocationAltOutlinedIcon className="-ml-2" />
@@ -705,7 +717,7 @@ const PostAJob = (props: any) => {
                         className={
                             remote
                                 ? 'flex rounded-md flex-col relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
                         <SettingsRemoteIcon className="-ml-2" />
@@ -721,7 +733,7 @@ const PostAJob = (props: any) => {
                         className={
                             hybrid
                                 ? 'flex rounded-md flex-col relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
                         <GroupWorkIcon className="-ml-2" />
@@ -891,7 +903,7 @@ const PostAJob = (props: any) => {
             >
                 <div className="text-neutral-900 text-[1.3rem] font-semibold leading-10 md:text-[1.6rem]">Set application Preference</div>
                 <div className="flex bg-forBack w-full p-2 gap-x-5 md:w-1/2">
-                    <div
+                    <div title='Recieve Application Through Palmjobs'
                         onClick={() => {
                             setPalm(true);
                             setEmail(false);
@@ -900,13 +912,14 @@ const PostAJob = (props: any) => {
                         className={
                             palm
                                 ? 'flex rounded-md flex-col relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20 text-stone-400'
+                                : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20 text-stone-400'
                         }
                     >
                         <ArticleIcon className="-ml-0.5" />
-                        <p className="absolute bottom-1">Palmjobs</p>
+                        <p className="absolute bottom-1">Palm Jobs</p>
                     </div>
                     <div
+                        title='Recieve Application Through Email'
                         onClick={() => {
                             setPalm(false);
                             setEmail(true);
@@ -915,13 +928,13 @@ const PostAJob = (props: any) => {
                         className={
                             email
                                 ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor hover:text-orange-600 text-stone-400 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor hover:text-gradientFirst text-stone-400 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
                         <AlternateEmailIcon className="-ml-2" />
                         <p className="absolute bottom-1">Email</p>
                     </div>
-                    <div
+                    <div title='Recieve Application Through External Link'
                         onClick={() => {
                             setPalm(false);
                             setEmail(false);
@@ -930,11 +943,11 @@ const PostAJob = (props: any) => {
                         className={
                             link
                                 ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                                : 'hover:bg-skillColor text-stone-400 hover:text-orange-600 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
+                                : 'hover:bg-skillColor text-stone-400 hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
                         }
                     >
                         <InsertLinkIcon className="-ml-2" />
-                        <p className="absolute bottom-1">External</p>
+                        <p className="absolute bottom-1">External Link</p>
                     </div>
                 </div>
                 {email && (
@@ -952,7 +965,7 @@ const PostAJob = (props: any) => {
                     </>
                 )}
                 <div className="flex flex-col pt-2 gap-y-4 pb-7">
-                    <RequiredTextLabel text="Job Deadline" req="nReq" />
+                    <RequiredTextLabel text="Closing Date" req="nReq" />
                     <input
                         value={deadline}
                         type="date"
@@ -962,7 +975,20 @@ const PostAJob = (props: any) => {
                         className="rounded-full  border-stone-300 py-3 cursor-pointer focus:border-orange-500 focus:ring-0 w-full px-20 md:px-28 md:w-96"
                     />
                 </div>
-                <div className="flex pt-10 max-md:flex-col max-md:gap-y-8">
+                <div className="flex pt-10 max-md:flex-col max-md:gap-y-8 gap-y-5 flex-wrap justify-between">
+                    <div className="w-full">
+                        <div
+                            onClick={() => setOpenPreview(true)}
+                            className={
+                                fourth
+                                    ? 'text-gradientFirst border flex items-center justify-center cursor-pointer h-16 rounded-full w-full block  md:w-5/12 lg:w-3/12'
+                                    : 'hidden'
+                            }
+                        >
+                            See Preview &nbsp; <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
+                        </div>
+                    </div>
+
                     <div
                         onClick={handleBack}
                         className={
@@ -972,16 +998,6 @@ const PostAJob = (props: any) => {
                         }
                     >
                         <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
-                    </div>
-                    <div
-                        onClick={() => setOpenPreview(true)}
-                        className={
-                            fourth
-                                ? 'text-orange-600 flex items-center justify-center cursor-pointer h-16 rounded-full  max-md:order-2 w-full md:ml-40 md:w-5/12 lg:w-3/12'
-                                : 'hidden'
-                        }
-                    >
-                        See Preview &nbsp; <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
                     </div>
                     {loading && (
                         <img
@@ -1000,7 +1016,7 @@ const PostAJob = (props: any) => {
                 </div>
             </form>
             <div className="flex justify-end pt-5">
-                {!fourth && !profileFilled && chooseJob && (
+                {!fourth && !profileFilled && chooseJob && (noJobs || noDraft) && (
                     <div
                         onClick={handleFront}
                         className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 max-md:mt-10 w-full md:w-5/12 rounded-full lg:w-3/12"
@@ -1059,18 +1075,18 @@ const PostAJob = (props: any) => {
                                             minSalary == '' && maxSalary !== ''
                                                 ? maxSalary
                                                 : minSalary !== '' && maxSalary == ''
-                                                ? minSalary
-                                                : minSalary + '-' + maxSalary
+                                                    ? minSalary
+                                                    : minSalary + '-' + maxSalary
                                         }
                                         icon={
                                             currency == 'euro' ? (
-                                                <EuroIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                <EuroIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                             ) : currency == 'usd' ? (
-                                                <AttachMoneyOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                <AttachMoneyOutlined sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                             ) : currency == 'gpb' ? (
-                                                <CurrencyPoundIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                <CurrencyPoundIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                             ) : currency == 'rnp' ? (
-                                                <CurrencyRupeeIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                                <CurrencyRupeeIcon sx={{ fontSize: '1.2rem' }} className=" mt-[0.2rem] mr-1 sm:mt-0.5" />
                                             ) : (
                                                 <span className="mr-2">ETB</span>
                                             )
@@ -1080,23 +1096,17 @@ const PostAJob = (props: any) => {
                                 <Jobtype
                                     salary="Job Type"
                                     money={worktype}
-                                    icon={
-                                        <AccessTimeOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
-                                    }
+                                    icon={<AccessTimeOutlined sx={{ fontSize: '1.2rem' }} className="mt-[0.2rem] mr-1 sm:mt-0.5" />}
                                 />
                                 <Jobtype
                                     salary="Date Posted"
                                     money={new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}
-                                    icon={
-                                        <CalendarToday className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
-                                    }
+                                    icon={<CalendarToday sx={{ fontSize: '1.2rem' }} className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5" />}
                                 />
                                 <Jobtype
-                                    salary="Deadline"
+                                    salary="Closing Date"
                                     money={new Date(deadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
-                                    icon={
-                                        <CalendarToday className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
-                                    }
+                                    icon={<CalendarToday sx={{ fontSize: '1.2rem' }} className="mt-[0.2rem] mr-1 sm:mt-0.5" />}
                                 />
                             </div>
                             <div className="col-span-12 grid grid-cols-12 border-[1px] mx-3 rounded-full">
@@ -1110,7 +1120,6 @@ const PostAJob = (props: any) => {
                                 >
                                     Job Description
                                 </div>
-
                                 <div
                                     className={
                                         company == true

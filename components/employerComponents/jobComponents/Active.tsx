@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import dynamic from 'next/dynamic';
 import { Popover } from '@headlessui/react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import EuroIcon from '@mui/icons-material/Euro';
@@ -22,12 +22,14 @@ import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
 import AccessTimeOutlined from '@mui/icons-material/AccessTimeOutlined';
+import PeopleIcon from '@mui/icons-material/People';
 import LocalFireDepartmentOutlined from '@mui/icons-material/LocalFireDepartmentOutlined';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 import CloseIcon from '@mui/icons-material/Close';
 import Share from '@/components/Share';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import JobImage from '@/components/JobImage';
+import Link from 'next/link';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -50,8 +52,8 @@ const TextInput = (props: any) => {
                 onChange={(e) => props.setFunction(e.currentTarget.value)}
                 className={
                     props.errorMessage
-                        ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-orange-500 focus:border-0 w-full md:w-96'
-                        : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96'
+                        ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96'
+                        : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96'
                 }
             />
             {props.errorMessage && <p className="text-red-500 text-[13px]">{props.errorMessage}</p>}
@@ -69,7 +71,8 @@ const PJobs = (props: any) => {
     const [location, setLocation] = useState(props.location);
     const [openRoles, setOpenRoles] = useState(props.openRoles);
     const [jobType, setJobType] = useState(props.jobType);
-    const [jobSalary, setJobSalary] = useState(props.salary);
+    const [minJobSalary, setMinJobSalary] = useState(props.minSalary);
+    const [maxJobSalary, setMaxJobSalary] = useState(props.maxSalary);
     const [jobDesc, setJobDesc] = useState(props.jobDes);
     const [jobDeadline, setJobDeadline] = useState(props.deadline);
     const [jobTitleError, setJobTitleError] = useState('');
@@ -105,7 +108,8 @@ const PJobs = (props: any) => {
             openRoles || props.openRoles,
             location || props.location,
             jobType || props.jobType,
-            jobSalary || props.salary,
+            minJobSalary || props.minSalary,
+            maxJobSalary || props.maxSalary,
             jobDeadline || props.deadline,
             jobDesc || props.jobDes
         )
@@ -138,10 +142,17 @@ const PJobs = (props: any) => {
     useEffect(() => {
         getCompInfo();
     }, [empId]);
+    const handleDateChange = (date: string) => {
+        const [year, month, day] = date.split('-');
+        const formattedDate = `${day}-${month}-${year}`;
+        return formattedDate;
+    };
     return (
         <div className="bg-textW grid grid-cols-12 relative py-5 pl-2 xl:pl-9">
             <div className=" flex flex-col justify-center col-span-10 sm:col-span-7 lg:col-span-3">
-                <p className="text-neutral-900 text-lg font-medium leading-normal">{props.title}</p>
+                <Link href={`/jobs/${props.jobId}`} target="_blank" className="text-neutral-900 text-lg font-medium leading-normal">
+                    {props.title}
+                </Link>
                 <div className="flex flex-wrap text-stone-400 text-[0.8rem] gap-x-4 gap-y-1 mt-1 pr-3">
                     <div>
                         <PinDropOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" /> <span>{props.location}</span>
@@ -149,10 +160,10 @@ const PJobs = (props: any) => {
                     <div>
                         <AccessTimeOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" /> <span>{props.jobType}</span>
                     </div>
-                    {props.salary && (
+                    {props.jobSalary && (
                         <div>
                             <AttachMoneyOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" />
-                            <span>{props.salary}</span>
+                            <span>{props.jobSalary}</span>
                         </div>
                     )}
                     <div className="flex items-center flex gap-x-2 lg:hidden ">
@@ -179,8 +190,8 @@ const PJobs = (props: any) => {
                     onChange={updateStatus}
                     className={
                         jobStatus == 'Close'
-                            ? 'bg-red-50 text-red-500 border-0 rounded-2xl text-sm cursor-pointer gap-y-4 focus:ring-orange-500 selector'
-                            : 'bg-lightGreen text-green border-0 rounded-2xl text-sm cursor-pointer gap-y-4 focus:ring-orange-500 selector'
+                            ? 'bg-red-50 text-red-500 border-0 rounded-2xl text-sm cursor-pointer gap-y-4 focus:ring-gradientFirst selector'
+                            : 'bg-lightGreen text-green border-0 rounded-2xl text-sm cursor-pointer gap-y-4 focus:ring-gradientFirst selector'
                     }
                 >
                     <option value="Active">Active</option>
@@ -195,41 +206,61 @@ const PJobs = (props: any) => {
                             className="text-[2.5rem] focus:ring-0 focus:border-0 focus:outline-0 -mt-1 cursor-pointer"
                         />
                     </Popover.Button>
-
-                    {!openShare && !openJobEdit && !openPreview && (
-                        <Popover.Panel className="absolute -ml-28 sm:ml-0 w-[10rem] sm:w-full border-2 rounded-2xl flex flex-col gap-y-3 bg-textW py-3 px-3 bg-white shadow z-10">
-                            <div
-                                onClick={() => setOpenJobEdit(true)}
-                                className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                            >
-                                <ModeEditIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                <span>Quick Edit</span>
-                            </div>
-                            <div
-                                onClick={() => {
-                                    props.setEditedJobId(props.jobId);
-                                }}
-                                className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                            >
-                                <BorderColorIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                <span>Full Edit</span>
-                            </div>
-                            <div
-                                onClick={() => setOpenPreview(true)}
-                                className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                            >
-                                <VisibilityIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                <span>View Details</span>
-                            </div>
-                            <div
-                                onClick={() => setOpenShare(true)}
-                                className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                            >
-                                <ShareOutlinedIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                <span>Share</span>
-                            </div>
-                        </Popover.Panel>
-                    )}
+                    {/*                     {openShare == false && openJobEdit == false && openPreview == false && (
+                     */}{' '}
+                    <Popover.Panel
+                        className={
+                            openShare == false && openJobEdit == false && openPreview == false
+                                ? 'absolute -ml-28 sm:ml-0 w-[10rem] sm:w-full border-2 rounded-2xl flex flex-col gap-y-3 bg-textW py-3 px-3 bg-white shadow z-10'
+                                : 'hidden'
+                        }
+                    >
+                        <select
+                            value={jobStatus}
+                            onChange={updateStatus}
+                            className="md:hidden flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <ModeEditIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <option value="Close">Close Job</option>
+                        </select>
+                        <div
+                            onClick={() => setOpenJobEdit(true)}
+                            className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <ModeEditIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <span>Quick Edit</span>
+                        </div>
+                        <div
+                            onClick={() => {
+                                props.setEditedJobId(props.jobId);
+                            }}
+                            className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <BorderColorIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <span>Full Edit</span>
+                        </div>
+                        <div
+                            onClick={() => setOpenPreview(true)}
+                            className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <VisibilityIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <span>View Details</span>
+                        </div>
+                        <div
+                            onClick={() => setOpenShare(!openShare)}
+                            className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <ShareOutlinedIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <span>Share</span>
+                        </div>
+                        <div
+                            onClick={() => props.applicants(props.jobId)}
+                            className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                        >
+                            <PeopleIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                            <span>Applicants</span>
+                        </div>
+                    </Popover.Panel>
                 </Popover>
             </div>
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.jobId} />
@@ -267,8 +298,8 @@ const PJobs = (props: any) => {
                                             !props.minSalary && props.maxSalary
                                                 ? props.maxSalary
                                                 : props.minSalary && !props.maxSalary
-                                                ? props.minSalary
-                                                : props.minSalary + '-' + props.maxSalary
+                                                    ? props.minSalary
+                                                    : props.minSalary + '-' + props.maxSalary
                                         }
                                         icon={
                                             props.currency == 'euro' ? (
@@ -375,8 +406,8 @@ const PJobs = (props: any) => {
                 <ConfirmModal isOpen={openJobEdit} handleClose={() => setOpenJobEdit(!openJobEdit)}>
                     <div className="mx-2 pb-5 w-full px-5 bg-textW rounded-2xl grid grid-cols-12 pt-6 overflow-auto h-full md:pl-8 md:w-2/3 lg:w-1/2">
                         <div className="col-span-12 grid grid-cols-12">
-                            <div className="col-span-10  flex items-center text-2xl font-[600] text-orange-500">Edit Job Post</div>
-                            <div className="col-span-2 md:col-span-1 grid pr-2 justify-items-end">
+                            <div className="col-span-11  flex items-center text-2xl font-[600] text-gradientFirst">Edit Job Post</div>
+                            <div className="col-span-2 mb-4 md:col-span-1 grid pr-2 justify-items-end">
                                 <button onClick={() => setOpenJobEdit(!openJobEdit)}>
                                     <CloseIcon
                                         sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
@@ -384,74 +415,98 @@ const PJobs = (props: any) => {
                                     />
                                 </button>
                             </div>
-                            <div className="col-span-12 grid grid-cols-12">
-                                <form className="col-span-12 flex flex-col gap-y-5" onSubmit={updateFullJob}>
-                                    <div className="flex gap-x-20 max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Job Title</p>
-                                        <TextInput value={jobTitle} setFunction={setJobTitle} errorMessage={jobTitleError} />
-                                    </div>
-                                    <div className="flex gap-x-20 max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Location</p>
-                                        <TextInput value={location} setFunction={setLocation} errorMessage={locationError} />
-                                    </div>
-                                    <div className="flex gap-x-6 max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Open Positions</p>
-                                        <TextInput value={openRoles} setFunction={setOpenRoles} errorMessage={openRolesError} />
-                                    </div>
-                                    <div className="flex gap-x-[4.5rem] max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Job Type</p>
-                                        <select
-                                            onChange={(e) => setJobType(e.currentTarget.value)}
-                                            className="h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96"
-                                        >
-                                            <option value="Internship">Internship</option>
-                                            <option value="Internship">Full Time</option>
-                                            <option value="Internship">Part Time</option>
-                                            <option value="Internship">Remote</option>
-                                            <option value="Internship">Contract</option>
-                                        </select>
-                                    </div>
-                                    <div className="flex gap-x-24 max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Salary</p>
-                                        <TextInput value={jobSalary} setFunction={setJobSalary} errorMessage={salaryError} />
-                                    </div>
-                                    <div className="flex gap-x-[4.5rem] max-md:flex-col md:items-center">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Deadline</p>
+                            <form className="col-span-12 flex flex-col gap-y-5" onSubmit={updateFullJob}>
+                                <div className="flex gap-x-20 max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Job Title</p>
+                                    <TextInput
+                                        value={jobTitle}
+                                        setFunction={setJobTitle}
+                                        errorMessage={jobTitleError}
+                                        className="flex-grow grow"
+                                    />
+                                </div>
+                                <div className="flex gap-x-20 max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Location</p>
+                                    <TextInput value={location} setFunction={setLocation} errorMessage={locationError} />
+                                </div>
+                                <div className="flex gap-x-6 max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Open Positions</p>
+                                    <TextInput value={openRoles} setFunction={setOpenRoles} errorMessage={openRolesError} />
+                                </div>
+                                <div className="flex gap-x-[4.5rem] max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Job Type</p>
+                                    <select
+                                        onChange={(e) => setJobType(e.currentTarget.value)}
+                                        className="h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96"
+                                    >
+                                        <option value="Internship">Internship</option>
+                                        <option value="Internship">Full Time</option>
+                                        <option value="Internship">Part Time</option>
+                                        <option value="Internship">Remote</option>
+                                        <option value="Internship">Contract</option>
+                                    </select>
+                                </div>
+                                <div className="flex gap-x-24 max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Salary</p>
+                                    <div className="flex justify-between grow gap-x-2">
                                         <input
-                                            type="date"
-                                            className="h-12 pl-5 bg-white cursor-pointer rounded-3xl border border-gray-200 focus:ring-orange-500 focus:border-0 w-full md:w-96"
-                                            value={jobDeadline}
-                                            onChange={(e) => setJobDeadline(e.currentTarget.value)}
+                                            value={minJobSalary}
+                                            onChange={(e) => setMinJobSalary(e.currentTarget.value)}
+                                            type="number"
+                                            className={
+                                                props.errorMessage
+                                                    ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
+                                                    : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
+                                            }
+                                            placeholder="Minimum Salary"
+                                        />
+                                        <input
+                                            placeholder="Maximum Salary"
+                                            value={maxJobSalary}
+                                            onChange={(e) => setMaxJobSalary(e.currentTarget.value)}
+                                            type="number"
+                                            className={
+                                                props.errorMessage
+                                                    ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
+                                                    : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
+                                            }
                                         />
                                     </div>
-                                    <div className="flex flex-col mb-20 md:mb-10 md:pr-20">
-                                        <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">
-                                            Job Description
-                                        </p>
-                                        <ReactQuill
-                                            className="h-28 text-addS"
-                                            value={jobDesc}
-                                            onChange={(e) => setJobDesc(e)}
-                                            placeholder="Add Description"
-                                        />
-                                        {jobDescError && <p className="text-red-500 absolute bottom-3 text-[13px] ">{jobDescError}</p>}
-                                    </div>
-                                    {!loading && (
-                                        <button
-                                            type="submit"
-                                            className="text-textW bg-gradient-to-r flex self-end items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-full md:mr-20 md:w-5/12 lg:w-3/12"
-                                        >
-                                            Update Job
-                                        </button>
-                                    )}
-                                    {loading && (
-                                        <img
-                                            src={loadingIn}
-                                            className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-full md:mr-20 md:w-5/12 lg:w-3/12"
-                                        />
-                                    )}
-                                </form>
-                            </div>
+                                </div>
+                                <div className="flex gap-x-[4.5rem] max-md:flex-col md:items-center">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Deadline</p>
+                                    <input
+                                        type="date"
+                                        className="h-12 pl-5 bg-white cursor-pointer rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96"
+                                        value={handleDateChange(jobDeadline)}
+                                        onChange={(e) => setJobDeadline(e.currentTarget.value)}
+                                    />
+                                </div>
+                                <div className="flex flex-col mb-20 md:mb-10">
+                                    <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose">Job Description</p>
+                                    <ReactQuill
+                                        className="h-28 text-addS"
+                                        value={jobDesc}
+                                        onChange={(e) => setJobDesc(e)}
+                                        placeholder="Add Description"
+                                    />
+                                    {jobDescError && <p className="text-red-500 absolute bottom-3 text-[13px] ">{jobDescError}</p>}
+                                </div>
+                                {!loading && (
+                                    <button
+                                        type="submit"
+                                        className="text-textW bg-gradient-to-r flex self-end items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-full md:w-5/12 lg:w-3/12"
+                                    >
+                                        Update Job
+                                    </button>
+                                )}
+                                {loading && (
+                                    <img
+                                        src={loadingIn}
+                                        className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-full md:w-5/12 lg:w-3/12"
+                                    />
+                                )}
+                            </form>
                         </div>
                     </div>
                 </ConfirmModal>
@@ -463,6 +518,7 @@ const Active = (props: any) => {
     const [activeJobs, setActiveJobs] = useState<any>();
     const [allLoading, setAllLoading] = useState(false);
     const [editedJobId, setEditedJobId] = useState('');
+    const [noActive, setNoActive] = useState(false);
     const SortData = (sort: any) => {
         if (sort == 'asc') {
             const sortedData =
@@ -496,6 +552,7 @@ const Active = (props: any) => {
         setAllLoading(true);
         fetchActivePostedJobs().then((res: any) => {
             res && res.documents && setActiveJobs(res.documents);
+            res && res.total > 0 && setNoActive(true);
             setAllLoading(false);
         });
     };
@@ -516,6 +573,11 @@ const Active = (props: any) => {
                 <div className="flex flex-col gap-y-10 pt-5">
                     <EmployerJobShimmer />
                     <EmployerJobShimmer />
+                </div>
+            )}
+            {!allLoading && !noActive && (
+                <div className="flex flex-col gap-y-10 pt-5 text-center text-[2rem] pt-20">
+                    <h1>You haven't posted a job yet</h1>
                 </div>
             )}
             {!allLoading && (
@@ -560,6 +622,7 @@ const Active = (props: any) => {
                                         openRoles={item.openPositions}
                                         deadline={new Date(item.applicationDeadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                         setterActiveJobs={setActiveJobs}
+                                        applicants={props.applicants}
                                     />
                                 );
                             })}

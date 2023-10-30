@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import dynamic from 'next/dynamic';
 import { Popover } from '@headlessui/react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -88,41 +88,25 @@ const PJobs = (props: any) => {
     }, [empId]);
     const updateStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
-        updateJobStatus(props.jobId, e.currentTarget.value)
-            .then((res) => {
-                toast.success('Status Updated Successfully');
-                fetchClosedPostedJobs().then((res: any) => {
-                    props.setterActiveJobs(res.documents);
+        const deadlineDate = props.deadline;
+        const [day, month, year] = deadlineDate.split('-');
+        const formattedDate = `${year}-${month}-${day}`;
+        const today = new Date().toISOString().split('T')[0];
+        if (today <= formattedDate) {
+            updateJobStatus(props.jobId, e.currentTarget.value)
+                .then((res) => {
+                    toast.success('Status Updated Successfully');
+                    fetchClosedPostedJobs().then((res: any) => {
+                        props.setterActiveJobs(res.documents);
+                    });
+                })
+                .catch((error) => {
+                    toast.error('Status Not Updated');
+                    console.log(error);
                 });
-            })
-            .catch((error) => {
-                toast.error('Status Not Updated');
-                console.log(error);
-            });
-    };
-    const updateFullJob = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        setLoading(true);
-        updateJobs(
-            props.jobId,
-            jobTitle || props.title,
-            openRoles || props.openRoles,
-            location || props.location,
-            jobType || props.jobType,
-            jobSalary || props.salary,
-            jobDeadline || props.deadline,
-            jobDesc || props.jobDes
-        )
-            .then((res) => {
-                setLoading(false);
-                toast.success('Successfully Updated Job');
-                setOpenJobEdit(false);
-            })
-            .catch((error) => {
-                setLoading(false);
-                toast.success('Job Not Updated');
-                console.log(error);
-            });
+        } else {
+            toast.error('The Deadline has passed');
+        }
     };
     return (
         <div className="bg-textW grid grid-cols-12 relative py-5 pl-2 xl:pl-9">

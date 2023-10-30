@@ -2,7 +2,7 @@ import ConfirmModal from '@/components/ConfirmModal';
 import { deleteDraftedJobs, fetchActivePostedJobs, fetchDraftedJobs, updateJobStatus, updateJobs } from '@/lib/services';
 import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
@@ -11,7 +11,7 @@ const DraftedJobs = (props: any) => {
         deleteDraftedJobs(id).then((res) => {
             toast.success('Successfully Removed');
             fetchDraftedJobs().then((res: any) => {
-                props.setterActiveJobs(res.documents);
+                props.setterFuntion(res.documents);
             });
         });
     };

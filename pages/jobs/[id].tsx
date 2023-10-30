@@ -17,6 +17,9 @@ import EuroIcon from '@mui/icons-material/Euro';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import Share from '@/components/Share';
+import Footer from '@/components/Footer';
+import Head from 'next/head';
+import LaunchIcon from '@mui/icons-material/Launch';
 const JobCard = (props: any) => {
     return (
         <div className="col-span-6 flex flex-col max-md:pl-2 py-2 rounded-2xl gap-y-2 bg-textW sm:col-span-3 items-center">
@@ -35,13 +38,16 @@ const singleJob = () => {
     const [searchText, setSearchText] = useState('');
     const [address, setAddress] = useState('');
     const [company, setCompany] = useState(false);
-    const [compnayDes, setCompanyDes] = useState('');
+    const [companyData, setCompanyData] = useState<any>();
     const [employerId, setEmployerId] = useState('');
     const [apply, setApply] = useState(false);
     const [applyJobId, setApplyJobId] = useState('');
     const [applyEmployerId, setApplyEmployerId] = useState('');
     const [jobDetails, setJobDetails] = useState<any>();
     const [openShare, setOpenShare] = useState(false);
+    const [companyName, setCompanyName] = useState('');
+    const [jobTitle, setJobTitle] = useState('');
+    const [accountId, setAccountId] = useState('')
     const handleSearch = () => {
         router.push({
             pathname: '/jobs',
@@ -54,21 +60,35 @@ const singleJob = () => {
             if (id) {
                 fetchSinglePostedJobs(id.toString()).then((res) => {
                     setJobDetails(res.documents[0]);
+                    setEmployerId(res.documents[0].employerId);
                 });
             }
         }
     }, [router]);
+    const userId = async () => {
+        const accountInfo = await getAccount();
+        if (accountInfo !== 'failed') {
+            setAccountId(accountInfo.$id)
+            /* const role = await getRole(accountInfo.$id);
+            if (role.documents[0].userRole == 'candidate') {
+                setApply(true);
+                setApplyEmployerId(employerId);
+            } */
+        }
+    }
     useEffect(() => {
         const documents = getCompanyData(employerId);
         documents.then(async (res) => {
-            if (res.documents && res.documents[0] && res.documents[0].description) {
-                setCompanyDes(res.documents[0].description);
+            if (res.documents && res.documents[0] && res.documents[0]) {
+                setCompanyData(res.documents[0]);
+                setCompanyName(res.documents[0].companyName);
             } else {
-                setCompanyDes('');
+                setCompanyName('');
             }
         });
+        userId()
     }, [employerId]);
-    const handleApply = async (jobId: string, employerId: string) => {
+    const handleApply = async (jobId: string, employerId: string, compName: string, jobTitle: string) => {
         setApply(false);
         const accountInfo = await getAccount();
         if (accountInfo !== 'failed') {
@@ -77,6 +97,7 @@ const singleJob = () => {
                 setApply(true);
                 setApplyJobId(jobId);
                 setApplyEmployerId(employerId);
+                setJobTitle(jobTitle);
             }
         }
         if (accountInfo == 'failed') {
@@ -88,8 +109,41 @@ const singleJob = () => {
         const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
         window.location.href = mailtoLink;
     };
+    const sanitizeHTML = (text: string) => {
+        return text.replace(/<[^>]*>/g, '');
+    };
+    const structuredData = jobDetails
+        ? `{
+        "@context": "http://schema.org",
+        "@type": "JobPosting",
+        "title": "${jobDetails && jobDetails.jobTitle}" ,
+        "hiringOrganization": {
+          "@type":"Organization",
+          "name":"${companyName && companyName}",
+          "logo": "${<JobImage id={jobDetails.employerId} className="col-span-2 sm:h-[5.8rem]" /> ||
+        'https://www.yes.et/jobs/wp-content/uploads/wp-job-board-pro-uploads/_employer_featured_image/2023/01/YES_logo-150x150.png'
+        }"
+        },
+        "jobLocation": {
+          "@type": "Place",
+          "address": "${jobDetails && jobDetails.jobLocation}"
+        },
+        "datePosted": "${jobDetails && new Date(jobDetails.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}",
+        "description": "${jobDetails && sanitizeHTML(jobDetails.jobDescription)}",
+        "employmentType":"${jobDetails && jobDetails.jobType}"
+       }`
+        : null;
     return (
         <div className="px-3 pb-20 md:px-16">
+            <Head>
+                <script
+                    key="structured-data"
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify(structuredData)
+                    }}
+                />
+            </Head>
             <Navigation />
             <div className="grid grid-cols-12 gap-y-4 max-sm:px-5 max-sm:pt-10 border-b-2 sm:space-x-5 md:space-x-2 lg:space-x-5 lg:px-10 xl:px-40 py-10">
                 <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 sm:h-16  sm:col-span-6 md:col-span-6 lg:col-span-4">
@@ -100,7 +154,7 @@ const singleJob = () => {
                         <input
                             onChange={(e) => setSearchText(e.currentTarget.value)}
                             type="text"
-                            placeholder="What are you looking for?"
+                            placeholder="What"
                             className="h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8] sm:h-[90%]"
                         />
                     </div>
@@ -113,7 +167,7 @@ const singleJob = () => {
                         <input
                             onChange={(e) => setAddress(e.currentTarget.value)}
                             type="text"
-                            placeholder="Remote"
+                            placeholder="Where"
                             className="h-20 pl-3 focus:ring-0 border-0 w-full bg-[#F8F8F8] sm:h-[90%]"
                         />
                     </div>
@@ -131,9 +185,7 @@ const singleJob = () => {
                     <div className="col-span-12 grid grid-cols-12 gap-0f">
                         <JobImage id={jobDetails.employerId} className="col-span-2 sm:h-[5.8rem]" />
                         <div className="col-span-8 flex flex-col max-sm:pl-3 sm:pl-2 xl:pl-1">
-                            {jobDetails.companyName && (
-                                <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">{jobDetails.companyName}</p>
-                            )}
+                            {companyName && <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">{companyName}</p>}
                             {jobDetails.jobTitle && (
                                 <p className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-dfvhS xl:text-[1.5rem]">
                                     {jobDetails.jobTitle}
@@ -167,18 +219,30 @@ const singleJob = () => {
                                     !jobDetails.minSalary && jobDetails.maxSalary
                                         ? jobDetails.maxSalary
                                         : jobDetails.minSalary && !jobDetails.maxSalary
-                                        ? jobDetails.minSalary
-                                        : jobDetails.minSalary + '-' + jobDetails.maxSalary
+                                            ? jobDetails.minSalary
+                                            : jobDetails.minSalary + '-' + jobDetails.maxSalary
                                 }
                                 icon={
                                     jobDetails.currency == 'euro' ? (
-                                        <EuroIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <EuroIcon
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     ) : jobDetails.currency == 'usd' ? (
-                                        <AttachMoneyOutlined className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <AttachMoneyOutlined
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     ) : jobDetails.currency == 'gpb' ? (
-                                        <CurrencyPoundIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <CurrencyPoundIcon
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     ) : jobDetails.currency == 'rnp' ? (
-                                        <CurrencyRupeeIcon className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]" />
+                                        <CurrencyRupeeIcon
+                                            sx={{ fontSize: '1.125rem' }}
+                                            className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                        />
                                     ) : (
                                         <span className="mr-2">ETB</span>
                                     )
@@ -211,7 +275,7 @@ const singleJob = () => {
                         )}
                         {jobDetails.applicationDeadline && (
                             <JobCard
-                                salary="Deadline"
+                                salary="Closing Date"
                                 money={new Date(jobDetails.applicationDeadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                 icon={
                                     <CalendarTodayOutlinedIcon
@@ -251,47 +315,88 @@ const singleJob = () => {
                         <div className="col-span-12 mx-3 flex flex-col">
                             <div
                                 dangerouslySetInnerHTML={{ __html: jobDetails.jobDescription }}
-                                className="text-midRS text-fadedText min-h-[200px] max-h-96 mb-3 overflow-y-auto hideScrollBar"
+                                className="text-midRS text-lightGrey min-h-[200px] max-h-96 mb-3 overflow-y-auto hideScrollBar"
                             />
-                            {jobDetails.externalLink ? (
-                                <a
-                                    className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer"
-                                    href={jobDetails.externalLink}
-                                    target="_blank"
-                                >
-                                    Apply
-                                </a>
-                            ) : jobDetails.emailApplication ? (
-                                <div
-                                    onClick={() => handleEmailApply(jobDetails.emailApplication)}
-                                    className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
-                                >
-                                    Apply
-                                </div>
-                            ) : (
-                                <div
-                                    onClick={() => {
-                                        handleApply(jobDetails.$id, jobDetails.employerId);
-                                    }}
-                                    className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
-                                >
-                                    Apply
-                                </div>
-                            )}
+                            {employerId !== accountId && <>
+
+
+                                {jobDetails.externalLink ? (
+                                    <a
+                                        className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer"
+                                        href={jobDetails.externalLink}
+                                        target="_blank"
+                                    >
+                                        Apply
+                                    </a>
+                                ) : jobDetails.emailApplication ? (
+                                    <div
+                                        onClick={() => handleEmailApply(jobDetails.emailApplication)}
+                                        className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
+                                    >
+                                        Apply
+                                    </div>
+                                ) : (
+                                    <div
+                                        onClick={() => {
+                                            handleApply(jobDetails.$id, jobDetails.employerId, companyName, jobDetails.jobTitle);
+                                        }}
+                                        className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
+                                    >
+                                        Apply
+                                    </div>
+                                )}</>}
                         </div>
                     )}
                     {company && (
                         <div className="col-span-12 mx-3">
-                            <p className="font-thW text-frhS">Company's Detail</p>
+                            <p className="font-thW text-frhS">Company's Overview</p>
+                            <div className='flex gap-3 my-5 flex-wrap justify-between border-b-2 pb-5'>
+                                <div className='flex flex-col gap-y-5'>
+                                    {
+                                        companyData.sector && <div className='flex gap-5 '>
+                                            <p className='font-bold text-lightGrey text-md'>Sector</p>
+                                            <p className='text-lightGrey'>{companyData.sector}</p>
+                                        </div>
+                                    }
+                                    {
+                                        companyData.location && <div className='flex gap-5 '>
+                                            <p className='font-bold text-lightGrey text-md'>location</p>
+                                            <p className='text-lightGrey'>{companyData.location}</p>
+                                        </div>
+                                    }
+                                </div>
+                                <div className='flex flex-col gap-y-5'>
+                                    {
+                                        companyData.noOfEmployee && <div className='flex gap-5 '>
+                                            <p className='font-bold text-lightGrey text-md'>Size</p>
+                                            <p className='text-lightGrey'>{companyData.noOfEmployee}</p>
+                                        </div>
+                                    }
+                                    {
+                                        companyData.websiteLink && <div className='flex gap-5 '>
+                                            <p className='font-bold text-lightGrey text-md'>Website</p>
+                                            <a className='text-lightGrey' href={companyData.websiteLink} target='_blank'>view <LaunchIcon /></a>
+                                        </div>
+                                    }</div>
+                            </div>
                             <div
-                                dangerouslySetInnerHTML={{ __html: compnayDes }}
-                                className="text-midRS text-fadedText max-h-96 overflow-y-auto hideScrollBar border-b-2 min-h-[200px] max-h-96 overflow-y-auto hideScrollBar"
+                                dangerouslySetInnerHTML={{ __html: companyData.description }}
+                                className="text-midRS text-lightGrey max-h-96 overflow-y-auto hideScrollBar border-b-2 min-h-[200px] max-h-96 overflow-y-auto hideScrollBar"
                             />
                         </div>
                     )}
                 </div>
             )}
-            {apply && <ApplyToJob jobId={applyJobId} employerId={applyEmployerId} setterFunction={setApply} />}
+            {apply && (
+                <ApplyToJob
+                    jobId={applyJobId}
+                    employerId={applyEmployerId}
+                    setterFunction={setApply}
+                    jobTitle={jobTitle}
+                    companyName={companyName}
+                />
+            )}
+            <Footer />
         </div>
     );
 };
