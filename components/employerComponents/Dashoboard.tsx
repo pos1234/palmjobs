@@ -6,7 +6,7 @@ import { NoPostedJobs, noApplication, noShortListed } from '@/lib/services';
 import { useEffect, useState } from 'react';
 
 const Dashboard = (props: any) => {
-    const analytics = '/images/analytics.svg';
+    const analytics = '/images/dashboardImage.jpg';
     const [numberOfjobs, setNumberOfjobs] = useState('00');
     const [numberOfListed, setNumberOfListed] = useState('00');
     const [numberOfApplied, setNumberOfApplied] = useState('00');

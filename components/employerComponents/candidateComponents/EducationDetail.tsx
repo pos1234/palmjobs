@@ -10,17 +10,16 @@ const EducationDetail = (props: any) => {
                 <div className="w-12 h-12 bg-skillColor  items-center justify-center rounded-[1rem] hidden md:max-xl:flex">
                     <SchoolIcon
                         sx={{
-                            color: '#FE5E0A',
                             height: '1.5rem'
                         }}
+                        className='text-gradientFirst'
                     />
                 </div>
                 <SchoolIcon
                     sx={{
-                        color: '#FE5E0A',
                         height: '1.5rem'
                     }}
-                    className="md:max-xl:hidden"
+                    className="md:max-xl:hidden text-gradientFirst"
                 />
                 <p className="text-fhS font-fhW leading-fhL md:text-[1rem] md:font-smRW hidden md:max-xl:flex">
                     {props && props.detail && props.detail.educationLevel}
@@ -30,7 +29,7 @@ const EducationDetail = (props: any) => {
                 <p className="col-span-12 text-fhS font-fhW leading-fhL flex items-center md:text-[1.2rem] md:font-smRW md:max-xl:hidden">
                     {props && props.detail && props.detail.educationLevel}
                 </p>
-                <div className=" font-bigW text-smRS leading-smL text-fadedText col-span-12  hidden sm:flex gap-x-5 items-center md:max-xl:flex-wrap md:max-lg:pt-2">
+                <div className=" font-bigW text-smRS leading-smL text-fadedText col-span-12  hidden flex-wrap sm:flex gap-x-5 items-center md:max-xl:flex-wrap md:max-lg:pt-2">
                     <p className="text-[14px]">
                         <ArticleIcon sx={{ marginRight: '0.5rem', marginTop: '0rem', fontSize: '0.9rem' }} />
                         {props && props.detail && props.detail.fieldStudy}

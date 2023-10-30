@@ -2,7 +2,7 @@ import ConfirmModal from '@/components/ConfirmModal';
 import { deleteDraftedJobs, fetchActivePostedJobs, fetchDraftedJobs, updateJobStatus, updateJobs } from '@/lib/services';
 import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
@@ -11,7 +11,7 @@ const DraftedJobs = (props: any) => {
         deleteDraftedJobs(id).then((res) => {
             toast.success('Successfully Removed');
             fetchDraftedJobs().then((res: any) => {
-                props.setterActiveJobs(res.documents);
+                props.setterFuntion(res.documents);
             });
         });
     };
@@ -36,7 +36,7 @@ const DraftedJobs = (props: any) => {
                     </ul>
                 )}
             </div>
-            <div className="col-span-12 flex items-center justify-center md:col-span-12 md:max-lg:pt-10 md:max-lg:px-20 lg:col-span-3 lg:px-10 gap-x-4">
+            <div className="col-span-12 flex items-center max-lg:border-b-2 max-lg:pb-5 max-lg:mx-3 md:col-span-12 md:max-lg:pt-10 lg:justify-center lg:col-span-4 lg:px-10 gap-x-4 xl:col-span-3">
                 <button>
                     <DeleteIcon
                         onClick={() => {
@@ -50,7 +50,7 @@ const DraftedJobs = (props: any) => {
                     onClick={() => {
                         props.setEditedJobId(props.id);
                     }}
-                    className=" h-[3.5rem] w-full bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW rounded-full cursor-pointer md:full"
+                    className=" h-[3.5rem] w-2/3 bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW rounded-full cursor-pointer md:full"
                 >
                     Continue
                 </button>

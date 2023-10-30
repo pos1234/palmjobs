@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
@@ -46,7 +44,7 @@ const Education = () => {
         <div className="col-span-12 grid grid-cols-12 pt-7 rounded-3xl bg-textW lg:col-start-5 lg:col-end-13 lg:pl-7 pb-10">
             <div className="col-span-8 md:col-span-3 md:col-span-4 lg:col-span-6 xl:col-span-5">
                 <p className="font-fhW text-fhS leading-fhL pl-1 col-span-12">
-                    <SchoolOutlinedIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                    <SchoolOutlinedIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                     Education
                     {/* <EditIcon
                         onClick={() => setOpenEducation(true)}
@@ -59,7 +57,7 @@ const Education = () => {
                 <EditIcon
                     onClick={() => setOpenEducation(true)}
                     sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                    className="w-7 h-7 p-1.5 mr-2"
+                    className="w-7 h-7 p-1.5 mr-2 cursor-pointer"
                 />
             </div>
             <div className="col-span-12 mt-8">
@@ -71,13 +69,13 @@ const Education = () => {
                                     <div className="w-14 h-14 bg-skillColor flex items-center justify-center rounded-[1rem]">
                                         <SchoolIcon
                                             sx={{
-                                                color: '#FE5E0A',
+                                                color: '#00A82D',
                                                 height: '1.5rem'
                                             }}
                                         />
                                     </div>
                                 </div>
-                                <div className="col-span-9 grid grid-cols-12 sm:col-span-11 sm:max-lg:pl-4 md:col-span-11 lg:pl-5">
+                                <div className="col-span-9 grid grid-cols-12 pl-2 sm:col-span-11 sm:max-lg:pl-4 md:col-span-11 lg:pl-5">
                                     <p className="col-span-12 text-fhS font-fhW leading-fhL flex items-center md:text-shS md:font-smRW">
                                         {item.educationLevel}
                                     </p>
@@ -103,7 +101,7 @@ const Education = () => {
                         <div className="col-span-12 grid grid-cols-12 mt-5 sm:gap-y-5 xl:gap-y-2">
                             <div className="col-span-12 grid grid-cols-12 ">
                                 <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                    <SchoolOutlinedIcon sx={{ color: '#FE5E0A', marginRight: '0.5rem' }} />
+                                    <SchoolOutlinedIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                                     Education
                                 </p>
                                 <div className="col-span-2 md:col-span-1 grid pr-2 justify-items-end md:justify-items-center">
@@ -129,7 +127,7 @@ const Education = () => {
                                                 <div className="w-16 h-16 bg-skillColor flex items-center justify-center rounded-[1rem]">
                                                     <SchoolIcon
                                                         sx={{
-                                                            color: '#FE5E0A',
+                                                            color: '#00A82D',
                                                             height: '1.5rem'
                                                         }}
                                                     />
@@ -196,9 +194,9 @@ const Education = () => {
                             <form className="col-span-11 grid grid-cols-12 xl:pl-8" onSubmit={addEducation}>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2 cursor-pointer">
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Level of Education</p>
-                                    <div className="relative border-2 rounded-full" onClick={() => setSelected(!selected)}>
+                                    <div className="relative border-2 rounded-full" /* onClick={() => setSelected(!selected)} */>
                                         <select
-                                            className="w-full rounded-full appearance-none px-4 p-3"
+                                            className="w-full rounded-full appearance-none px-4 p-3 focus:ring-gradientSecond focus:border-0 cursor-pointer"
                                             value={education.educationLevel}
                                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                                                 setEducation({ ...education, educationLevel: e.currentTarget.value })
@@ -206,7 +204,7 @@ const Education = () => {
                                         >
                                             <option value="High School Diploma">High School Diploma</option>
                                             <option value="Vocational Training/Certificate">Vocational Training/Certificate</option>
-                                            <option value="Associate Degrer">Associate Degrer</option>
+                                            <option value="Associate Degree">Associate Degree</option>
                                             <option value="Bachelor's Degree">Bachelor's Degree</option>
                                             <option value="Postgraduate Certificate/Diploma">Postgraduate Certificate/Diploma</option>
                                             <option value="Master's Degree">Master's Degree</option>
@@ -214,9 +212,9 @@ const Education = () => {
                                             <option value="Doctorate (PhD)">Doctorate (PhD)</option>
                                             <option value="Post-Doctorate">Post-Doctorate</option>
                                         </select>
-                                        <div className="absolute top-3 right-4">
+                                        {/* <div className="absolute top-3 right-4">
                                             {selected ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
@@ -228,7 +226,7 @@ const Education = () => {
                                             setEducation({ ...education, fieldStudy: e.currentTarget.value })
                                         }
                                         placeholder="Enter Field of Study/Major"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2">
@@ -240,19 +238,20 @@ const Education = () => {
                                             setEducation({ ...education, university: e.currentTarget.value })
                                         }
                                         placeholder="Enter Your University / Institution"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Graduation year</p>
                                     <input
+                                        max={new Date().toISOString().split('T')[0]}
                                         value={education.yearIssued}
                                         type="date"
                                         onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                             setEducation({ ...education, yearIssued: e.currentTarget.value })
                                         }
                                         placeholder="Year Issued"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
                                     />
                                 </div>
 
@@ -287,9 +286,9 @@ const Education = () => {
                             <form className="col-span-11 grid grid-cols-12 xl:pl-8" onSubmit={editEducations}>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2 cursor-pointer">
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Level of Education</p>
-                                    <div className="relative border-2 rounded-full" onClick={() => setSelected(!selected)}>
+                                    <div className="relative border-2 rounded-full" /* onClick={() => setSelected(!selected)} */>
                                         <select
-                                            className="w-full rounded-full appearance-none px-4 p-3"
+                                            className="w-full rounded-full appearance-none px-4 p-3 focus:ring-gradientSecond focus:border-0 cursor-pointer"
                                             value={EditedEducation.educationLevel}
                                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                                                 setEditedEducation({ ...EditedEducation, educationLevel: e.currentTarget.value })
@@ -297,7 +296,7 @@ const Education = () => {
                                         >
                                             <option value="High School Diploma">High School Diploma</option>
                                             <option value="Vocational Training/Certificate">Vocational Training/Certificate</option>
-                                            <option value="Associate Degrer">Associate Degrer</option>
+                                            <option value="Associate Degree">Associate Degree</option>
                                             <option value="Bachelor's Degree">Bachelor's Degree</option>
                                             <option value="Postgraduate Certificate/Diploma">Postgraduate Certificate/Diploma</option>
                                             <option value="Master's Degree">Master's Degree</option>
@@ -305,9 +304,9 @@ const Education = () => {
                                             <option value="Doctorate (PhD)">Doctorate (PhD)</option>
                                             <option value="Post-Doctorate">Post-Doctorate</option>
                                         </select>
-                                        <div className="absolute top-3 right-4">
+                                        {/* <div className="absolute top-3 right-4">
                                             {selected ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
@@ -319,7 +318,7 @@ const Education = () => {
                                             setEditedEducation({ ...EditedEducation, fieldStudy: e.currentTarget.value })
                                         }
                                         placeholder="Enter Field of Study/Major"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2">
@@ -331,22 +330,22 @@ const Education = () => {
                                             setEditedEducation({ ...EditedEducation, university: e.currentTarget.value })
                                         }
                                         placeholder="Enter Your University / Institution"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Graduation year</p>
                                     <input
+                                        max={new Date().toISOString().split('T')[0]}
                                         value={EditedEducation.yearIssued}
                                         type="date"
                                         onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                             setEditedEducation({ ...EditedEducation, yearIssued: e.currentTarget.value })
                                         }
                                         placeholder="Year Issued"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS appearNone"
                                     />
                                 </div>
-
                                 <div className="col-span-12 grid justify-items-end pr-3 mt-5">
                                     {loadings == true ? (
                                         <img

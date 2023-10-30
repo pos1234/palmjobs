@@ -3,13 +3,26 @@ import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds } from '@/lib/services';
+import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds, getCompanyData } from '@/lib/services';
 import { useEffect, useState } from 'react';
 import ApplyToJob from './ApplyToJobs';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobImage from '../JobImage';
 import SingleJobShimmer from '../shimmer/SingleJobShimmer';
+import Link from 'next/link';
+const CompanyName = (props: any) => {
+    const [compData, setCompData] = useState<any>();
+    const getCompData = () => {
+        getCompanyData(props.id).then((res) => {
+            res && res.documents && setCompData(res.documents[0]);
+        });
+    };
+    useEffect(() => {
+        getCompData();
+    }, []);
+    return <>{compData && <p className="text-[12px] text-darkBlue sm:text-fhS">{compData.companyName}</p>}</>;
+};
 const SavedJobs = (props: any) => {
     const [savedJobId, setSavedJobId] = useState<any[]>([]);
     const [savedJobs, setSavedJobs] = useState<any[]>([]);
@@ -17,9 +30,12 @@ const SavedJobs = (props: any) => {
     const [jobId, setJobId] = useState();
     const [employerId, setEmployerId] = useState();
     const [allLoading, setAllLoading] = useState(false);
+    const [companyName, setCompanyName] = useState('');
+    const [jobTitle, setJobTitle] = useState('');
     useEffect(() => {
         setAllLoading(true);
         fetchSavedJobIds().then((res: any) => {
+            res && res.total == 0 && setAllLoading(false);
             for (let i = 0; i < res.documents.length; i++) {
                 if (!savedJobId.includes(res.documents[i].jobId)) {
                     savedJobId.push(res.documents[i].jobId);
@@ -46,7 +62,6 @@ const SavedJobs = (props: any) => {
                         fetchSavedJobsData(savedJobId)
                             .then((responseData) => {
                                 setSavedJobs(responseData);
-                                // console.log(responseData);
                             })
                             .catch((error) => {
                                 console.error('Error fetching data from Appwrite:', error);
@@ -59,10 +74,8 @@ const SavedJobs = (props: any) => {
                 });
         });
     };
-
     return (
         <>
-            <ToastContainer />
             {allLoading && (
                 <div className="col-span-12 flex flex-col gap-3 gap-y-10 p-3">
                     <div className="flex gap-x-5">
@@ -95,17 +108,30 @@ const SavedJobs = (props: any) => {
                     </div>
                 </div>
             )}
+            {!allLoading && savedJobs.length == 0 && props.view && (
+                <div className="col-span-12 text-center flex flex-col items-center gap-y-3">
+                    <p>No saved jobs under your palm tree yet. Browse the listings to find your next opportunity.</p>
+                    <Link
+                        href="/jobs"
+                        className="w-60 bg-gradient-to-r from-gradientFirst to-gradientSecond px-10 py-5 rounded-full text-textW cursor-pointer"
+                    >
+                        Find Job
+                    </Link>
+                </div>
+            )}
             {savedJobs &&
                 !allLoading &&
                 savedJobs.map((datas: any) => {
                     return (
                         <div className={props.view ? 'col-span-12 grid grid-cols-12 py-3 bg-textW' : 'hidden'} key={datas.$id}>
-                            <JobImage id={datas.employerId} className="hidden h-full w-full md:col-span-2 md:block lg:col-span-1" />
+                            <JobImage id={datas.employerId} className="hidden md:col-span-2 md:block lg:col-span-1" />
                             <div className="col-span-12 pl-5 grid grid-cols-12 md:col-span-10 lg:col-span-8">
-                                <JobImage id={datas.employerId} className="col-span-2 h-full md:hidden" />
+                                <JobImage id={datas.employerId} className="col-span-2 md:hidden" />
                                 <div className="col-span-10 pl-1">
-                                    <p className="text-[12px] text-darkBlue sm:text-fhS">{datas.companyName}</p>
-                                    <p className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-frhS">{datas.jobTitle}</p>
+                                    <CompanyName id={datas.employerId} />
+                                    {/*                                     <p className="text-[12px] text-darkBlue sm:text-fhS">{datas.companyName}</p>
+                                     */}{' '}
+                                    <Link href={`/jobs/${datas.$id}`} target="_blank" className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-frhS">{datas.jobTitle}</Link>
                                     <p className="text-fadedText rounded-full md:hidden">
                                         <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} /> {datas.jobLocation}
                                     </p>
@@ -118,18 +144,19 @@ const SavedJobs = (props: any) => {
                                         <AccessTimeOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1  md:text-[1.2rem]" />
                                         {datas.jobType}
                                     </li>
-                                    <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-3 md:bg-textW md:text-fadedText md:p-0">
+                                    {/* <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-3 md:bg-textW md:text-fadedText md:p-0">
                                         <AttachMoneyOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " />
                                         {datas.salaryRange}
-                                    </li>
+                                    </li> */}
                                     <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-4 md:bg-textW md:text-fadedText md:p-0">
-                                        <CalendarTodayOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " /> 29 min ago
+                                        <CalendarTodayOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " />
+                                        {new Date(datas.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                     </li>
                                 </ul>
-                                <div
+                                {/* <div
                                     className="col-span-12 text-fhS text-darkBlue leading-[24px]  text-fadedText my-5 md:my-0 md:mt-2 md:text-darkBlue"
                                     dangerouslySetInnerHTML={{ __html: datas.jobDescription }}
-                                />
+                                /> */}
                             </div>
                             <div className="col-span-12 flex items-center justify-center md:col-span-12 md:max-lg:pt-10 md:max-lg:px-20 lg:col-span-3 lg:px-10">
                                 <button>
@@ -146,6 +173,8 @@ const SavedJobs = (props: any) => {
                                         setApply(true);
                                         setJobId(datas.$id);
                                         setEmployerId(datas.employerId);
+                                        setJobTitle(datas.jobTitle);
+                                        setCompanyName(datas.companyName);
                                     }}
                                     className=" h-[4.5rem] w-full bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW rounded-full cursor-pointer md:full"
                                 >
@@ -155,7 +184,9 @@ const SavedJobs = (props: any) => {
                         </div>
                     );
                 })}
-            {apply && <ApplyToJob jobId={jobId} employerId={employerId} setterFunction={setApply} />}
+            {apply && (
+                <ApplyToJob jobId={jobId} employerId={employerId} setterFunction={setApply} jobTitle={jobTitle} companyName={companyName} />
+            )}
         </>
     );
 };

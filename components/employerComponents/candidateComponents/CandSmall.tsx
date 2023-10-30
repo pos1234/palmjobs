@@ -15,7 +15,7 @@ const CandSmall = (props: any) => {
     useEffect(() => {
         fetchCandidateDetail(props.canId).then((res) => {
             setCandidateData(res.documents.length > 0 && res.documents[0]);
-            props.short !== 'true' && props.detailHolder(res.documents.length > 0 && res.documents[0]);
+            props.short !== 'true' && props.detailHolder(res.total > 0 && res.documents[0]);
             const parsed = res.documents[0] && res.documents[0].skills && res.documents[0].skills;
             const imageLink =
                 res.documents[0] &&
@@ -25,7 +25,6 @@ const CandSmall = (props: any) => {
             if (imageLink) {
                 setImageHref(imageLink.href);
             }
-
             setSkill(res.documents[0] && res.documents[0].skills && parsed);
         });
     }, []);
@@ -42,24 +41,24 @@ const CandSmall = (props: any) => {
             }}
             className={
                 props.detailValue == true
-                    ? `bg-textW shadow flex flex-col p-3 rounded-2xl cursor-pointer max-md:hidden ${
-                          (props.short !== 'true' && props.index === props.indexValue) ||
-                          (props.viewShort === false && props.index === props.indexValue)
-                              ? 'border-[1px] bg-textW shadow border-orange-500 max-md:hidden'
-                              : 'border-[1px] bg-textW shadow border-stone-200 max-md:hidden'
-                      }`
-                    : `bg-textW shadow flex flex-col p-3 rounded-2xl cursor-pointer ${
-                          (props.short !== 'true' && props.index === props.indexValue) ||
-                          (props.viewShort === false && props.index === props.indexValue)
-                              ? 'border-[1px] bg-textW shadow border-orange-500'
-                              : 'border-[1px] bg-textW shadow border-stone-200'
-                      }`
+                    ? `bg-textW shadow flex flex-col p-3 rounded-2xl cursor-pointer max-md:hidden ${(props.short !== 'true' && props.index === props.indexValue) ||
+                        (props.viewShort === false && props.index === props.indexValue)
+                        ? 'border-[1px] bg-textW shadow border-gradientFirst max-md:hidden'
+                        : 'border-[1px] bg-textW shadow border-stone-200 max-md:hidden'
+                    }`
+                    : `bg-textW shadow flex flex-col p-3 rounded-2xl cursor-pointer ${(props.short !== 'true' && props.index === props.indexValue) ||
+                        (props.viewShort === false && props.index === props.indexValue)
+                        ? 'border-[1px] bg-textW shadow border-gradientFirst'
+                        : 'border-[1px] bg-textW shadow border-stone-200'
+                    }`
             }
         >
             <div className="grid grid-cols-12 gap-x-2">
-                {imageHref && <img src={imageHref} className="col-span-2 w-16 h-16 md:col-span-4 rounded-xl" />}
+                
+                
+                {imageHref && <img src={imageHref} className="col-span-2 sm:w-16 sm:h-16 md:col-span-4 rounded-xl" />}
                 <div className="col-span-9 flex flex-col md:col-span-7">
-                    <p className="text-neutral-900 text-lg font-medium">John Doe</p>
+                    <p className="text-neutral-900 text-md font-medium">{candidateData && candidateData.name}</p>
                     <p className="text-stone-300 text-sm font-normal">{candidateData && candidateData.bioHeadline}</p>
                     {candidateData && candidateData.address && (
                         <p className="text-neutral-900 text-opacity-70 text-sm font-normal leading-normal">
@@ -97,14 +96,14 @@ const CandSmall = (props: any) => {
                         );
                     })}
             </div>
-            <div className="flex gap-x-1">
+            {/* <div className="flex gap-x-1">
                 <div className="text-gradientFirst">
                     <PersonIcon />
                 </div>
                 <div className="h-10 overflow-hidden text-stone-300 text-sm font-light leading-normal">
                     {candidateData && candidateData.bioDescription}
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

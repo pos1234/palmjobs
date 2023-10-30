@@ -10,7 +10,6 @@ const Bio = () => {
     const [openBio, setOpenBio] = useState(false);
     const bioMaxCharacters = 100;
     const bioDescMaxCharacters = 1000;
-
     return (
         <div className="col-span-12 grid grid-cols-12 bg-textW rounded-3xl p-2 pt-5 pr-0 lg:pl-14 lg:p-8 md:pr-5 lg:pr-5">
             <div className="col-span-8 md:col-span-6">
@@ -69,7 +68,7 @@ const Bio = () => {
                                             }
                                         }}
                                         placeholder="Marketing Manager"
-                                        className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS"
                                     />
 
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">
@@ -87,7 +86,7 @@ const Bio = () => {
                                             }
                                         }}
                                         placeholder="Describe yourself...."
-                                        className="border-[1px] w-full rounded-xl resize-none pt-3 pl-5 h-36 text-addS"
+                                        className="focus:ring-orange-500 focus:border-0 border-[1px] w-full rounded-xl resize-none pt-3 pl-5 h-36 text-addS"
                                     ></textarea>
                                 </div>
                             </div>

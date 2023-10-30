@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+@import url('./poppins.css');
 html,
 body {
     font-family: 'Poppins', sans-serif;
@@ -14,10 +15,32 @@ body {
 /* .aos-init[data-aos][data-aos].aos-animate {
     transform: unset;
 } */
+::-webkit-scrollbar {
+    width: 15px;
+}
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #74d18d;
+    border-radius: 10px;
+}
+.thinScrollBar::-webkit-scrollbar {
+    width: 5px;
+}
+.thinScrollBar::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+.thinScrollBar::-webkit-scrollbar-thumb {
+    background-color: #74d18d;
+    border-radius: 10px;
+}
+
 .hideScrollBar::-webkit-scrollbar {
     display: none;
 }
-
 .hideIncrease::-webkit-inner-spin-button,
 .hideIncrease::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -46,9 +69,10 @@ body {
     animation-fill-mode: forwards;
 }
 .employerBack {
-    background: url('../public/images/leafWhite.svg') repeat-y;
-    background-position-x: 100%;
-    background-size: 10%;
+    background: url('../public/images/jobsBack.svg') repeat-y;
+    background-position-x: -55%;
+    
+    
 }
 .loginCoursel {
     background: url('../public/images/loginCricle.svg') no-repeat;
