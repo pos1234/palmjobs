@@ -152,7 +152,7 @@ const PostAJob = (props: any) => {
     const [postingJobId, setPostingJobId] = useState('');
     const [noDraft, setNoDraft] = useState(false);
     const [noJobs, setNoJobs] = useState(false);
-    const [emailNotify, setEmailNotify] = useState('')
+    const [emailNotify, setEmailNotify] = useState('');
     const initialData = () => {
         const result = getProfileData();
         if (result) {
@@ -205,8 +205,8 @@ const PostAJob = (props: any) => {
         if (first && !second && !third && !fourth) {
             /*             setCompError('');
              */ setJobTitleError('');
-/*             setCategoryError('');
- */            /*  if (compName == '') {
+            /*             setCategoryError('');
+             */ /*  if (compName == '') {
                 setCompError('Company Name is required');
             } else  */ if (jobTitle == '') {
                 setJobTitleError('Job Titile is required');
@@ -309,8 +309,8 @@ const PostAJob = (props: any) => {
         e.preventDefault();
         if (first && !second && !third && !fourth) {
             setJobTitleError('');
-/*             setCategoryError('');
- */            if (jobTitle == '') {
+            /*             setCategoryError('');
+             */ if (jobTitle == '') {
                 setJobTitleError('Job Titile is required');
             } /* else if (category == '') {
                 setCategoryError('Job Titile is required');
@@ -356,6 +356,34 @@ const PostAJob = (props: any) => {
             }
         }
     };
+
+    const generateJobDescription = async ({
+        jobTitle,
+        skills,
+        yearsOfExperience
+    }: Record<'jobTitle' | 'skills' | 'yearsOfExperience', string>) => {
+        console.log('Generating job description...', `${window.location.hostname}/api/oai/jobDescription`);
+        try {
+            if (typeof window === 'undefined') return;
+            const url = new URL(`${window.location.origin}/api/oai/jobDescription`);
+            if (jobTitle) {
+                url.searchParams.append('j', jobTitle);
+            }
+            if (skills) {
+                url.searchParams.append('s', skills);
+            }
+            if (yearsOfExperience) {
+                url.searchParams.append('y', yearsOfExperience);
+            }
+
+            const res: { content: string } = await fetch(url.toString()).then((res) => res.json());
+
+            setJobDesc(res.content);
+        } catch (error) {
+            console.error('Error generating job description', error);
+        }
+    };
+
     const handleSecondSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         if (second && !third && !fourth) {
@@ -371,6 +399,13 @@ const PostAJob = (props: any) => {
                         setSecond(false);
                         setFirst(false);
                         setChooseJob(false);
+
+                        generateJobDescription({
+                            jobTitle,
+                            skills: skillArray.join(', '),
+                            yearsOfExperience: expRequired
+                        });
+
                         toast.success('Saved as Draft');
                     })
                     .catch((error) => {
@@ -428,8 +463,9 @@ const PostAJob = (props: any) => {
                     setLoading(false);
                     toast.success('Job posted successfully');
                     getAccount().then((result: any) => {
-
-                        result && emailNotify !== 'false' && SendJobPostedEmail(result.email, jobTitle, `${VERIFY}/jobs/${res.$id}`, result.name);
+                        result &&
+                            emailNotify !== 'false' &&
+                            SendJobPostedEmail(result.email, jobTitle, `${VERIFY}/jobs/${res.$id}`, result.name);
                     });
                     typeof window !== 'undefined' && router.push(`/jobs/${res.$id}`);
                 })
@@ -444,8 +480,8 @@ const PostAJob = (props: any) => {
         setPostingJobId(id);
         fetchSinglePostedJobs(id).then((res: any) => {
             setJobTitle(res.documents[0].jobTitle);
-/*             setCategory(res.documents[0].jobIndustry);
- */            if (res.documents[0].jobLocation.toLowerCase() == 'remote') {
+            /*             setCategory(res.documents[0].jobIndustry);
+             */ if (res.documents[0].jobLocation.toLowerCase() == 'remote') {
                 setRemote(true);
                 setHybrid(false);
                 setAddLocation(false);
@@ -526,11 +562,10 @@ const PostAJob = (props: any) => {
                     setProfileFilled(true);
                     setCompName(res.documents[0].companyName);
                     if (res.documents[0].receiveEmailNotification !== false) {
-                        setEmailNotify('true')
+                        setEmailNotify('true');
                     }
                     if (res.documents[0].receiveEmailNotification == false) {
-                        setEmailNotify('false')
-
+                        setEmailNotify('false');
                     }
                 }
             }
@@ -903,7 +938,8 @@ const PostAJob = (props: any) => {
             >
                 <div className="text-neutral-900 text-[1.3rem] font-semibold leading-10 md:text-[1.6rem]">Set application Preference</div>
                 <div className="flex bg-forBack w-full p-2 gap-x-5 md:w-1/2">
-                    <div title='Recieve Application Through Palmjobs'
+                    <div
+                        title="Recieve Application Through Palmjobs"
                         onClick={() => {
                             setPalm(true);
                             setEmail(false);
@@ -919,7 +955,7 @@ const PostAJob = (props: any) => {
                         <p className="absolute bottom-1">Palm Jobs</p>
                     </div>
                     <div
-                        title='Recieve Application Through Email'
+                        title="Recieve Application Through Email"
                         onClick={() => {
                             setPalm(false);
                             setEmail(true);
@@ -934,7 +970,8 @@ const PostAJob = (props: any) => {
                         <AlternateEmailIcon className="-ml-2" />
                         <p className="absolute bottom-1">Email</p>
                     </div>
-                    <div title='Recieve Application Through External Link'
+                    <div
+                        title="Recieve Application Through External Link"
                         onClick={() => {
                             setPalm(false);
                             setEmail(false);
@@ -1075,8 +1112,8 @@ const PostAJob = (props: any) => {
                                             minSalary == '' && maxSalary !== ''
                                                 ? maxSalary
                                                 : minSalary !== '' && maxSalary == ''
-                                                    ? minSalary
-                                                    : minSalary + '-' + maxSalary
+                                                ? minSalary
+                                                : minSalary + '-' + maxSalary
                                         }
                                         icon={
                                             currency == 'euro' ? (

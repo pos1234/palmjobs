@@ -32,7 +32,7 @@ export default async function jobDescription(req: NextApiRequest, res: NextApiRe
                     
                     ${skills ? 'Skills: ' + skills : ''}
                     
-                    ${yearsOfExperience ? 'Years of experience: ' + yearsOfExperience + ' years' : ''}`
+                    ${yearsOfExperience ? 'Years of experience: ' + yearsOfExperience : ''}`
                 }
             ],
             temperature: 0,
