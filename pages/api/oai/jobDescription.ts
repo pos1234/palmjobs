@@ -24,7 +24,15 @@ export default async function jobDescription(req: NextApiRequest, res: NextApiRe
             messages: [
                 {
                     role: 'system',
-                    content: `Imagine you are a seasoned HR professional at a reputable company. Your task is to create a compelling job description for a new position within the organization. Please generate a detailed job description based on the provided information. MAKE SURE that the text is grammatically correct. Please provide the text in HTML using only h2, h3, ul, li, p and b tags. The text must be from 300-500 words and each section must not have more than 7 bullet points. start of by writing a short briefing, then responsibilities and requirements, benefits. Don't include the job title in your response as we include it by default.`
+                    content: `As an expert in HR, could you please generate a comprehensive job description based on the following criteria? Use HTML tags such as h2 for Briefing, h3 for Responsibilities, Qualifications, and Benefits, as well as ul and li for bullet points. Keep the word count between 300-500 words and limit each section to no more than 7 bullet points.
+
+- Start with a Briefing section enclosed in <h2> tags.
+- Follow with a Responsibilities section. Use <h3> tags for the section title and <ul> and <li> tags for bullet points.
+- Next, include a Qualifications section using <h3> tags for the section title and <ul> and <li> tags for bullet points. Make sure to incorporate industry-specific keywords.
+
+
+Exclude the job title; it will be added automatically. Ensure all text is grammatically correct.
+`
                 },
                 {
                     role: 'user',
