@@ -6,7 +6,8 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "deploy": "git pull source main --allow-unrelated-histories && git push source main"
     },
     "dependencies": {
         "@emailjs/browser": "^3.11.0",
@@ -25,6 +26,7 @@
         "next-auth": "^4.22.1",
         "next-share": "^0.27.0",
         "node-appwrite": "^9.0.0",
+        "openai": "^4.14.2",
         "react": "^18.2.0",
         "react-autosuggest": "^10.1.0",
         "react-dom": "^18.2.0",
