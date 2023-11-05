@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import { MiddleWare } from '@/lib/middleware';
-import { deleteProfileImage, getProfilePicture } from '@/lib/services';
 import ConfirmModal from '../ConfirmModal';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -11,6 +9,9 @@ import InsertLinkOutlinedIcon from '@mui/icons-material/InsertLinkOutlined';
 import dynamic from 'next/dynamic';
 import { FileUploader } from 'react-drag-drop-files';
 import 'react-quill/dist/quill.snow.css';
+import { deletePictures, getUserDetail, updateProjects, uploadProfilePictures } from '@/lib/candidateBackend';
+import { toast } from 'react-toastify';
+import { ProfilePic } from '../JobImage';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -19,10 +20,28 @@ const Project = () => {
     const loadingIn = '/images/loading.svg';
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [displayProject, setDisplayProject] = useState(false);
+    const [projectIndex, setProjectIndex] = useState(Number);
+    const [projectEdit, setProjectEdit] = useState(false);
+    const [projectsArray, setProjectsArray] = useState<any[]>([]);
+    const [projectFile, setProjectFile] = useState<File | null>(null);
+    const [loadings, setLoadings] = useState(false);
+    const [openProjectModal, setOpenProjectModal] = useState(false);
+
     const [errorMessage, setErrorMessage] = useState('');
     const [fileName, setFileName] = useState('');
     const fileTypes = ['jpeg', 'png', 'jpg'];
-
+    const [projectData, setProjectData] = useState({
+        name: '',
+        description: '',
+        url: '',
+        thumbnailId: ''
+    });
+    const [editedProject, setEditedProject] = useState({
+        projectName: '',
+        detail: '',
+        link: '',
+        thumbnailId: ''
+    });
     const handleProjectImage = (files: any) => {
         setProjectFile(files);
         setFileName(files.name);
@@ -34,36 +53,103 @@ const Project = () => {
     const sizeError = (err: any) => {
         setErrorMessage(err);
     };
-    const {
-        projectIndex,
-        setProjectIndex,
-        projectEdit,
-        setProjectEdit,
-        projectsArray,
-        setProjectsArray,
-        projectData,
-        setProjectData,
-        editedProject,
-        setEditedProject,
-        projectFile,
-        setProjectFile,
-        addProject,
-        editProject,
-        deleteProject,
-        loadings,
-        openProjectModal,
-        setOpenProjectModal
-    } = MiddleWare();
-    const projectImage = (id: string) => {
-        const { href } = getProfilePicture(id);
-        return href;
+    const addProject = async (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        setLoadings(true);
+        if (projectFile) {
+            const { $id } = await uploadProfilePictures(projectFile);
+            const result = updateProjects(projectData.name, projectData.url, projectData.description, $id);
+            result
+                .then((res: any) => {
+                    setLoadings(false);
+                    setOpenProjectModal(false);
+                    toast.success('Project Added Successfully');
+                    const project = JSON.parse(res.projects);
+                    setProjectsArray(project);
+                    setProjectData({
+                        name: '',
+                        description: '',
+                        url: '',
+                        thumbnailId: ''
+                    });
+                    setProjectFile(null);
+                })
+                .catch((error: any) => {
+                    console.log(error);
+                    toast.error(`Project Not Added ${error}`);
+                    setLoadings(false);
+                });
+        }
+        if (!projectFile) {
+            const result = updateProjects(projectData.name, projectData.url, projectData.description, '');
+            result
+                .then((res: any) => {
+                    setLoadings(false);
+                    setOpenProjectModal(false);
+                    toast.success('Project Added Successfully');
+                    const project = JSON.parse(res.projects);
+                    setProjectsArray(project);
+                    setProjectData({
+                        name: '',
+                        description: '',
+                        url: '',
+                        thumbnailId: ''
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                    toast.error(`Project Not Added ${error}`);
+                    setLoadings(false);
+                });
+        }
     };
+    const editProject: any = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        setLoadings(true);
+        updateProjects(editedProject.projectName, editedProject.link, editedProject.detail, editedProject.thumbnailId)
+            .then((res) => {
+                setLoadings(false);
+                projectsArray.pop();
+                projectsArray.push(editedProject);
+                toast.success('Successfully Saved Project');
+            })
+
+            .catch((error) => {
+                toast.error(`Project Not Saved ${error}`);
+                setLoadings(false);
+            });
+    };
+    const deleteProject = () => {
+        updateProjects('', '', '', '')
+            .then((res) => {
+                setProjectsArray([]);
+                toast.success('Successfully Removed Project');
+            })
+            .catch((error) => {
+                toast.error(`Project Not Removed ${error}`);
+            });
+    };
+    /* const projectImage = (id: string) => {
+        const { href } = getProfilePictures(id);
+        return href;
+    }; */
     const indexProjects = (index: number) => {
         setProjectEdit(true);
         setProjectIndex(projectsArray[0].thumbnailId);
         setEditedProject(projectsArray[0]);
     };
-
+    const convertToArray = (str: any) => {
+        if (str != '') return JSON.parse(str);
+        else return '';
+    };
+    const userData = async () => {
+        const userInfo = await getUserDetail()
+        const projects = convertToArray(userInfo.projects) || [];
+        setProjectsArray(projects || '');
+    }
+    useEffect(() => {
+        userData()
+    }, [])
     return (
         <div className="col-span-12 pt-7 grid grid-cols-12 bg-textW rounded-3xl pb-8 lg:pl-10">
             <div className="col-span-8 md:col-span-3">
@@ -82,7 +168,7 @@ const Project = () => {
                         >
                             {item.thumbnailId && (
                                 <div className="col-span-12 sm:col-span-4 pr-1 py-1 grid justify-items-center sm:justify-items-start">
-                                    <img src={projectImage(item.thumbnailId)} className="w-48 h-48 rounded-3xl" />
+                                    <ProfilePic id={item.thumbnailId} className="w-48 h-48 rounded-3xl" />
                                 </div>
                             )}
                             <div className="col-span-12 sm:col-span-8 pt-3 pl-3">
@@ -133,7 +219,7 @@ const Project = () => {
                                         onClick={() => {
                                             setConfirmDelete(false);
                                             deleteProject();
-                                            item.thumbnailId && deleteProfileImage(item.thumbnailId);
+                                            item.thumbnailId && deletePictures(item.thumbnailId);
                                         }}
                                         className="bg-lightGreen rounded-[20%] text-green-800 py-0.5 px-1"
                                     >

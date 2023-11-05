@@ -1,16 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LocalFireDepartmentOutlinedIcon from '@mui/icons-material/LocalFireDepartmentOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { MiddleWare } from '@/lib/middleware';
 import skillsData from '@/lib/skillData';
+import { getUserDetail, updateSkills } from '@/lib/candidateBackend';
 interface Data {
     word: string;
 }
 const Skills = () => {
-    const { array, deleteSkill, addSuggestedSkill } = MiddleWare();
-
+    const [array, setArray] = useState<string[]>([]);
     const [inputSkill, setInputSkill] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<Data[]>([]);
@@ -34,7 +33,22 @@ const Skills = () => {
         const filteredSuggestions = items.filter((data) => data.word.toLowerCase().includes(inputValue.toLowerCase()));
         setSuggestions(filteredSuggestions);
     };
-
+    const addSuggestedSkill = async (suggesteSkill: string) => {
+        array.push(suggesteSkill);
+        await updateSkills(array);
+    };
+    const deleteSkill = (index: number) => {
+        const newArray = array.filter((item, i) => i !== index);
+        setArray(newArray);
+        updateSkills(newArray);
+    };
+    const userData = async () => {
+        const userInfo = await getUserDetail()
+        setArray(userInfo.skills || '');
+    }
+    useEffect(() => {
+        userData()
+    }, [])
     return (
         <div className="col-span-12 pt-7 grid grid-cols-12 bg-textW rounded-3xl pb-5 lg:pl-10">
             <p className="font-fhW text-fhS leading-fhL pl-1 col-span-8 lg:pl-5">

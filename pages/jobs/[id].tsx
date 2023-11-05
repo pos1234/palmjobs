@@ -4,7 +4,9 @@ import React, { useEffect, useState } from 'react';
 import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';
 import PinDropOutlined from '@mui/icons-material/PinDropOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { fetchSinglePostedJobs, getAccount, getCompanyData, getRole } from '@/lib/services';
+import { getAccount } from '@/lib/accountBackend';
+import { getRole } from '@/lib/candidateBackend';
+import { fetchSinglePostedJobs, getCompanyData, } from '@/lib/employerBackend';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
@@ -49,7 +51,7 @@ const singleJob = () => {
     const [jobTitle, setJobTitle] = useState('');
     const [accountId, setAccountId] = useState('')
     const handleSearch = () => {
-        typeof window !== 'undefined' &&  router.push({
+        typeof window !== 'undefined' && router.push({
             pathname: '/jobs',
             query: { param1: searchText, param2: address }
         });
@@ -92,8 +94,8 @@ const singleJob = () => {
         setApply(false);
         const accountInfo = await getAccount();
         if (accountInfo !== 'failed') {
-            const role = await getRole(accountInfo.$id);
-            if (role.documents[0].userRole == 'candidate') {
+            const role = await getRole();
+            if (role && role.documents[0].userRole == 'candidate') {
                 setApply(true);
                 setApplyJobId(jobId);
                 setApplyEmployerId(employerId);
@@ -101,7 +103,7 @@ const singleJob = () => {
             }
         }
         if (accountInfo == 'failed') {
-            typeof window !== 'undefined' &&  router.push('/account');
+            typeof window !== 'undefined' && router.push('/account');
         }
     };
     const handleEmailApply = (email: string) => {

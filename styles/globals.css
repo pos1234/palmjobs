@@ -71,8 +71,6 @@ body {
 .employerBack {
     background: url('../public/images/jobsBack.svg') repeat-y;
     background-position-x: -55%;
-    
-    
 }
 .loginCoursel {
     background: url('../public/images/loginCricle.svg') no-repeat;

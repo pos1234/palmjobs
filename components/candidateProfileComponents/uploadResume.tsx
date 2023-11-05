@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { MiddleWare } from '@/lib/middleware';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import { getResumeName } from '@/lib/services';
+import { getResumeName } from '@/lib/candidateBackend';
 import { FileUploader } from 'react-drag-drop-files';
+import { deleteResume, getUserDetail, updateResumeId, uploadResume } from '@/lib/candidateBackend';
+import { toast } from 'react-toastify';
 const FileUploadForm = (props: any) => {
     const pdfIcon = '/images/pdfIcon.svg';
-    const { addResume, updateResume, resumeId } = MiddleWare();
+    const [resumeId, setResumeId] = useState('');
     const [fileName, setFileName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     useEffect(() => {
@@ -30,6 +31,52 @@ const FileUploadForm = (props: any) => {
     const sizeError = (err: any) => {
         setErrorMessage(err);
     };
+    const addResume = (file: any) => {
+        const resultResume = uploadResume(file);
+        resultResume
+            .then((res: any) => {
+                setResumeId(res.$id);
+                const response = updateResumeId(res.$id);
+                response
+                    .then((rem) => {
+                        toast.success('Resume Added Successfully');
+                    })
+                    .catch((error) => {
+                        toast.error('Resume Not Added');
+                        console.log(error);
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+    const updateResume = (file: any) => {
+        const results = deleteResume(resumeId);
+        const resultResume = uploadResume(file);
+        resultResume
+            .then((res: any) => {
+                setResumeId(res.$id);
+                const response = updateResumeId(res.$id);
+                response
+                    .then((rem) => {
+                        toast.success('Replaced Successfully');
+                    })
+                    .catch((error) => {
+                        toast.error('Resume Not Replaced');
+                        console.log(error);
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+    const userData = async () => {
+        const userInfo = await getUserDetail()
+        setResumeId(userInfo.resumeId || '');
+    }
+    useEffect(() => {
+        userData()
+    }, [])
     return (
         <>
             {resumeId ? (

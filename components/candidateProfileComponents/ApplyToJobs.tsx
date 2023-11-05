@@ -10,23 +10,19 @@ import EditIcon from '@mui/icons-material/Edit';
 import dynamic from 'next/dynamic';
 import Notification from '../Notification';
 import {
-    getUserData,
-    alreadyApplied,
+/*     getUserData,
+ */    alreadyApplied,
     applyToJobs,
-    fetchSavedJobIds,
-    fetchSavedJobsData,
-    getCandidateInfo,
-    getResume,
-    getSavedJobId,
-    unSaveJobs,
+    getCandidateDocument,
+    getResumeName,
     uploadResume,
     downLoadResume,
-    getAccount,
-    getProfilePicture
-} from '@/lib/services';
+} from '@/lib/candidateBackend';
+import { getAccount } from '@/lib/accountBackend';
 import { toast } from 'react-toastify';
 import { SendJobAppliedEmail } from '../SendEmail';
 import Link from 'next/link';
+import { ProfilePic } from '../JobImage';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
@@ -85,26 +81,27 @@ const ApplyToJob = (props: any) => {
         }
     };
     const getCanInfo = async () => {
-        const res = await getCandidateInfo();
-        if (res) {
-            setUserData(res.documents[0]);
-            setPhone(res.documents[0].phoneNumber);
-            setLinked(res.documents[0].linkedIn);
-            setCover(res.documents[0].coverLetter);
-            if (res.documents[0].skills == null || res.documents[0].skills && res.documents[0].skills.length == 0) {
+        const { documents }: any = await getCandidateDocument();
+        if (documents[0]) {
+            setUserData(documents[0]);
+            setPhone(documents[0].phoneNumber);
+            setLinked(documents[0].linkedIn);
+            setCover(documents[0].coverLetter);
+            if (documents[0].skills == null || documents[0].skills && documents[0].skills.length == 0) {
                 setSkillLength(0)
             }
-            if (res.documents[0].educations == null || res.documents[0].educations && res.documents[0].educations.length == 0) {
+            if (documents[0].educations == null || documents[0].educations && documents[0].educations.length == 0) {
                 setEducationLength(0)
             }
-            return res;
         }
     };
     const checkApplied = async () => {
         setLoading(true);
-        getCanInfo().then((userData: any) => {
-            alreadyApplied(userData.documents[0].Id, props.jobId).then((applied) => {
-                const resume = userData && userData.documents[0].resumeId != null && getResume(userData.documents[0].resumeId);
+        const { documents }: any = await getCandidateDocument();
+
+        if (documents) {
+            alreadyApplied(documents[0].Id, props.jobId).then((applied) => {
+                const resume = documents[0].resumeId != null && getResumeName(documents[0].resumeId);
                 resume &&
                     resume.then((res: any) => {
                         setFileName(res.name);
@@ -119,7 +116,7 @@ const ApplyToJob = (props: any) => {
                     setAppliedJob(false);
                 }
             });
-        });
+        }
     };
     useEffect(() => {
         getData();
@@ -152,8 +149,7 @@ const ApplyToJob = (props: any) => {
                         setLoadingApply(false);
                     })
                     .catch((error) => {
-/*                         setOpenApply(false);
- */                        setOpenNotify(true);
+                        setOpenNotify(true);
                         setFailed(true);
                         setLoadingApply(false);
                         console.log(error);
@@ -172,8 +168,7 @@ const ApplyToJob = (props: any) => {
                     setLoadingApply(false);
                 })
                 .catch((error) => {
-/*                     setOpenApply(false);
- */                    setOpenNotify(true);
+                    setOpenNotify(true);
                     setFailed(true);
                     setLoadingApply(false);
                     console.log(error);
@@ -182,10 +177,10 @@ const ApplyToJob = (props: any) => {
                 });
         }
     };
-    const projectImage = (id: string) => {
-        const { href } = getProfilePicture(id);
-        return href;
-    };
+    /*  const projectImage = (id: string) => {
+         const { href } = getProfilePicture(id);
+         return href;
+     }; */
     return (
         <>
             {!failed && (
@@ -233,8 +228,7 @@ const ApplyToJob = (props: any) => {
                             <Link href="/jobs/"
                                 onClick={() => {
                                     props.setterFunction(false);
-                                    /*                                     setLoading(true);
-                                     */
+
                                 }}
                                 type="button"
                                 className="text-textW bg-gradient-to-r flex justify-center items-center from-gradientFirst to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
@@ -255,8 +249,7 @@ const ApplyToJob = (props: any) => {
                                         Apply
                                     </p>
                                 </div>
-                                {/*                                 <button type='button' onClick={handleSendEmail}>Send Email</button>
-                                 */}
+
                                 <div className="col-span-12 grid grid-cols-12 gap-x-2 pr-3 mt-5">
                                     <div className="rounded-2xl bg-gradientFirst h-1.5 col-span-3"></div>
                                     <div
@@ -389,12 +382,7 @@ const ApplyToJob = (props: any) => {
                                                 name="file"
                                                 types={fileTypes}
                                             >
-                                                {/* <div className="text-gray-200">
-                                                    <img src={pdfIconSmall} />
-                                                </div> */}
-                                                {/* <div className="text-black text-xs font-normal">
-                                                    {fileName ? fileName : <p>Select a file or drag and drop here</p>}
-                                                </div> */}
+
 
                                                 <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
                                                     PDF, DOCX or DOC, file size no more than 1MB
@@ -406,25 +394,6 @@ const ApplyToJob = (props: any) => {
                                                 </div>
                                                 {errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}
                                             </FileUploader>
-                                            {/* <FileUploader
-                                                multiple={false}
-                                                maxSize={1}
-                                                onSizeError={sizeError}
-                                                onTypeError={displayError}
-                                                handleChange={updateTheCv}
-                                                classes={
-                                                    errorMessage
-                                                        ? 'text-stone-300 border relative flex items-center justify-center border-red-300 h-14 w-full rounded-full cursor-pointer'
-                                                        : 'text-stone-500 border relative flex items-center justify-center border-stone-500 h-14 w-full rounded-full cursor-pointer'
-                                                }
-                                                types={fileTypes}
-                                            >
-                                                Upload Resume
-                                            </FileUploader> */}
-                                            {/* <div className="text-stone-300 text-sm text-center mt-3 font-light leading-normal">
-                                                {errorMessage && <div className="text-red-500 text-xs mb-2">{errorMessage}</div>}
-                                                DOC, DOCX, PDF (1 MB)
-                                            </div> */}
                                         </div>
                                         {fileName && (
                                             <div className="col-span-12 grid grid-cols-12 shadow border border-gradientFirst rounded-3xl mt-5">
@@ -452,10 +421,9 @@ const ApplyToJob = (props: any) => {
                                         <p className="text-black text-3xl font-semibold leading-10 ">Contact info</p>
                                         <div className="flex gap-x-2 md:max-xl:flex-col pt-3">
                                             {userData.profilePictureId && (
-                                                <img src={projectImage(userData.profilePictureId)} className="w-24 h-24 rounded-2xl" />
+                                                <ProfilePic id={(userData.profilePictureId)} className="w-24 h-24 rounded-2xl" />
                                             )}
-                                            {/*                                             <img className="w-24 h-24 rounded-2xl" src={profile} />
- */}                                            <div className="flex flex-col gap-0.5">
+                                            <div className="flex flex-col gap-0.5">
                                                 <div className="text-neutral-900 text-xl font-medium leading-7">{newName}</div>
                                                 <div className="text-stone-300 text-lg font-normal leading-relaxed">
                                                     {userData.bioHeadline}

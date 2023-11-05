@@ -17,21 +17,17 @@ import Skills from '@/components/employerComponents/Skills';
 import CloseIcon from '@mui/icons-material/Close';
 import DropDown from '@/components/DropDown';
 import {
-    accountData,
-    deleteProfileImage,
     getProfileData,
-    getProfilePicture,
     fetchPostedJobs,
-    /*     postJobs,
-     */ fetchSinglePostedJobs,
+    fetchSinglePostedJobs,
     postFirstTab,
     postSecondTab,
     postThirdTab,
     postFourthTab,
     fetchDraftedJobs,
     updateFirstTab,
-    getAccount
-} from '@/lib/services';
+} from '@/lib/employerBackend';
+import { getAccount } from '@/lib/accountBackend';
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -110,8 +106,7 @@ const PostAJob = (props: any) => {
     const [compError, setCompError] = useState('');
     const [jobTitle, setJobTitle] = useState('');
     const [jobTitleError, setJobTitleError] = useState('');
-    /* const [category, setCategory] = useState('');
-    const [categoryError, setCategoryError] = useState(''); */
+
     const [remote, setRemote] = useState(false);
     const [hybrid, setHybrid] = useState(false);
     const [location, setLocation] = useState('');
@@ -186,13 +181,7 @@ const PostAJob = (props: any) => {
             setSecond(false);
             setFirst(true);
             setChooseJob(false);
-        } /* else if (first == true) {
-            setFourth(false);
-            setThird(false);
-            setSecond(false);
-            setFirst(false);
-            setChooseJob(false);
-        } */
+        }
     };
     const handleFront = (e: React.FormEvent<HTMLElement>) => {
         if (chooseJob && !first && !second && !third && !fourth) {
@@ -203,16 +192,10 @@ const PostAJob = (props: any) => {
             setChooseJob(false);
         }
         if (first && !second && !third && !fourth) {
-            /*             setCompError('');
-             */ setJobTitleError('');
-            /*             setCategoryError('');
-             */ /*  if (compName == '') {
-                setCompError('Company Name is required');
-            } else  */ if (jobTitle == '') {
+            setJobTitleError('');
+            if (jobTitle == '') {
                 setJobTitleError('Job Titile is required');
-            } /* else if (category == '') {
-                setCategoryError('Job Titile is required');
-            } */ else if (location == '') {
+            } else if (location == '') {
                 setLocationError('Please Provide Location');
             } else {
                 setFourth(false);
@@ -236,9 +219,7 @@ const PostAJob = (props: any) => {
         if (!second && third && !fourth) {
             setSalaryRangeError('');
             if (salaryRange.name === 'Range') {
-                /* if (minSalary === '' || maxSalary === '') {
-                    setSalaryRangeError('Please provide Minimum and Maximum salary');
-                } else */ if (jobDesc == '') {
+                if (jobDesc == '') {
                     setJobDescError('Job Description is required');
                 } else if (compDesc == '') {
                     setCompDescError('Company Description is required');
@@ -259,14 +240,12 @@ const PostAJob = (props: any) => {
                     setChooseJob(false);
                 }
             } else if (salaryRange.name === 'Starting amount') {
-                /*  if (minSalary === ' ') {
-                    setSalaryRangeError('Please provide Minimum salary');
-                } else  */ if (jobDesc == ' ') {
+                if (jobDesc == ' ') {
                     setJobDescError('Job Description is required');
                 } else if (compDesc == ' ') {
                     setCompDescError('Company Description is required');
                 } else {
-                    setSalary(/* 'Starting' + */ minSalary);
+                    setSalary(minSalary);
                     setFourth(true);
                     setThird(false);
                     setSecond(false);
@@ -274,9 +253,7 @@ const PostAJob = (props: any) => {
                     setChooseJob(false);
                 }
             } else if (salaryRange.name == 'Maximum amount') {
-                /* if (maxSalary === ' ') {
-                    setSalaryRangeError('Please provide Maximum salary');
-                } else  */ if (jobDesc == ' ') {
+                if (jobDesc == ' ') {
                     setJobDescError('Job Description is required');
                 } else if (compDesc == ' ') {
                     setCompDescError('Company Description is required');
@@ -289,9 +266,7 @@ const PostAJob = (props: any) => {
                     setChooseJob(false);
                 }
             } else if (salaryRange.name === 'Exact amount') {
-                /* if (salary === '') {
-                    setSalaryRangeError('Please provide Exact salary');
-                } else  */ if (jobDesc == '') {
+                if (jobDesc == '') {
                     setJobDescError('Job Description is required');
                 } else if (compDesc == ' ') {
                     setCompDescError('Company Description is required');
@@ -309,17 +284,14 @@ const PostAJob = (props: any) => {
         e.preventDefault();
         if (first && !second && !third && !fourth) {
             setJobTitleError('');
-            /*             setCategoryError('');
-             */ if (jobTitle == '') {
+            if (jobTitle == '') {
                 setJobTitleError('Job Titile is required');
-            } /* else if (category == '') {
-                setCategoryError('Job Titile is required');
-            } */ else if (location == '') {
+            } else if (location == '') {
                 setLocationError('Please Provide Location');
             } else {
                 if (postingJobId) {
                     setLoading(true);
-                    updateFirstTab(jobTitle, /* category, */ openPositions.toString(), location, postingJobId)
+                    updateFirstTab(jobTitle, openPositions.toString(), location, postingJobId)
                         .then((res: any) => {
                             setLoading(false);
                             toast.success('Saved as Draft');
@@ -336,7 +308,7 @@ const PostAJob = (props: any) => {
                         });
                 } else {
                     setLoading(true);
-                    postFirstTab(jobTitle, /* category, */ openPositions.toString(), location)
+                    postFirstTab(jobTitle, openPositions.toString(), location)
                         .then((res: any) => {
                             setPostingJobId(res.$id);
                             setLoading(false);
@@ -480,8 +452,7 @@ const PostAJob = (props: any) => {
         setPostingJobId(id);
         fetchSinglePostedJobs(id).then((res: any) => {
             setJobTitle(res.documents[0].jobTitle);
-            /*             setCategory(res.documents[0].jobIndustry);
-             */ if (res.documents[0].jobLocation.toLowerCase() == 'remote') {
+            if (res.documents[0].jobLocation.toLowerCase() == 'remote') {
                 setRemote(true);
                 setHybrid(false);
                 setAddLocation(false);
@@ -594,28 +565,15 @@ const PostAJob = (props: any) => {
             .catch((error) => {
                 console.log(error);
             });
-        /* fetchDraftedJobs()
-            .then((res) => {
-                res && res.total > 0 && setNoDraft(true);
-                res && res.total > 0 && setChooseJob(true);
-                res && res.total == 0 && setFirst(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            }); */
+
     }, []);
     const todaysDate = new Date();
     const maxDate = new Date();
     maxDate.setMonth(today.getMonth() + 1);
-    /* const handleSendEmail = () => {
-        getAccount().then((res: any) => {
-            res && SendJobPostedEmail(res.email, jobTitle, `${VERIFY}jobs/${postingJobId}`, res.name);
-        });
-    }; */
+
     return (
         <div className="pt-5 px-3 pb-10 bg-textW min-h-screen md:pl-10 xl:pr-28 xl:px-20">
-            {/*             <button onClick={handleSendEmail}>Send Email</button>
-             */}
+
             {!chooseJob && noJobs && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
             {!chooseJob && noJobs && (
                 <div
@@ -1112,8 +1070,8 @@ const PostAJob = (props: any) => {
                                             minSalary == '' && maxSalary !== ''
                                                 ? maxSalary
                                                 : minSalary !== '' && maxSalary == ''
-                                                ? minSalary
-                                                : minSalary + '-' + maxSalary
+                                                    ? minSalary
+                                                    : minSalary + '-' + maxSalary
                                         }
                                         icon={
                                             currency == 'euro' ? (
@@ -1170,8 +1128,6 @@ const PostAJob = (props: any) => {
                             </div>
                             {!company && (
                                 <div className="col-span-12 mx-3">
-                                    {/*                                     <p className="font-thW text-frhS">Job Description</p>
-                                     */}{' '}
                                     <div
                                         className="text-sm text-fadedText max-h-20 overflow-y-auto hideScrollBar"
                                         dangerouslySetInnerHTML={{ __html: jobDesc }}

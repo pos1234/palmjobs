@@ -1,13 +1,11 @@
 import ConfirmModal from '@/components/ConfirmModal';
 import {
-    fetchActivePostedJobs,
     fetchClosedPostedJobs,
-    getAccount,
     getCompanyData,
     getNoApplicants,
     updateJobStatus,
-    updateJobs
-} from '@/lib/services';
+} from '@/lib/employerBackend';
+import { getAccount } from '@/lib/accountBackend';
 import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import dynamic from 'next/dynamic';

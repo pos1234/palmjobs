@@ -1,7 +1,6 @@
-import { fetchAppliedJobsData, getAppliedJobId, fetchAppliedJobIds, removeAppliedJobs, accountData, getCompanyData } from '@/lib/services';
+import { fetchAppliedJobsData, fetchAppliedJobIds, getCompanyData } from '@/lib/candidateBackend';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import { useEffect, useState } from 'react';
 import JobImage from '../JobImage';
@@ -81,19 +80,13 @@ const Applied = (props: any) => {
                                         <AccessTimeOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1  md:text-[1.2rem]" />
                                         {datas.jobType}
                                     </li>
-                                    {/* <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-3 md:bg-textW md:text-fadedText md:p-0">
-                                        <AttachMoneyOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " />
-                                        {datas.salaryRange}
-                                    </li> */}
+                                   
                                     <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-4 md:bg-textW md:text-fadedText md:p-0">
                                         <CalendarTodayOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " />{' '}
                                         {new Date(datas.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                     </li>
                                 </ul>
-                                {/* <div
-                                    className="col-span-12 text-fhS text-darkBlue leading-[24px]  text-fadedText my-5 md:my-0 md:mt-2 md:text-darkBlue"
-                                    dangerouslySetInnerHTML={{ __html: datas.jobDescription }}
-                                /> */}
+                                
                             </div>
                         </div>
                     );

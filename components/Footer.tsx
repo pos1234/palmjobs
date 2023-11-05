@@ -7,7 +7,8 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { getAccount, getCandidateInfo, getProfileData, getProfilePicture, getRole, signOut } from '@/lib/services';
+import { signOut } from '@/lib/accountBackend'
+import { getRole } from '@/lib/accountBackend';
 import Link from 'next/link';
 const LinkList = (props: any) => {
     return (
@@ -25,7 +26,6 @@ const Footer = () => {
     const [forGt, setForGt] = useState(false);
     const [userData, setUserData] = useState<any>();
     const [userRole, setUserRole] = useState('');
-    const [userDetail, setUserDetail] = useState<any>();
     const openForEmp = () => {
         setForEmp(!forEmp);
     };
@@ -36,24 +36,10 @@ const Footer = () => {
         setForGt(!forGt);
     };
     const getUserData = async () => {
-        const userInfo = await getAccount();
-        if (userInfo !== 'failed') {
-            setUserData(userInfo);
-            const role = await getRole(userInfo.$id);
-            setUserRole(role.documents[0].userRole);
-            if (role.documents[0].userRole == 'candidate') {
-                const candidate = await getCandidateInfo();
-                if (candidate) {
-                    setUserDetail(candidate.documents[0]);
-                }
-            }
-            if (role.documents[0].userRole == 'employer') {
-                const employer = await getProfileData();
-                if (employer) {
-                    setUserDetail(employer.documents[0]);
-                }
-            }
-        }
+
+        const role = await getRole();
+        role && setUserRole(role.documents[0].userRole);
+
     };
     useEffect(() => {
         getUserData();
@@ -63,7 +49,7 @@ const Footer = () => {
             <div className="mt-28">
                 <div className="grid grid-cols-12 pt-8 border-b-2 border-t-2 py-10">
                     <div className="col-span-12 md:col-span-4 lg:col-span-3 xl:col-span-2">
-                        <img src={logo} alt="palmjobs logo" className=" h-16 md:h-20" />
+                        <img src={logo} alt="palmjobs logo" className=" h-16" />
                         <ul className="flex space-x-5 text-gradientFirst pl-5 pt-4">
                             <Link href="https://www.facebook.com/youremploymentsolutionsethiopia/" target="_blank">
                                 <FacebookIcon />
@@ -71,15 +57,11 @@ const Footer = () => {
                             <Link href="https://www.linkedin.com/company/10353818?trk=prof-exp-company-name" target="_blank">
                                 <LinkedInIcon />
                             </Link>
-                            {/* <Link href="" target="_blank">
-                                <InstagramIcon />
-                            </Link> */}
+
                             <Link href="https://twitter.com/yesethiopia" target="_blank">
                                 <TwitterIcon />
                             </Link>
-                            {/* <Link href="" target="_blank">
-                                <YouTubeIcon />
-                            </Link> */}
+
                         </ul>
                     </div>
                     <div className="col-span-12 mt-5 pl-5 cursor-pointer md:cursor-default md:mt-2 md:col-span-4 md:grid md:justify-items-center lg:col-span-3">
@@ -101,30 +83,26 @@ const Footer = () => {
                             <ul className="hidden  md:flex flex-col space-y-4 pt-0 -mt-8 md:-ml-2">
                                 <LinkList link="/users/employer/" text="Post Job" />
                                 <LinkList link="/users/employer/" text="employer account" />
-                                {/*                                 <LinkList text="Submit Job Order" />
-                                 */}{' '}
+
                             </ul>
                         )}
                         {userRole == 'employer' && (
                             <ul className="hidden  md:flex flex-col space-y-4 pt-3 md:-ml-2">
                                 <LinkList link="/users/employer/" text="Post Job" />
-                                {/*                                 <LinkList text="Submit Job Order" />
-                                 */}{' '}
+
                                 <LinkList link="/users/employer/" text="Dashboard" />
                             </ul>
                         )}
                         {forEmp && !userRole && (
                             <ul className="flex flex-col space-y-4 pt-3 md:hidden ">
                                 <LinkList link="/users/employer/" text="Post Job" />
-                                {/*                                 <LinkList link="/" text="Submit Job Order" />
-                                 */}{' '}
+
                             </ul>
                         )}
                         {forEmp && userRole == 'employer' && (
                             <ul className="flex flex-col space-y-4 pt-3 md:hidden ">
                                 <LinkList link="/users/employer/" text="Post Job" />
-                                {/*                                 <LinkList link="/" text="Submit Job Order" />
-                                 */}{' '}
+
                                 <LinkList link="/users/employer/" text="Dashboard" />
                             </ul>
                         )}

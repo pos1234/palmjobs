@@ -18,25 +18,24 @@ import ConfirmModal from '@/components/ConfirmModal';
 import { Listbox, Transition } from '@headlessui/react';
 import RadioInput from '@/components/RadioInput';
 import DropDown from '@/components/DropDown';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
 import {
-    alreadyApplied,
-    alreadySaved,
-    fetchJobs,
-    fetchSavedJobIds,
-    getAccount,
-    getCandidateInfo,
-    getCompanyData,
-    getEmployerPicture,
-    getProfileData,
-    getProfilePicture,
     getRole,
-    saveJobs,
+    getAccount,
     signOut
-} from '@/lib/services';
+} from '@/lib/accountBackend';
+import {
+    getCompanyData,
+    getProfileData, fetchJobs,
+} from '@/lib/employerBackend'
+import {
+    alreadySaved,
+    getCandidateDocument, saveJobs,
+} from '@/lib/candidateBackend'
+
 import ApplyToJob from '@/components/candidateProfileComponents/ApplyToJobs';
-import JobImage from '@/components/JobImage';
+import JobImage, { ProfilePic } from '@/components/JobImage';
 import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
 import EuroIcon from '@mui/icons-material/Euro';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
@@ -113,20 +112,21 @@ const Jobs = () => {
     const [userData, setUserData] = useState<any>();
     const [userRole, setUserRole] = useState('');
     const [userDetail, setUserDetail] = useState<any>();
-
+    const [userId, setUserId] = useState('')
     const getUserData = async () => {
         const userInfo = await getAccount();
         if (userInfo !== 'failed') {
+            setUserId(userInfo.$id)
             setUserData(userInfo);
-            const role = await getRole(userInfo.$id);
-            setUserRole(role.documents[0].userRole);
-            if (role.documents[0].userRole == 'candidate') {
-                const candidate = await getCandidateInfo();
+            const role = await getRole();
+            setUserRole(role && role.documents[0].userRole);
+            if (role && role.documents[0].userRole == 'candidate') {
+                const candidate = await getCandidateDocument();
                 if (candidate) {
                     setUserDetail(candidate.documents[0]);
                 }
             }
-            if (role.documents[0].userRole == 'employer') {
+            if (role && role.documents[0].userRole == 'employer') {
                 const employer = await getProfileData();
                 if (employer) {
                     setUserDetail(employer.documents[0]);
@@ -193,7 +193,7 @@ const Jobs = () => {
     const currentData = filData && filData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const [checked, setChecked] = useState(false);
     const setTheSearchTerm = () => {
-        typeof window !== 'undefined' &&  router.push({
+        typeof window !== 'undefined' && router.push({
             query: { param1: searchWord, param2: addressHolder }
         });
         setSearchQuery(searchWord);
@@ -270,41 +270,33 @@ const Jobs = () => {
     }, [searchQuery]);
     const handleApply = async (jobId: string, employerId: string, jobTitle: string) => {
         setApply(false);
-        const accountInfo = await getAccount();
-        if (accountInfo !== 'failed') {
-            const role = await getRole(accountInfo.$id);
-            if (role.documents[0].userRole == 'candidate') {
-                setApply(true);
-                setApplyJobId(jobId);
-                setApplyEmployerId(employerId);
-                setJobTitle(jobTitle);
-            }
-            if (role.documents[0].userRole == 'employer') {
-                setApplyEmp(true);
-            }
+        if (userRole == 'candidate') {
+            setApply(true);
+            setApplyJobId(jobId);
+            setApplyEmployerId(employerId);
+            setJobTitle(jobTitle);
         }
-        if (accountInfo == 'failed') {
-            typeof window !== 'undefined' &&  router.push('/account');
+        if (userRole == 'employer') {
+            setApplyEmp(true);
+        } if (!userRole) {
+            typeof window !== 'undefined' && router.push('/account');
         }
-    };
+    }
+
     const handleSaveJob = async (id: string) => {
-        const accountInfo = await getAccount();
-        if (accountInfo !== 'failed') {
-            const role = await getRole(accountInfo.$id);
-            if (role.documents[0].userRole == 'candidate') {
-                const checkSaved = alreadySaved(accountInfo.$id, id);
-                checkSaved.then((rem: any) => {
-                    if (rem.total == 0) {
-                        toast.success('Successfully Saved Job');
-                        saveJobs(accountInfo.$id, id);
-                    } else {
-                        toast.error('Job Already saved');
-                    }
-                });
-            }
+        if (userRole == 'candidate') {
+            const checkSaved = alreadySaved(userId, id);
+            checkSaved.then((rem: any) => {
+                if (rem.total == 0) {
+                    toast.success('Successfully Saved Job');
+                    saveJobs(userId, id);
+                } else {
+                    toast.error('Job Already saved');
+                }
+            });
         }
-        if (accountInfo == 'failed') {
-            typeof window !== 'undefined' &&  router.push('/account');
+        if (!userRole) {
+            typeof window !== 'undefined' && router.push('/account');
         }
     };
     const handleEmailApply = (email: string) => {
@@ -312,14 +304,11 @@ const Jobs = () => {
         const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
         window.location.href = mailtoLink;
     };
-    const getHref = (id: string) => {
-        const { href } = getProfilePicture(id);
-        return href;
-    };
+
     const createCandidateAccount = () => {
         signOut()
             .then(() => {
-                typeof window !== 'undefined' &&   router.push('/account');
+                typeof window !== 'undefined' && router.push('/account');
             })
             .catch((error) => {
                 console.log(error);
@@ -370,7 +359,7 @@ const Jobs = () => {
                                                     onClick={() => setOpenfilter(true)}
                                                     className="col-span-1 absolute top-[32%] right-3 text-darkBlue flex items-center justify-center md:justify-start xl:pl-5 xl:justify-end xl:col-span-2"
                                                 >
-                                                    <TuneIcon sx={{fontSize:'1.5rem'}} className="cursor-pointer hover:text-gradientFirst" />
+                                                    <TuneIcon sx={{ fontSize: '1.5rem' }} className="cursor-pointer hover:text-gradientFirst" />
                                                 </div>
                                             </div>
                                             {/*  */}
@@ -845,8 +834,8 @@ const Jobs = () => {
                                             {userData && userRole == 'candidate' && (
                                                 <>
                                                     {userDetail && userDetail.profilePictureId && (
-                                                        <img
-                                                            src={getHref(userDetail.profilePictureId)}
+                                                        <ProfilePic
+                                                            id={userDetail.profilePictureId}
                                                             className="self-center w-[8rem] h-[8rem]"
                                                         />
                                                     )}
@@ -866,8 +855,8 @@ const Jobs = () => {
                                             {userData && userRole == 'employer' && (
                                                 <>
                                                     {userDetail && userDetail.profilePictureId && (
-                                                        <img
-                                                            src={getHref(userDetail.profilePictureId)}
+                                                        <ProfilePic
+                                                            src={userDetail.profilePictureId}
                                                             className="self-center w-[8rem] h-[8rem]"
                                                         />
                                                     )}

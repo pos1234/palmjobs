@@ -6,33 +6,102 @@ import SchoolIcon from '@mui/icons-material/School';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import ConfirmModal from '@/components/ConfirmModal';
-import { MiddleWare } from '@/lib/middleware';
+import { toast } from 'react-toastify';
+import { getUserDetail, updateEducation } from '@/lib/candidateBackend';
 const Education = () => {
     const loadingIn = '/images/loading.svg';
     const [openEducation, setOpenEducation] = useState(false);
     const [displayEducation, setDisplayEducation] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [educationArray, setEducationArray] = useState<any[]>([]);
+    const [educationIndex, setEducationIndex] = useState(Number);
+    const [EditEducation, setEditEducation] = useState(false);
+    const [loadings, setLoadings] = useState(false);
     const [selected, setSelected] = useState(false);
-    const {
-        educationArray,
-        EditEducation,
-        setEditEducation,
-        addEducation,
-        editEducations,
-        deleteEducation,
-        EditedEducation,
-        setEditedEducation,
-        loadings,
-        educationIndex,
-        setEducationIndex,
-        education,
-        setEducation
-    } = MiddleWare();
+    const [EditedEducation, setEditedEducation] = useState({
+        educationLevel: '',
+        fieldStudy: '',
+        university: '',
+        yearIssued: ''
+    });
+    const [education, setEducation] = useState({
+        educationLevel: '',
+        fieldStudy: '',
+        university: '',
+        yearIssued: ''
+    });
+    const convertToString = (str: any) => {
+        return JSON.stringify(str);
+    };
     const indexEducation = (index: number) => {
         setEditEducation(true);
         setEducationIndex(index);
         setEditedEducation(educationArray[index]);
     };
+    const addEducation: any = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        educationArray.push(education);
+        setLoadings(true);
+        const result = updateEducation(convertToString(educationArray));
+        result
+            .then((res: any) => {
+                setLoadings(false);
+                setOpenEducation(false)
+                toast.success('Education Added Successfully');
+                const educate = JSON.parse(res.educations);
+                setEducationArray(educate);
+                setEducation({
+                    educationLevel: '',
+                    fieldStudy: '',
+                    university: '',
+                    yearIssued: ''
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+                toast.error('Education Not Added');
+                setLoadings(false);
+            });
+    };
+    const editEducations: any = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault();
+        setLoadings(true);
+        educationArray[educationIndex] = EditedEducation;
+        const result = updateEducation(convertToString(educationArray));
+        result
+            .then((res: any) => {
+                setLoadings(false);
+                toast.success('Education Saved Successfully');
+            })
+            .catch((error) => {
+                console.log(error);
+                toast.error('Education Not Saved');
+                setLoadings(false);
+            });
+    };
+    const deleteEducation = (index: number) => {
+        educationArray.splice(index, 1);
+        updateEducation(convertToString(educationArray))
+            .then((res) => {
+                toast.success('Successfully Removed Education');
+            })
+            .catch((error) => {
+                toast.error('Education Not Removed');
+            });
+        setEditEducation(false);
+    };
+    const convertToArray = (str: any) => {
+        if (str != '') return JSON.parse(str);
+        else return '';
+    };
+    const userData = async () => {
+        const userInfo = await getUserDetail()
+        const education = convertToArray(userInfo.educations) || [];
+        setEducationArray(education || '');
+    }
+    useEffect(() => {
+        userData()
+    }, [])
     useEffect(() => {
         if (openEducation == false) {
             setEditEducation(false);
@@ -46,11 +115,7 @@ const Education = () => {
                 <p className="font-fhW text-fhS leading-fhL pl-1 col-span-12">
                     <SchoolOutlinedIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                     Education
-                    {/* <EditIcon
-                        onClick={() => setOpenEducation(true)}
-                        sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                        className="w-7 h-7 p-1.5 ml-5 hidden md:inline-block cursor-pointer"
-                    /> */}
+
                 </p>
             </div>
             <div className="col-span-4 flex justify-end md:col-span-8 md:pr-4 lg:col-span-6 xl:col-span-7">
@@ -194,7 +259,7 @@ const Education = () => {
                             <form className="col-span-11 grid grid-cols-12 xl:pl-8" onSubmit={addEducation}>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2 cursor-pointer">
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Level of Education</p>
-                                    <div className="relative border-2 rounded-full" /* onClick={() => setSelected(!selected)} */>
+                                    <div className="relative border-2 rounded-full" >
                                         <select
                                             className="w-full rounded-full appearance-none px-4 p-3 focus:ring-gradientSecond focus:border-0 cursor-pointer"
                                             value={education.educationLevel}
@@ -212,9 +277,7 @@ const Education = () => {
                                             <option value="Doctorate (PhD)">Doctorate (PhD)</option>
                                             <option value="Post-Doctorate">Post-Doctorate</option>
                                         </select>
-                                        {/* <div className="absolute top-3 right-4">
-                                            {selected ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                        </div> */}
+
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">
@@ -286,7 +349,7 @@ const Education = () => {
                             <form className="col-span-11 grid grid-cols-12 xl:pl-8" onSubmit={editEducations}>
                                 <div className="col-span-12 md:col-span-7 pr-2 md:pl-2 cursor-pointer">
                                     <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Level of Education</p>
-                                    <div className="relative border-2 rounded-full" /* onClick={() => setSelected(!selected)} */>
+                                    <div className="relative border-2 rounded-full" >
                                         <select
                                             className="w-full rounded-full appearance-none px-4 p-3 focus:ring-gradientSecond focus:border-0 cursor-pointer"
                                             value={EditedEducation.educationLevel}
@@ -304,9 +367,7 @@ const Education = () => {
                                             <option value="Doctorate (PhD)">Doctorate (PhD)</option>
                                             <option value="Post-Doctorate">Post-Doctorate</option>
                                         </select>
-                                        {/* <div className="absolute top-3 right-4">
-                                            {selected ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                        </div> */}
+
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-5 pr-2 md:pl-2">

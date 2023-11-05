@@ -3,7 +3,7 @@ import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds, getCompanyData } from '@/lib/services';
+import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds, getCompanyData } from '@/lib/candidateBackend';
 import { useEffect, useState } from 'react';
 import ApplyToJob from './ApplyToJobs';
 import { toast } from 'react-toastify';
@@ -129,8 +129,7 @@ const SavedJobs = (props: any) => {
                                 <JobImage id={datas.employerId} className="col-span-2 md:hidden" />
                                 <div className="col-span-10 pl-1">
                                     <CompanyName id={datas.employerId} />
-                                    {/*                                     <p className="text-[12px] text-darkBlue sm:text-fhS">{datas.companyName}</p>
-                                     */}{' '}
+                                  
                                     <Link href={`/jobs/${datas.$id}`} target="_blank" className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-frhS">{datas.jobTitle}</Link>
                                     <p className="text-fadedText rounded-full md:hidden">
                                         <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} /> {datas.jobLocation}
@@ -144,19 +143,13 @@ const SavedJobs = (props: any) => {
                                         <AccessTimeOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1  md:text-[1.2rem]" />
                                         {datas.jobType}
                                     </li>
-                                    {/* <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-3 md:bg-textW md:text-fadedText md:p-0">
-                                        <AttachMoneyOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " />
-                                        {datas.salaryRange}
-                                    </li> */}
+                                   
                                     <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-4 md:bg-textW md:text-fadedText md:p-0">
                                         <CalendarTodayOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " />
                                         {new Date(datas.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}
                                     </li>
                                 </ul>
-                                {/* <div
-                                    className="col-span-12 text-fhS text-darkBlue leading-[24px]  text-fadedText my-5 md:my-0 md:mt-2 md:text-darkBlue"
-                                    dangerouslySetInnerHTML={{ __html: datas.jobDescription }}
-                                /> */}
+                              
                             </div>
                             <div className="col-span-12 flex items-center justify-center md:col-span-12 md:max-lg:pt-10 md:max-lg:px-20 lg:col-span-3 lg:px-10">
                                 <button>

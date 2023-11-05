@@ -1,12 +1,12 @@
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
-
 import { useState } from 'react';
 import Link from 'next/link';
 import ForgotPassword from '@/components/account/ForgotPassword';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { getAccount, getRole, googleRegister, googleSignIn, signIn, signOut } from '@/lib/services';
+import { getRole } from '@/lib/candidateBackend';
+import { getAccount, googleRegister, googleSignIn, signIn, signOut } from '@/lib/accountBackend';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
@@ -24,7 +24,6 @@ const Login = () => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [visible, setVisible] = useState(false);
-    const [name, setName] = useState('');
     const [getJob, setGetJob] = useState(false);
     const [hireTalent, setHireTalent] = useState(false);
     const [login, setLogin] = useState({
@@ -38,12 +37,11 @@ const Login = () => {
     }
     const handlelogin = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-        setEmailError(' ');
-        setPasswordError(' ');
+        setEmailError('');
+        setPasswordError('');
         if (login.email == '') {
             setEmailError('please provide email');
-        }
-        if (login.email == '') {
+        } else if (login.password == '') {
             setPasswordError('please provide password');
         } else {
             if (validateEmail(login.email)) {
@@ -54,12 +52,12 @@ const Login = () => {
                     toast.success('Successfully LoggedIn');
                     const loggedIn = await getAccount();
                     if (loggedIn !== 'failed') {
-                        const role = await getRole(loggedIn.$id);
-                        if (role.documents[0].userRole == 'candidate') {
-                            typeof window !== 'undefined' &&  router.push('/users/candidate/profile');
+                        const role = await getRole();
+                        if (role && role.documents[0].userRole == 'candidate') {
+                            typeof window !== 'undefined' && router.push('/users/candidate/profile');
                         }
-                        if (role.documents[0].userRole == 'employer') {
-                            typeof window !== 'undefined' &&  router.push('/users/employer');
+                        if (role && role.documents[0].userRole == 'employer') {
+                            typeof window !== 'undefined' && router.push('/users/employer');
                         }
                     }
                     if (loggedIn == 'failed') {
@@ -102,11 +100,7 @@ const Login = () => {
                         </Link>
                     </div>
                     <div
-                        className={
-                            forgotPassword || (register && !registerForm)
-                                ? 'loginCoursel w-full  lg:pt-[5%] flex justify-center md:h-[45%] lg:h-[75%] xl:h-[80%]'
-                                : 'loginCoursel w-full  lg:pt-[5%] flex justify-center md:h-[40%] lg:h-[60%] xl:h-[6 5%]'
-                        }
+                        className={'loginCoursel w-full  lg:pt-[5%] flex justify-center md:h-[45%] lg:h-[75%] xl:h-[80%]'}
                     >
                         <Slider />
                     </div>
@@ -151,24 +145,13 @@ const Login = () => {
                     )}
                     {registerForm && (
                         <p className="text-left text-midRS font-midRW leading-midRL text-[#5B5B5B] text-left">
-                            <span className="text-smS inline-block mb-1">You're almost there! {name}</span> <br />
+                            <span className="text-smS inline-block mb-1">You're almost there!</span> <br />
                         </p>
                     )}
                     {register && !registerForm && (
                         <>
-                            <div className="text-center mt-5">
-                                <p className="text-left text-fhS font-dfhW  leading-midRL text-[#141417] pl-2 sm:text-dfhS sm:font-addW">
-                                    &#128075; Hi
-                                    <input
-                                        value={name}
-                                        onChange={(e) => setName(e.currentTarget.value)}
-                                        type="text"
-                                        className="outline-0 ml-2 border-0 border-b-2 border-[#141417] focus:border-gradientSecond w-40 focus:ring-0 focus:ring-b-0 focus:outline-0 mb-3 sm:mb-0"
-                                    />
-                                    ! Tell us why you're here.
-                                </p>
-                            </div>
-                            <div className="bg-skillColor w-full grid grid-cols-12 py-3 px-2 gap-x-3 gap-y-5 rounded-lg md:gap-y-0 md:gap-x-5 xl:gap-x-10">
+
+                            <div className="bg-skillColor w-full mt-5 grid grid-cols-12 py-3 px-2 gap-x-3 gap-y-5 rounded-lg md:gap-y-0 md:gap-x-5 xl:gap-x-10">
                                 <div
                                     onClick={() => {
                                         setGetJob(true);

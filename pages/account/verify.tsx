@@ -1,4 +1,4 @@
-import { verfiyAccount } from '@/lib/services';
+import { verfiyAccount } from '@/lib/accountBackend';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { NextPageContext } from 'next/types';

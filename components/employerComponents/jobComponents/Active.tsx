@@ -1,7 +1,7 @@
 import ConfirmModal from '@/components/ConfirmModal';
-import { fetchActivePostedJobs, getAccount, getCompanyData, getNoApplicants, updateJobStatus, updateJobs } from '@/lib/services';
+import { fetchActivePostedJobs, getCompanyData, getNoApplicants, updateJobStatus, updateJobs } from '@/lib/employerBackend';
 import React, { useEffect, useState } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { getAccount } from '@/lib/accountBackend';
 import dynamic from 'next/dynamic';
 import { Popover } from '@headlessui/react';
 import { toast } from 'react-toastify';
@@ -206,8 +206,7 @@ const PJobs = (props: any) => {
                             className="text-[2.5rem] focus:ring-0 focus:border-0 focus:outline-0 -mt-1 cursor-pointer"
                         />
                     </Popover.Button>
-                    {/*                     {openShare == false && openJobEdit == false && openPreview == false && (
-                     */}{' '}
+
                     <Popover.Panel
                         className={
                             openShare == false && openJobEdit == false && openPreview == false
@@ -376,8 +375,7 @@ const PJobs = (props: any) => {
                             </div>
                             {!company && (
                                 <div className="col-span-12 mx-3">
-                                    {/*                                     <p className="font-thW text-frhS">Job Description</p>
-                                     */}
+
                                     <div
                                         className="text-sm text-fadedText max-h-20 overflow-y-auto hideScrollBar"
                                         dangerouslySetInnerHTML={{ __html: props.jobDes }}
