@@ -49,13 +49,7 @@ const Slider = () => {
                 <p className="text-zinc-900 pb-5 font-medium max-h-18 overflow-hidden text-xl sm:text-2xl xl:text-3xl leading-7">
                     Behind every thriving company is a team of dedicated professionals. Find yours on Palm Jobs.
                 </p>
-                {/* <div className="grid grid-cols-12">
-                    <img src={profile} className="w-full h-full col-span-2" />
-                    <div className="col-span-10 flex flex-col justify-center pl-5">
-                        <p className="text-neutral-900 text-xl font-medium leading-7">John Doe</p>
-                        <p className="text-stone-300 text-lg font-normal leading-relaxed">Marketing Manager</p>
-                    </div>
-                </div> */}
+                
             </div>
         </Carousel>
     );

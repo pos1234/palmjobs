@@ -1,15 +1,12 @@
-import { getProfilePicture } from '@/lib/services';
+import { ProfilePic } from '@/components/JobImage';
 import InsertLinkOutlinedIcon from '@mui/icons-material/InsertLinkOutlined';
 
 const ProjectDetail = (props: any) => {
-    const projectImage = (id: string) => {
-        const { href } = getProfilePicture(id);
-        return href;
-    };
+
     return (
-        <div /* key={index} */ className="col-span-12 flex gap-y-5 gap-x-3 pt-3">
+        <div className="col-span-12 flex gap-y-5 gap-x-3 pt-3">
             {props && props.detail.thumbnailId && (
-                <img src={projectImage(props.detail.thumbnailId)} className="w-20 h-20 rounded-3xl" />
+                <ProfilePic id={props.detail.thumbnailId} className="w-20 h-20 rounded-3xl" />
             )}
             <div className="grid grid-cols-12  h-full">
                 <div className="col-span-10">

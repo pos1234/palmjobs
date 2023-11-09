@@ -1,4 +1,3 @@
-import PersonIcon from '@mui/icons-material/Person';
 import LocalFireDepartmentOutlinedIcon from '@mui/icons-material/LocalFireDepartmentOutlined';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
@@ -13,9 +12,10 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import PhonelinkIcon from '@mui/icons-material/Phonelink';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import { downLoadResume } from '@/lib/services';
+import { downLoadResume } from '@/lib/candidateBackend';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
+import { ProfilePic } from '@/components/JobImage';
 const CandidateDetail = (props: any) => {
     const pdfIcon = '/images/pdf2.svg';
 
@@ -24,25 +24,15 @@ const CandidateDetail = (props: any) => {
             {
                 props && props.detailData &&
                 < div className="flex gap-x-2">
-                    {props.imageLinkValue && <img src={props.imageLinkValue} className="w-16 h-16 rounded-xl" />}
+                    {props.imageLinkValue !== '' && <ProfilePic id={props.imageLinkValue} alt='profile' className="w-16 h-16 rounded-xl" />}
                     <div className="col-span-7 flex flex-col">
                         {props.detailData.name && <p className="text-neutral-900 text-lg font-medium">{props.detailData.name}</p>}
-                        {/*                         <p className="text-stone-300 text-sm font-normal">{props.detailData.bioHeadline}</p>
- */}                        <p className="text-neutral-900 text-opacity-70 text-sm font-normal leading-normal">
+                        <p className="text-neutral-900 text-opacity-70 text-sm font-normal leading-normal">
                             {props.detailData.address && <> <PinDropOutlinedIcon sx={{ fontSize: '1rem' }} /> {props.detailData.address}</>}
                         </p>
                     </div>
                 </div>
             }
-            {/* {props && props.detailData && <div className="flex gap-x-1">
-                <div className="text-gradientFirst">
-                    <PersonIcon />
-                </div>
-                <div className="text-stone-300 text-sm font-light leading-normal">
-                    {props.detailData.bioDescription}
-                </div>
-            </div>
-            } */}
             {
                 props && props.detailData && (
                     <div className="flex gap-x-5 text-[#618c61]">
@@ -165,7 +155,7 @@ const CandidateDetail = (props: any) => {
                                 <img src={pdfIcon} className="w-12 h-5 relative" />
                             </div>
                             <div className="col-span-8 flex items-center pl-3 break-all">
-                                <p className="text-black text-lg font-medium leading-loose sm:text-xl">resume {/* {fileName} */}</p>
+                                <p className="text-black text-lg font-medium leading-loose sm:text-xl">resume</p>
                             </div>
                             <div className="col-span-2 flex items-center justify-around">
                                 <div className="h-8 bg-fadedText flex w-0.5"></div>

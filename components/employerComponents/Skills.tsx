@@ -3,7 +3,6 @@ import LocalFireDepartmentOutlinedIcon from '@mui/icons-material/LocalFireDepart
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { MiddleWare } from '@/lib/middleware';
 import skillsData from '@/lib/skillData';
 interface Data {
     word: string;

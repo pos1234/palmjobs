@@ -9,7 +9,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import { Popover } from '@headlessui/react';
 import HeightIcon from '@mui/icons-material/Height';
 import StraightIcon from '@mui/icons-material/Straight';
-import { fetchDraftedJobs, fetchPostedJobs } from '@/lib/services';
+import { fetchDraftedJobs, fetchPostedJobs } from '@/lib/employerBackend';
 const Jobs = (props: any) => {
     const [opened, setOpened] = useState(true);
     const [draft, setDraft] = useState(false);

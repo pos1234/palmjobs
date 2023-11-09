@@ -1,4 +1,4 @@
-import { fetchCandidateDetail, getProfilePicture } from '@/lib/services';
+import { fetchCandidateDetail } from '@/lib/employerBackend';
 import { useEffect, useState } from 'react';
 import BookmarkBorderOutlined from '@mui/icons-material/BookmarkBorderOutlined';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
@@ -6,6 +6,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import PersonIcon from '@mui/icons-material/Person';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { ProfilePic } from '@/components/JobImage';
 const CandSmall = (props: any) => {
     const [candidateData, setCandidateData] = useState<any>();
     const [shortListed, setShortListed] = useState<any>();
@@ -17,14 +18,13 @@ const CandSmall = (props: any) => {
             setCandidateData(res.documents.length > 0 && res.documents[0]);
             props.short !== 'true' && props.detailHolder(res.total > 0 && res.documents[0]);
             const parsed = res.documents[0] && res.documents[0].skills && res.documents[0].skills;
-            const imageLink =
-                res.documents[0] &&
-                res.documents[0].skills &&
-                res.documents[0].profilePictureId !== null &&
-                getProfilePicture(res.documents[0].profilePictureId);
-            if (imageLink) {
-                setImageHref(imageLink.href);
-            }
+            const imageLink = res.documents[0] && res.documents[0].skills && res.documents[0].profilePictureId !== null
+            imageLink && setImageHref(res.documents[0].profilePictureId)
+            imageLink && props.imageLinkSetter(res.documents[0].profilePictureId)
+            /*                 getProfilePicture(res.documents[0].profilePictureId);
+             */            /* if (imageLink) {
+                        setImageHref(imageLink.href);
+                    } */
             setSkill(res.documents[0] && res.documents[0].skills && parsed);
         });
     }, []);
@@ -54,9 +54,9 @@ const CandSmall = (props: any) => {
             }
         >
             <div className="grid grid-cols-12 gap-x-2">
-                
-                
-                {imageHref && <img src={imageHref} className="col-span-2 sm:w-16 sm:h-16 md:col-span-4 rounded-xl" />}
+
+
+                {imageHref && <ProfilePic id={imageHref} className="col-span-2 sm:w-16 sm:h-16 md:col-span-4 rounded-xl" />}
                 <div className="col-span-9 flex flex-col md:col-span-7">
                     <p className="text-neutral-900 text-md font-medium">{candidateData && candidateData.name}</p>
                     <p className="text-stone-300 text-sm font-normal">{candidateData && candidateData.bioHeadline}</p>
@@ -96,14 +96,6 @@ const CandSmall = (props: any) => {
                         );
                     })}
             </div>
-            {/* <div className="flex gap-x-1">
-                <div className="text-gradientFirst">
-                    <PersonIcon />
-                </div>
-                <div className="h-10 overflow-hidden text-stone-300 text-sm font-light leading-normal">
-                    {candidateData && candidateData.bioDescription}
-                </div>
-            </div> */}
         </div>
     );
 };

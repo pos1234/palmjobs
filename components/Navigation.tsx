@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { getAccount, getCandidateInfo, getProfileData, getProfilePicture, getRole, signOut } from '@/lib/services';
+import { getAccount, getRole, signOut } from '@/lib/accountBackend';
+import { getCandidateDocument } from '@/lib/candidateBackend';
+import { getProfileData } from '@/lib/employerBackend'
 import styles from '@/styles/navigation.module.css';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-/* import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
- */ import Link from 'next/link';
+import Link from 'next/link';
 import { Popover } from '@headlessui/react';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import ConfirmModal from './ConfirmModal';
-import { useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/router';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { toast } from 'react-toastify';
+import { ProfilePic } from './JobImage';
+import Image from 'next/image';
 const Navigation = (props: any) => {
     const logo = '/images/logo.svg';
     const loadingIn = '/images/loading.svg';
-    const [choosen, setChoosen] = useState('');
     const [menu, setMenu] = useState(false);
     const [userData, setUserData] = useState<any>();
     const [userRole, setUserRole] = useState('');
@@ -29,16 +31,16 @@ const Navigation = (props: any) => {
         if (userInfo !== 'failed') {
             setLoading(false);
             setUserData(userInfo);
-            const role = await getRole(userInfo.$id);
-            setUserRole(role.documents[0].userRole);
+            const role = await getRole();
+            role && setUserRole(role.documents[0].userRole);
 
-            if (role.documents[0].userRole == 'candidate') {
-                const candidate = await getCandidateInfo();
+            if (role && role.documents[0].userRole == 'candidate') {
+                const candidate = await getCandidateDocument();
                 if (candidate) {
                     setUserDetail(candidate.documents[0]);
                 }
             }
-            if (role.documents[0].userRole == 'employer') {
+            if (role && role.documents[0].userRole == 'employer') {
                 const employer = await getProfileData();
                 if (employer) {
                     setUserDetail(employer.documents[0]);
@@ -49,18 +51,14 @@ const Navigation = (props: any) => {
             setLoading(false);
         }
     };
-    const getHref = (id: string) => {
-        const { href } = getProfilePicture(id);
-        return href;
-    };
     const handleLogout = () => {
         setLogLoading(true);
         signOut().then((res) => {
             setLogLoading(false);
             toast.success('Successfully Logged Out');
             setOpenLogout(false);
-            router.push('/');
-            router.reload();
+            typeof window !== 'undefined' && router.push('/');
+            typeof window !== 'undefined' && router.reload();
         });
     };
     useEffect(() => {
@@ -71,8 +69,15 @@ const Navigation = (props: any) => {
             <div className="grid grid-cols-12 pt-3  md:border-b-2">
                 <div className="col-span-6 md:col-span-12 md:max-lg:flex md:max-lg:justify-center lg:col-span-2">
                     <Link href="/">
-                        <img src={logo} alt="palmjobs logo" className=" h-16 md:h-20" />
-                    </Link>
+                        <Image
+                            src={logo}
+                            alt="Image description"
+                            width={150}
+                            height={150}
+                            className=" h-16"
+                        />
+                        {/*                         <img src={logo} alt="palmjobs logo" className=" h-16" />
+ */}                    </Link>
                 </div>
 
                 <div className="col-span-6 flex items-center justify-end gap-x-10 md:hidden">
@@ -102,17 +107,26 @@ const Navigation = (props: any) => {
                         </div>
                         <div className="flex justify-center">
                             <Link href="/">
-                                <img src={logo} alt="palmjobs logo" className=" h-20" />
-                            </Link>
+                                <Image
+                                    src={logo}
+                                    alt="Image description"
+                                    width={150}
+                                    height={150}
+                                    className=" h-16"
+                                />
+                                {/*                                 <img src={logo} alt="palmjobs logo" className="h-16" />
+ */}                            </Link>
                         </div>
                         <div className="relative flex mt-5 items-center justify-center gap-x-2">
                             {userDetail && userDetail.profilePictureId && (
                                 <div className="w-14 h-14 ">
-                                    <img
+                                    <ProfilePic id={userDetail.profilePictureId} className="w-full h-full border-0 rounded-xl outline-0 ring-none"
+                                    />
+                                    {/* <img
                                         className="w-full h-full border-0 rounded-xl outline-0 ring-none"
                                         src={getHref(userDetail.profilePictureId)}
                                         alt="profile"
-                                    />
+                                    /> */}
                                 </div>
                             )}
                             {userData && (
@@ -130,6 +144,9 @@ const Navigation = (props: any) => {
                                     Find a Job
                                 </Link>
                                 <p className="border-b-2 pb-2 text-xl">Craft Resume</p>
+                                <Link href="/salaries" className="border-b-2 pb-2 text-xl">
+                                    Salaries
+                                </Link>
                                 {!userData && (
                                     <>
                                         <Link href="/account" className="border-b-2 pb-2 text-xl">Sign in</Link>
@@ -170,11 +187,13 @@ const Navigation = (props: any) => {
                                         <span>Profile</span>
                                     </Link>
                                 ) : null}
-                                {/*                                 <p>Notification</p>
-                                 */}
+
                                 {userData && (
                                     <div
-                                        onClick={() => setOpenLogout(!openLogout)}
+                                        onClick={() => {
+                                            setMenu(false)
+                                            setOpenLogout(!openLogout)
+                                        }}
                                         className="flex gap-x-3 text-[1.5rem] text-xl cursor-pointer items-center"
                                     >
                                         <span>Logout</span>
@@ -194,6 +213,9 @@ const Navigation = (props: any) => {
                         Find a Job
                     </Link>
                     <p className="col-span-5 lg:col-span-5 xl:col-span-5">Craft Resume</p>
+                    <Link href="/salaries" className="col-span-5 lg:col-span-5 xl:col-span-5">
+                        Salaries
+                    </Link>
                     {userRole == 'candidate' ? (
                         <Link href="/users/candidate" className=" col-span-3 lg:col-span-3 xl:col-span-3 cursor-poniter">
                             My jobs
@@ -224,20 +246,20 @@ const Navigation = (props: any) => {
                     )}
                     {userData && (
                         <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
-                            {/* <div className="px-2 py-1 text-stone-500 border-r-2 border-stone-300 hover:text-orange-500 cursor-pointer">
-                                <NotificationsOutlinedIcon />
-                            </div> */}
+
 
                             <div className="flex items-center pl-0 sm:pl-2 lg:text-[0.9rem] px-2 py-1 text-stone-500 ">
                                 <Popover className="focus:ring-0 focus:border-0 focus:outline-0">
                                     <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 px-2 flex text-stone-500">
                                         {userDetail && userDetail.profilePictureId && (
                                             <div className="w-10 h-10 ">
-                                                <img
+                                                <ProfilePic id={userDetail.profilePictureId} className="w-full h-full border-0 rounded-xl outline-0 ring-none"
+                                                />
+                                                {/*  <img
                                                     className="w-full h-full border-0 rounded-xl outline-0 ring-none"
                                                     src={getHref(userDetail.profilePictureId)}
                                                     alt="profile"
-                                                />
+                                                /> */}
                                             </div>
                                         )}
                                         {userData && (
@@ -255,9 +277,7 @@ const Navigation = (props: any) => {
                                                         )}
                                                     </>
                                                 ) : null}
-                                                {/* {userRole == 'employer'
-                                                    ? userDetail && <p className="text-[12px] text-stone-500">{userDetail.bioHeadline}</p>
-                                                    : null} */}
+
                                             </div>
                                         )}
                                     </Popover.Button>
@@ -334,7 +354,33 @@ const Navigation = (props: any) => {
                     </div>
                 </div>
             </ConfirmModal>
-        </div>
+            {/*  <ConfirmModal isOpen={salaryOpen} handleClose={() => setSalaryOpen(!salaryOpen)}>
+                <div className={`mx - 2 pb-10 w-full pl-5 bg-textW rounded-2xl  
+                flex flex-col gap-y-5 items-center justify-center pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0 ${openForm && 'h-screen overflow-y-auto'}`}>
+                    {
+                        !openForm && <p className='text-[0.9rem]'>We invite you to participate in our Salary Survey aimed at providing
+                            a clearer understanding of the salary landscape in Ethiopia.
+                            Your anonymous contribution, assured to remain confidential,
+                            is pivotal in promoting transparency and aiding individuals
+                            in making informed career decisions. As a token of appreciation,
+                            we are offering a detailed salary report should you wish to recieve it.
+                            Your participation can significantly contribute to a more transparent labor market.
+                            Thank you for considering!</p>
+                    }
+                    <div className='flex flex-wrap gap-5 w-full overflow-y-auto'>
+                        {
+                            openForm && <SalarySurvey closeModal={setSalaryOpen} />
+                        }
+                        {
+                            !openForm && <div className='flex justify-around w-full flex-wrap gap-y-5'>
+                                <div className='bg-fadedText border-2 px-8 py-3 border-gray-500 rounded-full text-gray-700 cursor-pointer' onClick={() => setSalaryOpen(false)}>Discard</div>
+                                <div onClick={() => setOpenForm(true)} className='bg-gradientFirst px-8 py-3 rounded-full text-textW cursor-pointer'>Proceed to Survey</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </ConfirmModal > */}
+        </div >
     );
 };
 export default Navigation;

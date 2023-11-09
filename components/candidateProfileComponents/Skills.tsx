@@ -1,16 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LocalFireDepartmentOutlinedIcon from '@mui/icons-material/LocalFireDepartmentOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { MiddleWare } from '@/lib/middleware';
 import skillsData from '@/lib/skillData';
+import { getUserDetail, updateSkills } from '@/lib/candidateBackend';
 interface Data {
     word: string;
 }
 const Skills = () => {
-    const { array, deleteSkill, addSuggestedSkill } = MiddleWare();
-
+    const [array, setArray] = useState<string[]>([]);
     const [inputSkill, setInputSkill] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<Data[]>([]);
@@ -34,20 +33,32 @@ const Skills = () => {
         const filteredSuggestions = items.filter((data) => data.word.toLowerCase().includes(inputValue.toLowerCase()));
         setSuggestions(filteredSuggestions);
     };
-
+    const addSuggestedSkill = async (suggesteSkill: string) => {
+        array.push(suggesteSkill);
+        await updateSkills(array);
+    };
+    const deleteSkill = (index: number) => {
+        const newArray = array.filter((item, i) => i !== index);
+        setArray(newArray);
+        updateSkills(newArray);
+    };
+    const userData = async () => {
+        const userInfo = await getUserDetail()
+        setArray(userInfo.skills || '');
+    }
+    useEffect(() => {
+        userData()
+    }, [])
     return (
-        <div className="col-span-12 pt-7 grid grid-cols-12 bg-textW rounded-3xl pb-5 lg:pl-10">
-            <p className="font-fhW text-fhS leading-fhL pl-1 col-span-8 lg:pl-5">
+        <div className="rounded-xl p-6 border-2 flex flex-col">
+            <p className="font-fhW text-fhS leading-fhL">
                 <LocalFireDepartmentOutlinedIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                 Skills
             </p>
-            <div className="col-span-4 md:col-span-1 grid justify-items-end md:hidden">
-                <EditIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-7 h-7 p-1.5 mr-2" />
-            </div>
-            <div className="col-span-12 pt-8 flex flex-wrap gap-5 lg:pl-5">
+            <div className="w-full pt-8 flex flex-wrap gap-5">
                 {array.map((item, index) => (
                     <div
-                        className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-[3.75rem]"
+                        className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-xl text-gradientFirst"
                         key={index}
                     >
                         <p> {item} </p>
@@ -60,7 +71,7 @@ const Skills = () => {
                 {!inputSkill && array.length < 7 && (
                     <button
                         onClick={() => setInputSkill(true)}
-                        className="w-36 h-12 font-midRW text-midRS leading-midRL text-gradientFirst bg-skillColor text-center flex items-center justify-center rounded-[3.75rem]
+                        className="w-36 h-12 font-midRW text-midRS leading-midRL text-gradientFirst bg-skillColor text-center flex items-center justify-center rounded-xl
                        "
                     >
                         <AddIcon sx={{ marginLeft: '-1rem' }} /> Add
@@ -76,7 +87,7 @@ const Skills = () => {
                                 value={searchTerm}
                                 onChange={handleInputChange}
                                 type="text"
-                                className="w-[80%] h-8 pl-2 my-auto ml-[10%] col-span-10 border-[1px] rounded-full focus:border-gradientFirst focus:ring-0 focus:outline-none"
+                                className="w-[80%] h-8 pl-2 my-auto ml-[10%] col-span-10 border-[1px] rounded-xl focus:border-gradientFirst focus:ring-0 focus:outline-none"
                             />
 
                             <button type="submit" className="col-span-2 text-gradientFirst">

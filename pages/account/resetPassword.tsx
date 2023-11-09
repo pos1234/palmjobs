@@ -1,4 +1,4 @@
-import { updatePassword } from '@/lib/services';
+import { updatePassword } from '@/lib/accountBackend';
 import { useState } from 'react';
 import { NextPageContext } from 'next/types';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -56,7 +56,7 @@ const sendReset = ({ queryParams }: MyPageProps) => {
                     setLoading(false);
                     setPassword('');
                     setConfrimPassword('');
-                    router.push('/account/')
+                    typeof window !== 'undefined' &&  router.push('/account/')
                 })
                 .catch((error) => {
                     setLoading(false);

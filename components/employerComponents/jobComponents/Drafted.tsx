@@ -1,5 +1,4 @@
-import ConfirmModal from '@/components/ConfirmModal';
-import { deleteDraftedJobs, fetchActivePostedJobs, fetchDraftedJobs, updateJobStatus, updateJobs } from '@/lib/services';
+import { deleteDraftedJobs,  fetchDraftedJobs, } from '@/lib/employerBackend';
 import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';

@@ -1,4 +1,4 @@
-import { changePassword } from '@/lib/services';
+import { changePassword } from '@/lib/accountBackend';
 import React, { useState } from 'react';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
