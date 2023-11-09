@@ -64,8 +64,8 @@ const ProfilePicture = () => {
         imageUploadChecker(uploadProfilePictures, e.currentTarget.files);
     };
     return (
-        <div className="col-span-12 relative md:col-span-4 xl:col-span-4 flex flex-col justify-center">
-            <div className="profilePictureContainer w-40 h-40 col-span-2 rounded-3xl cursor-pointer">
+        <div className="relative flex flex-col justify-center">
+            <div className="profilePictureContainer w-28 h-28 rounded-full border-8 border-textW cursor-pointer">
                 {profileId ? (
                     <>
                         {!profileLoading && (
@@ -77,7 +77,7 @@ const ProfilePicture = () => {
                                         setProfileId('')
                                     }}
                                     sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                    className="w-7 h-7 p-1.5 mr-0 absolute right-0 top-0 -mr-[0.7rem] mt-3 cursor-pointer"
+                                    className="w-7 h-7 p-1.5 mr-0 absolute right-0 top-0 mr-[1rem] mt-3 cursor-pointer"
                                 />
                                 <div className="uploadProfile">
                                     <label htmlFor="photo-upload" className="custom-file-upload">
@@ -99,7 +99,7 @@ const ProfilePicture = () => {
                     <>
                         {!profileLoading && !profileId && (
                             <>
-                                <p className="w-40 h-40 col-span-2 rounded-3xl cursor-pointer bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex text-center justify-center align-center text-[5rem] font-frhW">
+                                <p className="cursor-pointer h-full w-full bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex pb-4 justify-center items-center text-[3rem] font-frhW">
                                     {firstLetter}
                                 </p>
                                 <div className="uploadProfile">

@@ -28,13 +28,11 @@ const jobImage = (props: any) => {
 export default jobImage;
 export const ProfilePic = (props: any) => {
     const [imageUrl, setImageUrl] = useState('');
-
     const getEmployerPictureId = async () => {
         setImageUrl('');
         getProfilePictures(props.id).then((res) => {
             setImageUrl(res.href)
         })
-
     };
     useEffect(() => {
         getEmployerPictureId();

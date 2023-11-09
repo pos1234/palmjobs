@@ -13,8 +13,8 @@ import ConfirmModal from './ConfirmModal';
 import { useRouter } from 'next/router';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { toast } from 'react-toastify';
-import SalarySurvey from './SalarySurvey';
 import { ProfilePic } from './JobImage';
+import Image from 'next/image';
 const Navigation = (props: any) => {
     const logo = '/images/logo.svg';
     const loadingIn = '/images/loading.svg';
@@ -51,12 +51,6 @@ const Navigation = (props: any) => {
             setLoading(false);
         }
     };
-    /*  const getHref = async (id: string) => {
-         getProfilePictures(id).then((res) => {
-             return res.href
-         })
- 
-     }; */
     const handleLogout = () => {
         setLogLoading(true);
         signOut().then((res) => {
@@ -75,8 +69,15 @@ const Navigation = (props: any) => {
             <div className="grid grid-cols-12 pt-3  md:border-b-2">
                 <div className="col-span-6 md:col-span-12 md:max-lg:flex md:max-lg:justify-center lg:col-span-2">
                     <Link href="/">
-                        <img src={logo} alt="palmjobs logo" className=" h-16" />
-                    </Link>
+                        <Image
+                            src={logo}
+                            alt="Image description"
+                            width={150}
+                            height={150}
+                            className=" h-16"
+                        />
+                        {/*                         <img src={logo} alt="palmjobs logo" className=" h-16" />
+ */}                    </Link>
                 </div>
 
                 <div className="col-span-6 flex items-center justify-end gap-x-10 md:hidden">
@@ -106,8 +107,15 @@ const Navigation = (props: any) => {
                         </div>
                         <div className="flex justify-center">
                             <Link href="/">
-                                <img src={logo} alt="palmjobs logo" className="h-16" />
-                            </Link>
+                                <Image
+                                    src={logo}
+                                    alt="Image description"
+                                    width={150}
+                                    height={150}
+                                    className=" h-16"
+                                />
+                                {/*                                 <img src={logo} alt="palmjobs logo" className="h-16" />
+ */}                            </Link>
                         </div>
                         <div className="relative flex mt-5 items-center justify-center gap-x-2">
                             {userDetail && userDetail.profilePictureId && (

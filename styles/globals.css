@@ -37,7 +37,43 @@ body {
     background-color: #74d18d;
     border-radius: 10px;
 }
-
+.buttonBounce:hover {
+    animation: bounce;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-5px);
+    }
+    60% {
+        transform: translateY(-4px);
+    }
+    80% {
+        transform: translateY(-5px);
+    }
+    100% {
+        transform: translateY(-5px);
+    }
+}
+/* @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+} */
 .hideScrollBar::-webkit-scrollbar {
     display: none;
 }
@@ -67,6 +103,11 @@ body {
     animation-name: fade-in;
     animation-duration: 2s;
     animation-fill-mode: forwards;
+}
+.profilePattern {
+    background: url('../public/images/profilePattern.svg') no-repeat;
+    background-position-y: 20%;
+    background-size: 100%;
 }
 .employerBack {
     background: url('../public/images/jobsBack.svg') repeat-y;

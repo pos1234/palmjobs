@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ConfirmModal from '../ConfirmModal'
-import TextInput from '../TextInput'
+import TextInput, { SubmitButton } from '../TextInput'
 import CloseIcon from '@mui/icons-material/Close';
 import { toast } from 'react-toastify';
 import { addSocials, getCandidateDocument, getUserDetail } from '@/lib/candidateBackend';
@@ -113,7 +113,12 @@ const SocialForm = (props: any) => {
                                     />
                                 </div>
                             </div>
-                            <div className="col-span-12 grid justify-items-end pr-3 mt-5">
+                            <div className='col-span-12 mt-10 w-full flex md:justify-end'>
+                                <div className='w-full md:w-60'>
+                                    <SubmitButton loading={loading} buttonText="Save" />
+                                </div>
+                            </div>
+                            {/*  <div className="col-span-12 grid justify-items-end pr-3 mt-5">
                                 {loading == true ? (
                                     <img
                                         src={loadingIn}
@@ -127,7 +132,7 @@ const SocialForm = (props: any) => {
                                         Save
                                     </button>
                                 )}
-                            </div>
+                            </div> */}
                         </form>
                     </div>
                     <div className="col-span-1 order-2 md:order-3 md:col-span-1">

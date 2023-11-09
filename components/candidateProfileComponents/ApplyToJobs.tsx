@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 import { SendJobAppliedEmail } from '../SendEmail';
 import Link from 'next/link';
 import { ProfilePic } from '../JobImage';
+import TextInput, { SubmitButton } from '../TextInput';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
@@ -166,6 +167,7 @@ const ApplyToJob = (props: any) => {
                     setOpenNotify(true);
                     setFailed(false);
                     setLoadingApply(false);
+                    props.setterFunction(false)
                 })
                 .catch((error) => {
                     setOpenNotify(true);
@@ -177,10 +179,6 @@ const ApplyToJob = (props: any) => {
                 });
         }
     };
-    /*  const projectImage = (id: string) => {
-         const { href } = getProfilePicture(id);
-         return href;
-     }; */
     return (
         <>
             {!failed && (
@@ -228,10 +226,9 @@ const ApplyToJob = (props: any) => {
                             <Link href="/jobs/"
                                 onClick={() => {
                                     props.setterFunction(false);
-
                                 }}
                                 type="button"
-                                className="text-textW bg-gradient-to-r flex justify-center items-center from-gradientFirst to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
+                                className="text-textW  flex justify-center items-center  h-14 w-48 rounded-xl bg-black text-textW order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
                             >
                                 Explore Jobs
                             </Link>
@@ -283,7 +280,9 @@ const ApplyToJob = (props: any) => {
                                         <div className="col-span-12 md:col-span-5 xl:col-span-6">
                                             <p className="text-black text-lg font-semibold leading-10">Contact info</p>
                                             <div className="flex gap-x-2 md:max-xl:flex-col pt-3">
-                                                <img className="w-24 h-24 rounded-2xl" src={profile} />
+                                                {userData.profilePictureId && (
+                                                    <ProfilePic id={(userData.profilePictureId)} className="w-24 h-24 rounded-2xl" />
+                                                )}
                                                 <div className="flex flex-col ">
                                                     <div className="text-neutral-900 text-xl font-medium leading-7">{newName}</div>
                                                     <div className="text-stone-300 text-lg font-normal leading-relaxed">
@@ -382,8 +381,6 @@ const ApplyToJob = (props: any) => {
                                                 name="file"
                                                 types={fileTypes}
                                             >
-
-
                                                 <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
                                                     PDF, DOCX or DOC, file size no more than 1MB
                                                 </div>
@@ -439,20 +436,15 @@ const ApplyToJob = (props: any) => {
                                 {fisrt && (
                                     <div className="col-span-12 md:col-span-7 xl:col-span-6">
                                         <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Email address</p>
-                                        <input
-                                            value={newEmail}
-                                            onChange={(e) => setNewEmail(e.currentTarget.value)}
-                                            type="text"
-                                            placeholder="JohnDoe@gmail.com"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
-                                        />
+                                        <TextInput setFunction={setNewEmail} value={newEmail} placeholder="JohnDoe@gmail.com"
+                                            class="h-12 pl-5 text-addS" />
                                         <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Mobile phone number</p>
                                         <input
                                             value={phone}
                                             onChange={(e) => setPhone(e.currentTarget.value)}
-                                            type="text"
+                                            type="number"
                                             placeholder="+251 911 2424 23"
-                                            className="border-[1px] w-full rounded-full h-12 pl-5 text-addS"
+                                            className="border-[1px] border-gray-200 focus:ring-0 focus:border-gradientFirst w-full rounded-xl h-12 pl-5 text-addS hideIncrease"
                                         />
                                     </div>
                                 )}
@@ -463,7 +455,7 @@ const ApplyToJob = (props: any) => {
                                 </p>
                                 <button
                                     onClick={() => props.setterFunction(false)}
-                                    className="text-stone-500 border border-stone-500 h-16 w-full rounded-full order-2 col-span-12 sm:order-1 sm:col-span-6 xl:col-span-3"
+                                    className="text-stone-500 border border-stone-500 h-14 w-full rounded-xl order-2 col-span-12 sm:order-1 sm:col-span-6 xl:col-span-3"
                                 >
                                     Discard
                                 </button>
@@ -471,7 +463,7 @@ const ApplyToJob = (props: any) => {
                                     <button
                                         onClick={toggleTabs}
                                         type="button"
-                                        className="text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
+                                        className="text-textW bg-black text-textW h-14 w-full rounded-xl  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
                                     >
                                         Continue
                                     </button> : null
@@ -479,19 +471,11 @@ const ApplyToJob = (props: any) => {
 
                                 {fourth && (
                                     <>
-                                        {loadingApply == true ? (
-                                            <img
-                                                src={loadingImage}
-                                                className="self-end text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                                            />
-                                        ) : (
-                                            <button
-                                                type="submit"
-                                                className="self-end text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                                            >
-                                                Apply
-                                            </button>
-                                        )}
+                                        <div className='w-full flex md:justify-end order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3'>
+                                            <div className='w-full md:w-96'>
+                                                <SubmitButton loading={loadingApply} buttonText="Apply" />
+                                            </div>
+                                        </div>
                                     </>
                                 )}
                             </div>

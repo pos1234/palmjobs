@@ -45,15 +45,12 @@ const Home = () => {
             </Head>
             <div className="px-3 lg:px-16 lg:col-span-16 overflow-hidden">
                 <Navigation />
-                {/*             <button onClick={() => toast.success('hey')}>Toast it</button>
-                 */}{' '}
                 <div>
                     <div className="md:mt-20">
                         <p className="text-center mb-5 sm:mb-10">
                             <span className="bg-gradient-to-r from-gradientFirst to-gradientSecond text-center px-3 text-textW py-1 rounded-full mr-5 block max-sm:mx-20 max-sm:mt-10 max-sm:mb-4 sm:inline cursor-pointer">
                                 For Employers
                             </span>
-                            {/* Explore talents &nbsp; */}
                             <Link className="font-shW text-gradientFirst underline cursor-pointer" href="/users/employer/">
                                 Post Job
                             </Link>
@@ -90,34 +87,6 @@ const Home = () => {
                                 />
                             </div>
                         </div>
-                        {/*  <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 h-20 md:h-16 sm:col-span-6 md:col-span-4 lg:col-span-3">
-                        <div className="col-span-2 flex items-center justify-center text-gray-500">
-                            <LocationOnOutlinedIcon />
-                        </div>
-
-                        <div
-                            className="col-span-10 bg-[#F8F8F8] h-full flex flex-col justify-center relative cursor-pointer rounded-2xl"
-                            onClick={openLocation}
-                        >
-                            <DropDown
-                                selectedElement={address}
-                                setSelectedElement={setAddress}
-                                displayedData={addressData}
-                                text="noBorder"
-                            />
-                        </div>
-                    </div> */}
-                        {/* <div className="col-span-12 rounded-2xl bg-[#F8F8F8] grid grid-cols-12 h-20 sm:col-start-4 sm:col-end-10 sm:h-20 md:h-16 md:col-span-4 lg:col-span-3">
-                        <div className="col-span-2 flex items-center justify-center text-gray-500">
-                            <CategoryOutlinedIcon />
-                        </div>
-                        <div
-                            className="col-span-10 bg-[#F8F8F8] h-full flex flex-col justify-center relative cursor-pointer rounded-2xl"
-                            onClick={openLocation}
-                        >
-                            <DropDown selectedElement={catag} setSelectedElement={setCatag} displayedData={catagoryData} text="noBorder" />
-                        </div>
-                    </div> */}
                         <button
                             onClick={handleSearch}
                             className="text-shS col-span-12  rounded-2xl sm:col-start-4 h-20 max-sm:mx-5 sm:col-end-10 sm:max-lg:mt-5 sm:h-20 md:mt-0 md:h-16 md:col-span-4 lg:col-span-3 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond"
@@ -125,18 +94,10 @@ const Home = () => {
                             <SearchOutlinedIcon sx={{ fontSize: '1.5rem', marginRight: '0.2rem' }} /> Search
                         </button>
                     </div>
-                    {/* <div className="grid grid-cols-12 max-sm:gap-y-3 gap-y-3 max-sm:gap-x-2 max-sm:pt-5 sm:max-lg:mt-10 lg:grid-cols-10 lg:px-10 xl:px-52 ">
-                    <TopSearched />
-                    <TopSearched />
-                    <TopSearched />
-                    <TopSearched />
-                    <TopSearched />
-                </div> */}
+                   
                     <div className="mt-10">
                         <p className="text-center mb-10">
-                            {/* <span className="bg-gradient-to-r from-gradientFirst to-gradientSecond text-center px-3 text-textW py-1 rounded-full mr-5 block max-sm:mx-20 max-sm:mt-10 max-sm:mb-4 sm:inline cursor-pointer">
-                            New
-                        </span> */}
+                          
                             Apply with ease
                             <Link
                                 href="users/candidate/profile"

@@ -11,11 +11,12 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProfilePicture from '@/components/candidateProfileComponents/ProfilePicture';
 import SocialLinks from '@/components/candidateProfileComponents/SocialLinks';
-import SocialForm from '@/components/candidateProfileComponents/SocialForm';
 import { getUserDetail } from '@/lib/candidateBackend';
+import CoverLetter from '@/components/candidateProfileComponents/CoverLetter';
+import WorkHitory from '@/components/candidateProfileComponents/WorkHistory';
+import Education from '@/components/candidateProfileComponents/Education';
 const Profile = () => {
     const [about, setAbout] = useState(true);
-    const [openSocial, setOpenSocial] = useState(false)
     const [allLoading, setAllLoading] = useState(false)
     const userData = async () => {
         setAllLoading(true)
@@ -26,24 +27,23 @@ const Profile = () => {
         userData()
     }, [])
     return (
-        <div className="px-3 md:px-16">
+        <div className="px-3 xl:px-40">
             <Navigation />
             {allLoading && <CandidateProfileShimmer />}
             {!allLoading && (
-                <div className="grid grid-cols-12 pt-8 xl:pl-48 xl:pr-16 md:mt-20">
-                    <div className="col-span-12 grid grid-cols-12">
-                        <div className="col-span-12 justify-center flex gap-3 max-md:flex-col justify-items-center">
-
+                <div className="flex flex-col gap-5">
+                    <div className="w-full flex flex-wrap gap-10">
+                        <div className="w-full flex gap-10 max-md:flex-col mt-10 pt-10 pb-20 profilePattern md:pl-10">
                             <ProfilePicture />
-                            <SocialLinks setOpenProfile={setOpenSocial} />
+                            <SocialLinks />
                         </div>
-                        <div className="col-span-12 flex space-x-10 pl-3 pt-7">
+                        <div className="flex w-full gap-5">
                             <p
                                 onClick={() => setAbout(true)}
                                 className={
                                     about
-                                        ? 'font-shW text-shS leading-shL cursor-pointer px-5 flex items-center h-[3.5rem] rounded-2xl bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW'
-                                        : 'font-shW text-shS leading-shL cursor-pointer px-5 flex items-center h-[3.5rem] rounded-2xl hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond hover:text-textW'
+                                        ? 'border-b-2 border-b-gradientFirst text-2xl font-[600]'
+                                        : 'border-b-2 text-gray-500 border-b-textW hover:border-b-gradientFirst text-2xl font-[600] cursor-pointer'
                                 }
                             >
                                 About
@@ -52,16 +52,19 @@ const Profile = () => {
                                 onClick={() => setAbout(false)}
                                 className={
                                     !about
-                                        ? 'font-shW text-shS leading-shL cursor-pointer px-5 flex items-center h-[3.5rem] rounded-2xl bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW'
-                                        : 'font-shW text-shS leading-shL cursor-pointer px-5 flex items-center h-[3.5rem] rounded-2xl hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond hover:text-textW'
+                                        ? 'border-b-2 border-b-gradientFirst text-2xl font-[600]'
+                                        : 'border-b-2 text-gray-500 border-b-textW hover:border-b-gradientFirst text-2xl font-[600] cursor-pointer'
                                 }
                             >
                                 Resume
                             </p>
                         </div>
                     </div>
-                    <div className={about ? 'col-span-12 grid grid-cols-12 bg-[#F9FBF9] gap-5 px-1 py-2 mt-10 rounded-2xl' : 'hidden'}>
+                    <div className={about ? 'w-full flex gap-4 mt-5 flex-wrap' : 'hidden'}>
+                        <CoverLetter />
                         <Certificate />
+                        <WorkHitory />
+                        <Education />
                         <Project />
                         <Skills />
                     </div>
@@ -69,7 +72,6 @@ const Profile = () => {
                 </div>
             )}
             <Footer />
-            <SocialForm openProfile={openSocial} setOpenProfile={setOpenSocial} />
         </div>
     );
 };
