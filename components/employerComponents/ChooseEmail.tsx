@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import RadioInput from '../RadioInput'
-import { getProfileData, updateEmailNotification } from '@/lib/services';
+import { getProfileData, updateEmailNotification } from '@/lib/employerBackend';
 import { toast } from 'react-toastify';
 
 const ChooseEmail = () => {

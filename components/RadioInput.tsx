@@ -3,8 +3,7 @@ const RadioInput = (props: any) => {
         <div className="flex items-center gap-x-2">
             <input
                 onChange={(e) => props.setFunction(e.currentTarget.value)}
-                /*                 onChange={(e) => props.setFunction({ ...props.radioName, name: e.currentTarget.value })}
-                 */ type="radio"
+               type="radio"
                 checked={props.checked}
                 value={props.radioValue}
                 name={props.radioName}

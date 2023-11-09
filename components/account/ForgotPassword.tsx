@@ -1,4 +1,4 @@
-import { sendRecovery } from '@/lib/services';
+import { sendRecovery } from '@/lib/accountBackend';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 const ForgotPassword = (props: any) => {

@@ -65,9 +65,6 @@ const WorkDetail = (props: any) => {
                     />
                 )}
             </div>
-            {/*  {desc && props && props.detail && (
-                <div className="w-full block" dangerouslySetInnerHTML={{ __html: props.detail.jobDescription }} />
-            )} */}
         </div>
     );
 };

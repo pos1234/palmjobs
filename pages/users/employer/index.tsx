@@ -20,9 +20,11 @@ import ConfirmModal from '@/components/ConfirmModal';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { useRouter } from 'next/dist/client/router';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import { getAccount, getProfileData, getProfilePicture, signOut } from '@/lib/services';
+import { getAccount, signOut } from '@/lib/accountBackend'
+import { getProfileData, } from '@/lib/employerBackend';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
+import { ProfilePic } from '@/components/JobImage';
 const AdminJob = () => {
     const logo = '/images/logo.svg';
     const router = useRouter();
@@ -109,8 +111,8 @@ const AdminJob = () => {
             setLogLoading(false);
             toast.success('Successfully Logged Out');
             setOpenLogout(false);
-            router.push('/');
-            router.reload();
+            typeof window !== 'undefined' && router.push('/');
+            typeof window !== 'undefined' && router.reload();
         });
     };
     const getUserData = async () => {
@@ -123,10 +125,10 @@ const AdminJob = () => {
             }
         }
     };
-    const getHref = (id: string) => {
-        const { href } = getProfilePicture(id);
-        return href;
-    };
+    /*  const getHref = (id: string) => {
+         const { href } = getProfilePicture(id);
+         return href;
+     }; */
     useEffect(() => {
         getUserData();
     }, []);
@@ -167,7 +169,7 @@ const AdminJob = () => {
                         </div>
                         <div className="flex flex-col items-center gap-y-3 mb-5 md:hidden">
                             {userDetail && userDetail.profilePictureId && (
-                                <img className="w-28 h-28 self-center" src={getHref(userDetail.profilePictureId)} alt="profile" />
+                                <ProfilePic id={userDetail.profilePictureId} className="w-28 h-28 self-center" />
                             )}
                             {userDetail && (
                                 <div className="text-neutral-900 text-lg font-normal leading-normal">

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Register, defineRole, sendEmailVerification } from '@/lib/services';
+import { Register, defineRole, sendEmailVerification } from '@/lib/accountBackend';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { toast } from 'react-toastify';
@@ -69,8 +69,7 @@ const RegisterComponent = (props: any) => {
                         sendEmailVerification(register.email, register.password)
                             .then((res) => {
                                 setOpenNotify(true)
-/*                                 toast.success('Email Verification Sent');
- */                                setRegister({
+                                setRegister({
                                     email: '',
                                     password: '',
                                     firstName: '',

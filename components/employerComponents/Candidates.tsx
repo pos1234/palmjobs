@@ -10,7 +10,7 @@ import {
     fetchPostedJobs,
     fetchShortListed,
     shortListedCandidate
-} from '@/lib/services';
+} from '@/lib/employerBackend';
 import CandSmall from './candidateComponents/CandSmall';
 import CandidateDetail from './candidateComponents/CandidateDetail';
 import JobsShimmer from '../shimmer/JobsShimmer';
@@ -34,13 +34,6 @@ const Candidates = (props: any) => {
             handleJobSelection(props.applicantJobId)
         }
     }, [props.applicantJobId])
-    /* const clickMe = (e: React.FormEvent<HTMLElement>) => {
-        e.preventDefault();
-        searchTerm &&
-            !props.array.some((data: any) => data.toLowerCase() === searchTerm.toLowerCase()) &&
-            addSuggestedSkill(searchTerm);
-        setSearchTerm('');
-    }; */
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
         setSearchTerm(inputValue);
@@ -59,9 +52,7 @@ const Candidates = (props: any) => {
             setAppliedCan(applied.documents);
         }
         const shortList = await fetchShortListed(id);
-        /* if (shortList && shortList.documents) {
-            setShortListed(shortList.documents.length > 0 && shortList.documents);
-        } */
+
         if (shortList && shortList.total == 0) {
             setShortListed(null)
         }
@@ -114,16 +105,7 @@ const Candidates = (props: any) => {
     const handleNav = (text: string) => {
         props.postJob(text);
     };
-    /* const filData =
-        shortListed &&
-        shortListed.filter((item: any) => {
-            let isMatch = true;
-            if (searchName.toLocaleLowerCase()) {
-                const searchRegex = new RegExp(searchName, 'i');
-                isMatch = isMatch && searchRegex.test(item.jobTitle);
-            }
-            return isMatch;
-        }); */
+
     return (
         <div className="bg-textW min-h-screen">
             <div
@@ -149,30 +131,7 @@ const Candidates = (props: any) => {
                             openCanDetail ? 'flex flex-col gap-y-3 justify-between max-md:hidden' : 'flex flex-col gap-y-3 justify-between'
                         }
                     >
-                        {/*  <div className="flex max-sm:pl-5 items-center gap-x-2">
-                            <div className=" p-1 rounded-2xl border-[1px] border-stone-300 flex items-center gap-x-3 rounded-2xl px-3">
-                                <p>Job</p>
-                                <select
-                                    onChange={(e) => {
-                                        setJobId(e.currentTarget.value);
-                                        handleJobSelection(jobId);
-                                    }}
-                                    className="border-x-[2px] border-stone-300 w-full sm:max-w-[20rem] focus:border-stone-300 focus:ring-0 bg-stone-50 py-3 border-0 cursor-pointer"
-                                >
-                                    {postedJobs &&
-                                        postedJobs.map((item: any, index: number) => {
-                                            return (
-                                                <option value={item.$id} key={index}>
-                                                    {item.jobTitle}
-                                                </option>
-                                            );
-                                        })}
-                                </select>
-                                <div>
-                                    <WorkOutlineIcon />
-                                </div>
-                            </div>
-                        </div> */}
+
                         <div className="p-1 flex flex-col max-sm:px-5 md:flex-row gap-2 gap-x-6">
                             <div className="flex gap-x-5">
                                 <div className="bg-stone-50 px-2 grid grid-cols-12 rounded-2xl md:rounded-3xl md:col-span-6 xl:col-span-7">
@@ -187,24 +146,14 @@ const Candidates = (props: any) => {
                                             className="h-full w-full bg-[#F8F8F8] pl-5 border-none outline-none focus:ring-0 focus:border-none focus:outline-none" />
                                     </div>
                                 </div>
-
-
-                                {/* <div
-                                    onClick={setTheSearchTerm}
-                                    className="self-center max-md:py-3 bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-xl text-textW flex items-center justify-center h-14 w-14 md:rounded-2xl md:col-span-1"
-                                >
-                                    <SearchIcon className="text-[1.5rem] cursor-pointer md:max-lg:text-[2rem] lg:text-3xl" />
-                                </div> */}
                             </div>
                             <select
                                 onChange={(e) => setAllCandidates(e.currentTarget.value)}
                                 className="cursor-pointer border-stone-300 max-w-[20rem] focus:border-0 focus:ring-gradientFirst max-md:h-14 h-16 rounded-2xl"
                             >
                                 <option value="All Candidates">All Candidates</option>
-                                {/*                                 <option value="Best Match">Best Match</option>
- */}                                <option value="Shortlisted">Shortlisted</option>
-                                {/* <JobTab text="All Candidates" active="true" />
-                                <JobTab text="Best Match" /> */}
+                                <option value="Shortlisted">Shortlisted</option>
+
                             </select>
 
                             <p className="flex justify-end flex-grow items-center text-stone-600 text-2xl font-semibold leading-10 hidden xl:flex">

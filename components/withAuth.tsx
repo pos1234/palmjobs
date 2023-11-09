@@ -1,4 +1,5 @@
-import { getAccount, getRole, signOut } from '@/lib/services';
+import { getRole } from '@/lib/candidateBackend';
+import { getAccount, signOut } from '@/lib/accountBackend';
 import { useRouter } from 'next/dist/client/router';
 import { useEffect } from 'react';
 export function candidateAuth(WrappedComponent: React.ComponentType<any>) {
@@ -8,15 +9,15 @@ export function candidateAuth(WrappedComponent: React.ComponentType<any>) {
             const loggedIn = await getAccount();
 
             if (loggedIn !== 'failed') {
-                const role = await getRole(loggedIn.$id);
-                if (role.documents[0].userRole !== 'candidate') {
+                const role = await getRole();
+                if (role && role.documents[0].userRole !== 'candidate') {
                     signOut();
-                    router.push('/account');
+                    typeof window !== 'undefined' && router.push('/account');
                 }
             }
             // Check if user is authenticated
             if (loggedIn == 'failed') {
-                router.push('/account');
+                typeof window !== 'undefined' && router.push('/account');
             }
         };
         checkAuth();
@@ -29,20 +30,18 @@ export function employeeAuth(WrappedComponent: React.ComponentType<any>) {
         const checkAuth = async () => {
             const loggedIn = await getAccount();
             if (loggedIn !== 'failed') {
-                const role = await getRole(loggedIn.$id);
-                if (role.documents[0].userRole !== 'employer') {
+                const role = await getRole();
+                if (role && role.documents[0].userRole !== 'employer') {
                     signOut();
-                    router.push('/account');
+                    typeof window !== 'undefined' && router.push('/account');
                 }
             }
             // Check if user is authenticated
             if (loggedIn == 'failed') {
-                router.push('/account');
+                typeof window !== 'undefined' && router.push('/account');
             }
         };
-
         checkAuth();
-
         return <WrappedComponent {...props} />;
     };
 }
