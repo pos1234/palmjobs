@@ -51,17 +51,21 @@ const Footer = () => {
                     <div className="col-span-12 md:col-span-4 lg:col-span-3 xl:col-span-2">
                         <img src={logo} alt="palmjobs logo" className=" h-16" />
                         <ul className="flex space-x-5 text-gradientFirst pl-5 pt-4">
-                            <Link href="https://www.facebook.com/youremploymentsolutionsethiopia/" target="_blank">
-                                <FacebookIcon />
-                            </Link>
-                            <Link href="https://www.linkedin.com/company/10353818?trk=prof-exp-company-name" target="_blank">
-                                <LinkedInIcon />
-                            </Link>
-
-                            <Link href="https://twitter.com/yesethiopia" target="_blank">
-                                <TwitterIcon />
-                            </Link>
-
+                            <li>
+                                <Link href="https://www.facebook.com/youremploymentsolutionsethiopia/" target="_blank" aria-label="Palm Jobs facebook page">
+                                    <FacebookIcon />
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="https://www.linkedin.com/company/10353818?trk=prof-exp-company-name" target="_blank" aria-label="Palm Jobs LinkedIn page">
+                                    <LinkedInIcon />
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="https://twitter.com/yesethiopia" target="_blank" aria-label="Palm Jobs Twitter page">
+                                    <TwitterIcon />
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <div className="col-span-12 mt-5 pl-5 cursor-pointer md:cursor-default md:mt-2 md:col-span-4 md:grid md:justify-items-center lg:col-span-3">
@@ -200,7 +204,7 @@ const Footer = () => {
                         )}
                     </div>
                 </div>
-                <div className="pt-5">
+                <div className="pt-5 flex justify-center pb-5">
                     <div className="col-span-12 md:col-span-4 lg:col-span-3 xl:col-span-2">
                         <ul className="md:flex md:space-x-5 pl-5 pt-4">
                             <li>

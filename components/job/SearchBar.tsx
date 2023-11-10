@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const SearchBar = (props: any) => {
     return (
-        <div className="w-full flex flex-col sm:items-center gap-2">
+        <div className={`w-full flex flex-col gap-2 ${props.home== true ? 'sm:items-start' : 'sm:items-center'}`}>
             <div className='flex items-center gap-3 max-sm:w-full'>
                 <div className="w-full h-full max-h-[5rem] flex gap-1 items-center">
                     <div className='relative flex items-center max-sm:w-full'>
