@@ -108,7 +108,7 @@ const Home = () => {
                         </p>
                     </div>
                     <div className='flex max-lg:w-full justify-center sm:max-lg:items-center'>
-                        <img src="/images/HeroSection.svg" alt="employees" />
+                        <img src="/images/HeroSection.avif" alt="employees" />
                     </div>
                 </div>
                 <Footer />
