@@ -12,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
 import RegisterComponent from '@/components/account/Register';
 import Slider from '@/components/Slider';
+import { SubmitButton } from '@/components/TextInput';
 const Login = () => {
     const router = useRouter();
     const logo = '/images/logo.svg';
@@ -112,12 +113,12 @@ const Login = () => {
                         </p>
                     )}
                     {forgotPassword == false && (
-                        <div className="bg-[#E9FDF1] w-80 h-14 rounded-full p-2 grid grid-cols-12">
+                        <div className="bg-[#E9FDF1] w-80 rounded-xl p-2 flex grid-cols-12">
                             <button
                                 className={
                                     register == false
-                                        ? 'col-span-6 bg-gradientFirst text-textW rounded-full cursor-pointer'
-                                        : 'col-span-6 text-gradientFirst rounded-full cursor-pointer'
+                                        ? 'w-1/2 h-11 bg-gradientFirst text-textW rounded-xl cursor-pointer'
+                                        : 'w-1/2 h-11 text-gradientFirst rounded-xl cursor-pointer'
                                 }
                                 onClick={() => {
                                     setRegister(false);
@@ -129,8 +130,8 @@ const Login = () => {
                             <button
                                 className={
                                     register == true
-                                        ? 'col-span-6 bg-gradientFirst text-textW rounded-full cursor-pointer'
-                                        : 'col-span-6 text-gradientFirst rounded-full cursor-pointer'
+                                        ? 'w-1/2 h-11 bg-gradientFirst h-full text-textW rounded-xl cursor-pointer'
+                                        : 'w-1/2 h-11 text-gradientFirst rounded-xl cursor-pointer'
                                 }
                                 onClick={() => setRegister(true)}
                             >
@@ -183,14 +184,14 @@ const Login = () => {
                             </div>
                             <div className="w-full grid grid-cols-12 justify-items-end pr-2">
                                 {!getJob && !hireTalent && (
-                                    <div className="mt-5 col-start-7 col-end-13 text-textW bg-gradientSecond flex items-center justify-center h-16 w-full rounded-full">
+                                    <div className="mt-5 col-start-7 col-end-13 text-textW bg-gradientSecond flex items-center justify-center h-16 w-full rounded-xl">
                                         Continue
                                     </div>
                                 )}
                                 {(getJob || hireTalent) && (
                                     <button
                                         onClick={() => setRegisterForm(true)}
-                                        className="mt-5 col-start-7 col-end-13 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full"
+                                        className="mt-5 col-start-7 col-end-13 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
                                     >
                                         Continue
                                     </button>
@@ -201,12 +202,12 @@ const Login = () => {
                     {(register == false || registerForm == true) && forgotPassword == false && (
                         <div className="w-full p-2 grid gap-x-2 grid-cols-12 gap-y-4 lg:gap-y-0">
                             {
-                                registerForm == false && <button type='button' onClick={() => handleGoogleLogin()} className="col-span-12 border-2 rounded-full cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-start-4 sm:col-end-10 md:max-lg:col-span-12">
+                                registerForm == false && <button type='button' onClick={() => handleGoogleLogin()} className="col-span-12 border-2 rounded-xl cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-start-4 sm:col-end-10 md:max-lg:col-span-12">
                                     <p> Sign in with Google</p> <img src={google} alt="google" className="w-[2rem] h-[2rem] inline ml-3" />
                                 </button>
                             }
                             {
-                                registerForm == true && <button type='button' onClick={() => handleGoogleRegister()} className="col-span-12 border-2 rounded-full cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-start-4 sm:col-end-10 md:max-lg:col-span-12">
+                                registerForm == true && <button type='button' onClick={() => handleGoogleRegister()} className="col-span-12 border-2 rounded-xl cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-start-4 sm:col-end-10 md:max-lg:col-span-12">
                                     <p>Continue with Google</p> <img src={google} alt="google" className="w-[2rem] h-[2rem] inline ml-3" />
                                 </button>
                             }
@@ -225,8 +226,8 @@ const Login = () => {
                                     placeholder="Enter Email"
                                     className={
                                         emailError
-                                            ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS sm:col-span-10'
-                                            : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS sm:col-span-10'
+                                            ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
+                                            : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
                                     }
                                 />
                                 {emailError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{emailError}</p>}
@@ -239,8 +240,8 @@ const Login = () => {
                                     placeholder="Enter password"
                                     className={
                                         passwordError
-                                            ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS sm:col-span-10'
-                                            : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS sm:col-span-10'
+                                            ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
+                                            : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
                                     }
                                 />
                                 <span
@@ -258,16 +259,21 @@ const Login = () => {
                                         Forgot Password?
                                     </span>
                                 </div>
-                                {!loading && (
-                                    <button className="mt-5 col-span-10 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full">
+                                <div className='w-full col-span-10 flex md:justify-end'>
+                                    <div className='w-full md:w-60 pt-5'>
+                                        <SubmitButton loading={loading} buttonText="Login" />
+                                    </div>
+                                </div>
+                                {/*  {!loading && (
+                                    <button className="mt-5 col-span-10 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl">
                                         Login
                                     </button>
                                 )}
                                 {loading && (
-                                    <div className="mt-5 col-span-10 text-textW h-16 w-full rounded-full">
-                                        <img src={loadingIn} className="self-end text-textW h-16 w-full xl:w-56 rounded-full" />
+                                    <div className="mt-5 col-span-10 text-textW h-16 w-full rounded-xl">
+                                        <img src={loadingIn} className="self-end text-textW h-16 w-full xl:w-56 rounded-xl" />
                                     </div>
-                                )}
+                                )} */}
                             </form>
                         </>
                     )}

@@ -4,6 +4,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { toast } from 'react-toastify';
 import Notification from '../Notification';
+import { SubmitButton } from '../TextInput';
 const RegisterComponent = (props: any) => {
     const loadingIn = '/images/loading.svg';
     const [emailError, setEmailError] = useState('');
@@ -102,8 +103,8 @@ const RegisterComponent = (props: any) => {
                         placeholder="Enter First Name"
                         className={
                             firstNameError
-                                ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                                : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                                ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
+                                : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
                         }
                     />
                     {firstNameError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{firstNameError}</p>}
@@ -117,8 +118,8 @@ const RegisterComponent = (props: any) => {
                         placeholder="Enter Last Name"
                         className={
                             lastNameError
-                                ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                                : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                                ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
+                                : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
                         }
                     />
                     {lastNameError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{lastNameError}</p>}
@@ -131,8 +132,8 @@ const RegisterComponent = (props: any) => {
                     placeholder="Enter your Email"
                     className={
                         emailError
-                            ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                            : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                            ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
+                            : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
                     }
                 />
                 {emailError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{emailError}</p>}
@@ -146,8 +147,8 @@ const RegisterComponent = (props: any) => {
                             placeholder="Enter Your Password"
                             className={
                                 passwordError
-                                    ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                                    : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                                    ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
+                                    : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
                             }
                         />
                         <span onClick={() => setVisible(!visible)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
@@ -164,8 +165,8 @@ const RegisterComponent = (props: any) => {
                         placeholder="Retype password"
                         className={
                             passwordError
-                                ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-full h-12 pl-5 text-addS'
-                                : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-full h-12 pl-5 text-addS'
+                                ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
+                                : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
                         }
                     />
                 </div>
@@ -179,20 +180,25 @@ const RegisterComponent = (props: any) => {
                     <span className="font-addW text-addS leading-addL pl-2">To continue please accept our Terms and Conditions. Thanks!</span>
                     {checkError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{checkError}</p>}
                 </div>
-                <div className="col-span-12 grid grid-cols-12 justify-items-end pr-2">
-                    {loading && (
-                        <div className="mt-5 col-start-7 col-end-13 text-textW h-16 w-full rounded-full">
-                            <img src={loadingIn} className="self-end text-textW h-16 w-full xl:w-56 rounded-full" />
+                <div className="col-span-12 grid grid-cols-12 justify-items-end">
+                    <div className='w-full col-span-12 flex md:justify-end'>
+                        <div className='w-full md:w-60 pt-5'>
+                            <SubmitButton loading={loading} buttonText="Continue" />
+                        </div>
+                    </div>
+                    {/*  {loading && (
+                        <div className="mt-5 col-start-7 col-end-13 text-textW h-16 w-full rounded-xl">
+                            <img src={loadingIn} className="self-end text-textW h-16 w-full xl:w-56 rounded-xl" />
                         </div>
                     )}
                     {!loading && (
                         <button
                             type="submit"
-                            className="mt-5 col-start-7 col-end-13 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full"
+                            className="mt-5 col-start-7 col-end-13 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
                         >
                             Continue
                         </button>
-                    )}
+                    )} */}
                 </div>
             </form>
 
