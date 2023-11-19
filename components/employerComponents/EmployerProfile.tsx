@@ -5,6 +5,7 @@ import { getEmployerDocument, getProfileData, updateProfile, updateUserName } fr
 import { toast } from 'react-toastify';
 import { EmployerProfilePicture } from '../candidateProfileComponents/ProfilePicture';
 import { getAccount } from '@/lib/accountBackend';
+import { SubmitButton } from '../TextInput';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -14,14 +15,14 @@ const TextInput = (props: any) => {
             placeholder={props.placeHolder}
             value={props.value}
             onChange={(e) => props.setFunction(e.currentTarget.value)}
-            className=" h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 w-full md:w-96"
+            className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-0 w-full md:w-96"
         />
     );
 };
 const RequiredTextLabel = (props: any) => {
     return (
         <div>
-            <span className="text-neutral-900 text-opacity-70 text-md font-medium sm:leading-loose md:text-xl">{props.text} </span>
+            <span className="text-neutral-900 text-opacity-70 text-md font-medium sm:leading-loose md:text-lg">{props.text} </span>
             <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 text-2xl font-medium sm:leading-loose'}>*</span>
         </div>
     );
@@ -84,7 +85,7 @@ const EmployerProfile = (props: any) => {
                 <TextInput placeHolder="your name" value={userName} setFunction={setUserName} />
                 <RequiredTextLabel text="Your Company's Industry?" />
                 <select
-                    className=" h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 cursor-pointer w-full md:w-96"
+                    className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-0 cursor-pointer w-full md:w-96"
                     value={industry}
                     onChange={(e) => {
                         setIndustry(e.currentTarget.value);
@@ -113,7 +114,7 @@ const EmployerProfile = (props: any) => {
                 <RequiredTextLabel text="Your Company's number of employee?" />
                 <input
                     type="number"
-                    className=" h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:border-orange-500 focus:ring-0 hideIncrease w-full md:w-96"
+                    className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-0 hideIncrease w-full md:w-96"
                     value={noEmployee}
                     onChange={(e) => setNoEmployee(e.currentTarget.value)}
                 />
@@ -127,17 +128,22 @@ const EmployerProfile = (props: any) => {
             <RequiredTextLabel text="Company Description ?" req="nReq" />
             <div className="pb-20 mr-2 mt-5 xl:mr-64">
                 <ReactQuill
-                    className="h-28 text-addS"
+                    className="h-60 text-addS"
                     value={compDescription}
                     onChange={(e) => setCompDescription(e)}
                     placeholder="Add Description"
                 />
             </div>
-            <div className="flex justify-end pt-5">
+            <div className='w-full flex mt-5'>
+                <div className='w-full md:w-52'>
+                    <SubmitButton loading={loading} buttonText="Save" />
+                </div>
+            </div>
+            {/*  <div className="flex justify-end pt-5">
                 {!loading && (
                     <button
                         type="submit"
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16  rounded-full w-7/12 md:w-5/12 lg:w-3/12"
+                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16  rounded-xl w-7/12 md:w-5/12 lg:w-3/12"
                     >
                         Save
                     </button>
@@ -145,10 +151,10 @@ const EmployerProfile = (props: any) => {
                 {loading && (
                     <img
                         src={loadingIn}
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-full w-7/12 md:w-5/12 lg:w-3/12"
+                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-xl w-7/12 md:w-5/12 lg:w-3/12"
                     />
                 )}
-            </div>
+            </div> */}
         </form>
     );
 };

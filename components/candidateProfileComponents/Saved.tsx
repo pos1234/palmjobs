@@ -3,6 +3,7 @@ import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds, getCompanyData } from '@/lib/candidateBackend';
 import { useEffect, useState } from 'react';
 import ApplyToJob from './ApplyToJobs';
@@ -20,24 +21,9 @@ import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ShareIcon from '@mui/icons-material/Share';
-const CompanyName = (props: any) => {
-    const [compData, setCompData] = useState<any>();
-    const getCompData = () => {
-        getCompanyData(props.id).then((res) => {
-            res && res.documents && setCompData(res.documents[0]);
-        });
-    };
-    useEffect(() => {
-        getCompData();
-    }, []);
-    return <>{compData && <p className="text-[12px] text-darkBlue sm:text-fhS">{compData.companyName}</p>}</>;
-};
-const SmallLists = (props: any) => {
-    return <li className="inline bg-[#FAFAFA] text-xs text-gradientFirst rounded-md p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:py-2">
-        {props.icon}
-        <span className='text-[#20262E]'>{props.items}</span>
-    </li>
-}
+import Share from '../Share';
+import { SmallLists } from '../TextInput';
+
 const ReturnName = (props: any) => {
     const [companyName, setCompanyName] = useState('');
     const documents = getCompanyData(props.id);
@@ -59,6 +45,7 @@ const SavedJobs = (props: any) => {
     const [allLoading, setAllLoading] = useState(false);
     const [companyName, setCompanyName] = useState('');
     const [jobTitle, setJobTitle] = useState('');
+    const [openShare, setOpenShare] = useState(false)
     useEffect(() => {
         setAllLoading(true);
         fetchSavedJobIds().then((res: any) => {
@@ -122,7 +109,7 @@ const SavedJobs = (props: any) => {
                                         )}
                                         {datas.jobLocation && (
                                             <p className="text-fadedText max-sm:text-[14px] flex items-center gap-2">
-                                                <PinDropOutlinedIcon sx={{ fontSize: '1.2rem' }} />
+                                                <PlaceOutlinedIcon sx={{ fontSize: '1.2rem' }} />
                                                 {datas.jobLocation}
                                             </p>
                                         )}
@@ -131,9 +118,7 @@ const SavedJobs = (props: any) => {
                                 <div className="w-full mt-4">
                                     <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 justify-between flex-wrap">
                                         {datas.jobType &&
-                                            <SmallLists icon={<BusinessCenterIcon
-                                                sx={{ fontSize: '1rem' }}
-                                                className="-mt-0.5 mr-1 " />}
+                                            <SmallLists icon={<img src='/icons/suitCase.svg' />}
                                                 items={datas.jobType} />
                                         }
                                         {(datas.minSalary || datas.maxSalary) && (
@@ -169,9 +154,7 @@ const SavedJobs = (props: any) => {
                                         )}
                                         {datas.datePosted && (
                                             <SmallLists
-                                                icon={<HourglassTopIcon
-                                                    sx={{ fontSize: '1rem' }}
-                                                    className="-mt-0.5 mr-1 "
+                                                icon={<img src='/icons/hourGlassUp.svg'
                                                 />}
                                                 items={new Date(datas.datePosted)
                                                     .toLocaleDateString('en-GB')
@@ -180,9 +163,7 @@ const SavedJobs = (props: any) => {
                                         )}
                                         {datas.datePosted && (
                                             <SmallLists
-                                                icon={<HourglassTopIcon
-                                                    sx={{ fontSize: '1rem' }}
-                                                    className="-mt-0.5 mr-1 "
+                                                icon={<img src='/icons/hourGlassDown.svg'
                                                 />}
                                                 items={new Date(datas.datePosted)
                                                     .toLocaleDateString('en-GB')
@@ -199,7 +180,7 @@ const SavedJobs = (props: any) => {
                                     <BookmarkIcon sx={{ fontSize: '2rem' }}
                                     />
                                 </div>
-                                <button className='bg-gradientFirst text-textW px-20 py-3 h-14 cursor-pointer rounded-lg' onClick={() => {
+                                <button className='bg-gradientFirst text-textW px-20 py-3 h-14 cursor-pointer border-b-4 border-b-textW hover:border-b-4 hover:border-b-black rounded-lg buttonBounce' onClick={() => {
                                     setApply(true);
                                     setJobId(datas.$id);
                                     setEmployerId(datas.employerId);
@@ -207,10 +188,11 @@ const SavedJobs = (props: any) => {
                                     setCompanyName(datas.companyName);
                                 }}>Apply</button>
                                 <div className='flex pt-3'>
-                                    <ShareIcon />
+                                    <ShareIcon onClick={() => setOpenShare(true)} sx={{ fontSize: '1.5rem' }} />
                                 </div>
 
                             </div>
+                            <Share openShare={openShare} setOpenShare={setOpenShare} link={datas.$id} />
                         </div>
                     );
                 })}
@@ -257,7 +239,7 @@ const SavedJobs = (props: any) => {
                     </Link>
                 </div>
             )}
-           {/*  {savedJobs &&
+            {/*  {savedJobs &&
                 !allLoading &&
                 savedJobs.map((datas: any) => {
                     return (

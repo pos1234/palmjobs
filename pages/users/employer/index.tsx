@@ -25,6 +25,28 @@ import { getProfileData, } from '@/lib/employerBackend';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { ProfilePic } from '@/components/JobImage';
+import Logout from '@/components/Logout';
+interface menuItems {
+    icons: any,
+    text: string,
+    navText: string,
+    active: boolean,
+    handleNavigation: (pram: string) => void
+    handleMenu: (param: boolean) => void
+}
+const MenuItems = ({ icons, text, navText, active, handleNavigation, handleMenu }: menuItems) => {
+    return <div onClick={() => {
+        handleNavigation(navText);
+        handleMenu(false);
+    }} className={
+        active
+            ? 'flex pl-4 items-center text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-20'
+            : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer lg:pl-20'
+    }>
+        <div>{icons}</div>
+        <p className='text-lg'>{text}</p>
+    </div>
+}
 const AdminJob = () => {
     const logo = '/images/logo.svg';
     const router = useRouter();
@@ -151,14 +173,14 @@ const AdminJob = () => {
             </div>
             <div className="grid grid-cols-12 gap-x-5 bg-forBack relative">
                 <div className=' md:fixed bg-textW md:w-3/12 xl:w-2/12'>
-                    <Link href="/">
-                        <img src={logo} alt="palmjobs logo" className=" h-20 max-md:hidden" />
+                    <Link href="/" className='flex justify-center'>
+                        <img src={logo} alt="palmjobs logo" className=" h-16 max-md:hidden" />
                     </Link>
                     <div
                         className={
                             menu
-                                ? 'fixed top-0 h-screen overflow-auto flex flex-col w-screen z-40 bg-textW gap-y-2 col-span-12 pt-16 px-20 flex-col md:min-h-screen md:px-0 md:col-span-3 xl:col-span-2'
-                                : 'hidden md:relative md:flex md:flex-col bg-textW md:gap-y-2 md:pt-16 md:min-h-screen md:col-span-3 xl:col-span-2'
+                                ? 'fixed top-0 h-screen overflow-auto flex flex-col w-screen z-40 bg-red-500 gap-y-2 pt-16 px-20 flex-col md:min-h-screen md:px-0'
+                                : 'hidden md:relative md:flex md:flex-col md:gap-y-2 md:pt-16 md:min-h-screen '
                         }
                     >
                         <div
@@ -177,119 +199,76 @@ const AdminJob = () => {
                                 </div>
                             )}
                         </div>
-                        <div
-                            onClick={() => {
-                                handleNavigation('postJob');
-                                setMenu(false);
-                            }}
-                            className={
+                        <MenuItems
+                            icons={<AddIcon sx={{ fontSize: '1.2rem' }} className={
                                 postJob
-                                    ? 'flex pl-5 items-center bg-skillColor py-3 gap-x-4 text-gradientFirst cursor-pointer w-full lg:pl-10'
-                                    : 'flex pl-5 text-stone-400 items-center group py-3 gap-x-4 cursor-pointer w-full hover:bg-skillColor hover:text-gradientFirst lg:pl-10'
+                                    ? 'bg-gradientFirst text-textW rounded-md border-0'
+                                    : 'group-hover:bg-gradientFirst bg-stone-400 text-textW rounded-md border-0 '
+                            } />}
+                            text='Post Job'
+                            navText='postJob'
+                            active={postJob}
+                            handleNavigation={handleNavigation}
+                            handleMenu={setMenu}
+
+                        />
+                        <MenuItems
+                            icons={<AssessmentIcon sx={{ fontSize: '1.2rem' }} />
                             }
-                        >
-                            <div
-                                className={
-                                    postJob
-                                        ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW rounded-md border-0'
-                                        : 'group-hover:bg-gradient-to-r group-hover:from-gradientFirst group-hover:to-gradientSecond bg-stone-400 text-textW rounded-md border-0 '
-                                }
-                            >
-                                <AddIcon />
-                            </div>
-                            <p className=" text-xl font-medium leading-loose">Post Job</p>
-                        </div>
-                        <div
-                            onClick={() => {
-                                handleNavigation('dashboard');
-                                setMenu(false);
-                            }}
-                            className={
-                                dashboard
-                                    ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                    : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            text='Analytics'
+                            navText='dashboard'
+                            active={dashboard}
+                            handleNavigation={handleNavigation}
+                            handleMenu={setMenu}
+                        />
+                        <MenuItems
+                            icons={<BusinessCenterIcon sx={{ fontSize: '1.5rem' }} />
                             }
-                        >
-                            <div className=" rounded-md border-0">
-                                <AssessmentIcon sx={{ fontSize: '1.9rem' }} />
-                            </div>
-                            <p className="text-xl font-medium leading-loose">Analytics</p>
-                        </div>
-                        <div
-                            onClick={() => {
-                                handleNavigation('jobs');
-                                setMenu(false);
-                            }}
-                            className={
-                                jobs
-                                    ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                    : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            text='Jobs'
+                            navText='jobs'
+                            active={jobs}
+                            handleNavigation={handleNavigation}
+                            handleMenu={setMenu}
+
+                        />
+                        <MenuItems
+                            icons={<PeopleIcon sx={{ fontSize: '1.5rem' }} />
                             }
-                        >
-                            <div className=" rounded-md border-0">
-                                <BusinessCenterIcon sx={{ fontSize: '1.9rem' }} />
-                            </div>
-                            <p className="text-xl font-medium leading-loose">Jobs</p>
-                        </div>
-                        <div
-                            onClick={() => {
-                                handleNavigation('candidates');
-                                setMenu(false);
-                            }}
-                            className={
-                                candidates
-                                    ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-3 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                    : 'flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            text='Applicants'
+                            navText='candidates'
+                            active={candidates}
+                            handleNavigation={handleNavigation}
+                            handleMenu={setMenu}
+                        />
+                        <MenuItems
+                            icons={<SettingsSuggestIcon sx={{ fontSize: '1.5rem' }} />
                             }
-                        >
-                            <div className=" rounded-md border-0">
-                                <PeopleIcon sx={{ fontSize: '1.9rem' }} />
-                            </div>
-                            <p className="text-xl font-medium leading-loose">Applicants</p>
-                        </div>
-                        <div
-                            onClick={() => {
-                                handleNavigation('profileSetting');
-                                setMenu(false);
-                            }}
-                            className={
-                                profileSetting
-                                    ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                    : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
+                            text='Profile'
+                            navText='profileSetting'
+                            active={profileSetting}
+                            handleNavigation={handleNavigation}
+                            handleMenu={setMenu}
+                        />
+                        <MenuItems
+                            icons={<ShieldIcon sx={{ fontSize: '1.5rem' }} />
                             }
-                        >
-                            <div className=" rounded-md border-0">
-                                <SettingsSuggestIcon sx={{ fontSize: '1.9rem' }} />
-                            </div>
-                            <p className="text-xl font-medium leading-loose">Profile</p>
-                        </div>
-                        <div
-                            onClick={() => {
-                                handleNavigation('privacy');
-                                setMenu(false);
-                            }}
-                            className={
-                                privacy
-                                    ? 'flex pl-4 items-center bg-skillColor text-gradientFirst py-2 gap-x-3 cursor-pointer w-full lg:pl-9'
-                                    : 'flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer lg:pl-9'
-                            }
-                        >
-                            <div className=" rounded-md border-0">
-                                <ShieldIcon sx={{ fontSize: '1.9rem' }} />
-                            </div>
-                            <p className="text-xl font-medium leading-loose">Security</p>
-                        </div>
+                            text='privacy'
+                            navText='privacy'
+                            active={privacy}
+                            handleNavigation={handleNavigation}
+                            handleMenu={setMenu}
+                        />
                         <div
                             onClick={() => {
                                 setOpenLogout(!openLogout);
                                 setMenu(false);
                             }}
-                            className="left-0 flex pl-4 items-center py-2 gap-x-3 text-stone-400 w-full hover:bg-skillColor hover:text-gradientFirst cursor-pointer  lg:pl-9"
+                            className="flex pl-4 items-center py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer lg:pl-20"
                         >
                             <div className=" rounded-md border-0">
-                                <LogoutIcon sx={{ fontSize: '1.9rem' }} />
+                                <LogoutIcon sx={{ fontSize: '1.5rem' }} />
                             </div>
-                            <p className="text-xl font-medium leading-loose">Logout</p>
+                            <p className="text-lg font-medium leading-loose">Logout</p>
                         </div>
                     </div>
                 </div>
@@ -362,35 +341,7 @@ const AdminJob = () => {
                     </div>
                 </div>
             </div>
-            <ConfirmModal isOpen={openLogout} handleClose={() => setOpenLogout(!openLogout)}>
-                <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl flex flex-col gap-y-5 items-center justify-center pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0">
-                    <p className="col-span-12 text-black font-semibold leading-10 md:text-3xl">Are you sure you want to logout ?</p>
-                    <div className="flex gap-x-10 max-sm:flex-col max-sm:gap-y-3">
-                        <button
-                            onClick={() => setOpenLogout(!openLogout)}
-                            type="button"
-                            className="bg-gradientSecond hover:bg-gradient-to-r text-textW hover:from-gradientFirst hover:to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                        >
-                            No
-                        </button>
-                        {logLoading && (
-                            <img
-                                src={loadingIn}
-                                className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                            />
-                        )}
-                        {!logLoading && (
-                            <button
-                                onClick={handleLogout}
-                                type="button"
-                                className="bg-gradientSecond hover:bg-gradient-to-r text-textW hover:from-gradientFirst hover:to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                            >
-                                Yes
-                            </button>
-                        )}
-                    </div>
-                </div>
-            </ConfirmModal>
+            <Logout openLogout={openLogout} setOpenLogout={setOpenLogout} />
         </>
     );
 };

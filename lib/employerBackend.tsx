@@ -30,23 +30,25 @@ export const getEmployerDocument = async () => {
         const { $id } = user;
         const roles = await getRole();
         if (roles && roles.documents[0].userRole == 'employer') {
-            const { documents }: any = await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', $id)]);
-            const fileId = documents[0].$id
-            return { fileId, documents };
+            databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', $id)]).then((res: any) => {
+                const fileId = res && res.total > 0 && res.documents[0].$id
+                const documents = res && res.total > 0 && res.documents
+                return { fileId, documents };
+            })
         }
     }
 };
 export const getUserDetail = async () => {
-    const { documents }: any = await getEmployerDocument()
-    return documents[0]
+    getEmployerDocument().then((res: any) => {
+        return res && res.total > 0 && res.documents[0]
+    })
+
 }
 
 export const updateUserName = (name: string) => {
     const promise = account.updateName(name);
     return promise;
 };
-
-
 
 export const fetchJobs = async () => {
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
@@ -304,9 +306,11 @@ export const updateProfile = async (
             websiteLink,
             description
         };
-        const { documents } = await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userAccount.$id)]);
-        const promise = databases.updateDocument(DATABASE_ID, COMPANY_DATA, documents[0].$id, datas);
-        return promise;
+        databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userAccount.$id)]).then((res: any) => {
+            const promise = res && res.total > 0 && databases.updateDocument(DATABASE_ID, COMPANY_DATA, res.documents[0].$id, datas);
+            return promise;
+        })
+
     }
 };
 export const getProfileData = async () => {
@@ -322,9 +326,11 @@ export const updateEmailNotification = async (notify: boolean) => {
         const datas = {
             receiveEmailNotification: notify
         };
-        const { documents } = await databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userAccount.$id)]);
-        const promise = databases.updateDocument(DATABASE_ID, COMPANY_DATA, documents[0].$id, datas);
-        return promise;
+        databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', userAccount.$id)]).then((res: any) => {
+            const promise = res && res.total > 0 && databases.updateDocument(DATABASE_ID, COMPANY_DATA, res.documents[0].$id, datas);
+            return promise;
+        })
+
     }
 };
 export const getCompanyData = (id: string) => {

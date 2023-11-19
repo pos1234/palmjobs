@@ -10,7 +10,7 @@ import { getUserDetail, updateWorkHistory } from '@/lib/candidateBackend';
 import ElementWithIcon from './CertificateEducationComponent/ElementWithIcon'
 import { toast } from 'react-toastify';
 import FormModal from './FormModal';
-import { SubmitButton } from '../TextInput';
+import { DeleteConfirmation, SubmitButton } from '../TextInput';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -33,7 +33,6 @@ const WorkHitory = () => {
         jobDescription: ''
     });
     const maxWorkHistoryTitle = 20;
-
     const convertToString = (str: any) => {
         return JSON.stringify(str);
     };
@@ -74,8 +73,6 @@ const WorkHitory = () => {
                     setLoadings(false);
                 });
         }
-
-
     };
     const addWorkHistory = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
@@ -93,8 +90,9 @@ const WorkHitory = () => {
             setErrorMessage('please enter job description');
         } else {
             setLoadings(true);
-            workHistoryArray.push(workHistoryData);
-            updateWorkHistory(convertToString(workHistoryArray)).then((res: any) => {
+/*             workHistoryArray.push(workHistoryData);
+ */            const updatedWrokHitoryArray = [...workHistoryArray, workHistoryData];
+            updateWorkHistory(convertToString(updatedWrokHitoryArray)).then((res: any) => {
                 setLoadings(false);
                 setOpenWork(false);
                 setErrorCode(0);
@@ -109,6 +107,7 @@ const WorkHitory = () => {
                 toast.success('Work Hitory Added Successfully');
                 const work = JSON.parse(res.workHistory);
                 setWorkHistoryArray(work);
+
             })
                 .catch((error) => {
                     console.log(error);
@@ -137,8 +136,11 @@ const WorkHitory = () => {
     };
     const userData = async () => {
         const userInfo = await getUserDetail()
-        const workhistory = convertToArray(userInfo.workHistory) || [];
-        setWorkHistoryArray(workhistory || '');
+        if (userInfo !== null) {
+            const workhistory = convertToArray(userInfo.workHistory) || [];
+            setWorkHistoryArray(workhistory || '');
+        }
+
     }
     useEffect(() => {
         userData()
@@ -152,9 +154,10 @@ const WorkHitory = () => {
     return (
         <div className="w-full rounded-xl p-6 border-2 flex flex-col">
             <div className="w-full flex justify-between">
-                <p className="font-fhW text-fhS leading-fhL">
-                    <BusinessCenterIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
-                    Work History
+                <p className="font-fhW text-fhS leading-fhL flex gap-2 items-center">
+                    <img src='/icons/suitCase.svg' className='w-6' />
+                    {/*                     <BusinessCenterIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
+ */}                    Work History
                 </p>
                 <EditIcon
                     onClick={() => setOpenWork(!openWork)}
@@ -163,9 +166,9 @@ const WorkHitory = () => {
                 />
             </div>
             {workHistoryArray.length == 0 && (
-                <div className='w-full flex flex-col justify-center items-center gap-5'>
+                <div className='w-full flex flex-col justify-center items-center gap-5 mt-5'>
                     <p className="font-smW text-smS leading-smL text-lightGrey" >Add relevant work expreience.</p>
-                    <button className='bg-black text-textW px-16 w-2/3 py-3 rounded-xl cursor-pointer' onClick={() => setOpenWork(true)}>Add Work History</button>
+                    <button className='bg-black text-textW px-16 py-3 rounded-xl cursor-pointer' onClick={() => setOpenWork(true)}>Add Work History</button>
                 </div>
             )}
             <div className="w-full mt-10 flex flex-col gap-5">
@@ -183,9 +186,10 @@ const WorkHitory = () => {
 
             </div>
             <FormModal tipText='Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos architecto dolore sint tenetur dolores, repellendus autem temporibus modi officia soluta. Facilis, dignissimos? Error, assumenda. Laborum, animi hic. Ab, doloremque id.'
-                text='Work History' icon={<BusinessCenterIcon />}
+                text='Work History' icon={<img src='/icons/suitCase.svg' className='w-7' />
+                }
                 addText='Add Wrok History' openModal={openWork} setOpenModal={setOpenWork}>
-                <div>
+                <div className='max-lg:w-full max-lg:pr-2 h-full'>
                     {workHistoryArray.length !== 0 &&
                         !displayWorkHistory &&
                         !workEdit &&
@@ -232,7 +236,10 @@ const WorkHitory = () => {
                                         className="w-7 h-7 p-1.5 cursor-pointer"
                                     />
                                 </div>
-                                {confirmDelete && workIndex == index && (
+                                {confirmDelete && workIndex == index && <DeleteConfirmation
+                                    setConfirmDelete={setConfirmDelete}
+                                    deleteItem={() => deleteWorkHistory(index)}
+                                />/* (
                                     <div className="mt-3 col-span-12 border-2 p-2 border-red-800 rounded-xl flex">
                                         <p>Are you Sure you want to delete?</p>
                                         <button
@@ -251,15 +258,15 @@ const WorkHitory = () => {
                                             Yes
                                         </button>
                                     </div>
-                                )}
+                                ) */}
                                 <div className="col-span-12 ml-2 block h-0.5 bg-fadedText mt-2 md:h-[0.5px] md:ml-3"></div>
                             </div>
                         ))}
 
                     {(workEdit || displayWorkHistory || workHistoryArray.length == 0) && (
-                        <form className="col-span-11 grid grid-cols-12" onSubmit={workEdit == true ? addWorkHistory : editWorkHistory}>
-                            <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
-                                <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Title</p>
+                        <form className="gap-5 flex flex-col w-full" onSubmit={workEdit == true ? editWorkHistory : addWorkHistory}>
+                            <div className="flex flex-col gap-2">
+                                <p className="font-fhW text-smS leading-shL">Title</p>
                                 <input
                                     value={workHistoryData.title}
                                     type="text"
@@ -270,12 +277,12 @@ const WorkHitory = () => {
                                         }
                                     }}
                                     placeholder="Add Title"
-                                    className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                    className={`focus:ring-gradientSecond focus:border-0 border-2 rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
                                 />
                                 {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
                             </div>
-                            <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
-                                <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Company Name</p>
+                            <div className="flex flex-col gap-2">
+                                <p className="font-fhW text-smS leading-shL">Company Name</p>
                                 <input
                                     value={workHistoryData.companyName}
                                     type="text"
@@ -287,7 +294,7 @@ const WorkHitory = () => {
                                 />
                                 {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
                             </div>
-                            <div className="col-span-12 pr-2 md:pl-2 flex items-center mt-3">
+                            <div className="flex gap-2 items-center">
                                 <input
                                     type="checkbox"
                                     className="focus:ring-gradientSecond focus:border-0 border-[1px] rounded-xl h-4 pl-5 text-addS"
@@ -296,8 +303,8 @@ const WorkHitory = () => {
                                 />
                                 <span className="font-fhW text-smS pl-2 leading-shL">I currently work here</span>
                             </div>
-                            <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
-                                <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Start Date</p>
+                            <div className="flex flex-col gap-2">
+                                <p className="font-fhW text-smS leading-shL">Start Date</p>
                                 <input
                                     value={workHistoryData.startDate}
                                     type="date"
@@ -307,8 +314,8 @@ const WorkHitory = () => {
                                 {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}
                             </div>
                             {!isChecked && (
-                                <div className="col-span-12 md:col-span-6 pr-2 md:pl-2">
-                                    <p className="font-fhW text-smS mt-5 mb-2 leading-shL">End Date</p>
+                                <div className="flex flex-col gap-2">
+                                    <p className="font-fhW text-smS leading-shL">End Date</p>
                                     <input
                                         max={new Date().toISOString().split('T')[0]}
                                         value={workHistoryData.endDate}
@@ -322,8 +329,8 @@ const WorkHitory = () => {
                                     />
                                 </div>
                             )}
-                            <div className="col-span-12 pr-2 max-md:mb-10 md:pl-2">
-                                <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Job Description {workHistoryData.jobDescription.length} </p>
+                            <div className="mb-20 sm:mb-16">
+                                <p className="font-fhW text-smS leading-shL">Job Description {workHistoryData.jobDescription.length} </p>
                                 <ReactQuill
                                     className="h-28 text-addS"
                                     placeholder="Add Description"
@@ -337,15 +344,15 @@ const WorkHitory = () => {
                                     }
                                 />
                             </div>
-                            <div className='w-full col-span-12 flex md:justify-end mt-20'>
-                                <div className='w-full md:w-96'>
+                            <div className='w-full flex '>
+                                <div className='w-full md:w-52'>
                                     <SubmitButton loading={loadings} buttonText="Save" />
                                 </div>
                             </div>
                         </form>
                     )}
                 </div>
-                {!displayWorkHistory && !workEdit && workHistoryArray.length !== 0 && workHistoryArray.length <= 3 && (
+                {!displayWorkHistory && !workEdit && workHistoryArray.length !== 0 && workHistoryArray.length <= 2 && (
                     <div className='w-full pt-10 flex md:justify-end'>
                         <button
                             onClick={() => setDisplayWorkHistory(true)}

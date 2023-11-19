@@ -27,13 +27,13 @@ const Profile = () => {
         userData()
     }, [])
     return (
-        <div className="px-3 xl:px-40">
+        <div >
             <Navigation />
             {allLoading && <CandidateProfileShimmer />}
             {!allLoading && (
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-5 px-3 xl:px-40">
                     <div className="w-full flex flex-wrap gap-10">
-                        <div className="w-full flex gap-10 max-md:flex-col mt-10 pt-10 pb-20 profilePattern md:pl-10">
+                        <div className="w-full flex gap-10 max-md:flex-col mt-10 py-5 bg-red-500 profilePattern md:pl-10">
                             <ProfilePicture />
                             <SocialLinks />
                         </div>

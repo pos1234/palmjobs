@@ -1,3 +1,4 @@
+import CancelIcon from '@mui/icons-material/Cancel';
 const TextInput = (props: any) => {
     return (
         <>
@@ -29,5 +30,33 @@ export const SubmitButton = (props: any) => {
         </button>
 
     )
+}
+export const DeleteConfirmation = (props: any) => {
+    return <div className="w-full col-span-12 mt-3 flex items-center gap-3">
+        <div className='bg-[#FFDCE4] h-full flex items-center justify-center px-2 py-1  text-[#FF507A]'>
+            <CancelIcon />
+        </div>
+        <div className='flex flex-wrap justify-between flex-grow'>
+            <p className='text-sm'>Are you Sure you want to delete?</p>
+            <div className='flex gap-4 text-md'>
+                <p onClick={() => {
+                    props.deleteItem(props.index);
+                    props.setConfirmDelete(false);
+                }} className='cursor-pointer text-[#FF507A]'>Yes</p>
+                <p onClick={() => props.setConfirmDelete(false)} className='text-gradientFirst cursor-pointer'>No</p>
+            </div>
+        </div>
+
+    </div>
+}
+interface List {
+    icon: any,
+    items: string
+}
+export const SmallLists = ({ icon, items }: List) => {
+    return <li className="inline bg-[#FAFAFA] flex items-center gap-1 text-xs text-gradientFirst rounded-md p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:py-2">
+        {icon}
+        <span className='text-[#20262E]'>{items}</span>
+    </li>
 }
 export default TextInput;

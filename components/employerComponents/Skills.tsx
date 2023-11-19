@@ -63,7 +63,7 @@ const Skills = (props: any) => {
                                 value={searchTerm}
                                 onChange={handleInputChange}
                                 type="text"
-                                className="w-[80%] h-8 pl-2 my-auto ml-[10%] col-span-10 border-[1px] rounded-full focus:border-gradientFirst focus:ring-0 focus:outline-none"
+                                className="w-[80%] h-8 pl-2 my-auto ml-[10%] col-span-10 border-[1px] rounded-xl focus:border-gradientFirst focus:ring-0 focus:outline-none"
                             />
 
                             <button onClick={clickMe} className="col-span-2 text-gradientFirst">

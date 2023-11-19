@@ -9,12 +9,14 @@ import { Popover } from '@headlessui/react';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import ConfirmModal from './ConfirmModal';
-import { useRouter } from 'next/router';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+/* import { useRouter } from 'next/router';
+ */import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { toast } from 'react-toastify';
 import { ProfilePic } from './JobImage';
 import Image from 'next/image';
+import Logout from './Logout';
 const Navigation = (props: any) => {
     const logo = '/images/logo.svg';
     const loadingIn = '/images/loading.svg';
@@ -24,8 +26,7 @@ const Navigation = (props: any) => {
     const [userDetail, setUserDetail] = useState<any>();
     const [openLogout, setOpenLogout] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [logLoading, setLogLoading] = useState(false);
-    const router = useRouter();
+    /* const router = useRouter(); */
     const getUserData = async () => {
         const userInfo = await getAccount();
         if (userInfo !== 'failed') {
@@ -51,7 +52,7 @@ const Navigation = (props: any) => {
             setLoading(false);
         }
     };
-    const handleLogout = () => {
+    /* const handleLogout = () => {
         setLogLoading(true);
         signOut().then((res) => {
             setLogLoading(false);
@@ -60,79 +61,61 @@ const Navigation = (props: any) => {
             typeof window !== 'undefined' && router.push('/');
             typeof window !== 'undefined' && router.reload();
         });
-    };
+    }; */
     useEffect(() => {
         getUserData();
     }, []);
     return (
         <div>
-            <div className="flex flex-wrap gap-5 pt-3  md:border-b-2">
+            <div className="flex flex-wrap gap-5 pt-3  md:border-2 md:border-t-0 xl:px-40">
                 <div className='md:max-lg:w-full flex justify-center'>
                     <Link href="/">
-                        <Image
-                            src={logo}
-                            alt="Image description"
-                            width={150}
-                            height={150}
-                            className=" h-16"
-                        />
+                        <img src={logo} alt="Image description" className="w-[160px] h-[70px]" />
                     </Link>
                 </div>
                 {menu && (
-                    <div className="fixed bg-textW -ml-[0.7rem] -mt-[0.7rem] h-screen w-screen flex flex-col z-40 md:hidden">
+                    <div className="fixed bg-textW -mt-[0.7rem] h-screen w-screen flex flex-col z-40 md:hidden">
                         <div onClick={() => setMenu(!menu)} className="flex items-center justify-end pt-4 pr-2 cursor-pointer">
                             <CloseOutlinedIcon className="text-[3rem]" />
                         </div>
                         <div className="flex justify-center">
                             <Link href="/">
-                                <Image
-                                    src={logo}
-                                    alt="Image description"
-                                    width={150}
-                                    height={150}
-                                    className=" h-16"
-                                />
+                                <img src={logo} alt="Image description" className="w-[160px] h-[70px]" />
+
                                 {/*                                 <img src={logo} alt="palmjobs logo" className="h-16" />
  */}                            </Link>
                         </div>
-                        <div className="relative flex mt-5 items-center justify-center gap-x-2">
+                        <div className="relative flex mt-5 items-center justify-center gap-x-5">
                             {userDetail && userDetail.profilePictureId && (
                                 <div className="w-14 h-14 ">
-                                    <ProfilePic id={userDetail.profilePictureId} className="w-full h-full border-0 rounded-xl outline-0 ring-none"
+                                    <ProfilePic id={userDetail.profilePictureId} className="w-full h-full border-0 rounded-full outline-0 ring-none"
                                     />
-                                    {/* <img
-                                        className="w-full h-full border-0 rounded-xl outline-0 ring-none"
-                                        src={getHref(userDetail.profilePictureId)}
-                                        alt="profile"
-                                    /> */}
                                 </div>
                             )}
                             {userData && (
                                 <div className="flex flex-col">
-                                    {userRole == 'candidate' ? <p className="text-[1.5rem] font-[600]">{userData.name}</p> : null}
-                                    {userRole == 'candidate'
-                                        ? userDetail && <p className="text-[1rem] text-stone-500">{userDetail.bioHeadline}</p>
-                                        : null}
+                                    {userRole == 'candidate' ? <p className="text-[1.2rem] font-[500]">{userData.name}</p> : null}
                                 </div>
                             )}
                         </div>
                         <div className="flex justify-left px-3">
                             <div className="flex flex-col gap-y-5 pt-7 text-[1.5rem] w-full">
-                                <Link href="/jobs" className="border-b-2 pb-2 text-xl">
+                                <Link href="/jobs" className="border-b-2 pb-2 text-lg">
                                     Find a Job
                                 </Link>
-                                <p className="border-b-2 pb-2 text-xl">Craft Resume</p>
-                                <Link href="/salaries" className="border-b-2 pb-2 text-xl">
+                                <p className="border-b-2 pb-2 text-lg">Craft Resume</p>
+                                <Link href="/salaries" className="border-b-2 pb-2 text-lg">
                                     Salaries
                                 </Link>
                                 {!userData && (
                                     <>
-                                        <Link href="/account" className="border-b-2 pb-2 text-xl">Sign in</Link>
+                                        <Link href="/account" className="border-b-2 pb-2 text-lg">Sign in</Link>
                                         <Link
                                             href="/users/employer"
-                                            className="text-textW text-xl flex items-center justify-center bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-56 rounded-xl md:w-32 md:max-lg:h-12  lg:w-40 xl:w-56"
+                                            className="text-textW flex items-center gap-2 justify-center bg-black h-14 w-full rounded-[3px] hover:border-b-4 hover:border-b-gradientFirst buttonBounce"
                                         >
-                                            <BorderColorIcon sx={{ fontSize: '1.2rem', marginRight: '0.2rem' }} /> Hire Talent
+                                            <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
+                                            <p className='font-[400] text-[16px]'>Hire Talent</p>
                                         </Link>
                                     </>
                                 )}
@@ -187,19 +170,19 @@ const Navigation = (props: any) => {
                     </div>
                 )}
                 <div className="hidden flex-grow items-center lg:text-bigS lg:font-bigW lg:leading-bigL lg:text-textR md:flex md:items-center md:gap-x-7">
-                    <Link href="/jobs" className="border-b-[3px] h-full flex items-center border-b-gradientFirst">
+                    <Link href="/jobs" className="border-b-[3px] h-full border-b-textW font-[600] flex items-center hover:border-b-gradientFirst">
                         Find a Job
                     </Link>
-                    <p className="border-b-[3px] border-b-textW h-full flex items-center hover:border-b-gradientFirst">Craft Resume</p>
-                    <Link href="/salaries" className="border-b-[3px] border-b-textW h-full flex items-center hover:border-b-gradientFirst">
+                    <p className="border-b-[3px] border-b-textW h-full flex items-center font-[600] hover:border-b-gradientFirst">Craft Resume</p>
+                    <Link href="/salaries" className="border-b-[3px] border-b-textW h-full flex font-[600] items-center hover:border-b-gradientFirst">
                         Salaries
                     </Link>
                     {userRole == 'candidate' ? (
-                        <Link href="/users/candidate" className="border-b-[3px] border-b-textW h-full flex items-center hover:border-b-gradientFirst">
+                        <Link href="/users/candidate" className="border-b-[3px] border-b-textW font-[600] h-full flex items-center hover:border-b-gradientFirst">
                             My jobs
                         </Link>
                     ) : userRole == 'employer' ? (
-                        <Link href="/users/employer" className=" col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
+                        <Link href="/users/employer" className=" font-[600] cursor-pointer">
                             Dashboard
                         </Link>
                     ) : null}
@@ -225,46 +208,39 @@ const Navigation = (props: any) => {
                             <div className={styles['bar']}></div>
                         </div>
                     </div>
-                    <div className="flex pt-2">
+                    <div className="flex pt-2 gap-8">
                         {!userData && !loading && (
                             <>
-                                <div className="max-md:hidden md:col-span-12 lg:col-span-7 flex items-center">
-                                    <div className="text-right pt-1 text-fhS leading-fhL font-fhW text-textR lg:text-bigS lg:font-bigW lg:leading-bigL lg:text-textR md:pr-3 lg:-mt-1">
+                                <div className="max-md:hidden flex items-center">
+                                    <div className="font-[400] text-[16px] ">
                                         <Link href="/account">Sign In</Link>
                                     </div>
                                 </div>
-                                <div className="hidden justify-items-end col-span-3 md:flex md:items-center mb-[2px] md:col-span-12 lg:col-span-5 ">
+                                <div className="hidden justify-items-end md:flex md:items-center mb-[2px]">
                                     <Link
                                         href="/users/employer"
-                                        className="text-textW flex items-center justify-center bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-56 rounded-xl md:w-32 md:max-lg:h-12  lg:w-40 xl:w-56"
+                                        className="text-textW flex items-center gap-2 justify-center bg-black h-[42px] w-[166px] rounded-[3px] hover:border-b-4 hover:border-b-gradientFirst buttonBounce"
                                     >
-                                        <BorderColorIcon sx={{ fontSize: '1.2rem', marginRight: '0.2rem' }} /> Hire Talent
+                                        <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
+                                        <p className='font-[400] text-[16px]'>Hire Talent</p>
                                     </Link>
                                 </div>
                             </>
                         )}
                         {userData && (
                             <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
-                                <div className="flex items-center pl-0 sm:pl-2 lg:text-[0.9rem] px-2 py-1 text-stone-500 ">
+                                <div className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 text-stone-500 bg-gray-50 rounded-full">
                                     <Popover className="focus:ring-0 focus:border-0 focus:outline-0">
-                                        <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 px-2 flex text-stone-500">
+                                        <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex items-center text-stone-500">
                                             {userDetail && userDetail.profilePictureId && (
                                                 <div className="w-10 h-10 ">
-                                                    <ProfilePic id={userDetail.profilePictureId} className="w-full h-full border-0 rounded-xl outline-0 ring-none"
+                                                    <ProfilePic id={userDetail.profilePictureId} className="w-full h-full border-0 rounded-full outline-0 ring-none"
                                                     />
-                                                    {/*  <img
-                                                    className="w-full h-full border-0 rounded-xl outline-0 ring-none"
-                                                    src={getHref(userDetail.profilePictureId)}
-                                                    alt="profile"
-                                                /> */}
                                                 </div>
                                             )}
                                             {userData && (
-                                                <div className="flex text-left ml-3 justify-center">
+                                                <div className="flex text-left ml-3 justify-center items-center ">
                                                     {userRole == 'candidate' ? <p className="text-[16px] font-[600]">{userData.name}</p> : null}
-                                                    {/*  {userRole == 'candidate'
-                                                        ? userDetail && <p className="text-[12px] text-stone-500">{userDetail.bioHeadline}</p>
-                                                        : null} */}
                                                     {userRole == 'employer' ? (
                                                         <>
                                                             {userDetail && (
@@ -278,7 +254,7 @@ const Navigation = (props: any) => {
                                                 </div>
                                             )}
                                         </Popover.Button>
-                                        <Popover.Panel className="absolute right-0 border-2 rounded-2xl flex flex-col gap-y-3 p-3 bg-textW shadow z-10 w-[8rem] md:mt-3 lg:mt-8">
+                                        <Popover.Panel className="absolute right-0 border-2 rounded-md flex flex-col gap-y-3 p-3 bg-textW shadow z-10 w-[8rem] md:mt-3 lg:mt-8">
                                             {userRole == 'candidate' ? (
                                                 <>
                                                     {' '}
@@ -317,67 +293,14 @@ const Navigation = (props: any) => {
                                             )}
                                         </Popover.Panel>
                                     </Popover>
+                                    <KeyboardArrowDownOutlinedIcon />
                                 </div>
                             </div>
                         )}
                     </div>
                 </div>
             </div>
-            <ConfirmModal isOpen={openLogout} handleClose={() => setOpenLogout(!openLogout)}>
-                <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl flex flex-col gap-y-5 items-center justify-center pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0">
-                    <p className="col-span-12 text-black text-3xl font-semibold leading-10 ">Are you sure you want to logout ?</p>
-                    <div className="flex gap-x-10">
-                        <button
-                            onClick={() => setOpenLogout(!openLogout)}
-                            type="button"
-                            className="bg-gradientSecond hover:bg-gradient-to-r text-textW hover:from-gradientFirst hover:to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                        >
-                            No
-                        </button>
-                        {logLoading && (
-                            <img
-                                src={loadingIn}
-                                className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                            />
-                        )}
-                        {!logLoading && (
-                            <button
-                                onClick={handleLogout}
-                                type="button"
-                                className="bg-gradientSecond hover:bg-gradient-to-r text-textW hover:from-gradientFirst hover:to-gradientSecond h-16 w-48 rounded-full  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                            >
-                                Yes
-                            </button>
-                        )}
-                    </div>
-                </div>
-            </ConfirmModal>
-            {/*  <ConfirmModal isOpen={salaryOpen} handleClose={() => setSalaryOpen(!salaryOpen)}>
-                <div className={`mx - 2 pb-10 w-full pl-5 bg-textW rounded-2xl  
-                flex flex-col gap-y-5 items-center justify-center pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0 ${openForm && 'h-screen overflow-y-auto'}`}>
-                    {
-                        !openForm && <p className='text-[0.9rem]'>We invite you to participate in our Salary Survey aimed at providing
-                            a clearer understanding of the salary landscape in Ethiopia.
-                            Your anonymous contribution, assured to remain confidential,
-                            is pivotal in promoting transparency and aiding individuals
-                            in making informed career decisions. As a token of appreciation,
-                            we are offering a detailed salary report should you wish to recieve it.
-                            Your participation can significantly contribute to a more transparent labor market.
-                            Thank you for considering!</p>
-                    }
-                    <div className='flex flex-wrap gap-5 w-full overflow-y-auto'>
-                        {
-                            openForm && <SalarySurvey closeModal={setSalaryOpen} />
-                        }
-                        {
-                            !openForm && <div className='flex justify-around w-full flex-wrap gap-y-5'>
-                                <div className='bg-fadedText border-2 px-8 py-3 border-gray-500 rounded-full text-gray-700 cursor-pointer' onClick={() => setSalaryOpen(false)}>Discard</div>
-                                <div onClick={() => setOpenForm(true)} className='bg-gradientFirst px-8 py-3 rounded-full text-textW cursor-pointer'>Proceed to Survey</div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </ConfirmModal > */}
+            <Logout openLogout={openLogout} setOpenLogout={setOpenLogout} />
         </div >
     );
 };

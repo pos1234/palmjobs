@@ -9,6 +9,9 @@ import SortIcon from '@mui/icons-material/Sort';
 import { Popover } from '@headlessui/react';
 import HeightIcon from '@mui/icons-material/Height';
 import StraightIcon from '@mui/icons-material/Straight';
+import SpaIcon from '@mui/icons-material/Spa';
+import EditOffIcon from '@mui/icons-material/EditOff';
+import PublicOffIcon from '@mui/icons-material/PublicOff';
 import { fetchDraftedJobs, fetchPostedJobs } from '@/lib/employerBackend';
 const Jobs = (props: any) => {
     const [opened, setOpened] = useState(true);
@@ -80,25 +83,26 @@ const Jobs = (props: any) => {
                     <p className="text-black text-3xl font-[700]">Jobs</p>
                     <div
                         onClick={() => handleNav('postJob')}
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-xl px-9"
+                        className="text-textW bg-black flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-10 rounded-md px-9"
                     >
                         <BorderColorIcon sx={{ fontSize: '1.2rem' }} className="mr-2" /> Post Job
                     </div>
                 </div>
                 <div className="mt-8 lg:pl-10">
-                    <div className="flex gap-y-3 justify-between">
-                        <div className="bg-forBack py-2 px-1">
-                            <div className="flex bg-textW">
+                    <div className="flex gap-y-3 border-b-2">
+                        <div className="px-1 flex-grow flex justify-center">
+                            <div className="flex bg-textW gap-10">
                                 {noPosted && (
                                     <div
                                         onClick={() => toggleTabs('opened')}
                                         className={
                                             opened
-                                                ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
-                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-gradientFirst'
+                                                ? 'flex items-center gap-2 justify-center border-b-[3px] text-gradientFirst border-b-gradientFirst pb-3'
+                                                : 'font-[600] gap-2 flex items-center justify-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst pb-3'
                                         }
                                     >
-                                        Opened
+                                        <SpaIcon sx={{ fontSize: '1.2rem' }} />
+                                        <span>Opened</span>
                                     </div>
                                 )}
                                 {noDraft && (
@@ -106,11 +110,13 @@ const Jobs = (props: any) => {
                                         onClick={() => toggleTabs('draft')}
                                         className={
                                             draft
-                                                ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
-                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-gradientFirst'
+                                                ? 'flex items-center gap-2 justify-center border-b-[3px] text-gradientFirst border-b-gradientFirst pb-3'
+                                                : 'font-[600] gap-2 flex items-center justify-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst pb-3'
                                         }
                                     >
-                                        Drafted
+                                        <EditOffIcon sx={{ fontSize: '1.2rem' }} />
+                                        <span>Drafted</span>
+
                                     </div>
                                 )}
                                 {noClosed && (
@@ -118,51 +124,62 @@ const Jobs = (props: any) => {
                                         onClick={() => toggleTabs('closed')}
                                         className={
                                             closed
-                                                ? 'text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-2xl px-5'
-                                                : 'text-stone-500 flex items-center justify-center cursor-pointer h-16 rounded-2xl px-5 hover:text-gradientFirst'
+                                                ? 'flex items-center gap-2 justify-center border-b-[3px] text-gradientFirst border-b-gradientFirst pb-3'
+                                                : 'font-[600] gap-2 flex items-center justify-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst pb-3'
                                         }
                                     >
-                                        Closed
+                                        <PublicOffIcon sx={{ fontSize: '1.2rem' }} />
+                                        <span>Closed</span>
+
                                     </div>
                                 )}
                             </div>
                         </div>
-                        {opened && noPosted && (
-                            <div className="flex max-sm:pl-5 items-center gap-x-2 md:w-40">
-                                <Popover className=" sm:relative focus:ring-0 focus:border-0 focus:outline-0 md:w-full">
-                                    <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex md:w-full justify-end">
-                                        <SortIcon sx={{ fontSize: '2rem' }} className="cursor-pointer" />
-                                    </Popover.Button>
+                        {/*                         {opened && noPosted && (
+ */}                            <div className="flex max-sm:pl-5 items-center gap-x-2 md:w-40">
+                            <Popover className={opened && noPosted ? "sm:relative focus:ring-0 focus:border-0 focus:outline-0 md:w-full" : 'hidden'}>
+                                <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex md:w-full justify-end">
+                                    <SortIcon sx={{ fontSize: '2rem' }} className="cursor-pointer" />
+                                </Popover.Button>
 
-                                    <Popover.Panel className="absolute -ml-32 w-40 sm:w-40 border-2 rounded-2xl flex flex-col gap-y-3 bg-textW py-3 px-3 bg-white shadow z-10 md:ml-0">
-                                        <div
-                                            onClick={() => setSort('asc')}
-                                            className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                                        >
-                                            <HeightIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                            <span>Latest</span>
-                                        </div>
-                                        <div
-                                            onClick={() => setSort('desc')}
-                                            className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
-                                        >
-                                            <StraightIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                            <span>Oldest</span>
-                                        </div>
-                                    </Popover.Panel>
-                                </Popover>
-                            </div>
-                        )}
-                    </div>
+                                <Popover.Panel className="absolute -ml-32 w-40 sm:w-40 border-2 rounded-2xl flex flex-col gap-y-3 bg-textW py-3 px-3 bg-white shadow z-10 md:ml-0">
+                                    <div
+                                        onClick={() => setSort('asc')}
+                                        className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                                    >
+                                        <HeightIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                                        <span>Latest</span>
+                                    </div>
+                                    <div
+                                        onClick={() => setSort('desc')}
+                                        className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                                    >
+                                        <StraightIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                                        <span>Oldest</span>
+                                    </div>
+                                </Popover.Panel>
+                            </Popover>
+                        </div>
+                        {/*                         )}
+ */}                    </div>
                     {allLoading && (
                         <div className="flex flex-col gap-y-10 pt-5">
                             <EmployerJobShimmer />
                             <EmployerJobShimmer />
                         </div>
                     )}
-                    {opened && <Active sort={sort} setJobId={setEditedJobId} applicants={props.applicants} />}
-                    {draft && <Drafted setJobId={setEditedJobId} />}
-                    {closed && <Closed />}
+                    <div className={opened ? '' : 'hidden'}>
+                        <Active sort={sort} setJobId={setEditedJobId} applicants={props.applicants} />
+                    </div>
+                    <div className={draft ? '' : 'hidden'}>
+                        <Drafted setJobId={setEditedJobId} />
+                    </div>
+                    <div className={closed ? '' : 'hidden'}>
+                        <Closed />
+                    </div>
+                    {/*                     {opened && }
+                     {draft && }
+                    {closed && }*/}
                 </div>
             </div>
         </>

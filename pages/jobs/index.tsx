@@ -13,25 +13,20 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobsShimmer from '@/components/shimmer/JobsShimmer';
 import JobListCard from '@/components/job/JobListCard';
-import Filter from '@/components/job/Filter';
 import JobDetail from '@/components/job/JobDetail';
 import SearchBar from '@/components/job/SearchBar';
+import CheckProfileCompletion from '@/components/CheckProfileCompletion';
+import SearchOutlined from '@mui/icons-material/SearchOutlined';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
 const Jobs = () => {
     const router = useRouter();
-    const [datePosted, setDatePosted] = useState('');
-    const [expLevel, setExpLevel] = useState('');
-    const [jobType, setJobType] = useState('');
     const [datePostedHolder, setDatePostedHolder] = useState('');
     const [expLevelHolder, setExpLevelHolder] = useState('');
     const [jobTypeHolder, setJobTypeHolder] = useState('');
-    const [sortBy, setSortBy] = useState('Best Match');
-    const profile = '/images/profile.svg';
-    const uploadResume = '/images/uploadResume.svg';
     const [jobDetailId, setJobDetailId] = useState('');
     const [openJobDetail, setOpenJobDetail] = useState(false);
     const [jobDetails, setJobDetails] = useState<any>(null);
     const [company, setCompany] = useState(false);
-    const [openFilter, setOpenfilter] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [address, setAddress] = useState('');
     const [addressHolder, setAddressHolder] = useState('');
@@ -43,17 +38,8 @@ const Jobs = () => {
     const [companyData, setCompanyData] = useState<any>();
     const [companyName, setCompanyName] = useState('');
     const [employerId, setEmployerId] = useState('');
-    const [apply, setApply] = useState(false);
-    const [applyJobId, setApplyJobId] = useState('');
-    const [applyEmployerId, setApplyEmployerId] = useState('');
-    const [savedJobId, setSavedJobId] = useState<any[]>([]);
-    const [savedJobs, setSavedJobs] = useState<any[]>([]);
     const [allLoading, setAllLoading] = useState(false);
     const [applyEmp, setApplyEmp] = useState(false);
-    const [jobTitle, setJobTitle] = useState('');
-
-
-
     useEffect(() => {
         const documents = getCompanyData(employerId);
         documents.then(async (res) => {
@@ -131,17 +117,6 @@ const Jobs = () => {
             param2 && setAddressHolder(param2.toString());
         }
     }, [router.query]);
-    const handleReset = () => {
-        setDatePosted('');
-        setExpLevel('');
-        setJobType('');
-        setSortBy('');
-    };
-    const handleFilter = () => {
-        setDatePostedHolder(datePosted);
-        setExpLevelHolder(expLevel);
-        setJobTypeHolder(jobType);
-    }
     const showPage = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
@@ -192,32 +167,64 @@ const Jobs = () => {
     };
     return (
         <>
-            <div className="px-3 xl:px-40">
+            <div className="">
                 <Navigation />
                 {allLoading && <JobsShimmer />}
                 {!allLoading && (
-                    <div className="grid grid-cols-12 sm:gap-x-10 mt-8 md:mt-16">
+                    <div className="grid grid-cols-12 sm:gap-x-10 mt-8 md:mt-16 px-3">
                         <div className="col-span-12 grid grid-cols-12 gap-x-2 xl:gap-x-5">
                             <div className="col-span-12 flex flex-wrap gap-x-2 gap-y-4">
-                                <div className={openJobDetail ? 'max-md:hidden w-full' : 'w-full'}>
-                                    <SearchBar searchWord={searchWord}
-                                        setSearchWord={setSearchWord}
-                                        setOpenfilter={setOpenfilter}
-                                        addressHolder={addressHolder}
-                                        setAddressHolder={setAddressHolder}
-                                        setTheSearchTerm={setTheSearchTerm}
-                                        datePosted={datePostedHolder}
-                                        expLevel={expLevelHolder}
-                                        jobType={jobTypeHolder}
-                                        setDatePosted={setDatePosted}
-                                        setPostedDateHolder={setDatePostedHolder}
-                                        setExpLevel={setExpLevel}
-                                        setExpLevelHolder={setExpLevelHolder}
-                                        setJobType={setJobType}
-                                        setJobTypeHolder={setJobTypeHolder}
-                                    />
+                                <div className={!openJobDetail ? 'xl:px-40 border-b-2 w-full flex flex-wrap gap-x-2 gap-y-4 mb-5' : 'max-md:hidden xl:px-40 border-b-2 w-full flex flex-wrap gap-x-2 gap-y-4 mb-5'}>
+                                    <div className={openJobDetail ? 'max-md:hidden w-full' : 'w-full'}>
+                                        <SearchBar searchWord={searchWord}
+                                            setSearchWord={setSearchWord}
+                                            addressHolder={addressHolder}
+                                            setAddressHolder={setAddressHolder}
+                                            setTheSearchTerm={setTheSearchTerm}
+                                        />
+                                    </div>
+                                    <div className='w-full justify-center flex gap-5 mt-6 items-center font-[500]'>
+                                        <div className='pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] border-textW hover:border-b-gradientFirst hover:text-gradientFirst'>
+                                            <SearchOutlined sx={{ fontSize: '1rem' }} />
+                                            <p>For You</p>
+                                        </div>
+                                        <div className='pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] border-textW hover:border-b-gradientFirst hover:text-gradientFirst'>
+                                            <SearchOutlined sx={{ fontSize: '1rem' }} />
+                                            <p>Search</p>
+                                        </div>
+                                        <div className='pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] border-textW hover:border-b-gradientFirst hover:text-gradientFirst'>
+                                            <WbSunnyIcon sx={{ fontSize: '1rem' }} />
+                                            <p>Trending</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="w-full flex gap-5 p-3 pb-0 rounded-x-2xl">
+                                <div className={!openJobDetail ? 'w-full flex gap-3 xl:px-40 mb-3' : 'max-md:hidden w-full flex gap-3 xl:px-40 mb-3'}>
+                                    <img src="/icons/filterIcon.svg" alt="filter" />
+                                    <select value={jobTypeHolder} onChange={(e) => setJobTypeHolder(e.currentTarget.value)} name="jobType" id="jobType" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
+                                        <option value="">Job Type</option>
+                                        <option value="Internship">Internship</option>
+                                        <option value="Full Time">Full Time</option>
+                                        <option value="Part Time">Part Time</option>
+                                        <option value="Remote">Remote</option>
+                                        <option value="Contract">Contract</option>
+                                    </select>
+                                    <select value={expLevelHolder} onChange={(e) => setExpLevelHolder(e.currentTarget.value)} name="experience" id="experience" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
+                                        <option value="">Experience</option>
+                                        <option value="0-2 years">0-2 years</option>
+                                        <option value="3-5 years">3-5 years</option>
+                                        <option value="5-7 years">5-7 years</option>
+                                        <option value="8-10 years">8-10 years</option>
+                                        <option value="10+ years">10+ years</option>
+                                    </select>
+                                    <select value={datePostedHolder} onChange={(e) => setDatePostedHolder(e.currentTarget.value)} name="dateposted" id="dateposted" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
+                                        <option value="">Date Posted</option>
+                                        <option value="">Any time</option>
+                                        <option value="Past 24hrs">Past 24hrs</option>
+                                        <option value="Past week">Past week</option>
+                                        <option value="Past month">Past month</option>
+                                    </select>
+                                </div>
+                                <div className="w-full flex gap-5 max-md:p-3 pb-0 rounded-x-2xl xl:px-40">
                                     <div
                                         className={
                                             openJobDetail == true
@@ -225,6 +232,7 @@ const Jobs = () => {
                                                 : 'w-full flex flex-col max-h-[40rem] gap-y-3 overflow-auto hideScrollBar md:flex md:w-1/2 lg:col-span-5 xl:w-2/5'
                                         }
                                     >
+                                        {currentData && currentData.length !== 0 && <CheckProfileCompletion />}
                                         {currentData &&
                                             currentData.map((items: any, index: number) => {
                                                 return <JobListCard items={items} key={index} jobDetailId={jobDetailId} setEmployerId={setEmployerId} setJobDetailId={setJobDetailId} setOpenJobDetail={setOpenJobDetail} />
@@ -237,15 +245,7 @@ const Jobs = () => {
                                                 : 'max-md:w-full grid grid-cols-12 gap-x-5 xl:col-span-9 md:w-2/3 xl:w-3/5 max-md:hidden'
                                         }
                                     >
-                                        {jobDetails && <JobDetail datePostedHolder={datePostedHolder}
-                                            setDatePosted={setDatePosted}
-                                            setDatePostedHolder={setDatePostedHolder}
-                                            expLevelHolder={expLevelHolder}
-                                            setExpLevel={setExpLevel}
-                                            setExpLevelHolder={setExpLevelHolder}
-                                            jobTypeHolder={jobTypeHolder}
-                                            setJobType={setJobType}
-                                            setJobTypeHolder={setJobTypeHolder}
+                                        {jobDetails && <JobDetail
                                             jobDetails={jobDetails}
                                             companyName={companyName}
                                             company={company}
@@ -256,7 +256,14 @@ const Jobs = () => {
                                         />}
 
                                     </div>
+
                                 </div>
+                                {
+                                    currentData && currentData.length == 0 && <div className='w-full items-center h-60 flex justify-center'>
+                                        <p className='font-bold text-2xl'>Ooops!!!!
+                                            <span className='text-xl'> There is no job with this search try different word.</span></p>
+                                    </div>
+                                }
                             </div>
                         </div>
                         <div
@@ -317,13 +324,6 @@ const Jobs = () => {
                 )}
                 <Footer />
             </div>
-            <Filter datePosted={datePosted} expLevel={expLevel} jobType={jobType} openFilter={openFilter} setOpenfilter={setOpenfilter}
-                setDatePosted={setDatePosted}
-                setExpLevel={setExpLevel}
-                setJobType={setJobType}
-                handleReset={handleReset}
-                handleFilter={handleFilter}
-            />
             <ConfirmModal isOpen={applyEmp} handleClose={() => setApplyEmp(!applyEmp)}>
                 <div className="mx-2 pb-10 pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
                     <div className="col-span-12 flex justify-end pr-7">

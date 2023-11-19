@@ -15,14 +15,13 @@ const ProfilePicture = () => {
     const [file, setFile] = useState<any>();
     const [firstLetter, setFirstLetter] = useState('')
     const getProfilePic = async () => {
-        const { documents }: any = await getCandidateDocument()
-        documents && documents[0] && documents[0].profilePictureId && setProfileId(documents[0].profilePictureId)
+        const promise = await getCandidateDocument()
+        promise && promise.documents[0] && promise.documents[0].profilePictureId && setProfileId(promise.documents[0].profilePictureId)
     }
-
     useEffect(() => {
         getProfilePic()
         getAccount().then((res: any) => {
-            setFirstLetter(res.name.charAt(0))
+            res && res.name && setFirstLetter(res.name.charAt(0))
         })
     }, [])
 

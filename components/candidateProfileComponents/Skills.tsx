@@ -44,13 +44,13 @@ const Skills = () => {
     };
     const userData = async () => {
         const userInfo = await getUserDetail()
-        setArray(userInfo.skills || '');
+        userInfo && setArray(userInfo.skills || '');
     }
     useEffect(() => {
         userData()
     }, [])
     return (
-        <div className="rounded-xl p-6 border-2 flex flex-col">
+        <div className="w-full rounded-xl p-6 border-2 flex flex-col">
             <p className="font-fhW text-fhS leading-fhL">
                 <LocalFireDepartmentOutlinedIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                 Skills

@@ -31,53 +31,43 @@ const SocialLinks = (props: any) => {
     };
     const userData = async () => {
         const userInfo = await getUserDetail()
-        userInfo.linkedIn && setLinked(userInfo.linkedIn)
-        userInfo.github && setGithubLink(userInfo.github)
-        userInfo.behance && setBehan(userInfo.behance)
-        userInfo.protfolio && setPortfolio(userInfo.protfolio)
-        userInfo.address && setLocate(userInfo.address)
-        userInfo.phoneNumber && setCall(userInfo.phoneNumber)
+        if (userInfo) {
+            userInfo.linkedIn && setLinked(userInfo.linkedIn)
+            userInfo.github && setGithubLink(userInfo.github)
+            userInfo.behance && setBehan(userInfo.behance)
+            userInfo.protfolio && setPortfolio(userInfo.protfolio)
+            userInfo.address && setLocate(userInfo.address)
+            userInfo.phoneNumber && setCall(userInfo.phoneNumber)
+        }
+
     }
     useEffect(() => {
         userData()
     }, [])
     return (
         <>
-            <div className="font-midRW text-midRS leading-midRL text-lightGrey flex flex-col gap-y-4 mt-2">
-                <div className="flex items-center">
+            <div className="font-midRW text-midRS justify-center leading-midRL text-lightGrey flex flex-col gap-y-4 mt-2">
+               {/*  <div className="flex items-center border-[1px] rounded-xl bg-textW">
                     <span className="w-5 h-5 text-stone-400 z-[2] pl-3">
                         <FmdGoodOutlinedIcon className="-mt-[4px]" />
                     </span>
-                    <input
-                        placeholder="Enter Address"
-                        type="text"
-                        className="-ml-5 z-[1] rounded-xl w-full pl-10 py-3 group border-stone-200 focus:ring-gradientSecond focus:outline-0 focus:border-0 "
-                        value={locate}
-                        onChange={(e) => {
-                            if (e.currentTarget.value.length <= 50) {
-                                setLocate(e.currentTarget.value);
-                            }
-                        }}
-                        onBlur={handlePhoneLocation}
-                    />
+                    <div className="-ml-5 z-[1] rounded-xl w-full pl-10 py-3 group border-stone-200 focus:ring-gradientSecond focus:outline-0 focus:border-0 "
+                    >
+                        {locate}
+                    </div>
                 </div>
-                <div className="flex items-center">
+                <div className="flex items-center border-[1px] rounded-xl bg-textW">
                     <span className="w-5 h-5 text-stone-400 z-[2] pl-3">
                         <PhoneIphoneOutlinedIcon className="-mt-[4px]" />
                     </span>
-                    <input
-                        placeholder="Enter phone number"
-                        type="text"
+                    <div
+
                         className="-ml-5 z-[1] rounded-xl w-full pl-10 py-3 group border-stone-200 focus:ring-gradientSecond focus:outline-0 focus:border-0 "
-                        value={call}
-                        onChange={(e) => {
-                            if (e.currentTarget.value.length <= 10) {
-                                setCall(e.currentTarget.value);
-                            }
-                        }}
-                        onBlur={handlePhoneLocation}
-                    />
-                </div>
+
+                    >
+                        {call}
+                    </div>
+                </div> */}
                 <div className="flex gap-x-5 text-[#618c61]">
                     {linked && (
                         <Link target="_blank" title="linkedIn" href={linked}>
