@@ -94,19 +94,19 @@ const Login = () => {
     return (
         <>
             <div className="flex max-md:flex-wrap grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
-                <div className="w-full md:w-1/2 flex flex-col max-md:gap-10 items-center bg-skillColor rounded-tr-[5.75rem] rounded-br-[5.75rem] order-2 max-md:mt-10 md:col-span-6 md:order-1">
+                <div className="w-full h-screen md:w-1/2 flex flex-col max-md:gap-10 items-center max-md:mt-10 md:col-span-6 md:order-1 accountBack">
                     <div className={/* forgotPassword == false ? 'w-full flex justify-center' : */ 'w-full flex justify-center mt-10 sm:mt-28'}>
                         <Link href="/">
                             <img src={logo} className=" w-[15rem]" />
                         </Link>
                     </div>
                     <div
-                        className={'loginCoursel w-full  lg:pt-[5%] flex justify-center md:h-[45%] lg:h-[75%] xl:h-[80%]'}
+                        className={'loginCoursel w-full lg:pt-[5%] flex justify-center md:h-[45%] lg:h-[75%] xl:h-[50%]'}
                     >
                         <Slider />
                     </div>
                 </div>
-                <div className="w-full md:w-1/2 order-1 justify-center md:order-2 text-center flex flex-col gap-y-5 items-center md:px-5 lg:px-10 xl:px-20 md:col-span-6 pt-20 employerBack">
+                <div className="w-full md:w-1/2 order-1 justify-center md:order-2 text-center flex flex-col gap-y-5 items-center md:px-5 lg:px-10 xl:px-20 md:col-span-6 pt-20">
                     {forgotPassword == false && (
                         <p className="font-shW text-shS md:text-dshS">
                             Connect. Grow. <span className="text-gradientFirst">Succeed.</span>

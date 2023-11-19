@@ -14,24 +14,8 @@ import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ShareIcon from '@mui/icons-material/Share';
-const CompanyName = (props: any) => {
-    const [compData, setCompData] = useState<any>();
-    const getCompData = () => {
-        getCompanyData(props.id).then((res) => {
-            res && res.documents && setCompData(res.documents[0]);
-        });
-    };
-    useEffect(() => {
-        getCompData();
-    }, []);
-    return <>{compData && <p className="text-[12px] text-darkBlue sm:text-fhS">{compData.companyName}</p>}</>;
-};
-const SmallLists = (props: any) => {
-    return <li className="inline bg-[#FAFAFA] text-xs text-gradientFirst rounded-md p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:py-2">
-        {props.icon}
-        <span className='text-[#20262E]'>{props.items}</span>
-    </li>
-}
+import { SmallLists } from '../TextInput';
+
 const ReturnName = (props: any) => {
     const [companyName, setCompanyName] = useState('');
     const documents = getCompanyData(props.id);
@@ -111,9 +95,7 @@ const Applied = (props: any) => {
                             <div className="w-full mt-4">
                                 <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 justify-between flex-wrap">
                                     {datas.jobType &&
-                                        <SmallLists icon={<BusinessCenterIcon
-                                            sx={{ fontSize: '1rem' }}
-                                            className="-mt-0.5 mr-1 " />}
+                                        <SmallLists icon={<img src='/icons/suitCase.svg' />}
                                             items={datas.jobType} />
                                     }
                                     {(datas.minSalary || datas.maxSalary) && (
@@ -149,9 +131,7 @@ const Applied = (props: any) => {
                                     )}
                                     {datas.datePosted && (
                                         <SmallLists
-                                            icon={<HourglassTopIcon
-                                                sx={{ fontSize: '1rem' }}
-                                                className="-mt-0.5 mr-1 "
+                                            icon={<img src='/icons/hourGlassUp.svg'
                                             />}
                                             items={new Date(datas.datePosted)
                                                 .toLocaleDateString('en-GB')
@@ -160,9 +140,7 @@ const Applied = (props: any) => {
                                     )}
                                     {datas.datePosted && (
                                         <SmallLists
-                                            icon={<HourglassTopIcon
-                                                sx={{ fontSize: '1rem' }}
-                                                className="-mt-0.5 mr-1 "
+                                            icon={<img src='/icons/hourGlassDown.svg'
                                             />}
                                             items={new Date(datas.datePosted)
                                                 .toLocaleDateString('en-GB')
@@ -193,7 +171,7 @@ const Applied = (props: any) => {
                         </div> */}
                     </div>);
                 })}
-           {/*  {appliedJobs &&
+            {/*  {appliedJobs &&
                 appliedJobs.map((datas: any, index) => {
                     return (
                         <div className={props.view ? 'col-span-12 grid grid-cols-12 py-3 bg-textW' : 'hidden'} key={index}>

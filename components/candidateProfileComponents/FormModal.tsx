@@ -8,7 +8,7 @@ interface ConfirmModalProps {
     openModal: boolean,
     setOpenModal: (openModal: boolean) => void;
     addText: string,
-    icon: any,
+    icon?: any,
     text: string,
     tipText: string
 }
@@ -28,8 +28,8 @@ const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tip
             setOpenModal(!openModal);
         }}
         >
-            <div ref={parentRef} onClick={handleParentClick} className='w-screen h-screen p-5 flex items-center justify-center md:p-10 lg:px-20 xl:px-40 xl:py-10'>
-                <div onClick={handleChildClick} className='bg-textW w-full h-full rounded-2xl p-5 overflow-y-auto thinScrollBar sm:p-10'>
+            <div ref={parentRef} onClick={handleParentClick} className='w-screen h-screen flex items-center justify-center px-3 py-10 sm:px-7 sm:py-20 md:p-10 lg:px-20 xl:px-52 xl:py-16'>
+                <div onClick={handleChildClick} className='bg-textW w-full h-full rounded-2xl p-5 sm:p-10'>
                     <div className='flex flex-wrap gap-6'>
                         <div className='w-full flex justify-between'>
                             <div className='flex gap-4'>
@@ -45,10 +45,10 @@ const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tip
                             <p onClick={() => setTip(true)} className={tip ? 'border-b-2 border-b-gradientFirst md:hidden' : 'cursor-pointer border-b-2 border-b-textW hover:border-b-gradientFirst md:hidden'}>Tips</p>
                         </div>
                         <div className='w-full flex gap-5'>
-                            <div className={tip ? 'max-md:hidden md:w-2/3' : 'w-full h-full md:w-2/3'}>
+                            <div className={tip ? 'max-md:hidden md:w-1/2 overflow-y-auto md:max-h-[25rem] thinScrollBar flex' : 'flex w-full h-full md:w-1/2 overflow-y-auto max-h-[25rem] thinScrollBar'}>
                                 {children}
                             </div>
-                            <div className={tip ? 'bg-gray-100 flex-grow flex flex-col px-5 pt-5 rounded-r-2xl w-full gap-7 md:flex md:w-1/3' :
+                            <div className={tip ? 'bg-gray-100 flex-grow flex flex-col px-5 pt-5 rounded-r-2xl w-full gap-7 md:flex md:w-1/2' :
                                 'bg-gray-100 flex-grow flex flex-col px-5 pt-5 rounded-r-2xl gap-7 hidden overflow-y-auto md:flex md:w-1/3'}>
                                 <div className='flex gap-4 items-center'>
                                     <TipsAndUpdatesIcon sx={{ fontSize: '3rem' }} className='text-gradientFirst' />

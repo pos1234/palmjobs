@@ -11,7 +11,8 @@ const COMPANY_DATA = process.env.NEXT_PUBLIC_COMPANY_DATA || '';
 const IMAGE = process.env.NEXT_PUBLIC_IMAGE || '';
 const RESUME = process.env.NEXT_PUBLIC_FILE || '';
 const updateDocuments = async (datas: any) => {
-    const { fileId }: any = await getCandidateDocument();
+    const data: any = await getCandidateDocument()
+    const fileId = data && data.documents[0].$id
     const promise = databases.updateDocument(DATABASE_ID, CANDIDATE_DATA, fileId, datas)
     return promise;
 };
@@ -21,16 +22,16 @@ export const getCandidateDocument = async () => {
         const { $id } = user;
         const roles = await getRole();
         if (roles && roles.documents[0].userRole == 'candidate') {
-            const { documents }: any = await databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', $id)]);
-            const fileId = documents[0].$id
-            return { fileId, documents };
+            const promise = await databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', $id)]);
+            return promise;
         }
-
+        return null
     }
+    return null
 };
 export const getUserDetail = async () => {
-    const { documents }: any = await getCandidateDocument()
-    return documents[0]
+    const data: any = await getCandidateDocument()
+    return data && data.documents[0]
 }
 export const uploadProfilePictures = (file: any) => {
     const resultProfile = storage.createFile(IMAGE, ID.unique(), file);
@@ -55,12 +56,14 @@ export const updateProfileId = (fileId: string) => {
     };
     return updateDocuments(datas);
 };
-export const addSocials = (linkedIn: string, githubLink: string, behanceLInk: string, portfolioLink: string) => {
+export const addSocials = (linkedIn: string, github: string, behance: string, protfolio: string,phoneNumber?:string,address?:string) => {
     const datas = {
-        linkedIn: linkedIn,
-        github: githubLink,
-        behance: behanceLInk,
-        protfolio: portfolioLink
+        linkedIn,
+        github,
+        behance,
+        protfolio,
+        phoneNumber,
+        address,
     };
 
     return updateDocuments(datas);

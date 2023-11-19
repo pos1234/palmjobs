@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react'
 import Share from '../Share'
 import CloseIcon from '@mui/icons-material/Close';
 import JobImage from '../JobImage';
-import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
+import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
+import SpaIcon from '@mui/icons-material/Spa';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import EuroIcon from '@mui/icons-material/Euro';
 import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import HourglassBottomOutlinedIcon from '@mui/icons-material/HourglassBottomOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { alreadySaved, getCandidateDocument, saveJobs, } from '@/lib/candidateBackend'
@@ -18,31 +21,18 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { getProfileData } from '@/lib/employerBackend';
 import ApplyToJob from '../candidateProfileComponents/ApplyToJobs';
-import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import ShareIcon from '@mui/icons-material/Share';
-import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
+
 const SmallLists = (props: any) => {
-    return <li className="inline bg-[#FAFAFA] text-xs text-gradientFirst rounded-md p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:py-2">
+    return <li className="inline flex gap-1 bg-[#FAFAFA] text-xs text-gradientFirst rounded-md p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:py-2">
         {props.icon}
         <span className='text-[#20262E]'>{props.items}</span>
     </li>
 }
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 
-const JobCard = (props: any) => {
 
-    return (
-        <div className="col-span-6 flex flex-col max-md:pl-2 py-2 rounded-2xl gap-y-2 bg-textW sm:col-span-3 items-center">
-            <div className="font-fhW sm:max-md:text-[0.8rem] md:text-fhS md:max-lg:text-[1rem]"> {props.salary}</div>
-            <div className=" text-fadedText sm:max-md:text-[12px] flex md:max-lg:text-[0.7rem] lg:text-[14px]">
-                {props.icon}
-                {props.money}
-            </div>
-        </div>
-    );
-};
 const JobDetail = (props: any) => {
     const [savedJobId, setSavedJobId] = useState<any[]>([]);
     const [savedJobs, setSavedJobs] = useState<any[]>([]);
@@ -57,6 +47,10 @@ const JobDetail = (props: any) => {
     const [applyEmployerId, setApplyEmployerId] = useState('');
     const [openShare, setOpenShare] = useState(false);
     const router = useRouter();
+    const parseToArray = (text: string) => {
+        const arrayValue = JSON.parse(text)
+        return arrayValue
+    }
     const getUserData = async () => {
         const userInfo = await getAccount();
         if (userInfo !== 'failed') {
@@ -90,9 +84,9 @@ const JobDetail = (props: any) => {
                 if (rem.total == 0) {
                     toast.success('Successfully Saved Job');
                     saveJobs(userId, id);
-                } else {
+                } /* else {
                     toast.error('Job Already saved');
-                }
+                } */
             });
         }
         if (!userRole) {
@@ -135,62 +129,12 @@ const JobDetail = (props: any) => {
                         Back To Search
                     </p>
                 }
-                {/* <div className="col-span-12 grid grid-cols-12 mb-0 gap-y-3 rounded-b-xl bg-textW xl:pr-5">
-                    <div className="hidden col-span-12 gap-x-2 md:flex">
-                        {props.datePostedHolder !== 'Date Posted' && (
-                            <div className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-[3.75rem]">
-                                <p> {props.datePostedHolder} </p>
-                                <p className="ml-5 ">
-                                    <CloseIcon
-                                        sx={{ color: 'green' }}
-                                        className="h-7 cursor-pointer p-1"
-                                        onClick={() => {
-                                            props.setDatePosted('Date Posted')
-                                            props.setDatePostedHolder('Date Posted')
-                                        }}
-                                    />
-                                </p>
-                            </div>
-                        )}
-                        {props.expLevelHolder !== 'Experience Level' && (
-                            <div className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-[3.75rem]">
-                                <p> {props.expLevelHolder} </p>
-                                <p className="ml-5 ">
-                                    <CloseIcon
-                                        sx={{ color: 'green' }}
-                                        className="h-7 cursor-pointer p-1"
-                                        onClick={() => {
-                                            props.setExpLevel('Experience Level')
-                                            props.setExpLevelHolder('Experience Level')
-                                        }}
-                                    />
-                                </p>
-                            </div>
-                        )}
-                        {props.jobTypeHolder !== 'Job Type' && (
-                            <div className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-[3.75rem]">
-                                <p> {props.jobTypeHolder} </p>
-
-                                <p className="ml-5 ">
-                                    <CloseIcon
-                                        sx={{ color: 'green' }}
-                                        className="h-7 cursor-pointer p-1"
-                                        onClick={() => {
-                                            props.setJobType(props.jobTypeData[0])
-                                            props.setJobTypeHolder(props.jobTypeData[0])
-                                        }}
-                                    />
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                </div> */}
                 <div className="flex flex-col gap-y-5 bg-textW pt-5 z-[0] rounded-t-xl ">
-                    <div className='px-6 border-b-2 flex flex-col gap-y-4 pb-8'>
+                    <div className='px-6 border-b-2 flex flex-col gap-y-3 pb-5'>
                         <div className='flex items-center gap-3'>
                             <JobImage
                                 id={props.jobDetails.employerId}
-                                className="rounded-full h-12 w-12"
+                                className="rounded-full h-8 w-8"
                             />
                             {props.companyName && (
                                 <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">
@@ -198,40 +142,24 @@ const JobDetail = (props: any) => {
                                 </p>
                             )}
                         </div>
-                        <div className="flex flex-col max-sm:pl-3 sm:pl-2 xl:pl-1">
+                        <div className="flex flex-col">
                             {props.jobDetails.jobTitle && (
-                                <p className="text-darkBlue font-midRW text-[16px] sm:font-fhW sm:text-dfvhS xl:text-[1.5rem]">
+                                <p className="font-[600] sm:font-fhW sm:text-dfvhS text-[1.5rem]">
                                     {props.jobDetails.jobTitle}
                                 </p>
                             )}
                             {props.jobDetails.jobLocation && (
-                                <p className="text-fadedText max-sm:text-[14px] sm:block">
-                                    <PinDropOutlinedIcon
-                                        sx={{ fontSize: '1rem', marginTop: '-0.2rem' }}
+                                <p className="text-gray-400 text-[1rem] flex items-center gap-1">
+                                    <PlaceOutlinedIcon
+                                        sx={{ fontSize: '1rem' }}
                                     />
                                     {props.jobDetails.jobLocation}
                                 </p>
                             )}
                         </div>
-                        {/*<div className="flex gap-0">
-
-                         <div className="col-span-2 flex flex-grow gap-x-5 text-lightGrey justify-end items-center">
-                            <ShareOutlinedIcon
-                                onClick={() => setOpenShare(true)}
-                                className="text-[2rem] cursor-pointer"
-                            />
-                            <BookmarkBorderOutlinedIcon
-                                onClick={() => handleSaveJob(props.jobDetails.$id)}
-                                className="text-[2rem] cursor-pointer"
-                            />
-                        </div> 
-                    </div>
-                    */}
                         <ul className="text-[10px] flex md:text-[11px] md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] xl:text-[0.6rem] gap-3 flex-wrap">
                             {props.jobDetails.jobType &&
-                                <SmallLists icon={<BusinessCenterIcon
-                                    sx={{ fontSize: '1rem' }}
-                                    className="-mt-0.5 mr-1 " />}
+                                <SmallLists icon={<img src='icons/suitCase.svg' />}
                                     items={props.jobDetails.jobType} />
                             }
                             {(props.jobDetails.minSalary || props.jobDetails.maxSalary) && (
@@ -267,109 +195,25 @@ const JobDetail = (props: any) => {
                             )}
                             {props.jobDetails.datePosted && (
                                 <SmallLists
-                                    icon={<HourglassTopIcon
-                                        sx={{ fontSize: '1rem' }}
-                                        className="-mt-0.5 mr-1 "
-                                    />}
+                                    icon={
+                                        <img src='icons/hourGlassUp.svg' />
+                                    }
                                     items={new Date(props.jobDetails.datePosted)
                                         .toLocaleDateString('en-GB')
                                         .replace(/\//g, '-')}
                                 />
                             )}
-                            {props.jobDetails.datePosted && (
+                            {props.jobDetails.applicationDeadline && (
                                 <SmallLists
-                                    icon={<HourglassTopIcon
-                                        sx={{ fontSize: '1rem' }}
-                                        className="-mt-0.5 mr-1 "
-                                    />}
-                                    items={new Date(props.jobDetails.datePosted)
+                                    icon={<img src='icons/hourGlassDown.svg' />}
+                                    items={new Date(props.jobDetails.applicationDeadline)
                                         .toLocaleDateString('en-GB')
                                         .replace(/\//g, '-')}
                                 />
                             )}
                         </ul>
-                        {/* <div className="col-span-12 p-3 gap-x-3 gap-y-3 grid grid-cols-12 bg-forBack gap-x-1 gap-y-2 md:gap-x-2 md:p-2 xl:mx-2">
-                        {(props.jobDetails.minSalary || props.jobDetails.maxSalary) && (
-                            <JobCard
-                                salary="Salary"
-                                money={
-                                    !props.jobDetails.minSalary && props.jobDetails.maxSalary
-                                        ? props.jobDetails.maxSalary
-                                        : props.jobDetails.minSalary && !props.jobDetails.maxSalary
-                                            ? props.jobDetails.minSalary
-                                            : props.jobDetails.minSalary + '-' + props.jobDetails.maxSalary
-                                }
-                                icon={
-                                    props.jobDetails.currency == 'euro' ? (
-                                        <EuroIcon
-                                            sx={{ fontSize: '1.125rem' }}
-                                            className="mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                        />
-                                    ) : props.jobDetails.currency == 'usd' ? (
-                                        <AttachMoneyOutlined
-                                            sx={{ fontSize: '1.125rem' }}
-                                            className="mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                        />
-                                    ) : props.jobDetails.currency == 'gpb' ? (
-                                        <CurrencyPoundIcon
-                                            sx={{ fontSize: '1.125rem' }}
-                                            className="mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                        />
-                                    ) : props.jobDetails.currency == 'rnp' ? (
-                                        <CurrencyRupeeIcon
-                                            sx={{ fontSize: '1.125rem' }}
-                                            className="mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                        />
-                                    ) : (
-                                        <p className='mr-1'>ETB </p>
-                                    )
-                                }
-                            />
-                        )}
-                        {props.jobDetails.jobType && (
-                            <JobCard
-                                salary="Job Type"
-                                money={props.jobDetails.jobType}
-                                icon={
-                                    <AccessTimeOutlinedIcon
-                                        sx={{ fontSize: '1.125rem' }}
-                                        className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                    />
-                                }
-                            />
-                        )}
-                        {props.jobDetails.datePosted && (
-                            <JobCard
-                                salary="Posted Date"
-                                money={new Date(props.jobDetails.datePosted)
-                                    .toLocaleDateString('en-GB')
-                                    .replace(/\//g, '-')}
-                                icon={
-                                    <CalendarTodayOutlinedIcon
-                                        sx={{ fontSize: '1.125rem' }}
-                                        className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                    />
-                                }
-                            />
-                        )}
-                        {props.jobDetails.applicationDeadline && (
-                            <JobCard
-                                salary="Closing Date"
-                                money={new Date(props.jobDetails.applicationDeadline)
-                                    .toLocaleDateString('en-GB')
-                                    .replace(/\//g, '-')}
-                                icon={
-                                    <CalendarTodayOutlinedIcon
-                                        sx={{ fontSize: '1.125rem' }}
-                                        className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                    />
-                                }
-                            />
-                        )}
-                    </div> */}
                         <div className='flex gap-5'>
-                            {/*                             <button className='bg-gradientFirst text-textW px-20 py-3 cursor-pointer rounded-lg '>Apply</button>
- */}                            {props.jobDetails.externalLink ? (
+                            {props.jobDetails.externalLink ? (
                                 <a
                                     className='bg-gradientFirst text-textW px-20 py-3 cursor-pointer rounded-lg border-b-4 border-b-textW hover:border-b-4 hover:border-b-black buttonBounce' href={props.jobDetails.externalLink}
                                     target="_blank"
@@ -380,7 +224,7 @@ const JobDetail = (props: any) => {
                                 <div
                                     onClick={() => handleEmailApply(props.jobDetails.emailApplication)}
                                     className='bg-gradientFirst text-textW px-20 py-3 cursor-pointer rounded-lg border-b-4 border-b-textW hover:border-b-4 hover:border-b-black buttonBounce'                                >
-                                    Apply <AlternateEmailIcon sx={{ fontSize: '1rem' }} />
+                                    Apply
                                 </div>
                             ) : (
                                 <div
@@ -391,7 +235,7 @@ const JobDetail = (props: any) => {
                                             props.jobDetails.jobTitle
                                         );
                                     }}
-                                    className='bg-gradientFirst text-textW px-20 py-3 cursor-pointer rounded-lg border-b-4 border-b-textW hover:border-b-4 hover:border-b-black buttonBounce'                                >
+                                    className='bg-gradient-to-r from-[#00A82D] to-[#0CBC8B] text-textW px-16 py-3 cursor-pointer rounded-lg border-b-4 border-b-textW hover:border-b-4 hover:border-b-black buttonBounce'                                >
                                     Easy Apply
                                 </div>
                             )}
@@ -408,19 +252,19 @@ const JobDetail = (props: any) => {
                             <div
                                 className={
                                     props.company == true
-                                        ? ' font-bold flex items-center text-gray-500 cursor-pointer md:text-bigS border-b-[0.2rem] border-b-textW hover:border-b-gradientFirst pb-2'
-                                        : 'font-bold flex items-center cursor-pointer md:text-bigS border-b-[0.2rem] border-b-gradientFirst pb-2'
+                                        ? ' font-[600] flex items-center text-gray-500 cursor-pointer md:text-bigS border-b-[0.2rem] border-b-textW hover:border-b-gradientFirst pb-2'
+                                        : 'font-[600] flex items-center cursor-pointer md:text-bigS border-b-[0.2rem] border-b-gradientFirst pb-2'
                                 }
                                 onClick={() => props.setCompany(false)}
                             >
-                                Job Description
+                                Description
                             </div>
 
                             <div
                                 className={
                                     props.company == true
-                                        ? 'font-bold flex items-center pb-2  cursor-pointer md:text-bigS border-b-[0.2rem] border-b-gradientFirst'
-                                        : ' font-bold flex items-center pb-2 text-gray-500 cursor-pointer md:text-bigS border-b-[0.2rem] border-b-textW hover:border-b-gradientFirst'
+                                        ? 'font-[600] flex items-center pb-2  cursor-pointer md:text-bigS border-b-[0.2rem] border-b-gradientFirst'
+                                        : ' font-[600] flex items-center pb-2 text-gray-500 cursor-pointer md:text-bigS border-b-[0.2rem] border-b-textW hover:border-b-gradientFirst'
                                 }
                                 onClick={() => {
                                     props.setCompany(true);
@@ -429,44 +273,35 @@ const JobDetail = (props: any) => {
                                 Company
                             </div>
                         </div>
-                        {!props.company && <div
-                            dangerouslySetInnerHTML={{ __html: props.jobDetails.jobDescription }}
-                            className="text-midRS text-lightGrey min-h-[180px] max-h-96 overflow-y-auto thinScrollBar"
-                        />}
-                        {/*  (
-                            <div className="col-span-12 mx-3 flex flex-col">
-                                
-                                {props.jobDetails.externalLink ? (
-                                    <a
-                                        className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
-                                        href={props.jobDetails.externalLink}
-                                        target="_blank"
-                                    >
-                                        Apply
-                                    </a>
-                                ) : props.jobDetails.emailApplication ? (
-                                    <div
-                                        onClick={() => handleEmailApply(props.jobDetails.emailApplication)}
-                                        className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
-                                    >
-                                        Apply
+                        {!props.company &&
+                            <div className="max-h-64 overflow-y-auto thinScrollBar">
+                                <div className='flex flex-wrap gap-3'>
+                                    <div className='flex w-full gap-2'>
+                                        <img src='icons/fire.svg' alt='fire' />
+                                        {/*                                         <LocalFireDepartmentIcon className='text-gradientFirst' />
+ */}                                        <p className='font-[600]'> Skills</p>
                                     </div>
-                                ) : (
-                                    <div
-                                        onClick={() => {
-                                            handleApply(
-                                                props.jobDetails.$id,
-                                                props.jobDetails.employerId,
-                                                props.jobDetails.jobTitle
-                                            );
-                                        }}
-                                        className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer"
-                                    >
-                                        Apply
+                                    {props.jobDetails.requiredSkills && parseToArray(props.jobDetails.requiredSkills).map((skill: string, index: number) => {
+                                        return <div
+                                            className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-gray-100 text-center flex px-7 items-center"
+                                            key={index}
+                                        >{skill}
+                                        </div>
+                                    })}
+                                </div>
+                                <div className='flex flex-wrap gap-5 mt-5'>
+                                    <div className='flex w-full gap-2'>
+                                        <img src='icons/plantInPot.svg' />
+                                        {/*                                         <SpaIcon className='text-gradientFirst' />
+ */}                                        <p className='font-[600]'> Job Description</p>
                                     </div>
-                                )}
+                                    <div
+                                        dangerouslySetInnerHTML={{ __html: props.jobDetails.jobDescription }}
+                                        className="text-midRS text-lightGrey min-h-[180px]"
+                                    />
+                                </div>
                             </div>
-                        )} */}
+                        }
                         {props.company && props.companyData && (
                             <div className="w-full">
                                 <p className="font-thW text-frhS">Company's Overview</p>
@@ -521,5 +356,4 @@ const JobDetail = (props: any) => {
         </div>
     )
 }
-
 export default JobDetail

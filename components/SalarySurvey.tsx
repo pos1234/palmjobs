@@ -1,15 +1,15 @@
 import React, { useState, ReactNode } from 'react'
-import TextInput from './TextInput';
+import TextInput, { SubmitButton } from './TextInput';
 import RadioInput from './RadioInput';
 import { createSalarySurvey } from '@/lib/employerBackend';
 import { toast } from 'react-toastify';
 const FlexDiv = ({ children }: { children: ReactNode }) => {
-    return <div className='flex flex-wrap gap-x-5 gap-y-2 mb-5 mt-2'>
+    return <div className='flex flex-wrap gap-x-5'>
         {children}
     </div>
 }
 const HeadLines = (props: any) => {
-    return <p className='text-xl font-bold mb-3'>{props.text}</p>
+    return <p className='font-[600] text-[24px] text-gradientFirst'>{props.text}</p>
 }
 const CheckBoxInput = (props: any) => {
     return (
@@ -116,12 +116,12 @@ const SalarySurvey = () => {
         }
     }
     return (
-        <form className='w-full h-full py-10' onSubmit={handleSubmit}>
-            <p className='flex justify-center my-5 font-bold text-3xl text-gradientFirst'>Salary Survey</p>
+        <form className='w-full h-full py-10 pl-5 flex flex-col gap-6' onSubmit={handleSubmit}>
+            <p className='flex font-[600] text-[27px]'>Salary Survey</p>
             <HeadLines text='Basic Information' />
-            <div className='flex justify-between'>
-                <div className='flex flex-col'>
-                    <p>Gender</p>
+            <div className='flex flex-col justify-between gap-4'>
+                <div className='flex flex-col gap-2'>
+                    <p className='font-[600] text-[18px]'>Gender</p>
                     <FlexDiv>
                         <RadioInput
                             radioName="gender"
@@ -139,10 +139,10 @@ const SalarySurvey = () => {
 
                     </FlexDiv>
                 </div>
-                <div className='flex flex-col'>
-                    <p>Age Range</p>
+                <div className='flex flex-col gap-3'>
+                    <p className='font-[600] text-[18px]'>Age Range</p>
                     <FlexDiv>
-                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setAgeRange(e.currentTarget.value)}>
+                        <select className='pl-5 w-96 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setAgeRange(e.currentTarget.value)}>
                             <option value="18-24">18-24</option>
                             <option value="25-34">25-34</option>
                             <option value="35-44">35-44</option>
@@ -152,171 +152,206 @@ const SalarySurvey = () => {
                         </select>
                     </FlexDiv>
                     {errorMessage && errorCode == 2 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
-
                 </div>
-
-
             </div>
             <HeadLines text="Employment Information" />
-            <p className='mb-3'>Current Job Title</p>
-            <TextInput setFunction={setJobTitle} value={jobTitle} errorMessage={errorCode == 3 ? errorMessage : ''} placeHolder="add job title" />
-            <p className='mt-7'>Employment Sector</p>
-            <FlexDiv>
-                <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setSector(e.currentTarget.value)}>
-                    <option value="Private">Private</option>
-                    <option value="Public">Public</option>
-                    <option value="Non-Governmental Organization (NGO)">Non-Governmental Organization (NGO)</option>
-                    <option value="Self-Employed">Self-Employed</option>
-                    <option value="Informal Sector">Informal Sector</option>
-                    <option value="Other">Other</option>
-                </select>
-                {errorMessage && errorCode == 4 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
-            </FlexDiv>
-            <p>Industry</p>
-            <FlexDiv>
-                <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setIndustry(e.currentTarget.value)}>
-                    <option value="Agriculture">Agriculture</option>
-                    <option value="Construction">Construction</option>
-                    <option value="Education">Education</option>
-                    <option value="Finance">Finance</option>
-                    <option value="HealthCare">HealthCare</option>
-                    <option value="Hospitality">Hospitality</option>
-                    <option value="Information Technology">Information Technology</option>
-                    <option value="Manufacturing">Manufacturing</option>
-                    <option value="Mining">Mining</option>
-                    <option value="Real Estate">Real Estate</option>
-                    <option value="Retail">Retail</option>
-                    <option value="Transportation">Transportation</option>
-                    <option value="Utilities">Utilities</option>
-                    <option value="Other">Other</option>
-                </select>
-                {errorMessage && errorCode == 5 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
-            </FlexDiv>
-            <p>Employment Status</p>
-            <FlexDiv>
-                <RadioInput
-                    radioName="employmentStatus"
-                    radioText="Full Time"
-                    radioValue="Full Time"
-                    setFunction={setEmploymentStatus}
-                />
-                <RadioInput
-                    radioName="employmentStatus"
-                    radioText="Part-Time"
-                    radioValue="Part-Time"
-                    setFunction={setEmploymentStatus}
-                />
-                <RadioInput
-                    radioName="employmentStatus"
-                    radioText="Contract"
-                    radioValue="Contract"
-                    setFunction={setEmploymentStatus}
-                />
-                <RadioInput
-                    radioName="employmentStatus"
-                    radioText="Freelance"
-                    radioValue="Freelance"
-                    setFunction={setEmploymentStatus}
-                />
-                {errorMessage && errorCode == 6 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
-            </FlexDiv>
-            <p>Number of Years in Current Postion</p>
-            <input value={yearsInCurrentPostion} className='h-12 mt-5 mb-3 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => {
-                if (e.currentTarget.value.length <= 2) {
-                    setYearsInCurrentPostion(e.currentTarget.value)
-                }
+            <div className='flex flex-col gap-4'>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Current Job Title</p>
+                    <TextInput setFunction={setJobTitle} value={jobTitle} errorMessage={errorCode == 3 ? errorMessage : ''} placeHolder="add job title" />
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Employment Sector</p>
+                    <FlexDiv>
+                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setSector(e.currentTarget.value)}>
+                            <option value="Private">Private</option>
+                            <option value="Public">Public</option>
+                            <option value="Non-Governmental Organization (NGO)">Non-Governmental Organization (NGO)</option>
+                            <option value="Self-Employed">Self-Employed</option>
+                            <option value="Informal Sector">Informal Sector</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        {errorMessage && errorCode == 4 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
+                    </FlexDiv>
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Industry</p>
+                    <FlexDiv>
+                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setIndustry(e.currentTarget.value)}>
+                            <option value="Agriculture">Agriculture</option>
+                            <option value="Construction">Construction</option>
+                            <option value="Education">Education</option>
+                            <option value="Finance">Finance</option>
+                            <option value="HealthCare">HealthCare</option>
+                            <option value="Hospitality">Hospitality</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Mining">Mining</option>
+                            <option value="Real Estate">Real Estate</option>
+                            <option value="Retail">Retail</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        {errorMessage && errorCode == 5 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
+                    </FlexDiv>
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Employment Status</p>
+                    <FlexDiv>
+                        <RadioInput
+                            radioName="employmentStatus"
+                            radioText="Full Time"
+                            radioValue="Full Time"
+                            setFunction={setEmploymentStatus}
+                        />
+                        <RadioInput
+                            radioName="employmentStatus"
+                            radioText="Part-Time"
+                            radioValue="Part-Time"
+                            setFunction={setEmploymentStatus}
+                        />
+                        <RadioInput
+                            radioName="employmentStatus"
+                            radioText="Contract"
+                            radioValue="Contract"
+                            setFunction={setEmploymentStatus}
+                        />
+                        <RadioInput
+                            radioName="employmentStatus"
+                            radioText="Freelance"
+                            radioValue="Freelance"
+                            setFunction={setEmploymentStatus}
+                        />
+                        {errorMessage && errorCode == 6 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
+                    </FlexDiv>
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Number of Years in Current Postion</p>
+                    <input value={yearsInCurrentPostion} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => {
+                        if (e.currentTarget.value.length <= 2) {
+                            setYearsInCurrentPostion(e.currentTarget.value)
+                        }
 
-            }} />
-            {errorMessage && errorCode == 7 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
-            <p className='mb-3 mt-2'>Number of Years in Professional Feild</p>
-            <input value={yearsInProfessionalPosition} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => {
-                if (e.currentTarget.value.length <= 2) {
-                    setYearsInProfessionalPosition(e.currentTarget.value)
-                }
-            }} />
-            {errorMessage && errorCode == 8 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
-            <p className='mb-5 mt-2'>Location of Employment</p>
-            <TextInput setFunction={setLocation} value={location} errorMessage={errorCode == 9 ? errorMessage : ''} placeHolder="add location" />
-            <span className='flex h-5'></span>
-            <HeadLines text="Salary and Compensation" />
-            <p className='mb-3'>Monthly Salary</p>
-            <div className='flex gap-x-3'>
-                <input className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => setMonthlySalary(e.currentTarget.value)} />
-                <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setCurrency(e.currentTarget.value)}>
-                    <option value="Birr">Birr</option>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                    <option value="CNY">CNY</option>
-                    <option value="Other">Other</option>
-                </select>
-
+                    }} />
+                    {errorMessage && errorCode == 7 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Number of Years in Professional Feild</p>
+                    <input value={yearsInProfessionalPosition} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => {
+                        if (e.currentTarget.value.length <= 2) {
+                            setYearsInProfessionalPosition(e.currentTarget.value)
+                        }
+                    }} />
+                    {errorMessage && errorCode == 8 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Location of Employment</p>
+                    <TextInput setFunction={setLocation} value={location} errorMessage={errorCode == 9 ? errorMessage : ''} placeHolder="add location" />
+                </div>
             </div>
-            {errorMessage && errorCode == 10 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
-            <p className='my-5'>Additional Monthly Allowances and Bonuses (if any)</p>
-            <input className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96' type='number' onChange={(e) => setBonus(e.currentTarget.value)} />
-            <p className='my-5 mt-5'>Benefits Included (Check all that apply)</p>
-            <FlexDiv>
-                <div className='flex flex-col flex-wrap gap-3'>
-                    <CheckBoxInput radioName="Benefit"
-                        radioText="Health Insurance"
-                        radioValue="Health Insurance"
-                        setFunction={setBenefitsIncluded} />
-                    <CheckBoxInput radioName="Benefit"
-                        radioText="Retirement Plan"
-                        radioValue="Retirement Plan"
-                        setFunction={setBenefitsIncluded} />
-                    <CheckBoxInput radioName="Benefit"
-                        radioText="Housing Allowance"
-                        radioValue="Housing Allowance"
-                        setFunction={setBenefitsIncluded} />
-                    <CheckBoxInput radioName="Benefit"
-                        radioText="Transportation Allowance"
-                        radioValue="Transportation Allowance"
-                        setFunction={setBenefitsIncluded} />
-                </div>
-                <div className='flex flex-col flex-wrap gap-3'>
-                    <CheckBoxInput radioName="Benefit"
-                        radioText="Meal Allowance"
-                        radioValue="Meal Allowance"
-                        setFunction={setBenefitsIncluded} />
-                    <CheckBoxInput radioName="Benefit"
-                        radioText="Education Allowance"
-                        radioValue="Education Allowance"
-                        setFunction={setBenefitsIncluded} />
-                    <CheckBoxInput radioName="Benefit"
-                        radioText="Other"
-                        radioValue="Other"
-                        setFunction={setBenefitsIncluded} />
-                </div>
-            </FlexDiv>
-            <HeadLines text="Educational Background" />
-            <p className='mb-5'>Highest Level of Education Completed</p>
-            <FlexDiv>
-                <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEducationLevel(e.currentTarget.value)}>
-                    <option value="High School">High School</option>
-                    <option value="Diploma/Certificate" className='hover:bg-red-500 cursor-pointer'>Diploma/Certificate</option>
-                    <option value="Associate's Degree">Associate's Degree</option>
-                    <option value="Bachelor's Degree">Bachelor's Degree</option>
-                    <option value="Master's Degree">Master's Degree</option>
-                    <option value="Doctorate">Doctorate</option>
-                </select>
-                {errorMessage && errorCode == 11 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
+            <HeadLines text="Salary and Compensation" />
+            <div className='gap-4 flex flex-col'>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Monthly Salary</p>
+                    <div className='flex gap-x-3'>
+                        <input className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => setMonthlySalary(e.currentTarget.value)} />
+                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setCurrency(e.currentTarget.value)}>
+                            <option value="Birr">Birr</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="CNY">CNY</option>
+                            <option value="Other">Other</option>
+                        </select>
 
-            </FlexDiv>
-            <p className='mb-3'>Field of Study</p>
-            <TextInput setFunction={setFieldOfStudy} errorMessage={errorCode == 12 ? errorMessage : ''} value={fieldOfStudy} placeHolder="add field of study" />
-            <p className='my-5'>Additional Insights (optional)</p>
-            <textarea placeholder='message here' className='w-11/12 rounded-xl h-40 focus:ring-gradientFirst focus:border-0' onChange={(e) => setAdditionalInsight(e.currentTarget.value)}>
-            </textarea>
-            <p className='my-5'>Leave your email below to get updates</p>
-            <TextInput setFunction={setEmailAddress} value={emailAddress} placeHolder="add your email" />
-            <div className='flex justify-around w-full flex-wrap gap-y-5 mt-10 pb-10'>
-                <button type='reset' className='bg-fadedText border-2 px-8 py-3 border-gray-500 rounded-full text-gray-700 cursor-pointer' >Clear</button>
-                {!loading && <button type='submit' className='bg-gradientFirst px-8 py-3 rounded-full text-textW cursor-pointer'>Submit Survey</button>}
+                    </div>
+                    {errorMessage && errorCode == 10 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Additional Monthly Allowances and Bonuses (if any)</p>
+                    <input className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96' type='number' onChange={(e) => setBonus(e.currentTarget.value)} />
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Benefits Included (Check all that apply)</p>
+                    <FlexDiv>
+                        <div className='flex flex-col flex-wrap gap-3'>
+                            <CheckBoxInput radioName="Benefit"
+                                radioText="Health Insurance"
+                                radioValue="Health Insurance"
+                                setFunction={setBenefitsIncluded} />
+                            <CheckBoxInput radioName="Benefit"
+                                radioText="Retirement Plan"
+                                radioValue="Retirement Plan"
+                                setFunction={setBenefitsIncluded} />
+                            <CheckBoxInput radioName="Benefit"
+                                radioText="Housing Allowance"
+                                radioValue="Housing Allowance"
+                                setFunction={setBenefitsIncluded} />
+                            <CheckBoxInput radioName="Benefit"
+                                radioText="Transportation Allowance"
+                                radioValue="Transportation Allowance"
+                                setFunction={setBenefitsIncluded} />
+                        </div>
+                        <div className='flex flex-col flex-wrap gap-3'>
+                            <CheckBoxInput radioName="Benefit"
+                                radioText="Meal Allowance"
+                                radioValue="Meal Allowance"
+                                setFunction={setBenefitsIncluded} />
+                            <CheckBoxInput radioName="Benefit"
+                                radioText="Education Allowance"
+                                radioValue="Education Allowance"
+                                setFunction={setBenefitsIncluded} />
+                            <CheckBoxInput radioName="Benefit"
+                                radioText="Other"
+                                radioValue="Other"
+                                setFunction={setBenefitsIncluded} />
+                        </div>
+                    </FlexDiv>
+                </div>
+            </div>
+            <HeadLines text="Educational Background" />
+            <div className='gap-4 flex flex-col'>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Highest Level of Education Completed</p>
+                    <FlexDiv>
+                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEducationLevel(e.currentTarget.value)}>
+                            <option value="High School">High School</option>
+                            <option value="Diploma/Certificate" className='hover:bg-red-500 cursor-pointer'>Diploma/Certificate</option>
+                            <option value="Associate's Degree">Associate's Degree</option>
+                            <option value="Bachelor's Degree">Bachelor's Degree</option>
+                            <option value="Master's Degree">Master's Degree</option>
+                            <option value="Doctorate">Doctorate</option>
+                        </select>
+                        {errorMessage && errorCode == 11 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
+
+                    </FlexDiv>
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Field of Study</p>
+                    <TextInput setFunction={setFieldOfStudy} errorMessage={errorCode == 12 ? errorMessage : ''} value={fieldOfStudy} placeHolder="add field of study" />
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Additional Insights (optional)</p>
+                    <textarea placeholder='message here' className='w-11/12 rounded-xl h-40 focus:ring-gradientFirst focus:border-0' onChange={(e) => setAdditionalInsight(e.currentTarget.value)}>
+                    </textarea>
+                </div>
+                <div className='gap-3 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Leave your email below to get updates</p>
+                    <TextInput setFunction={setEmailAddress} value={emailAddress} placeHolder="add your email" />
+                </div>
+            </div>
+            <div className='flex justify-between items-center w-full max-md:flex-wrap xl:pr-14 pb-10'>
+                <button type='reset' className='w-[247px] h-[56px] rounded-[12px] bg-[#F4F4F4]' >Clear</button>
+                <div className='flex'>
+                    <div className='w-full md:w-52'>
+                        <SubmitButton loading={loading} buttonText="Submit" />
+                    </div>
+                </div>
+                {/* {!loading && <button type='submit' className='bg-gradientFirst px-8 py-3 rounded-full text-textW cursor-pointer'>Submit Survey</button>}
                 {loading &&
                     <img src={loadingIn} className='w-2/5 h-14 bg-green-500 rounded-full' />
-                }
+                } */}
             </div>
 
         </form >
