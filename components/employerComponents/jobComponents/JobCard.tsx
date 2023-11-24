@@ -1,11 +1,12 @@
 import ConfirmModal from '@/components/ConfirmModal';
-import { fetchActivePostedJobs, fetchClosedPostedJobs, getCompanyData, getNoApplicants, updateJobStatus, updateJobs } from '@/lib/employerBackend';
+import { fetchActivePostedJobs, fetchClosedPostedJobs, fetchSinglePostedJobs, getCompanyData, getNoApplicants, updateJobStatus, updateJobs } from '@/lib/employerBackend';
 import React, { useEffect, useState } from 'react';
 import { getAccount } from '@/lib/accountBackend';
 import dynamic from 'next/dynamic';
 import { Popover } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import EuroIcon from '@mui/icons-material/Euro';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
@@ -32,16 +33,12 @@ import Share from '@/components/Share';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import JobImage from '@/components/JobImage';
 import Link from 'next/link';
-import TextInput from '@/components/TextInput';
+import TextInput, { SmallLists } from '@/components/TextInput';
+import JobDetail from '@/components/job/JobDetail';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
-const SmallLists = (props: any) => {
-    return <li className="inline bg-[#FAFAFA] text-xs text-gradientFirst min-w-[5rem] flex items-center justify-center rounded-md p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:py-2">
-        {props.icon}
-        <span className='text-[#20262E]'>{props.items}</span>
-    </li>
-}
+
 const Jobtype = (props: any) => {
     return (
         <div className="col-span-6 flex flex-col max-md:pl-2 py-2 rounded-2xl gap-y-2 bg-textW sm:col-span-3 items-center">
@@ -54,8 +51,6 @@ const Jobtype = (props: any) => {
     );
 };
 const JobCard = (props: any) => {
-
-
     const loadingIn = '/images/loading.svg';
     const [loading, setLoading] = useState(false);
     const [jobStatus, setJobStatus] = useState(props.jobStatus);
@@ -79,6 +74,9 @@ const JobCard = (props: any) => {
     const [openShare, setOpenShare] = useState(false);
     const [noApplicant, setNoApplicant] = useState(0);
     const [empId, setEmpId] = useState('');
+    const [jobDetails, setJobDetails] = useState<any>()
+    const [companyName, setCompanyName] = useState(' ');
+    const [companyData, setCompanyData] = useState<any>()
     const [compnayDes, setCompanyDes] = useState<any>();
     const updateStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
@@ -133,7 +131,16 @@ const JobCard = (props: any) => {
             const documents = getCompanyData(accountInfo.$id);
             setEmpId(accountInfo.$id);
             documents.then((res) => {
-                res && res.documents && setCompanyDes(res.documents[0]);
+                if (res.documents && res.documents[0] && res.documents[0]) {
+                    setCompanyData(res.documents[0]);
+                    setCompanyDes(res.documents[0])
+                    setCompanyName(res.documents[0].companyName);
+                } else {
+                    setCompanyName('');
+                }
+                fetchSinglePostedJobs(props.jobId).then((res) => {
+                    res && setJobDetails(res.documents[0]);
+                });
             });
         }
     };
@@ -151,25 +158,19 @@ const JobCard = (props: any) => {
                 <Link href={`/jobs/${props.jobId}`} target="_blank" className="text-neutral-900 text-lg font-medium leading-normal">
                     {props.title}
                 </Link>
-                <div className='text-gray-400'>
-                    <PinDropOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" /> <span>{props.location}</span>
+                <div className='text-gray-400 flex items-center gap-0.5'>
+                    <PlaceOutlinedIcon sx={{ fontSize: '1.1rem' }} className="text-[1.1rem] -mt-1" /> <span className='text-sm'>{props.location}</span>
                 </div>
                 <div className="flex flex-wrap text-stone-400 text-[0.8rem] gap-x-4 gap-y-1 mt-1 pr-3">
                     {props.jobType && (
                         <SmallLists
-                            icon={<BusinessCenterIcon
-                                sx={{ fontSize: '1rem' }}
-                                className="-mt-0.5 mr-1 "
-                            />}
+                            icon={<img src='/icons/suitCase.svg' />}
                             items={props.jobType}
                         />
                     )}
                     {props.datePosted && (
                         <SmallLists
-                            icon={<HourglassTopIcon
-                                sx={{ fontSize: '1rem' }}
-                                className="-mt-0.5 mr-1 "
-                            />}
+                            icon={<img src='/icons/hourGlassUp.svg' />}
                             items={new Date(props.datePosted)
                                 .toLocaleDateString('en-GB')
                                 .replace(/\//g, '-')}
@@ -177,10 +178,7 @@ const JobCard = (props: any) => {
                     )}
                     {props.deadline && (
                         <SmallLists
-                            icon={<HourglassBottomOutlinedIcon
-                                sx={{ fontSize: '1rem' }}
-                                className="-mt-0.5 mr-1 "
-                            />}
+                            icon={<img src='/icons/hourGlassDown.svg' />}
                             items={new Date(props.deadline)
                                 .toLocaleDateString('en-GB')
                                 .replace(/\//g, '-')}
@@ -191,7 +189,7 @@ const JobCard = (props: any) => {
                             sx={{ fontSize: '1rem' }}
                             className="-mt-0.5 mr-1 "
                         />}
-                        items={noApplicant}
+                        items={noApplicant.toString()}
                     />
                 </div>
             </div>
@@ -288,6 +286,16 @@ const JobCard = (props: any) => {
                         </button>
                     </div>
                     <div className="col-span-12 grid grid-cols-12 gap-y-5 bg-textW pt-5 z-[0] rounded-t-xl relative px-2 lg:px-16">
+                        <JobDetail
+                            jobDetails={jobDetails}
+                            companyName={companyName}
+                            company={company}
+                            setCompany={setCompany}
+                            companyData={companyData}
+                        />
+                    </div>
+
+                    {/* <div className="col-span-12 grid grid-cols-12 gap-y-5 bg-textW pt-5 z-[0] rounded-t-xl relative px-2 lg:px-16">
                         <div className="col-span-12 grid grid-cols-12 gap-0">
                             <JobImage id={empId} className="col-span-2 w-full h-full sm:h-[5.8rem]" />
                             <div className="col-span-8 flex flex-col pl-3">
@@ -412,7 +420,7 @@ const JobCard = (props: any) => {
                                 )}
                             </div>
                         )}
-                    </div>
+                    </div> */}
                 </div>
             </ConfirmModal>
             <ConfirmModal isOpen={openJobEdit} handleClose={() => setOpenJobEdit(!openJobEdit)}>

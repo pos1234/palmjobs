@@ -30,19 +30,16 @@ export const getEmployerDocument = async () => {
         const { $id } = user;
         const roles = await getRole();
         if (roles && roles.documents[0].userRole == 'employer') {
-            databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', $id)]).then((res: any) => {
-                const fileId = res && res.total > 0 && res.documents[0].$id
-                const documents = res && res.total > 0 && res.documents
-                return { fileId, documents };
-            })
+            const promise = databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', $id)])
+            return promise
         }
+        return null
     }
+    return null
 };
 export const getUserDetail = async () => {
-    getEmployerDocument().then((res: any) => {
-        return res && res.total > 0 && res.documents[0]
-    })
-
+    const data: any = await getEmployerDocument()
+    return data && data.documents[0]
 }
 
 export const updateUserName = (name: string) => {
@@ -52,13 +49,20 @@ export const updateUserName = (name: string) => {
 
 export const fetchJobs = async () => {
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
+        Query.equal('jobStatus', 'Active'),
+        Query.orderAsc('datePosted')
+    ]);
+    return promise;
+};
+/* export const fetchJobs = async () => {
+    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
         Query.limit(100),
         Query.offset(0),
         Query.equal('jobStatus', 'Active'),
         Query.orderAsc('datePosted')
     ]);
     return promise;
-};
+}; */
 export const checkEmailAppliation = (id: string) => {
     const [jobs, setJobs] = useState('');
     const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('$id', id)]);
@@ -359,7 +363,7 @@ export const createSalarySurvey = async (
     additionalInsight: string,
     emailAddress: string,
 ) => {
-    const promise = databases.createDocument(DATABASE_ID, SURVEY, ID.unique(), {
+    const promise = databases.createDocument(DATABASE_ID,SURVEY,ID.unique(), {
         gender,
         ageRange,
         jobTitle,

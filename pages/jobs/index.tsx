@@ -6,9 +6,8 @@ import { useEffect, useState, Fragment } from 'react';
 import ConfirmModal from '@/components/ConfirmModal';
 import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
-import { getRole, getAccount, signOut } from '@/lib/accountBackend';
-import { getCompanyData, getProfileData, fetchJobs, } from '@/lib/employerBackend'
-import ApplyToJob from '@/components/candidateProfileComponents/ApplyToJobs';
+import { signOut } from '@/lib/accountBackend';
+import { getCompanyData, fetchJobs, } from '@/lib/employerBackend'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobsShimmer from '@/components/shimmer/JobsShimmer';
@@ -167,9 +166,9 @@ const Jobs = () => {
     };
     return (
         <>
-            <div className="">
+            <div>
                 <Navigation />
-                {allLoading && <JobsShimmer />}
+                {allLoading && <div className='mt-8 md:mt-28 px-3 xl:px-40'> <JobsShimmer /></div>}
                 {!allLoading && (
                     <div className="grid grid-cols-12 sm:gap-x-10 mt-8 md:mt-16 px-3">
                         <div className="col-span-12 grid grid-cols-12 gap-x-2 xl:gap-x-5">
@@ -270,7 +269,7 @@ const Jobs = () => {
                             className={
                                 pageCount > 1
                                     ? openJobDetail
-                                        ? 'col-span-3 flex justify-center items-center gap-x-3 mt-4 max-md:hidden'
+                                        ? 'col-span-5 flex justify-center items-center gap-x-3 mt-4 max-md:hidden'
                                         : 'flex justify-center items-center gap-x-3 mt-4 col-span-12 md:col-span-6 lg:col-span-3'
                                     : 'hidden'
                             }
@@ -323,7 +322,7 @@ const Jobs = () => {
                     </div>
                 )}
                 <Footer />
-            </div>
+            </div >
             <ConfirmModal isOpen={applyEmp} handleClose={() => setApplyEmp(!applyEmp)}>
                 <div className="mx-2 pb-10 pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
                     <div className="col-span-12 flex justify-end pr-7">
@@ -350,3 +349,16 @@ const Jobs = () => {
     );
 };
 export default Jobs;
+
+
+/* export async function getServerSideProps() {
+    const promise = fetchJobs()
+
+    const jobs = await promise;
+
+    return {
+        props: {
+            jobs
+        }
+    };
+} */

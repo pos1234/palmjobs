@@ -167,8 +167,8 @@ export const EmployerProfilePicture = () => {
         imageUploadChecker(uploadProfilePictures, e.currentTarget.files);
     };
     const getProfilePic = async () => {
-        const { documents }: any = await getEmployerDocument()
-        documents && documents[0] && documents[0].profilePictureId && setProfileId(documents[0].profilePictureId)
+        const promise = await getEmployerDocument()
+        promise && promise.documents[0] && promise.documents[0].profilePictureId && setProfileId(promise.documents[0].profilePictureId)
     }
     useEffect(() => {
         getProfilePic()

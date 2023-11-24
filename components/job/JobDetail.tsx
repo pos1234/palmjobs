@@ -1,35 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import Share from '../Share'
-import CloseIcon from '@mui/icons-material/Close';
 import JobImage from '../JobImage';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
-import SpaIcon from '@mui/icons-material/Spa';
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import EuroIcon from '@mui/icons-material/Euro';
 import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import HourglassBottomOutlinedIcon from '@mui/icons-material/HourglassBottomOutlined';
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { alreadySaved, getCandidateDocument, saveJobs, } from '@/lib/candidateBackend'
 import { getAccount, getRole } from '@/lib/accountBackend';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import { getProfileData } from '@/lib/employerBackend';
 import ApplyToJob from '../candidateProfileComponents/ApplyToJobs';
-import HourglassTopIcon from '@mui/icons-material/HourglassTop';
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-
-const SmallLists = (props: any) => {
-    return <li className="inline flex gap-1 bg-[#FAFAFA] text-xs text-gradientFirst rounded-md p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:py-2">
-        {props.icon}
-        <span className='text-[#20262E]'>{props.items}</span>
-    </li>
-}
+import { SmallLists } from '../TextInput';
+import CheckIcon from '@mui/icons-material/Check';
+import { fetchCandidateDetail } from '@/lib/employerBackend';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 
 
@@ -46,6 +32,7 @@ const JobDetail = (props: any) => {
     const [applyJobId, setApplyJobId] = useState('');
     const [applyEmployerId, setApplyEmployerId] = useState('');
     const [openShare, setOpenShare] = useState(false);
+    const [userSkill, setUserSkill] = useState<any>()
     const router = useRouter();
     const parseToArray = (text: string) => {
         const arrayValue = JSON.parse(text)
@@ -57,7 +44,14 @@ const JobDetail = (props: any) => {
             setUserId(userInfo.$id)
             setUserData(userInfo);
             const role = await getRole();
-            setUserRole(role && role.documents[0].userRole);
+            if (role && role.documents[0].userRole == 'candidate') {
+                fetchCandidateDetail(userInfo.$id).then((res) => {
+                    res && res.documents[0] && res.documents[0].skills && setUserSkill(res.documents[0].skills)
+                    const lowercaseSkills = res && res.documents[0] && res.documents[0].skills && res.documents[0].skills.map((skill: string, index: number) => skill.toLowerCase());
+                    setUserSkill(lowercaseSkills)
+                })
+            }
+            role && setUserRole(role && role.documents[0].userRole);
         }
     };
     useEffect(() => {
@@ -70,10 +64,10 @@ const JobDetail = (props: any) => {
             setApplyJobId(jobId);
             setApplyEmployerId(employerId);
             setJobTitle(jobTitle);
-        }
-        if (userRole == 'employer') {
+        } else if (userRole == 'employer') {
             setApplyEmp(true);
-        } if (!userRole) {
+        }
+        if (userRole == '') {
             typeof window !== 'undefined' && router.push('/account');
         }
     }
@@ -112,6 +106,7 @@ const JobDetail = (props: any) => {
         const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoLink;
     };
+    const arrayToCheck = ['react', 'node.js']
     return (
         <div
             className={
@@ -159,7 +154,7 @@ const JobDetail = (props: any) => {
                         </div>
                         <ul className="text-[10px] flex md:text-[11px] md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] xl:text-[0.6rem] gap-3 flex-wrap">
                             {props.jobDetails.jobType &&
-                                <SmallLists icon={<img src='icons/suitCase.svg' />}
+                                <SmallLists icon={<img src='/icons/suitCase.svg' />}
                                     items={props.jobDetails.jobType} />
                             }
                             {(props.jobDetails.minSalary || props.jobDetails.maxSalary) && (
@@ -196,7 +191,7 @@ const JobDetail = (props: any) => {
                             {props.jobDetails.datePosted && (
                                 <SmallLists
                                     icon={
-                                        <img src='icons/hourGlassUp.svg' />
+                                        <img src='/icons/hourGlassUp.svg' />
                                     }
                                     items={new Date(props.jobDetails.datePosted)
                                         .toLocaleDateString('en-GB')
@@ -205,7 +200,7 @@ const JobDetail = (props: any) => {
                             )}
                             {props.jobDetails.applicationDeadline && (
                                 <SmallLists
-                                    icon={<img src='icons/hourGlassDown.svg' />}
+                                    icon={<img src='/icons/hourGlassDown.svg' />}
                                     items={new Date(props.jobDetails.applicationDeadline)
                                         .toLocaleDateString('en-GB')
                                         .replace(/\//g, '-')}
@@ -277,27 +272,30 @@ const JobDetail = (props: any) => {
                             <div className="max-h-64 overflow-y-auto thinScrollBar">
                                 <div className='flex flex-wrap gap-3'>
                                     <div className='flex w-full gap-2'>
-                                        <img src='icons/fire.svg' alt='fire' />
+                                        <img src='/icons/fire.svg' alt='fire' />
                                         {/*                                         <LocalFireDepartmentIcon className='text-gradientFirst' />
  */}                                        <p className='font-[600]'> Skills</p>
                                     </div>
                                     {props.jobDetails.requiredSkills && parseToArray(props.jobDetails.requiredSkills).map((skill: string, index: number) => {
-                                        return <div
-                                            className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-gray-100 text-center flex px-7 items-center"
-                                            key={index}
-                                        >{skill}
+                                        return <div key={index}>
+                                            {userSkill && userSkill.includes(skill.toLocaleLowerCase()) ?
+                                                <div key={index} className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-skillColor text-gradientFirst text-center flex px-7 gap-2 items-center">
+                                                    {skill} <CheckIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} />
+                                                </div> :
+                                                <div className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-gray-100 text-center flex px-7 items-center"
+                                                    key={index}>{skill}</div>}
                                         </div>
                                     })}
                                 </div>
                                 <div className='flex flex-wrap gap-5 mt-5'>
                                     <div className='flex w-full gap-2'>
-                                        <img src='icons/plantInPot.svg' />
+                                        <img src='/icons/plantInPot.svg' />
                                         {/*                                         <SpaIcon className='text-gradientFirst' />
  */}                                        <p className='font-[600]'> Job Description</p>
                                     </div>
                                     <div
                                         dangerouslySetInnerHTML={{ __html: props.jobDetails.jobDescription }}
-                                        className="text-midRS text-lightGrey min-h-[180px]"
+                                        className="text-[15px] text-lightGrey min-h-[180px]"
                                     />
                                 </div>
                             </div>

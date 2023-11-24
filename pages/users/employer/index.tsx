@@ -278,7 +278,7 @@ const AdminJob = () => {
                             view && postJob
                                 ? 'hidden md:grid md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
                                 : postJob
-                                    ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32 employerBack'
+                                    ? 'col-span-12 md:col-span-9 xl:col-span-10 xl:bg-textW xl:pr-32'
                                     : 'hidden'
                         }
                     >

@@ -10,8 +10,6 @@ import FourthForm from './jobPostTabs/FourthForm';
 import ConfirmModal from '../ConfirmModal';
 import PreviewJob from './jobPostTabs/PreviewJob';
 const PostAJob = (props: any) => {
-    const profile = '/images/profile.svg';
-    const previewImage = '/images/previewImage.svg';
     const [chooseJob, setChooseJob] = useState(false);
     const [selectedRadio, setSelectedRadio] = useState('empty');
     const [first, setFirst] = useState(false);
@@ -32,6 +30,7 @@ const PostAJob = (props: any) => {
     const [emailNotify, setEmailNotify] = useState('');
     const [editedData, setEditedData] = useState<any>();
     const [companyData, setCompanyData] = useState<any>()
+    
     const initialData = () => {
         const result = getProfileData();
 
@@ -40,7 +39,6 @@ const PostAJob = (props: any) => {
             res.documents && res.documents[0] && setCompanyData(res.documents[0]);
         });
     };
-
     const handleBack = () => {
         setFourth(false);
         setThird(fourth);
@@ -141,8 +139,6 @@ const PostAJob = (props: any) => {
             /*  } */
         }
     };
-
-
     /*  const generateJobDescription = async ({
          jobTitle,
          skills,
@@ -242,10 +238,14 @@ const PostAJob = (props: any) => {
                 res && res.total > 0 && setNoJobs(true);
                 res && res.total > 0 && setChooseJob(true);
                 res && res.total == 0 && setFirst(true);
+                fetchDraftedJobs().then((res) => {
+                    res && res.total > 0 && setNoDraft(true);
+                })
             })
             .catch((error) => {
                 console.log(error);
             });
+
 
     }, []);
 
@@ -282,8 +282,17 @@ const PostAJob = (props: any) => {
                     (noJobs || noDraft) && chooseJob && !first && !second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'
                 }
             >
-                <div className="text-neutral-900 text-3xl font-semibold leading-10 h-20 flex items-center pl-5 md:h-32 jobsBack">
-                    Create a job post
+                <div className="text-neutral-900 h-20 flex items-center overflow-hidden justify-between pl-5 md:h-32 jobsBack">
+                    <div className='flex flex-col gap-2'>
+                        <p className='font-[700] text-[24px]'>Develop the Job Description using AI</p>
+                        <p className='font-[400] text-[14px] text-gray-500'>Lorem ipsum sit amet consectetur. Accumsan</p>
+                    </div>
+                    <div className='p-5 pr-10'>
+                        <img src="/images/bigSearch.svg" alt="" className='w-28' />
+                    </div>
+                </div>
+                <div className='pt-5 font-[600] text-xl'>
+                    Choose how to post a Job
                 </div>
                 <div className="flex flex-col gap-y-5 pt-5 pb-10">
                     <RadioInput
@@ -387,7 +396,7 @@ const PostAJob = (props: any) => {
                 setPostingJobId={setPostingJobId}
                 postingJobId={postingJobId}
                 handleBack={handleBack}
-                openPreview={openPreview} 
+                openPreview={openPreview}
                 setOpenPreview={setOpenPreview}
             />
             <div className="flex justify-end pt-5">

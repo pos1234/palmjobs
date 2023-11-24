@@ -27,16 +27,15 @@ const CheckBoxInput = (props: any) => {
     );
 };
 const SalarySurvey = () => {
-    const loadingIn = '/images/loading.svg';
     const [gender, setGender] = useState('');
     const [ageRange, setAgeRange] = useState('18-24')
     const [jobTitle, setJobTitle] = useState('')
     const [sector, setSector] = useState('Private')
     const [industry, setIndustry] = useState('Agriculture')
-    const [employmentStatus, setEmploymentStatus] = useState('')
+    const [employmentStatus, setEmploymentStatus] = useState('Full Time')
     const [yearsInCurrentPostion, setYearsInCurrentPostion] = useState('')
     const [yearsInProfessionalPosition, setYearsInProfessionalPosition] = useState('')
-    const [location, setLocation] = useState('')
+    const [location, setLocation] = useState('Addis Ababa')
     const [monthlySalary, setMonthlySalary] = useState('')
     const [bonus, setBonus] = useState('');
     const [benefitsIncluded, setBenefitsIncluded] = useState('')
@@ -48,6 +47,14 @@ const SalarySurvey = () => {
     const [errorMessage, setErrorMessage] = useState('')
     const [errorCode, setErrorCode] = useState(0)
     const [loading, setLoading] = useState(false)
+    const [selectedValues, setSelectedValues] = useState<string[]>([]);
+    const handleCheckboxChange = (value: string) => {
+        if (selectedValues.includes(value)) {
+            setSelectedValues(selectedValues.filter((val) => val !== value));
+        } else {
+            setSelectedValues([...selectedValues, value]);
+        }
+    };
     const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setErrorMessage('');
@@ -66,19 +73,19 @@ const SalarySurvey = () => {
         } else if (industry == '') {
             setErrorCode(5);
             setErrorMessage('Please Select Industry');
-        } else if (employmentStatus == '') {
+        } /* else if (employmentStatus == '') {
             setErrorCode(6);
             setErrorMessage('Please Select Employment Status');
-        } else if (yearsInCurrentPostion == '') {
+        } */ else if (yearsInCurrentPostion == '') {
             setErrorCode(7);
             setErrorMessage('Please Add Years In Current Position');
         } else if (yearsInProfessionalPosition == '') {
             setErrorCode(8);
             setErrorMessage('PleaseAdd Years In Professional Position ');
-        } else if (location == '') {
+        } /* else if (location == '') {
             setErrorCode(9);
             setErrorMessage('Please Add Location');
-        } else if (monthlySalary == '') {
+        } */ else if (monthlySalary == '') {
             setErrorCode(10);
             setErrorMessage('Please Add Monthly Salary ');
         } else if (educationLevel == '') {
@@ -101,7 +108,7 @@ const SalarySurvey = () => {
                 location,
                 monthlySalary.toString(),
                 bonus,
-                benefitsIncluded,
+                JSON.stringify(selectedValues),
                 educationLevel,
                 fieldOfStudy,
                 additionalInsight,
@@ -116,11 +123,11 @@ const SalarySurvey = () => {
         }
     }
     return (
-        <form className='w-full h-full py-10 pl-5 flex flex-col gap-6' onSubmit={handleSubmit}>
+        <form className='w-full h-full py-10 pl-5 flex flex-col gap-8' onSubmit={handleSubmit}>
             <p className='flex font-[600] text-[27px]'>Salary Survey</p>
             <HeadLines text='Basic Information' />
-            <div className='flex flex-col justify-between gap-4'>
-                <div className='flex flex-col gap-2'>
+            <div className='flex flex-col justify-between gap-5'>
+                <div className='flex flex-col gap-5'>
                     <p className='font-[600] text-[18px]'>Gender</p>
                     <FlexDiv>
                         <RadioInput
@@ -139,7 +146,7 @@ const SalarySurvey = () => {
 
                     </FlexDiv>
                 </div>
-                <div className='flex flex-col gap-3'>
+                <div className='flex flex-col gap-5'>
                     <p className='font-[600] text-[18px]'>Age Range</p>
                     <FlexDiv>
                         <select className='pl-5 w-96 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setAgeRange(e.currentTarget.value)}>
@@ -156,11 +163,11 @@ const SalarySurvey = () => {
             </div>
             <HeadLines text="Employment Information" />
             <div className='flex flex-col gap-4'>
-                <div className='gap-3 flex flex-col'>
+                <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Current Job Title</p>
                     <TextInput setFunction={setJobTitle} value={jobTitle} errorMessage={errorCode == 3 ? errorMessage : ''} placeHolder="add job title" />
                 </div>
-                <div className='gap-3 flex flex-col'>
+                <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Employment Sector</p>
                     <FlexDiv>
                         <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setSector(e.currentTarget.value)}>
@@ -174,7 +181,7 @@ const SalarySurvey = () => {
                         {errorMessage && errorCode == 4 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
                     </FlexDiv>
                 </div>
-                <div className='gap-3 flex flex-col'>
+                <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Industry</p>
                     <FlexDiv>
                         <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setIndustry(e.currentTarget.value)}>
@@ -196,10 +203,16 @@ const SalarySurvey = () => {
                         {errorMessage && errorCode == 5 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
                     </FlexDiv>
                 </div>
-                <div className='gap-3 flex flex-col'>
+                <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Employment Status</p>
                     <FlexDiv>
-                        <RadioInput
+                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEmploymentStatus(e.currentTarget.value)}>
+                            <option value="Full Time">Full Time</option>
+                            <option value="Part-Time">Part-Time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Freelance">Freelance</option>
+                        </select>
+                        {/* <RadioInput
                             radioName="employmentStatus"
                             radioText="Full Time"
                             radioValue="Full Time"
@@ -222,11 +235,11 @@ const SalarySurvey = () => {
                             radioText="Freelance"
                             radioValue="Freelance"
                             setFunction={setEmploymentStatus}
-                        />
+                        /> */}
                         {errorMessage && errorCode == 6 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
                     </FlexDiv>
                 </div>
-                <div className='gap-3 flex flex-col'>
+                <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Number of Years in Current Postion</p>
                     <input value={yearsInCurrentPostion} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => {
                         if (e.currentTarget.value.length <= 2) {
@@ -236,7 +249,7 @@ const SalarySurvey = () => {
                     }} />
                     {errorMessage && errorCode == 7 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
                 </div>
-                <div className='gap-3 flex flex-col'>
+                <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Number of Years in Professional Feild</p>
                     <input value={yearsInProfessionalPosition} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => {
                         if (e.currentTarget.value.length <= 2) {
@@ -245,14 +258,29 @@ const SalarySurvey = () => {
                     }} />
                     {errorMessage && errorCode == 8 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
                 </div>
-                <div className='gap-3 flex flex-col'>
+                <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Location of Employment</p>
-                    <TextInput setFunction={setLocation} value={location} errorMessage={errorCode == 9 ? errorMessage : ''} placeHolder="add location" />
+                    <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEmploymentStatus(e.currentTarget.value)}>
+                        <option value="Addis Ababa">Addis Ababa</option>
+                        <option value="Dire Dawa">Dire Dawa</option>
+                        <option value="Mekelle">Mekelle</option>
+                        <option value="Gondar">Gondar</option>
+                        <option value="Awasa">Awasa</option>
+                        <option value="Dessie">Dessie</option>
+                        <option value="Jimma">Jimma</option>
+                        <option value="Jijiga">Jijiga</option>
+                        <option value="Shashamane">Shashamane</option>
+                        <option value="Arba Minch">Arba Minch</option>
+                        <option value="Hosaena">Hosaena</option>
+                        <option value="Sodo">Sodo</option>
+                        <option value="Adama">Adama</option>
+                        <option value="Bishoftu">Bishoftu</option>
+                    </select>
                 </div>
             </div>
             <HeadLines text="Salary and Compensation" />
             <div className='gap-4 flex flex-col'>
-                <div className='gap-3 flex flex-col'>
+                <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Monthly Salary</p>
                     <div className='flex gap-x-3'>
                         <input className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => setMonthlySalary(e.currentTarget.value)} />
@@ -268,51 +296,51 @@ const SalarySurvey = () => {
                     </div>
                     {errorMessage && errorCode == 10 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
                 </div>
-                <div className='gap-3 flex flex-col'>
-                    <p className='font-[600] text-[18px]'>Additional Monthly Allowances and Bonuses (if any)</p>
+                <div className='gap-5 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Additional Monthly Allowances and Bonuses <span className='font-[400] text-sm'>(if any)</span> </p>
                     <input className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96' type='number' onChange={(e) => setBonus(e.currentTarget.value)} />
                 </div>
-                <div className='gap-3 flex flex-col'>
-                    <p className='font-[600] text-[18px]'>Benefits Included (Check all that apply)</p>
+                <div className='gap-5 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Benefits Included <span className='font-[400] text-sm'>(Check all that apply)</span> </p>
                     <FlexDiv>
-                        <div className='flex flex-col flex-wrap gap-3'>
+                        <div className='flex flex-col flex-wrap gap-5'>
                             <CheckBoxInput radioName="Benefit"
                                 radioText="Health Insurance"
                                 radioValue="Health Insurance"
-                                setFunction={setBenefitsIncluded} />
+                                setFunction={handleCheckboxChange} />
                             <CheckBoxInput radioName="Benefit"
                                 radioText="Retirement Plan"
                                 radioValue="Retirement Plan"
-                                setFunction={setBenefitsIncluded} />
+                                setFunction={handleCheckboxChange} />
                             <CheckBoxInput radioName="Benefit"
                                 radioText="Housing Allowance"
                                 radioValue="Housing Allowance"
-                                setFunction={setBenefitsIncluded} />
+                                setFunction={handleCheckboxChange} />
                             <CheckBoxInput radioName="Benefit"
                                 radioText="Transportation Allowance"
                                 radioValue="Transportation Allowance"
-                                setFunction={setBenefitsIncluded} />
+                                setFunction={handleCheckboxChange} />
                         </div>
-                        <div className='flex flex-col flex-wrap gap-3'>
+                        <div className='flex flex-col flex-wrap gap-5'>
                             <CheckBoxInput radioName="Benefit"
                                 radioText="Meal Allowance"
                                 radioValue="Meal Allowance"
-                                setFunction={setBenefitsIncluded} />
+                                setFunction={handleCheckboxChange} />
                             <CheckBoxInput radioName="Benefit"
                                 radioText="Education Allowance"
                                 radioValue="Education Allowance"
-                                setFunction={setBenefitsIncluded} />
+                                setFunction={handleCheckboxChange} />
                             <CheckBoxInput radioName="Benefit"
                                 radioText="Other"
                                 radioValue="Other"
-                                setFunction={setBenefitsIncluded} />
+                                setFunction={handleCheckboxChange} />
                         </div>
                     </FlexDiv>
                 </div>
             </div>
             <HeadLines text="Educational Background" />
             <div className='gap-4 flex flex-col'>
-                <div className='gap-3 flex flex-col'>
+                <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Highest Level of Education Completed</p>
                     <FlexDiv>
                         <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEducationLevel(e.currentTarget.value)}>
@@ -327,33 +355,38 @@ const SalarySurvey = () => {
 
                     </FlexDiv>
                 </div>
-                <div className='gap-3 flex flex-col'>
+                <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Field of Study</p>
                     <TextInput setFunction={setFieldOfStudy} errorMessage={errorCode == 12 ? errorMessage : ''} value={fieldOfStudy} placeHolder="add field of study" />
                 </div>
-                <div className='gap-3 flex flex-col'>
-                    <p className='font-[600] text-[18px]'>Additional Insights (optional)</p>
-                    <textarea placeholder='message here' className='w-11/12 rounded-xl h-40 focus:ring-gradientFirst focus:border-0' onChange={(e) => setAdditionalInsight(e.currentTarget.value)}>
+                <div className='gap-5 flex flex-col'>
+                    <p className='font-[600] text-[18px]'>Additional Insights <span className='font-[400] text-sm'>(optional)</span> </p>
+                    <textarea
+                        placeholder='Any other comments or insights about your role and compensation?'
+                        className='resize-none w-11/12 rounded-xl h-40 focus:ring-gradientFirst focus:border-0' onChange={(e) => setAdditionalInsight(e.currentTarget.value)}>
                     </textarea>
                 </div>
-                <div className='gap-3 flex flex-col'>
-                    <p className='font-[600] text-[18px]'>Leave your email below to get updates</p>
-                    <TextInput setFunction={setEmailAddress} value={emailAddress} placeHolder="add your email" />
-                </div>
+                <div className='gap-5 flex flex-col'>
+                    <div className='font-[600] text-[18px]' title="Interested in the final salary report? Provide your email to get it upon release - its's optional! We respect your privacy: your email is just for the report and won't be shared or used for marketing">Leave your email below to get updates <span className='font-[400] text-sm'> (optional)</span>
+                        <p className='text-[12px] w-96 text-gray-400'>Interested in the final salary report? Provide your email to get it upon release - its's optional! We respect your privacy: your email is just for the report and won't be shared or used for marketing.</p>
+                    </div>
+                    <input
+                        type='email'
+                        placeholder="add your email"
+                        value={emailAddress}
+                        onChange={(e) => setEmailAddress(e.currentTarget.value)}
+                        className="h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientSecond focus:border-0 w-full md:w-96" />
+                    {/*                     <TextInput setFunction={setEmailAddress} value={emailAddress} placeHolder="add your email" />
+ */}                </div>
             </div>
-            <div className='flex justify-between items-center w-full max-md:flex-wrap xl:pr-14 pb-10'>
-                <button type='reset' className='w-[247px] h-[56px] rounded-[12px] bg-[#F4F4F4]' >Clear</button>
-                <div className='flex'>
+            <div className='flex justify-between items-center w-full gap-5 max-md:flex-col xl:pr-14 pb-24'>
+                <button type='reset' className='w-full sm:w-[247px] h-[56px] rounded-[12px] bg-[#F4F4F4]' >Clear</button>
+                <div className='flex max-sm:w-full'>
                     <div className='w-full md:w-52'>
                         <SubmitButton loading={loading} buttonText="Submit" />
                     </div>
                 </div>
-                {/* {!loading && <button type='submit' className='bg-gradientFirst px-8 py-3 rounded-full text-textW cursor-pointer'>Submit Survey</button>}
-                {loading &&
-                    <img src={loadingIn} className='w-2/5 h-14 bg-green-500 rounded-full' />
-                } */}
             </div>
-
         </form >
     )
 }

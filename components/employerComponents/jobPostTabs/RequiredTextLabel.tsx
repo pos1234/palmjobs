@@ -3,8 +3,8 @@ import AddIcon from '@mui/icons-material/Add';
 export const RequiredTextLabel = (props: any) => {
     return (
         <div>
-            <span className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose md:text-xl">{props.text} </span>
-            <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 text-2xl font-medium leading-loose'}>*</span>
+            <span className="text-neutral-900 text-opacity-70 font-medium leading-loose">{props.text} </span>
+            <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 text-lg font-medium leading-loose'}>*</span>
         </div>
     );
 };
@@ -12,11 +12,7 @@ export const RequredExp = (props: any) => {
     return (
         <div
             onClick={() => props.setFuntioner(props.text)}
-            className={
-                props.value == props.text
-                    ? 'h-12 w-auto px-5 text-stone-300 cursor-pointer flex gap-x-2 items-center justify-center rounded-3xl bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW'
-                    : 'hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond hover:text-textW h-12 w-auto px-5 text-stone-300 cursor-pointer flex gap-x-2 items-center justify-center bg-white rounded-3xl border border-gray-200'
-            }
+            className={`h-9 w-auto px-3 flex gap-x-2 items-center justify-center rounded-full ${props.value == props.text ? 'bg-gradientFirst text-textW' : 'cursor-pointer bg-textW text-gray-400 border-[1px] border-gray-200 hover:bg-gradientFirst hover:text-textW'}`}
         >
             <AddIcon sx={{ fontSize: '1.3rem' }} />
             <p className="text-[0.9rem]"> {props.text}</p>

@@ -7,12 +7,6 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { getAccount } from '@/lib/accountBackend';
 import { getRole } from '@/lib/candidateBackend';
 import { fetchSinglePostedJobs, getCompanyData, } from '@/lib/employerBackend';
-import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import JobImage from '@/components/JobImage';
 import ApplyToJob from '@/components/candidateProfileComponents/ApplyToJobs';
 import EuroIcon from '@mui/icons-material/Euro';
@@ -24,17 +18,6 @@ import Head from 'next/head';
 import LaunchIcon from '@mui/icons-material/Launch';
 import JobDetail from '@/components/job/JobDetail';
 import SearchBar from '@/components/job/SearchBar';
-const JobCard = (props: any) => {
-    return (
-        <div className="col-span-6 flex flex-col max-md:pl-2 py-2 rounded-2xl gap-y-2 bg-textW sm:col-span-3 items-center">
-            <p className="font-fhW sm:max-md:text-[0.8rem] md:text-fhS md:max-lg:text-[1rem]"> {props.salary}</p>
-            <p className=" text-fadedText sm:max-md:text-[12px] flex md:max-lg:text-[0.7rem] lg:text-[14px]">
-                {props.icon}
-                {props.money}
-            </p>
-        </div>
-    );
-};
 const singleJob = () => {
     const router = useRouter();
     const [location, setLocation] = useState(false);
@@ -138,7 +121,7 @@ const singleJob = () => {
        }`
         : null;
     return (
-        <div className="px-3 pb-20 xl:px-40 flex flex-col gap-10">
+        <div className="flex flex-col gap-10">
             <Head>
                 <script
                     key="structured-data"
@@ -184,241 +167,243 @@ const singleJob = () => {
                     <SearchOutlinedIcon sx={{ fontSize: '1.5rem', marginRight: '0.2rem' }} /> Search
                 </button>
             </div> */}
-            {jobDetails && (
-                <div className='w-full md:w-1/2 md:m-auto'>
-                    <SearchBar
-                        searchWord={searchText}
-                        setSearchWord={setSearchText}
-                        addressHolder={address}
-                        setAddressHolder={setAddress}
-                        setTheSearchTerm={handleSearch}
-                        single={true}
-                    />
-                    <JobDetail
-                        openJobDetail={true}
-                        jobDetails={jobDetails}
-                        companyName={companyName}
-                        company={company}
-                        setCompany={setCompany}
-                        companyData={companyData}
-                        single={true}
-                    />
-                </div>
-                /*  <div className="grid grid-cols-12 gap-y-5 bg-textW pt-5 rounded-t-xl px-3 sm:px-10 md:px-20 lg:px-48 xl:px-80">
-                     <div className="col-span-12 grid grid-cols-12 gap-0f">
-                         <JobImage id={jobDetails.employerId} className="col-span-2 sm:h-[5.8rem]" />
-                         <div className="col-span-8 flex flex-col max-sm:pl-3 sm:pl-2 xl:pl-1">
-                             {companyName && <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">{companyName}</p>}
-                             {jobDetails.jobTitle && (
-                                 <p className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-dfvhS xl:text-[1.5rem]">
-                                     {jobDetails.jobTitle}
-                                 </p>
-                             )}
-                             {jobDetails.jobLocation && (
-                                 <p className="text-fadedText">
-                                     <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} /> {jobDetails.jobLocation}
-                                 </p>
-                             )}
-                         </div>
-                         <div className="col-span-2 flex gap-x-2 text-lightGrey items-center md:gap-x-5">
-                             <ShareOutlinedIcon
-                                 sx={{ fontSize: '1.5rem' }}
-                                 onClick={() => setOpenShare(true)}
-                                 className="md:text-[2rem] cursor-pointer"
-                             />
-                             <Share openShare={openShare} setOpenShare={setOpenShare} link={jobDetails.$id} />
-                             <BookmarkBorderOutlinedIcon
-                                 sx={{ fontSize: '1.5rem' }}
-                                                                          onClick={() => handleSaveJob(jobDetails.jobId)}
-                                   className="cursor-pointer md:text-[2rem]"
-                             />
-                         </div>
-                     </div>
-                     <div className="col-span-12 grid grid-cols-12 bg-forBack gap-x-1 gap-y-2 md:gap-x-2 md:p-2 xl:mx-2">
-                         {(jobDetails.minSalary || jobDetails.maxSalary) && (
-                             <JobCard
-                                 salary="Salary"
-                                 money={
-                                     !jobDetails.minSalary && jobDetails.maxSalary
-                                         ? jobDetails.maxSalary
-                                         : jobDetails.minSalary && !jobDetails.maxSalary
-                                             ? jobDetails.minSalary
-                                             : jobDetails.minSalary + '-' + jobDetails.maxSalary
-                                 }
-                                 icon={
-                                     jobDetails.currency == 'euro' ? (
-                                         <EuroIcon
-                                             sx={{ fontSize: '1.125rem' }}
-                                             className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                         />
-                                     ) : jobDetails.currency == 'usd' ? (
-                                         <AttachMoneyOutlined
-                                             sx={{ fontSize: '1.125rem' }}
-                                             className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                         />
-                                     ) : jobDetails.currency == 'gpb' ? (
-                                         <CurrencyPoundIcon
-                                             sx={{ fontSize: '1.125rem' }}
-                                             className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                         />
-                                     ) : jobDetails.currency == 'rnp' ? (
-                                         <CurrencyRupeeIcon
-                                             sx={{ fontSize: '1.125rem' }}
-                                             className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                         />
-                                     ) : (
-                                         <span className="mr-2">ETB</span>
-                                     )
-                                 }
-                             />
-                         )}
-                         {jobDetails.jobType && (
-                             <JobCard
-                                 salary="Job Type"
-                                 money={jobDetails.jobType}
-                                 icon={
-                                     <AccessTimeOutlinedIcon
-                                         sx={{ fontSize: '1.125rem' }}
-                                         className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                     />
-                                 }
-                             />
-                         )}
-                         {jobDetails.datePosted && (
-                             <JobCard
-                                 salary="Posted Date"
-                                 money={new Date(jobDetails.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}
-                                 icon={
-                                     <CalendarTodayOutlinedIcon
-                                         sx={{ fontSize: '1.125rem' }}
-                                         className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                     />
-                                 }
-                             />
-                         )}
-                         {jobDetails.applicationDeadline && (
-                             <JobCard
-                                 salary="Closing Date"
-                                 money={new Date(jobDetails.applicationDeadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
-                                 icon={
-                                     <CalendarTodayOutlinedIcon
-                                         sx={{ fontSize: '1.125rem' }}
-                                         className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
-                                     />
-                                 }
-                             />
-                         )}
-                     </div>
-                     <div className="col-span-12 grid grid-cols-12 border-[1px] mx-3 rounded-full">
-                         <div
-                             className={
-                                 company == true
-                                     ? 'col-span-6 rounded-full rounded-3xl text-lightGrey  font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
-                                     : 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
-                             }
-                             onClick={() => setCompany(false)}
-                         >
-                             Job Description
-                         </div>
- 
-                         <div
-                             className={
-                                 company == true
-                                     ? 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
-                                     : 'col-span-6 rounded-full rounded-3xl text-lightGrey font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
-                             }
-                             onClick={() => {
-                                 setCompany(true);
-                             }}
-                         >
-                             Company
-                         </div>
-                     </div>
-                     {!company && (
-                         <div className="col-span-12 mx-3 flex flex-col">
-                             <div
-                                 dangerouslySetInnerHTML={{ __html: jobDetails.jobDescription }}
-                                 className="text-midRS text-lightGrey min-h-[200px] max-h-96 mb-3 overflow-y-auto hideScrollBar"
-                             />
-                             {employerId !== accountId && <>
- 
- 
-                                 {jobDetails.externalLink ? (
-                                     <a
-                                         className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer"
-                                         href={jobDetails.externalLink}
-                                         target="_blank"
-                                     >
-                                         Apply
-                                     </a>
-                                 ) : jobDetails.emailApplication ? (
-                                     <div
-                                         onClick={() => handleEmailApply(jobDetails.emailApplication)}
-                                         className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
-                                     >
-                                         Apply
-                                     </div>
-                                 ) : (
-                                     <div
-                                         onClick={() => {
-                                             handleApply(jobDetails.$id, jobDetails.employerId, companyName, jobDetails.jobTitle);
-                                         }}
-                                         className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
-                                     >
-                                         Apply
-                                     </div>
-                                 )}</>}
-                         </div>
-                     )}
-                     {company && (
-                         <div className="col-span-12 mx-3">
-                             <p className="font-thW text-frhS">Company's Overview</p>
-                             <div className='flex gap-3 my-5 flex-wrap justify-between border-b-2 pb-5'>
-                                 <div className='flex flex-col gap-y-5'>
-                                     {
-                                         companyData.sector && <div className='flex gap-5 '>
-                                             <p className='font-bold text-lightGrey text-md'>Sector</p>
-                                             <p className='text-lightGrey'>{companyData.sector}</p>
-                                         </div>
-                                     }
-                                     {
-                                         companyData.location && <div className='flex gap-5 '>
-                                             <p className='font-bold text-lightGrey text-md'>location</p>
-                                             <p className='text-lightGrey'>{companyData.location}</p>
-                                         </div>
-                                     }
-                                 </div>
-                                 <div className='flex flex-col gap-y-5'>
-                                     {
-                                         companyData.noOfEmployee && <div className='flex gap-5 '>
-                                             <p className='font-bold text-lightGrey text-md'>Size</p>
-                                             <p className='text-lightGrey'>{companyData.noOfEmployee}</p>
-                                         </div>
-                                     }
-                                     {
-                                         companyData.websiteLink && <div className='flex gap-5 '>
-                                             <p className='font-bold text-lightGrey text-md'>Website</p>
-                                             <a className='text-lightGrey' href={companyData.websiteLink} target='_blank'>view <LaunchIcon /></a>
-                                         </div>
-                                     }</div>
+            <div className="px-3 pb-20 xl:px-40 flex flex-col gap-10">
+                {jobDetails && (
+                    <div className='w-full md:w-1/2 md:m-auto flex flex-col gap-8'>
+                        <SearchBar
+                            searchWord={searchText}
+                            setSearchWord={setSearchText}
+                            addressHolder={address}
+                            setAddressHolder={setAddress}
+                            setTheSearchTerm={handleSearch}
+                            single={true}
+                        />
+                        <JobDetail
+                            openJobDetail={true}
+                            jobDetails={jobDetails}
+                            companyName={companyName}
+                            company={company}
+                            setCompany={setCompany}
+                            companyData={companyData}
+                            single={true}
+                        />
+                    </div>
+                    /*  <div className="grid grid-cols-12 gap-y-5 bg-textW pt-5 rounded-t-xl px-3 sm:px-10 md:px-20 lg:px-48 xl:px-80">
+                         <div className="col-span-12 grid grid-cols-12 gap-0f">
+                             <JobImage id={jobDetails.employerId} className="col-span-2 sm:h-[5.8rem]" />
+                             <div className="col-span-8 flex flex-col max-sm:pl-3 sm:pl-2 xl:pl-1">
+                                 {companyName && <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">{companyName}</p>}
+                                 {jobDetails.jobTitle && (
+                                     <p className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-dfvhS xl:text-[1.5rem]">
+                                         {jobDetails.jobTitle}
+                                     </p>
+                                 )}
+                                 {jobDetails.jobLocation && (
+                                     <p className="text-fadedText">
+                                         <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} /> {jobDetails.jobLocation}
+                                     </p>
+                                 )}
                              </div>
-                             <div
-                                 dangerouslySetInnerHTML={{ __html: companyData.description }}
-                                 className="text-midRS text-lightGrey max-h-96 overflow-y-auto hideScrollBar border-b-2 min-h-[200px] max-h-96 overflow-y-auto hideScrollBar"
-                             />
+                             <div className="col-span-2 flex gap-x-2 text-lightGrey items-center md:gap-x-5">
+                                 <ShareOutlinedIcon
+                                     sx={{ fontSize: '1.5rem' }}
+                                     onClick={() => setOpenShare(true)}
+                                     className="md:text-[2rem] cursor-pointer"
+                                 />
+                                 <Share openShare={openShare} setOpenShare={setOpenShare} link={jobDetails.$id} />
+                                 <BookmarkBorderOutlinedIcon
+                                     sx={{ fontSize: '1.5rem' }}
+                                                                              onClick={() => handleSaveJob(jobDetails.jobId)}
+                                       className="cursor-pointer md:text-[2rem]"
+                                 />
+                             </div>
                          </div>
-                     )}
-                 </div> */
-            )}
-            {apply && (
-                <ApplyToJob
-                    jobId={applyJobId}
-                    employerId={applyEmployerId}
-                    setterFunction={setApply}
-                    jobTitle={jobTitle}
-                    companyName={companyName}
-                />
-            )}
+                         <div className="col-span-12 grid grid-cols-12 bg-forBack gap-x-1 gap-y-2 md:gap-x-2 md:p-2 xl:mx-2">
+                             {(jobDetails.minSalary || jobDetails.maxSalary) && (
+                                 <JobCard
+                                     salary="Salary"
+                                     money={
+                                         !jobDetails.minSalary && jobDetails.maxSalary
+                                             ? jobDetails.maxSalary
+                                             : jobDetails.minSalary && !jobDetails.maxSalary
+                                                 ? jobDetails.minSalary
+                                                 : jobDetails.minSalary + '-' + jobDetails.maxSalary
+                                     }
+                                     icon={
+                                         jobDetails.currency == 'euro' ? (
+                                             <EuroIcon
+                                                 sx={{ fontSize: '1.125rem' }}
+                                                 className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                             />
+                                         ) : jobDetails.currency == 'usd' ? (
+                                             <AttachMoneyOutlined
+                                                 sx={{ fontSize: '1.125rem' }}
+                                                 className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                             />
+                                         ) : jobDetails.currency == 'gpb' ? (
+                                             <CurrencyPoundIcon
+                                                 sx={{ fontSize: '1.125rem' }}
+                                                 className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                             />
+                                         ) : jobDetails.currency == 'rnp' ? (
+                                             <CurrencyRupeeIcon
+                                                 sx={{ fontSize: '1.125rem' }}
+                                                 className=" mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                             />
+                                         ) : (
+                                             <span className="mr-2">ETB</span>
+                                         )
+                                     }
+                                 />
+                             )}
+                             {jobDetails.jobType && (
+                                 <JobCard
+                                     salary="Job Type"
+                                     money={jobDetails.jobType}
+                                     icon={
+                                         <AccessTimeOutlinedIcon
+                                             sx={{ fontSize: '1.125rem' }}
+                                             className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                         />
+                                     }
+                                 />
+                             )}
+                             {jobDetails.datePosted && (
+                                 <JobCard
+                                     salary="Posted Date"
+                                     money={new Date(jobDetails.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                     icon={
+                                         <CalendarTodayOutlinedIcon
+                                             sx={{ fontSize: '1.125rem' }}
+                                             className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                         />
+                                     }
+                                 />
+                             )}
+                             {jobDetails.applicationDeadline && (
+                                 <JobCard
+                                     salary="Closing Date"
+                                     money={new Date(jobDetails.applicationDeadline).toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                     icon={
+                                         <CalendarTodayOutlinedIcon
+                                             sx={{ fontSize: '1.125rem' }}
+                                             className="text-[18px] mt-[0.2rem] mr-1 sm:mt-0.5 sm:max-md:text-[13px] md:text-[15px]"
+                                         />
+                                     }
+                                 />
+                             )}
+                         </div>
+                         <div className="col-span-12 grid grid-cols-12 border-[1px] mx-3 rounded-full">
+                             <div
+                                 className={
+                                     company == true
+                                         ? 'col-span-6 rounded-full rounded-3xl text-lightGrey  font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
+                                         : 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
+                                 }
+                                 onClick={() => setCompany(false)}
+                             >
+                                 Job Description
+                             </div>
+     
+                             <div
+                                 className={
+                                     company == true
+                                         ? 'col-span-6 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
+                                         : 'col-span-6 rounded-full rounded-3xl text-lightGrey font-bigW h-[3.5rem] flex items-center justify-center cursor-pointer md:text-bigS'
+                                 }
+                                 onClick={() => {
+                                     setCompany(true);
+                                 }}
+                             >
+                                 Company
+                             </div>
+                         </div>
+                         {!company && (
+                             <div className="col-span-12 mx-3 flex flex-col">
+                                 <div
+                                     dangerouslySetInnerHTML={{ __html: jobDetails.jobDescription }}
+                                     className="text-midRS text-lightGrey min-h-[200px] max-h-96 mb-3 overflow-y-auto hideScrollBar"
+                                 />
+                                 {employerId !== accountId && <>
+     
+     
+                                     {jobDetails.externalLink ? (
+                                         <a
+                                             className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer"
+                                             href={jobDetails.externalLink}
+                                             target="_blank"
+                                         >
+                                             Apply
+                                         </a>
+                                     ) : jobDetails.emailApplication ? (
+                                         <div
+                                             onClick={() => handleEmailApply(jobDetails.emailApplication)}
+                                             className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
+                                         >
+                                             Apply
+                                         </div>
+                                     ) : (
+                                         <div
+                                             onClick={() => {
+                                                 handleApply(jobDetails.$id, jobDetails.employerId, companyName, jobDetails.jobTitle);
+                                             }}
+                                             className="w-full mt-1 rounded-full bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-3xl text-textW text-bigS font-bigW h-[4.5rem] flex items-center justify-center cursor-pointer "
+                                         >
+                                             Apply
+                                         </div>
+                                     )}</>}
+                             </div>
+                         )}
+                         {company && (
+                             <div className="col-span-12 mx-3">
+                                 <p className="font-thW text-frhS">Company's Overview</p>
+                                 <div className='flex gap-3 my-5 flex-wrap justify-between border-b-2 pb-5'>
+                                     <div className='flex flex-col gap-y-5'>
+                                         {
+                                             companyData.sector && <div className='flex gap-5 '>
+                                                 <p className='font-bold text-lightGrey text-md'>Sector</p>
+                                                 <p className='text-lightGrey'>{companyData.sector}</p>
+                                             </div>
+                                         }
+                                         {
+                                             companyData.location && <div className='flex gap-5 '>
+                                                 <p className='font-bold text-lightGrey text-md'>location</p>
+                                                 <p className='text-lightGrey'>{companyData.location}</p>
+                                             </div>
+                                         }
+                                     </div>
+                                     <div className='flex flex-col gap-y-5'>
+                                         {
+                                             companyData.noOfEmployee && <div className='flex gap-5 '>
+                                                 <p className='font-bold text-lightGrey text-md'>Size</p>
+                                                 <p className='text-lightGrey'>{companyData.noOfEmployee}</p>
+                                             </div>
+                                         }
+                                         {
+                                             companyData.websiteLink && <div className='flex gap-5 '>
+                                                 <p className='font-bold text-lightGrey text-md'>Website</p>
+                                                 <a className='text-lightGrey' href={companyData.websiteLink} target='_blank'>view <LaunchIcon /></a>
+                                             </div>
+                                         }</div>
+                                 </div>
+                                 <div
+                                     dangerouslySetInnerHTML={{ __html: companyData.description }}
+                                     className="text-midRS text-lightGrey max-h-96 overflow-y-auto hideScrollBar border-b-2 min-h-[200px] max-h-96 overflow-y-auto hideScrollBar"
+                                 />
+                             </div>
+                         )}
+                     </div> */
+                )}
+                {apply && (
+                    <ApplyToJob
+                        jobId={applyJobId}
+                        employerId={applyEmployerId}
+                        setterFunction={setApply}
+                        jobTitle={jobTitle}
+                        companyName={companyName}
+                    />
+                )}
+            </div>
             <Footer />
         </div>
     );

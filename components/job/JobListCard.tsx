@@ -17,6 +17,7 @@ import { getAccount, getRole } from '@/lib/accountBackend';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/dist/client/router';
 import FormModal from '../candidateProfileComponents/FormModal';
+const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReturnName = (props: any) => {
     const [companyName, setCompanyName] = useState('');
     const documents = getCompanyData(props.id);
@@ -36,8 +37,12 @@ const JobListCard = (props: any) => {
     const [userRole, setUserRole] = useState('')
     const [openReport, setOpenReport] = useState(false)
     const [reportCode, setReportCode] = useState(0)
-    const [reportMessage, setReportMessage] = useState('')
     const [reportLoading, setReportLoading] = useState(false)
+    const [reportData, setReportData] = useState({
+        jobId: '',
+        employerId: '',
+        message: ''
+    })
     const getUserData = async () => {
         const userInfo = await getAccount();
         if (userInfo !== 'failed') {
@@ -66,13 +71,40 @@ const JobListCard = (props: any) => {
             typeof window !== 'undefined' && router.push('/account');
         }
     };
-    const handleReportSubmit = (e: React.FormEvent<HTMLElement>) => {
+    const handleReportSubmit = async (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setReportLoading(true)
         if (reportCode == 0) {
             setReportCode(4);
             setReportLoading(false)
         } else {
+            const reportReason = reportCode == 1 ? 'Discriminatory Language' : reportCode == 2 ? 'False Information' : 'Spam or Fraudulent'
+            const formData = {
+                toEmail: process.env.NEXT_PUBLIC_PALM_EMAIL,
+                fromEmail: process.env.NEXT_PUBLIC_PALM_EMAIL,
+                subject: 'Report a Job',
+                jobId: props.items.$id,
+                employerId: reportData.employerId,
+                reason: reportReason,
+                addtionalMessage: reportData.message
+            }
+            try {
+                fetch(`${VERIFY}/api/email/route`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData)
+                }).then((res) => {
+                    setReportData({
+                        jobId: '',
+                        employerId: '',
+                        message: ''
+                    })
+                })
+            } catch (err) {
+                console.log(err);
+            }
             setReportLoading(false)
             toast.success('Report Submitted Successfully')
             setOpenReport(false)
@@ -102,12 +134,16 @@ const JobListCard = (props: any) => {
                     <div className='flex items-center relative'>
                         <Popover className="focus:ring-0 focus:border-0 focus:outline-0">
                             <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex items-center text-stone-500">
-                                <MoreVertOutlinedIcon /* onClick={() => setOpenShare(true)} */ sx={{ fontSize: '1.5rem' }} />
+                                <MoreVertOutlinedIcon sx={{ fontSize: '1.5rem' }} />
                             </Popover.Button>
                             <Popover.Panel className="absolute  text-[13px] right-0 border-2 rounded-md flex flex-col bg-textW shadow z-10 w-[8rem]">
                                 <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => setOpenShare(true)}><ShareIcon sx={{ fontSize: '1.2rem' }} />Share</p>
                                 <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => handleSaveJob(props.items.$id)}><img src="/icons/save.svg" alt="" className='w-4 h-4' /> Save</p>
-                                <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => setOpenReport(true)}>
+                                <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => {
+                                    setOpenReport(true)
+                                    setReportData({ ...reportData, jobId: props.items.$id })
+                                    setReportData({ ...reportData, employerId: props.items.employerId })
+                                }}>
                                     <ReportIcon sx={{ fontSize: '1.2rem' }} />
                                     Report Job</p>
                             </Popover.Panel>
@@ -130,7 +166,7 @@ const JobListCard = (props: any) => {
             <div>
                 <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 justify-between flex-wrap">
                     {props.items.jobType &&
-                        <SmallLists icon={<img src='icons/suitCase.svg' />}
+                        <SmallLists icon={<img src='/icons/suitCase.svg' />}
                             items={props.items.jobType} />
                     }
                     {(props.items.minSalary || props.items.maxSalary) && (
@@ -166,7 +202,7 @@ const JobListCard = (props: any) => {
                     )}
                     {props.items.datePosted && (
                         <SmallLists
-                            icon={<img src='icons/hourGlassUp.svg' />}
+                            icon={<img src='/icons/hourGlassUp.svg' />}
                             items={new Date(props.items.datePosted)
                                 .toLocaleDateString('en-GB')
                                 .replace(/\//g, '-')}
@@ -174,7 +210,7 @@ const JobListCard = (props: any) => {
                     )}
                     {props.items.datePosted && (
                         <SmallLists
-                            icon={<img src='icons/hourGlassDown.svg' />}
+                            icon={<img src='/icons/hourGlassDown.svg' />}
                             items={new Date(props.items.datePosted)
                                 .toLocaleDateString('en-GB')
                                 .replace(/\//g, '-')}
@@ -196,7 +232,7 @@ const JobListCard = (props: any) => {
                 </div>
             </div>
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.items.$id} />
-            <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={''} text={''} tipText={'hellow'}>
+            <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={'Survey'} text={''} tipText={'hellow'}>
                 <form onSubmit={handleReportSubmit} className=" flex flex-col gap-10">
                     <p>Reason for Reporting</p>
                     <div className='flex flex-col gap-3'>
@@ -204,13 +240,12 @@ const JobListCard = (props: any) => {
                         <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 2 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(2)}>False Information</p>
                         <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 3 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(3)}>Spam or Fraudulent</p>
                         {reportCode == 4 && <p className='text-red-500 text-[14px]'>Please Select one of the above</p>}
-                        <textarea value={reportMessage} onChange={(e) => {
+                        <textarea value={reportData.message} onChange={(e) => {
                             if (e.currentTarget.value.length <= 200) {
-                                setReportMessage(e.currentTarget.value)
+                                setReportData({ ...reportData, message: e.currentTarget.value })
                             }
-                        }} cols={30} rows={20} className='w-[376px] h-60 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
+                        }} cols={30} rows={20} className='w-[376px] resize-none h-60 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
                     </div>
-
                     <div className='w-full flex md:justify-end'>
                         <div className='w-full md:w-80'>
                             <SubmitButton loading={reportLoading} buttonText="Save" />
