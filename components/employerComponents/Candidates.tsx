@@ -2,19 +2,16 @@ import React, { useEffect, useState } from 'react';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SearchIcon from '@mui/icons-material/Search';
 import { toast } from 'react-toastify';
-import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import TungstenOutlinedIcon from '@mui/icons-material/TungstenOutlined';
 import StarsOutlinedIcon from '@mui/icons-material/StarsOutlined';
+import StarOutlineOutlinedIcon from '@mui/icons-material/StarOutlineOutlined';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-    deleteShortListedCandidate,
     fetchAppliedCandidatesSingleJob,
     fetchPostedJobs,
     fetchShortListed,
-    shortListedCandidate
+
 } from '@/lib/employerBackend';
-import CandSmall from './candidateComponents/CandSmall';
-import CandidateDetail from './candidateComponents/CandidateDetail';
 import JobsShimmer from '../shimmer/JobsShimmer';
 import Active from './candidateComponents/ActiveCandidates';
 import Shortlisted from './candidateComponents/Shortlisted';
@@ -97,16 +94,17 @@ const Candidates = (props: any) => {
             <div
                 className={
                     openCanDetail
-                        ? 'relative flex justify-between pt-0 items-center px-1 max-md:hidden lg:pl-10'
-                        : 'relative flex justify-between pt-0 items-center px-1 lg:pl-10'
+                        ? 'relative flex pt-5 justify-between pt-0 items-center px-1 max-md:hidden lg:pl-10'
+                        : 'relative flex pt-5 justify-between pt-0 items-center px-1 lg:pl-10'
                 }
             >
                 <p className="text-black text-3xl font-[700]">Candidates</p>
                 <div
                     onClick={() => handleNav('postJob')}
-                    className="text-textW bg-black flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-10 rounded-md px-9"
+                    className="text-textW bg-black flex gap-2 items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-[42px] w-[166px] rounded-[3px]"
                 >
-                    <BorderColorIcon sx={{ fontSize: '1.2rem' }} className="mr-2" /> Post Job
+                    <img src="/icons/HireLeaf.svg" alt="" className='w-5 h-5' />
+                    Post Job
                 </div>
             </div>
             {allLoading && <JobsShimmer />}
@@ -117,17 +115,19 @@ const Candidates = (props: any) => {
                             openCanDetail ? 'flex flex-col gap-y-3 justify-between max-md:hidden' : 'flex flex-col gap-y-3 justify-between'
                         }
                     >
-                        <div className='flex w-full flex-wrap bg-red h-10 justify-center relative'>
-                            <div className="bg-[#F4F4F4] px-3 flex items-center rounded-2xl md:rounded-3xl ">
-                                <div className="hidden text-fadedText h-full md:items-center justify-center md:justify-end md:flex ">
-                                    <SearchIcon sx={{ fontSize: '1.2rem' }} />
-                                </div>
-                                <div className="flex-grow">
-                                    <input value={searchTerm}
-                                        onChange={handleInputChange}
-                                        type="text"
-                                        onFocus={() => setOpenDrop(true)}
-                                        className="h-7 w-full bg-[#F4F4F4] pl-3 border-none outline-none focus:ring-0 focus:border-none focus:outline-none" />
+                        <div className='flex w-full flex-wrap flex-col gap-4 justify-center relative'>
+                            <div className="candidateSearch w-full h-[80px] mt-5  flex justify-center items-center">
+                                <div className='flex items-center bg-[#F4F4F4] px-3 h-12 rounded-2xl md:rounded-3xl'>
+                                    <div className="hidden text-fadedText h-full md:items-center justify-center md:justify-end md:flex ">
+                                        <SearchIcon sx={{ fontSize: '1.2rem' }} />
+                                    </div>
+                                    <div className="flex-grow">
+                                        <input value={searchTerm}
+                                            onChange={handleInputChange}
+                                            type="text"
+                                            onFocus={() => setOpenDrop(true)}
+                                            className="h-10 w-96 bg-[#F4F4F4] pl-3 border-none outline-none focus:ring-0 focus:border-none focus:outline-none" />
+                                    </div>
                                 </div>
                             </div>
                             <div className="px-3 w-full flex justify-center rounded-2xl md:rounded-3xl ">
@@ -150,14 +150,14 @@ const Candidates = (props: any) => {
                             </div>
                         </div>
                         <div className='w-full flex justify-center border-b-2 gap-10'>
-                            <div onClick={() => setAllCandidates('All Candidates')} className={allCandidates == "All Candidates" ? 'text-gradientFirst border-b-[3px] border-b-gradientFirst flex justify-around gap-1 text-[1rem] items-center pb-1 ' : ' pb-1 items-center text-[1rem] flex gap-2 cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst'}>
+                            <div onClick={() => setAllCandidates('All Candidates')} className={allCandidates == "All Candidates" ? 'text-gradientFirst border-b-[3px] border-b-gradientFirst flex justify-around gap-1 text-[1rem] items-center pb-1 ' : ' pb-1 items-center text-[1rem] flex gap-1 cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst'}>
                                 <TungstenOutlinedIcon sx={{ fontSize: '1.2rem' }} className='rotate-180' /> <p className='text-[1rem]'>Active</p>
                             </div>
                             <div onClick={() => {
                                 setAllCandidates('Shortlisted')
                                 setCandidateDetail(null)
                             }} className={allCandidates == "Shortlisted" ? 'text-gradientFirst border-b-[3px] border-b-gradientFirst flex justify-around gap-1 text-[1rem] items-center pb-1 ' : ' pb-1 flex justify-around gap-1 text-[1rem] items-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst'}>
-                                <StarsOutlinedIcon sx={{ fontSize: '1rem' }} />
+                                <StarOutlineOutlinedIcon sx={{ fontSize: '1rem' }} />
                                 <p>Shortlist</p>
                             </div>
                         </div>

@@ -83,7 +83,7 @@ const FourthForm = (props: any) => {
             onSubmit={handleFourthSubmit}
             className={props.fourth ? 'col-span-12 pt-5  space-y-3 ' : 'hidden'}
         >
-            <div className="text-neutral-900 text-[1.3rem] font-semibold leading-10 md:text-[1.6rem]">Set application Preference</div>
+            <div className="text-neutral-900 text-xl font-semibold leading-10">Set application Preference</div>
             <div className="flex bg-forBack w-full p-2 gap-x-5 md:w-1/2">
                 <div
                     title="Recieve Application Through Palmjobs"
@@ -92,14 +92,11 @@ const FourthForm = (props: any) => {
                         setEmail(false);
                         setLink(false);
                     }}
-                    className={
-                        palm
-                            ? 'flex rounded-md flex-col relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                            : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20 text-stone-400'
-                    }
+                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${palm ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+
                 >
                     <ArticleIcon className="-ml-0.5" />
-                    <p className="absolute bottom-1">Palm Jobs</p>
+                    <p>Palm Jobs</p>
                 </div>
                 <div
                     title="Recieve Application Through Email"
@@ -108,14 +105,11 @@ const FourthForm = (props: any) => {
                         setEmail(true);
                         setLink(false);
                     }}
-                    className={
-                        email
-                            ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                            : 'hover:bg-skillColor hover:text-gradientFirst text-stone-400 flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                    }
+                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${email ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+
                 >
                     <AlternateEmailIcon className="-ml-2" />
-                    <p className="absolute bottom-1">Email</p>
+                    <p>Email</p>
                 </div>
                 <div
                     title="Recieve Application Through External Link"
@@ -124,14 +118,10 @@ const FourthForm = (props: any) => {
                         setEmail(false);
                         setLink(true);
                     }}
-                    className={
-                        link
-                            ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                            : 'hover:bg-skillColor text-stone-400 hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                    }
+                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${link ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
                 >
                     <InsertLinkIcon className="-ml-2" />
-                    <p className="absolute bottom-1">External Link</p>
+                    <p>External Link</p>
                 </div>
             </div>
             {email && (
@@ -165,7 +155,7 @@ const FourthForm = (props: any) => {
                         onClick={() => props.setOpenPreview(true)}
                         className={
                             props.fourth
-                                ? 'text-gradientFirst border flex items-center justify-center cursor-pointer h-16 rounded-xl w-full block  md:w-5/12 lg:w-3/12'
+                                ? 'text-gradientFirst border flex items-center justify-center cursor-pointer h-14 rounded-xl w-full block  md:w-5/12 lg:w-60'
                                 : 'hidden'
                         }
                     >
@@ -177,7 +167,7 @@ const FourthForm = (props: any) => {
                     onClick={props.handleBack}
                     className={
                         props.second || props.third || props.fourth
-                            ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-16 rounded-xl max-md:order-3 w-full md:w-5/12 lg:w-3/12'
+                            ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-14 rounded-xl max-md:order-3 w-full md:w-5/12 lg:w-60'
                             : 'opacity-0'
                     }
                 >
@@ -185,25 +175,11 @@ const FourthForm = (props: any) => {
                 </div>
                 <div className="flex justify-end">
                     <div className='w-full col-span-12 flex md:justify-end'>
-                        <div className='w-full md:w-80'>
+                        <div className='w-full md:w-60'>
                             <SubmitButton loading={loading} buttonText="Post Job" />
                         </div>
                     </div>
                 </div>
-                {/* {loading && (
-                    <img
-                        src={loadingIn}
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-xl max-md:order-1 w-full md:w-5/12 lg:w-3/12"
-                    />
-                )}
-                {!loading && (
-                    <button
-                        type="submit"
-                        className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-xl max-md:order-1 w-full md:w-5/12 lg:w-3/12"
-                    >
-                        Post Job
-                    </button>
-                )} */}
             </div>
         </form>
     )

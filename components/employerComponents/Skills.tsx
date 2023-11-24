@@ -44,10 +44,10 @@ const Skills = (props: any) => {
 
     return (
         <div className="col-span-12 grid grid-cols-12 bg-textW rounded-3xl">
-            <div className="col-span-12 flex flex-wrap gap-5">
+            <div className="col-span-12 flex flex-wrap gap-5 items-center">
                 {props.array.map((item: any, index: number) => (
                     <div
-                        className="min-w-36 h-12 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-[3.75rem]"
+                        className="min-w-36 h-9 font-adW text-adS leading-adL bg-skillColor text-center flex px-7 pr-3 items-center rounded-sm"
                         key={index}
                     >
                         <p> {item} </p>
@@ -57,13 +57,13 @@ const Skills = (props: any) => {
                     </div>
                 ))}
                 {props.array.length < 7 && (
-                    <div className="min-w-[9rem] h-12 font-midRW text-midRS leading-midRL bg-skillColor text-center grid grid-cols-12 rounded-[3.75rem]">
-                        <div className="col-span-12 min-w-[9rem] h-12 font-midRW text-midRS leading-midRL text-center grid grid-cols-12 rounded-[3.75rem]">
+                    <div className="min-w-[9rem] h-12 font-midRW text-midRS leading-midRL bg-skillColor text-center grid grid-cols-12 rounded-md">
+                        <div className="col-span-12 min-w-[9rem] h-12 font-midRW text-midRS leading-midRL text-center grid grid-cols-12 rounded-md">
                             <input
                                 value={searchTerm}
                                 onChange={handleInputChange}
                                 type="text"
-                                className="w-[80%] h-8 pl-2 my-auto ml-[10%] col-span-10 border-[1px] rounded-xl focus:border-gradientFirst focus:ring-0 focus:outline-none"
+                                className="w-[80%] h-8 pl-2 my-auto ml-[10%] col-span-10 border-[1px] border-gray-200 rounded-sm focus:border-gradientFirst focus:ring-0 focus:outline-none"
                             />
 
                             <button onClick={clickMe} className="col-span-2 text-gradientFirst">

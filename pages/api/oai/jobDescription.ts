@@ -17,7 +17,6 @@ export default async function jobDescription(req: NextApiRequest, res: NextApiRe
         res.status(400).json({ error: 'Missing job title or skills' });
         return;
     }
-
     try {
         const response = await openai.chat.completions.create({
             model: 'gpt-3.5-turbo',

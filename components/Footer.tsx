@@ -40,10 +40,11 @@ const Footer = () => {
     useEffect(() => {
         getUserData();
     }, []);
+    const year = new Date()
     return (
-        <div className='flex flex-col mt-28  '>
+        <div className='flex flex-col mt-28 max-sm:px-3 '>
             <div className="xl:px-40 border-y-2">
-                <div className="flex flex-wrap pt-16 py-10 gap-y-14 max-md:flex-col justify-between">
+                <div className="flex flex-wrap pt-16 py-10 gap-y-7 md:gap-y-14 max-md:flex-col justify-between">
                     <div className='flex-grow'>
                         <img src={logo} alt="palmjobs logo" className=" h-16" />
                     </div>
@@ -109,7 +110,7 @@ const Footer = () => {
                             </div>
                         ) : null}
                         {userRole == 'candidate' && (
-                            <div className="hhidden md:flex flex-col gap-3 mt-3 ">
+                            <div className="hidden md:flex flex-col gap-3 mt-3 ">
                                 <LinkList link="/jobs" text="Find a Job" />
                                 <LinkList link="/" text="Craft Resume" />
                                 <LinkList link="/users/candidate/profile" text="Upload Resume" />
@@ -184,9 +185,9 @@ const Footer = () => {
                 </div>
             </div>
             <div className="mt-10 flex flex-wrap justify-center pb-8 text-[18px] font-[400] gap-x-8 gap-y-3">
-                <p>2023. YES</p>
-                <p>Privacy Policy</p>
-                <p>Terms and Conditions</p>
+                <p>{year.getFullYear()}. YES  </p>
+                <Link href='/terms/policy'>Privacy Policy</Link>
+                <Link href='/terms/terms'>Terms and Conditions</Link>
             </div>
         </div>
     );

@@ -22,9 +22,11 @@ const FirstForm = (props: any) => {
     useEffect(() => {
         if (props.editedData) {
             setJobTitle(props.editedData.jobTitle);
-            setOpenPositions(props.editedData.openPositions);
-            console.log(props.editedData.jobLocation.toLowerCase());
-
+            const value = parseInt(props.editedData.openPositions, 10);
+            if (!isNaN(value) && value > 1) {
+                setOpenPositions(value);
+                setOpenPositions(value);
+            }
             if (props.editedData.jobLocation.toLowerCase() == 'remote') {
                 setRemote(true);
                 setHybrid(false);
@@ -100,9 +102,9 @@ const FirstForm = (props: any) => {
     return (
         <form
             onSubmit={handleFirstSubmit}
-            className={props.first ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}
+            className={props.first ? 'col-span-12 pt-5 space-y-4' : 'hidden'}
         >
-            <div className="text-neutral-900  font-semibold leading-10 text-xl md:text-3xl">Provide Basic Information</div>
+            <div className="text-neutral-900  font-semibold leading-10 text-xl">Provide Basic Information</div>
             <RequiredTextLabel text="Job Title" />
             <TextInput errorMessage={jobTitleError} placeHolder="Job Position" value={jobTitle} setFunction={setJobTitle} />
             <RequiredTextLabel text="How many open roles ?" />
@@ -111,7 +113,7 @@ const FirstForm = (props: any) => {
                     onClick={() => {
                         if (openPositions > 1) setOpenPositions(openPositions - 1);
                     }}
-                    className="text-gradientFirst rounded-xl p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-gradientFirst"
+                    className="text-gradientFirst rounded-full p-0.5 flex items-center justify-center cursor-pointer border-[1px] border-stone-300 active:border-gradientFirst"
                 >
                     <RemoveIcon />
                 </div>
@@ -119,11 +121,11 @@ const FirstForm = (props: any) => {
                     type="number"
                     value={openPositions}
                     onChange={handleInputChange}
-                    className="border-2 w-16 py-2 text-center rounded-3xl hideIncrease focus:border-gradientFirst focus:ring-0"
+                    className="border-[1px] border-gray-300 w-16 py-1 text-center rounded-full hideIncrease focus:border-gradientFirst focus:ring-0"
                 />
                 <div
                     onClick={() => setOpenPositions(openPositions + 1)}
-                    className="text-gradientFirst rounded-xl p-0.5 flex items-center justify-center cursor-pointer border-2 border-stone-300 active:border-gradientFirst"
+                    className="text-gradientFirst rounded-full p-0.5 flex items-center justify-center cursor-pointer border-[1px] border-stone-300 active:border-gradientFirst"
                 >
                     <AddIcon />
                 </div>
@@ -137,14 +139,10 @@ const FirstForm = (props: any) => {
                         setRemote(false);
                         setHybrid(false);
                     }}
-                    className={
-                        addLocation
-                            ? 'flex flex-col rounded-md relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                            : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                    }
+                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${addLocation ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
                 >
                     <EditLocationAltOutlinedIcon className="-ml-2" />
-                    <p className="absolute bottom-0">Add Location</p>
+                    <p >Add Location</p>
                 </div>
                 <div
                     onClick={() => {
@@ -153,14 +151,10 @@ const FirstForm = (props: any) => {
                         setHybrid(false);
                         setLocation('Remote');
                     }}
-                    className={
-                        remote
-                            ? 'flex rounded-md flex-col relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                            : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                    }
+                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${remote ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
                 >
                     <SettingsRemoteIcon className="-ml-2" />
-                    <p className="absolute bottom-0">Remote</p>
+                    <p >Remote</p>
                 </div>
                 <div
                     onClick={() => {
@@ -169,14 +163,10 @@ const FirstForm = (props: any) => {
                         setHybrid(true);
                         setLocation('Hybrid');
                     }}
-                    className={
-                        hybrid
-                            ? 'flex rounded-md flex-col relative bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                            : 'hover:bg-skillColor hover:text-gradientFirst flex flex-col relative bg-textW cursor-pointer w-36 pl-3 py-2 h-20'
-                    }
+                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${hybrid ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
                 >
                     <GroupWorkIcon className="-ml-2" />
-                    <p className="absolute bottom-0">Hybrid</p>
+                    <p>Hybrid</p>
                 </div>
             </div>
             {addLocation == true && (
@@ -186,8 +176,8 @@ const FirstForm = (props: any) => {
                 </>
             )}
             <div className="flex pt-10 justify-end">
-                <div className='w-full col-span-12 flex md:justify-end mt-10'>
-                    <div className='w-full md:w-80'>
+                <div className='w-full col-span-12 flex md:justify-end mt-0'>
+                    <div className='w-full md:w-60'>
                         <SubmitButton loading={loading} buttonText="Continue" />
                     </div>
                 </div>

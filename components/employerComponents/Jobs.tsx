@@ -12,6 +12,7 @@ import StraightIcon from '@mui/icons-material/Straight';
 import SpaIcon from '@mui/icons-material/Spa';
 import EditOffIcon from '@mui/icons-material/EditOff';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
+import PauseIcon from '@mui/icons-material/Pause';
 import { fetchDraftedJobs, fetchPostedJobs } from '@/lib/employerBackend';
 const Jobs = (props: any) => {
     const [opened, setOpened] = useState(true);
@@ -83,9 +84,10 @@ const Jobs = (props: any) => {
                     <p className="text-black text-3xl font-[700]">Jobs</p>
                     <div
                         onClick={() => handleNav('postJob')}
-                        className="text-textW bg-black flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-10 rounded-md px-9"
+                        className="text-textW bg-black flex gap-2 items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-[42px] w-[166px] rounded-[3px]"
                     >
-                        <BorderColorIcon sx={{ fontSize: '1.2rem' }} className="mr-2" /> Post Job
+                        <img src="/icons/HireLeaf.svg" alt="" className='w-5 h-5' />
+                        Post Job
                     </div>
                 </div>
                 <div className="mt-8 lg:pl-10">
@@ -114,7 +116,7 @@ const Jobs = (props: any) => {
                                                 : 'font-[600] gap-2 flex items-center justify-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst pb-3'
                                         }
                                     >
-                                        <EditOffIcon sx={{ fontSize: '1.2rem' }} />
+                                        <PauseIcon sx={{ fontSize: '1.2rem' }} />
                                         <span>Drafted</span>
 
                                     </div>

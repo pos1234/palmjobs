@@ -80,9 +80,9 @@ const SecondForm = (props: any) => {
     return (
         <form
             onSubmit={handleSecondSubmit}
-            className={props.second ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'}
+            className={props.second ? 'col-span-12 pt-5 space-y-4 ' : 'hidden'}
         >
-            <div className="text-neutral-900 text-3xl font-semibold leading-10">Technology Details</div>
+            <div className="text-neutral-900 text-xl font-semibold leading-10">Technology Details</div>
             <RequiredTextLabel text="What is the job type" />
             <div className="flex gap-x-4 flex-wrap gap-y-3">
                 <RadioInput radioName="jobType" radioText="Internship" radioValue="Internship" setFunction={setWorkType} />
@@ -118,25 +118,11 @@ const SecondForm = (props: any) => {
                 </div>
                 <div className="flex justify-end">
                     <div className='w-full col-span-12 flex md:justify-end'>
-                        <div className='w-full md:w-80'>
+                        <div className='w-full md:w-60'>
                             <SubmitButton loading={loading} buttonText="Continue" />
                         </div>
                     </div>
                 </div>
-                {/* {loading && (
-                    <img
-                        src={loadingIn}
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-5/12 rounded-xl w-full md:w-5/12 rounded-xl lg:w-3/12"
-                    />
-                )}
-                {!loading && !profileFilled && (
-                    <button
-                        type="submit"
-                        className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 w-full md:w-5/12 rounded-xl lg:w-3/12"
-                    >
-                        Save and Continue
-                    </button>
-                )} */}
             </div>
         </form>
     )
