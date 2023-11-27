@@ -28,7 +28,7 @@ const ReturnName = (props: any) => {
             setCompanyName('');
         }
     });
-    return <div className="text-[13px] text-darkBlue sm:text-[1.5rem] md:text-[0.9rem] xl:text-[0.9rem]">{companyName}</div> || null;
+    return <div className="text-[13px] text-darkBlue sm:text-[1rem] md:text-[0.9rem] xl:text-[14px] font-[400]">{companyName}</div> || null;
 };
 const JobListCard = (props: any) => {
     const router = useRouter()
@@ -118,15 +118,11 @@ const JobListCard = (props: any) => {
                 props.setOpenJobDetail(true);
             }}
             key={props.index}
-            className={
-                props.items.$id == props.jobDetailId
-                    ? 'cursor-pointer bg-textW w-full max-h-[234px] flex flex-col gap-1 rounded-xl border-[1px] border-gradientFirst rounded-xl px-5 py-4 '
-                    : 'cursor-pointer bg-textW w-full max-h-[234px] flex flex-col gap-1 rounded-xl border-[1px] hover:border-gradientFirst rounded-xl px-5 py-4 '
-            }
+            className={`cursor-pointer bg-textW w-full max-h-[234px] h-[234px] flex flex-col gap-2 rounded-[12px] border-[1px]  px-5 py-4 ${props.items.$id == props.jobDetailId ? 'border-gradientFirst' : 'border-[#DEDEDE] hover:border-gradientFirst'} `}
         >
             <div className='flex justify-between flex-wrap gap-1'>
                 <div className='flex items-center gap-3'>
-                    <JobImage id={props.items.employerId} className=" rounded-full h-8 w-8" />
+                    <JobImage id={props.items.employerId} className=" rounded-[60px] h-[33px] w-[33px]" />
                     <ReturnName id={props.items.employerId} />
                 </div>
                 {
@@ -151,12 +147,12 @@ const JobListCard = (props: any) => {
                     </div>}
                 <div className="w-full flex flex-col ">
                     {props.items.jobTitle && (
-                        <p className="text-[1rem] font-[600]">
+                        <p className="text-[18px] font-[600] text-[#141414]">
                             {props.items.jobTitle}
                         </p>
                     )}
                     {props.items.jobLocation && (
-                        <p className="text-gray-400 text-[14px] flex items-center gap-1">
+                        <p className="text-gray-400 text-[14px] font-[400] flex items-center gap-1">
                             <PlaceOutlinedIcon sx={{ fontSize: '1rem' }} />
                             {props.items.jobLocation}
                         </p>
@@ -191,7 +187,7 @@ const JobListCard = (props: any) => {
                                 className="-mt-0.5 mr-1"
                             />
                         ) : (
-                            <span className="text-[7px] mr-1">ETB</span>
+                            <span className="text-[12px] mr-1">ETB</span>
                         )}
                             items={!props.items.minSalary && props.items.maxSalary
                                 ? props.items.maxSalary
@@ -221,7 +217,7 @@ const JobListCard = (props: any) => {
             <div className="w-full text-[#20262E] text-sm leading-[24px] my-5 md:my-0 md:mt-2 overflow-hidden max-h-[45%] sm:max-h-[90%] pr-2">
                 <div className="w-full">
                     <div
-                        className="overflow-ellipsis"
+                        className="overflow-ellipsis font-[400] leading-[20px] text-[11px] text-[#20262E]"
                         style={{
                             display: '-webkit-box',
                             WebkitLineClamp: 3,
@@ -232,7 +228,7 @@ const JobListCard = (props: any) => {
                 </div>
             </div>
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.items.$id} />
-            <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={'Survey'} text={''} tipText={'hellow'}>
+            <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={'Survey'} text={''} tipText={"Thank you for helping us maintain a professional and safe environment on our job board. If you've found a job listing that violates our terms or seems inappropriate, please provide the information below to assist our review."}>
                 <form onSubmit={handleReportSubmit} className=" flex flex-col gap-10">
                     <p>Reason for Reporting</p>
                     <div className='flex flex-col gap-3'>
@@ -253,7 +249,7 @@ const JobListCard = (props: any) => {
                     </div>
                 </form>
             </FormModal>
-        </div>
+        </div >
     )
 }
 

@@ -124,7 +124,7 @@ const JobDetail = (props: any) => {
                         Back To Search
                     </p>
                 }
-                <div className="flex flex-col gap-y-5 bg-textW pt-5 z-[0] rounded-t-xl ">
+                <div className="flex flex-col gap-y-5 bg-textW pt-7 z-[0] rounded-t-xl ">
                     <div className='px-6 border-b-2 flex flex-col gap-y-3 pb-5'>
                         <div className='flex items-center gap-3'>
                             <JobImage
@@ -132,19 +132,19 @@ const JobDetail = (props: any) => {
                                 className="rounded-full h-8 w-8"
                             />
                             {props.companyName && (
-                                <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[1rem]">
+                                <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[14px]">
                                     {props.companyName}
                                 </p>
                             )}
                         </div>
                         <div className="flex flex-col">
                             {props.jobDetails.jobTitle && (
-                                <p className="font-[600] sm:font-fhW sm:text-dfvhS text-[1.5rem]">
+                                <p className="font-[600] text-[1.5rem] xl:text-[28px]">
                                     {props.jobDetails.jobTitle}
                                 </p>
                             )}
                             {props.jobDetails.jobLocation && (
-                                <p className="text-gray-400 text-[1rem] flex items-center gap-1">
+                                <p className="text-gray-400 text-[14px] flex items-center gap-1">
                                     <PlaceOutlinedIcon
                                         sx={{ fontSize: '1rem' }}
                                     />
@@ -207,18 +207,18 @@ const JobDetail = (props: any) => {
                                 />
                             )}
                         </ul>
-                        <div className='flex gap-5'>
+                        <div className='flex gap-5 mt-4'>
                             {props.jobDetails.externalLink ? (
                                 <a
-                                    className='bg-gradientFirst text-textW px-20 py-3 cursor-pointer rounded-lg border-b-4 border-b-textW hover:border-b-4 hover:border-b-black buttonBounce' href={props.jobDetails.externalLink}
+                                    className='bg-gradientFirst text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:border-b-4 hover:border-b-black buttonBounce' href={props.jobDetails.externalLink}
                                     target="_blank"
                                 >
-                                    Apply <LaunchIcon sx={{ fontSize: '1rem' }} />
+                                    Apply <LaunchIcon sx={{ fontSize: '1rem' }} className='ml-2' />
                                 </a>
                             ) : props.jobDetails.emailApplication ? (
                                 <div
                                     onClick={() => handleEmailApply(props.jobDetails.emailApplication)}
-                                    className='bg-gradientFirst text-textW px-20 py-3 cursor-pointer rounded-lg border-b-4 border-b-textW hover:border-b-4 hover:border-b-black buttonBounce'                                >
+                                    className='bg-gradientFirst text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:border-b-4 hover:border-b-black buttonBounce'                                >
                                     Apply
                                 </div>
                             ) : (
@@ -230,37 +230,28 @@ const JobDetail = (props: any) => {
                                             props.jobDetails.jobTitle
                                         );
                                     }}
-                                    className='bg-gradient-to-r from-[#00A82D] to-[#0CBC8B] text-textW px-16 py-3 cursor-pointer rounded-lg border-b-4 border-b-textW hover:border-b-4 hover:border-b-black buttonBounce'                                >
+                                    className='bg-gradient-to-r from-[#00A82D] to-[#0CBC8B] text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:border-b-4 hover:border-b-black buttonBounce'                                >
                                     Easy Apply
                                 </div>
                             )}
                             <div className='flex items-center cursor-pointer text-gray-500 hover:text-gradientFirst'>
                                 <BookmarkBorderOutlinedIcon
                                     onClick={() => handleSaveJob(props.jobDetails.$id)}
-                                    sx={{ fontSize: '2rem' }}
+                                    sx={{ fontSize: '1.5rem' }}
                                 />
                             </div>
                         </div>
                     </div>
                     <div className='flex px-6 flex-col gap-5'>
-                        <div className="flex gap-5">
+                        <div className="flex gap-5 mb-3">
                             <div
-                                className={
-                                    props.company == true
-                                        ? ' font-[600] flex items-center text-gray-500 cursor-pointer md:text-bigS border-b-[0.2rem] border-b-textW hover:border-b-gradientFirst pb-2'
-                                        : 'font-[600] flex items-center cursor-pointer md:text-bigS border-b-[0.2rem] border-b-gradientFirst pb-2'
-                                }
+                                className={`font-[500] flex items-center cursor-pointer text-[18px] border-b-[0.2rem] pb-2 ${props.company == true ? 'border-b-textW text-gray-500 hover:border-b-gradientFirst' : 'border-b-gradientFirst'}`}
                                 onClick={() => props.setCompany(false)}
                             >
                                 Description
                             </div>
-
                             <div
-                                className={
-                                    props.company == true
-                                        ? 'font-[600] flex items-center pb-2  cursor-pointer md:text-bigS border-b-[0.2rem] border-b-gradientFirst'
-                                        : ' font-[600] flex items-center pb-2 text-gray-500 cursor-pointer md:text-bigS border-b-[0.2rem] border-b-textW hover:border-b-gradientFirst'
-                                }
+                                className={`font-[500] flex items-center cursor-pointer text-[18px] border-b-[0.2rem] pb-2 ${props.company !== true ? 'border-b-textW text-gray-500 hover:border-b-gradientFirst' : 'border-b-gradientFirst'}`}
                                 onClick={() => {
                                     props.setCompany(true);
                                 }}
@@ -273,8 +264,7 @@ const JobDetail = (props: any) => {
                                 <div className='flex flex-wrap gap-3'>
                                     <div className='flex w-full gap-2'>
                                         <img src='/icons/fire.svg' alt='fire' />
-                                        {/*                                         <LocalFireDepartmentIcon className='text-gradientFirst' />
- */}                                        <p className='font-[600]'> Skills</p>
+                                        <p className='font-[600]'> Skills</p>
                                     </div>
                                     {props.jobDetails.requiredSkills && parseToArray(props.jobDetails.requiredSkills).map((skill: string, index: number) => {
                                         return <div key={index}>
@@ -290,12 +280,11 @@ const JobDetail = (props: any) => {
                                 <div className='flex flex-wrap gap-5 mt-5'>
                                     <div className='flex w-full gap-2'>
                                         <img src='/icons/plantInPot.svg' />
-                                        {/*                                         <SpaIcon className='text-gradientFirst' />
- */}                                        <p className='font-[600]'> Job Description</p>
+                                        <p className='font-[600]'> Job Description</p>
                                     </div>
                                     <div
                                         dangerouslySetInnerHTML={{ __html: props.jobDetails.jobDescription }}
-                                        className="text-[15px] text-lightGrey min-h-[180px]"
+                                        className="text-[14px] text-[#727272] min-h-[180px]"
                                     />
                                 </div>
                             </div>
@@ -334,7 +323,7 @@ const JobDetail = (props: any) => {
                                 </div>
                                 <div
                                     dangerouslySetInnerHTML={{ __html: props.companyData.description }}
-                                    className="text-midRS text-lightGrey overflow-y-auto hideScrollBar min-h-96 max-h-96 overflow-y-auto hideScrollBar"
+                                    className="text-[14px] text-lightGrey overflow-y-auto hideScrollBar min-h-96 max-h-96 overflow-y-auto hideScrollBar"
                                 />
                             </div>
                         )}

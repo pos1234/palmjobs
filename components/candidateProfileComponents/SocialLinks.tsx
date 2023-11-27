@@ -68,6 +68,9 @@ const SocialLinks = (props: any) => {
                         {call}
                     </div>
                 </div> */}
+                <div>
+                    <p className='font-[500] text-xl'>Bio</p>
+                </div>
                 <div className="flex gap-x-5 text-[#618c61]">
                     {linked && (
                         <Link target="_blank" title="linkedIn" href={linked}>
