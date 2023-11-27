@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import { getAccount, getRole, signOut } from '@/lib/accountBackend';
 import { getCandidateDocument } from '@/lib/candidateBackend';
@@ -17,41 +18,43 @@ import { toast } from 'react-toastify';
 import { ProfilePic } from './JobImage';
 import Image from 'next/image';
 import Logout from './Logout';
+import { useGlobalContext } from '@/lib/context';
 const Navigation = (props: any) => {
     const logo = '/images/logo.svg';
     const loadingIn = '/images/loading.svg';
     const [menu, setMenu] = useState(false);
-    const [userData, setUserData] = useState<any>();
+    /* const [userData, setUserData] = useState<any>();
     const [userRole, setUserRole] = useState('');
-    const [userDetail, setUserDetail] = useState<any>();
+    const [userDetail, setUserDetail] = useState<any>(); */
     const [openLogout, setOpenLogout] = useState(false);
-    const [loading, setLoading] = useState(true);
+/*     const [loading, setLoading] = useState(true);
+ */    const { loading, userDetail, userData, userRole } = useGlobalContext()
     /* const router = useRouter(); */
-    const getUserData = async () => {
-        const userInfo = await getAccount();
-        if (userInfo !== 'failed') {
-            setLoading(false);
-            setUserData(userInfo);
-            const role = await getRole();
-            role && setUserRole(role.documents[0].userRole);
-
-            if (role && role.documents[0].userRole == 'candidate') {
-                const candidate = await getCandidateDocument();
-                if (candidate) {
-                    setUserDetail(candidate.documents[0]);
-                }
-            }
-            if (role && role.documents[0].userRole == 'employer') {
-                const employer = await getProfileData();
-                if (employer) {
-                    setUserDetail(employer.documents[0]);
-                }
-            }
-        }
-        if (userInfo == 'failed') {
-            setLoading(false);
-        }
-    };
+    /*  const getUserData = async () => {
+         const userInfo = await getAccount();
+         if (userInfo !== 'failed') {
+             setLoading(false);
+             setUserData(userInfo);
+             const role = await getRole();
+             role && setUserRole(role.documents[0].userRole);
+ 
+             if (role && role.documents[0].userRole == 'candidate') {
+                 const candidate = await getCandidateDocument();
+                 if (candidate) {
+                     setUserDetail(candidate.documents[0]);
+                 }
+             }
+             if (role && role.documents[0].userRole == 'employer') {
+                 const employer = await getProfileData();
+                 if (employer) {
+                     setUserDetail(employer.documents[0]);
+                 }
+             }
+         }
+         if (userInfo == 'failed') {
+             setLoading(false);
+         }
+     }; */
     /* const handleLogout = () => {
         setLogLoading(true);
         signOut().then((res) => {
@@ -62,13 +65,13 @@ const Navigation = (props: any) => {
             typeof window !== 'undefined' && router.reload();
         });
     }; */
-    useEffect(() => {
+    /* useEffect(() => {
         getUserData();
-    }, []);
+    }, []); */
     return (
         <div>
-            <div className="flex flex-wrap gap-5 pt-3  md:border-2 md:border-t-0 xl:px-40">
-                <div className='md:max-lg:w-full flex justify-center'>
+            <div className="flex flex-wrap gap-5 pt-3  md:border-2 md:border-t-0 xl:px-40 xl:h-[109px]">
+                <div className='md:max-lg:w-full flex justify-center xl:h-full xl:items-center'>
                     <Link href="/">
                         <img src={logo} alt="Image description" className="w-[160px] h-[70px]" />
                     </Link>
@@ -107,7 +110,7 @@ const Navigation = (props: any) => {
                                 <Link href="/salaries" className="border-b-2 pb-2 text-lg">
                                     Salaries
                                 </Link>
-                                {!userData && (
+                                {!loading && !userData && (
                                     <>
                                         <Link href="/account" className="border-b-2 pb-2 text-lg">Sign in</Link>
                                         <Link
@@ -169,7 +172,7 @@ const Navigation = (props: any) => {
                         </div>
                     </div>
                 )}
-                <div className="hidden flex-grow items-center lg:text-bigS lg:font-bigW lg:leading-bigL lg:text-textR md:flex md:items-center md:gap-x-7">
+                <div className="hidden flex-grow items-center lg:text-bigS lg:font-bigW lg:leading-bigL lg:text-textR md:flex md:items-center md:gap-x-7 xl:ml-10 xl:gap-x-10">
                     <Link href="/jobs" className="border-b-[3px] h-full border-b-textW font-[600] flex items-center hover:border-b-gradientFirst">
                         Find a Job
                     </Link>
@@ -182,12 +185,12 @@ const Navigation = (props: any) => {
                             My jobs
                         </Link>
                     ) : userRole == 'employer' ? (
-                        <Link href="/users/employer" className=" font-[600] cursor-pointer">
+                        <Link href="/users/employer" className="border-b-[3px] border-b-textW font-[600] h-full flex items-center hover:border-b-gradientFirst">
                             Dashboard
                         </Link>
                     ) : null}
                 </div>
-                <div className='max-md:flex max-md:items-end max-md:flex-grow max-md:justify-end'>
+                <div className='max-md:flex max-md:items-end max-md:flex-grow max-md:justify-end xl:h-full xl:flex'>
                     <div className="flex items-center justify-end gap-x-10 md:hidden">
                         {!userData && (
                             <div className="text-fhS leading-fhL font-fhW text-textR">
@@ -208,11 +211,11 @@ const Navigation = (props: any) => {
                             <div className={styles['bar']}></div>
                         </div>
                     </div>
-                    <div className="flex pt-2 gap-8">
+                    <div className="flex pt-2 gap-10">
                         {!userData && !loading && (
                             <>
                                 <div className="max-md:hidden flex items-center">
-                                    <div className="font-[400] text-[16px] ">
+                                    <div className="font-[500] text-[16px] text-[#0E121D] ">
                                         <Link href="/account">Sign In</Link>
                                     </div>
                                 </div>

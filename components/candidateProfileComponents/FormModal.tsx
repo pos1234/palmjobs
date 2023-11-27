@@ -57,8 +57,8 @@ const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tip
                                 <div className='w-full flex flex-wrap'>
                                     {tipText}
                                 </div>
-                                <div>
-                                    <img src={leaf} className='w-96' />
+                                <div className='w-full flex justify-end self-end h-full items-end'>
+                                    <img src={leaf} className='w-80 ' />
                                 </div>
                             </div>
                         </div>

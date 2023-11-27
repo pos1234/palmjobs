@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import { getUserDetail, updateWorkHistory } from '@/lib/candidateBackend';
@@ -156,8 +154,7 @@ const WorkHitory = () => {
             <div className="w-full flex justify-between">
                 <p className="font-fhW text-fhS leading-fhL flex gap-2 items-center">
                     <img src='/icons/suitCase.svg' className='w-6' />
-                    {/*                     <BusinessCenterIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
- */}                    Work History
+                    Work History
                 </p>
                 <EditIcon
                     onClick={() => setOpenWork(!openWork)}
@@ -189,179 +186,159 @@ const WorkHitory = () => {
                 text='Work History' icon={<img src='/icons/suitCase.svg' className='w-7' />
                 }
                 addText='Add Wrok History' openModal={openWork} setOpenModal={setOpenWork}>
-                <div className='max-lg:w-full max-lg:pr-2 h-full'>
-                    {workHistoryArray.length !== 0 &&
-                        !displayWorkHistory &&
-                        !workEdit &&
-                        workHistoryArray.map((item, index) => (
-                            <div key={index} className="col-span-11 grid grid-cols-12 pb-5 md:mb-5 sm:max-md:gap-x-2 ">
-                                <div className="col-span-3 sm:col-span-2 flex items-center justify-center md:col-span-2 lg:col-span-2">
-                                    <div className="w-16 h-16 bg-skillColor flex items-center justify-center rounded-[1rem]">
-                                        <BusinessCenterOutlinedIcon
-                                            sx={{
-                                                color: '#00A82D',
-                                                height: '1.5rem'
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-span-6 grid grid-cols-12 sm:col-span-7  lg:col-span-8 ">
-                                    <p className="col-span-12 text-fhS font-fhW leading-fhL flex items-center md:text-shS md:font-smRW">
-                                        {item.title}
-                                    </p>
-                                    <div className="font-bigW text-smRS leading-smL text-fadedText col-span-12 grid-cols-12 grid pt-2">
-                                        <div className="col-span-12 xl:col-span-5">{item.companyName}</div>
-                                        <div className="col-span-12 max-sm:text-[13px] xl:col-span-7">
-                                            <CalendarTodayIcon sx={{ marginRight: '0.5rem', fontSize: '0.9rem' }} />
-                                            {item.startDate} - {item.endDate}
+                <div className='w-full pr-2'>
+                    <div className='w-full flex flex-wrap gap-2'>
+                        {workHistoryArray.length !== 0 &&
+                            !displayWorkHistory &&
+                            !workEdit &&
+                            workHistoryArray.map((item, index) => (
+                                <div key={index} className="w-full flex flex-wrap p-3 gap-2 border-b-[1px]">
+                                    <div className='w-full flex gap-3 items-center'>
+                                        <div className=" h-full pt-2">
+                                            <img src="/icons/briefCase.svg" alt="" className='w-9' />
+                                        </div>
+                                        <div className='flex justify-between flex-grow'>
+                                            <div className="flex flex-col gap-2">
+                                                <p className="text-[20px] font-fhW leading-fhL flex items-center">
+                                                    {item.title}
+                                                </p>
+                                                <div className="font-bigW text-[14px] leading-smL flex gap-4 text-fadedText">
+                                                    <div>{item.companyName}</div>
+                                                    <div className="text-[13px] flex items-center">
+                                                        <CalendarTodayIcon sx={{ marginRight: '0.5rem', fontSize: '0.9rem' }} />
+                                                        {item.startDate} - {item.endDate}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-col justify-end items-end gap-y-3">
+                                                <EditIcon
+                                                    onClick={() => {
+                                                        editWork(index);
+                                                        setWorkEdit(true);
+                                                    }}
+                                                    sx={{ color: '#1D8560', background: '#E5ECEC', borderRadius: '50%' }}
+                                                    className="w-7 h-7 p-1.5 cursor-pointer"
+                                                />
+                                                <CloseIcon
+                                                    onClick={() => {
+                                                        setConfirmDelete(true);
+                                                        setWorkIndex(index);
+                                                    }}
+                                                    sx={{ color: '#1D8560', background: '#E5ECEC', borderRadius: '50%' }}
+                                                    className="w-7 h-7 p-1.5 cursor-pointer"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div className="col-span-3 flex flex-col justify-end items-end gap-y-3  pr-1 md:col-span-2">
-                                    <EditIcon
-                                        onClick={() => {
-                                            editWork(index);
-                                            setWorkEdit(true);
-                                        }}
-                                        sx={{ color: '#1D8560', background: '#E5ECEC', borderRadius: '50%' }}
-                                        className="w-7 h-7 p-1.5 cursor-pointer"
-                                    />
-                                    <DeleteIcon
-                                        onClick={() => {
-                                            setConfirmDelete(true);
-                                            setWorkIndex(index);
-                                        }}
-                                        sx={{ color: '#1D8560', background: '#E5ECEC', borderRadius: '50%' }}
-                                        className="w-7 h-7 p-1.5 cursor-pointer"
-                                    />
-                                </div>
-                                {confirmDelete && workIndex == index && <DeleteConfirmation
-                                    setConfirmDelete={setConfirmDelete}
-                                    deleteItem={() => deleteWorkHistory(index)}
-                                />/* (
-                                    <div className="mt-3 col-span-12 border-2 p-2 border-red-800 rounded-xl flex">
-                                        <p>Are you Sure you want to delete?</p>
-                                        <button
-                                            onClick={() => setConfirmDelete(false)}
-                                            className="ml-3 rounded-[20%] bg-lightGreen text-red-500 py-0.5 px-1"
-                                        >
-                                            No
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                deleteWorkHistory(index);
-                                                setConfirmDelete(false);
-                                            }}
-                                            className="bg-lightGreen rounded-[20%] text-green-800 py-0.5 px-1 ml-5"
-                                        >
-                                            Yes
-                                        </button>
+                                    <div className='w-full px-3'>
+                                        {confirmDelete && workIndex == index && <DeleteConfirmation
+                                            setConfirmDelete={setConfirmDelete}
+                                            deleteItem={() => deleteWorkHistory(index)}
+                                        />}
                                     </div>
-                                ) */}
-                                <div className="col-span-12 ml-2 block h-0.5 bg-fadedText mt-2 md:h-[0.5px] md:ml-3"></div>
-                            </div>
-                        ))}
+                                </div>
+                            ))}
 
-                    {(workEdit || displayWorkHistory || workHistoryArray.length == 0) && (
-                        <form className="gap-5 flex flex-col w-full" onSubmit={workEdit == true ? editWorkHistory : addWorkHistory}>
-                            <div className="flex flex-col gap-2">
-                                <p className="font-fhW text-smS leading-shL">Title</p>
-                                <input
-                                    value={workHistoryData.title}
-                                    type="text"
-                                    onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                        const inputValue = e.currentTarget.value;
-                                        if (inputValue.length <= maxWorkHistoryTitle) {
-                                            setWorkHistoryData({ ...workHistoryData, title: inputValue });
-                                        }
-                                    }}
-                                    placeholder="Add Title"
-                                    className={`focus:ring-gradientSecond focus:border-0 border-2 rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
-                                />
-                                {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="font-fhW text-smS leading-shL">Company Name</p>
-                                <input
-                                    value={workHistoryData.companyName}
-                                    type="text"
-                                    onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                        setWorkHistoryData({ ...workHistoryData, companyName: e.currentTarget.value })
-                                    }
-                                    placeholder="Add Company Name"
-                                    className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
-                                />
-                                {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
-                            </div>
-                            <div className="flex gap-2 items-center">
-                                <input
-                                    type="checkbox"
-                                    className="focus:ring-gradientSecond focus:border-0 border-[1px] rounded-xl h-4 pl-5 text-addS"
-                                    checked={isChecked}
-                                    onChange={handleCheckboxChange}
-                                />
-                                <span className="font-fhW text-smS pl-2 leading-shL">I currently work here</span>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="font-fhW text-smS leading-shL">Start Date</p>
-                                <input
-                                    value={workHistoryData.startDate}
-                                    type="date"
-                                    onChange={(e) => setWorkHistoryData({ ...workHistoryData, startDate: e.currentTarget.value })}
-                                    className={`focus:ring-gradientSecond focus:border-0 pr-3 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
-                                />
-                                {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}
-                            </div>
-                            {!isChecked && (
+                        {(workEdit || displayWorkHistory || workHistoryArray.length == 0) && (
+                            <form className="gap-5 flex flex-col w-full" onSubmit={workEdit == true ? editWorkHistory : addWorkHistory}>
                                 <div className="flex flex-col gap-2">
-                                    <p className="font-fhW text-smS leading-shL">End Date</p>
+                                    <p className="font-fhW text-smS leading-shL">Title</p>
                                     <input
-                                        max={new Date().toISOString().split('T')[0]}
-                                        value={workHistoryData.endDate}
-                                        type="date"
-                                        onChange={(e) =>
-                                            isChecked
-                                                ? setWorkHistoryData({ ...workHistoryData, endDate: 'present' })
-                                                : setWorkHistoryData({ ...workHistoryData, endDate: e.currentTarget.value })
+                                        value={workHistoryData.title}
+                                        type="text"
+                                        onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                                            const inputValue = e.currentTarget.value;
+                                            if (inputValue.length <= maxWorkHistoryTitle) {
+                                                setWorkHistoryData({ ...workHistoryData, title: inputValue });
+                                            }
+                                        }}
+                                        placeholder="Add Title"
+                                        className={`focus:ring-gradientSecond focus:border-0 border-2 rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                    />
+                                    {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <p className="font-fhW text-smS leading-shL">Company Name</p>
+                                    <input
+                                        value={workHistoryData.companyName}
+                                        type="text"
+                                        onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                                            setWorkHistoryData({ ...workHistoryData, companyName: e.currentTarget.value })
                                         }
-                                        className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-xl h-12 pl-5 text-addS"
+                                        placeholder="Add Company Name"
+                                        className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
+                                    />
+                                    {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
+                                </div>
+                                <div className="flex gap-2 items-center">
+                                    <input
+                                        type="checkbox"
+                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] rounded-xl h-4 pl-5 text-addS"
+                                        checked={isChecked}
+                                        onChange={handleCheckboxChange}
+                                    />
+                                    <span className="font-fhW text-smS pl-2 leading-shL">I currently work here</span>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <p className="font-fhW text-smS leading-shL">Start Date</p>
+                                    <input
+                                        value={workHistoryData.startDate}
+                                        type="date"
+                                        onChange={(e) => setWorkHistoryData({ ...workHistoryData, startDate: e.currentTarget.value })}
+                                        className={`focus:ring-gradientSecond focus:border-0 pr-3 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                    />
+                                    {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}
+                                </div>
+                                {!isChecked && (
+                                    <div className="flex flex-col gap-2">
+                                        <p className="font-fhW text-smS leading-shL">End Date</p>
+                                        <input
+                                            max={new Date().toISOString().split('T')[0]}
+                                            value={workHistoryData.endDate}
+                                            type="date"
+                                            onChange={(e) =>
+                                                isChecked
+                                                    ? setWorkHistoryData({ ...workHistoryData, endDate: 'present' })
+                                                    : setWorkHistoryData({ ...workHistoryData, endDate: e.currentTarget.value })
+                                            }
+                                            className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-xl h-12 pl-5 text-addS"
+                                        />
+                                    </div>
+                                )}
+                                <div className="mb-20 sm:mb-16">
+                                    <p className="font-fhW text-smS leading-shL">Job Description {workHistoryData.jobDescription.length} </p>
+                                    <ReactQuill
+                                        className="h-28 text-addS"
+                                        placeholder="Add Description"
+                                        theme="snow"
+                                        value={workHistoryData.jobDescription}
+                                        onChange={(e) => {
+                                            if (e.length <= 800) {
+                                                setWorkHistoryData({ ...workHistoryData, jobDescription: e })
+                                            }
+                                        }
+                                        }
                                     />
                                 </div>
-                            )}
-                            <div className="mb-20 sm:mb-16">
-                                <p className="font-fhW text-smS leading-shL">Job Description {workHistoryData.jobDescription.length} </p>
-                                <ReactQuill
-                                    className="h-28 text-addS"
-                                    placeholder="Add Description"
-                                    theme="snow"
-                                    value={workHistoryData.jobDescription}
-                                    onChange={(e) => {
-                                        if (e.length <= 800) {
-                                            setWorkHistoryData({ ...workHistoryData, jobDescription: e })
-                                        }
-                                    }
-                                    }
-                                />
-                            </div>
-                            <div className='w-full flex '>
-                                <div className='w-full md:w-52'>
-                                    <SubmitButton loading={loadings} buttonText="Save" />
+                                <div className='w-full flex '>
+                                    <div className='w-full md:w-52'>
+                                        <SubmitButton loading={loadings} buttonText="Save" />
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        )}
+                    </div>
+                    {!displayWorkHistory && !workEdit && workHistoryArray.length !== 0 && workHistoryArray.length <= 2 && (
+                        <div className='w-full pt-10 flex md:justify-end'>
+                            <button
+                                onClick={() => setDisplayWorkHistory(true)}
+                                className="bg-black rounded-xl text-textW h-14 w-full md:w-1/2"
+                            >
+                                Add new
+                            </button>
+                        </div>
                     )}
                 </div>
-                {!displayWorkHistory && !workEdit && workHistoryArray.length !== 0 && workHistoryArray.length <= 2 && (
-                    <div className='w-full pt-10 flex md:justify-end'>
-                        <button
-                            onClick={() => setDisplayWorkHistory(true)}
-                            className="bg-black rounded-xl text-textW h-14 w-full md:w-1/2"
-                        >
-                            Add new
-                        </button>
-                    </div>
-                )}
             </FormModal>
         </div>
     );

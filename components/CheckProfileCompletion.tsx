@@ -10,23 +10,23 @@ const CheckProfileCompletion = () => {
         getCandidateDocument().then((res: any) => {
             var percent = 0;
             if (res) {
-                if (!res.documents[0].phoneNumber) {
+                if (res.documents[0].phoneNumber) {
                     percent += 20;
                     setProfilePercent(percent)
                 }
-                if (res?.documents[0].skills.length == 0) {
+                if (res.documents[0].skills.length !== 0) {
                     percent += 20;
                     setProfilePercent(percent)
                 }
-                if (res?.documents[0].educations.length !== 0) {
+                if (res.documents[0].educations.length !== 0) {
                     percent += 20;
                     setProfilePercent(percent)
                 }
-                if (!res?.documents[0].resumeId) {
+                if (res?.documents[0].resumeId) {
                     percent += 20;
                     setProfilePercent(percent)
                 }
-                if (!res?.documents[0].address) {
+                if (res?.documents[0].address) {
                     percent += 20;
                     setProfilePercent(percent)
                 }

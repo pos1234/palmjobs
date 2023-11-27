@@ -27,20 +27,22 @@ const Home = () => {
             </Head>
             <div className="overflow-hidden ">
                 <Navigation />
-                <div className='flex pt-20 flex-wrap gap-y-10 gap-5 xl:px-40'>
-                    <div className='flex-grow flex flex-col justify-center sm:max-lg:items-center'>
-                        <p className="max-md:text-center">
+                <div className='flex pt-20 flex-wrap gap-y-10 gap-5 xl:px-40 md:max-xl:justify-center'>
+                    <div className='flex-grow flex flex-col gap-3 md:gap-5 justify-center md:max-xl:items-center sm:max-lg:items-center'>
+                        {/* <p className="max-md:text-center">
                             <span className="bg-gradient-to-r from-gradientFirst to-gradientSecond text-center px-3 text-textW py-1 rounded-full mr-5 block max-sm:mx-20 max-sm:mt-10 max-sm:mb-4 sm:inline cursor-pointer">
                                 For Employers
                             </span>
                             <Link className="font-shW text-gradientFirst underline cursor-pointer" href="/users/employer/">
                                 Post Job
                             </Link>
+                        </p> */}
+                        <p className="font-shW text-shS max-md:justify-center flex items-center text-xl md:text-[46px] my-2">
+                            Connect. Grow.<span className='-mt-6 md:-mt-9'>
+                                <img src="/images/connectLeaf.svg" alt="" className='h-full max-md:w-10' />
+                            </span><span className="text-gradientFirst">Succeed.</span>
                         </p>
-                        <p className="font-shW text-shS max-md:justify-center flex items-end text-[31px] md:text-[46px] my-2">
-                            Connect. Grow. <span className="text-gradientFirst"> Succeed.</span>
-                        </p>
-                        <p className="max-md:text-center text-[#393D48]">Find your next job. Easy as a breeze.</p>
+                        <p className="max-md:text-center text-[#20262E] font-[600] md:text-[27px]">Find your next job. Easy as a breeze.</p>
                         <div className='pt-5'>
                             <SearchBar single={true} home={true} searchWord={searchText} setSearchWord={setSearchText} addressHolder={address} setAddressHolder={setAddress} setTheSearchTerm={handleSearch} />
                         </div>

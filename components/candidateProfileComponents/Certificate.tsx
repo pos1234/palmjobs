@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
 import { getUserDetail, updateCertificates } from '@/lib/candidateBackend';
 import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
+import CloseIcon from '@mui/icons-material/Close';
+
 const CertificateDetails = (props: any) => {
     return (
         <div
@@ -169,8 +170,7 @@ const Certificate = () => {
                 <div className="w-full flex justify-between">
                     <p className=" font-fhW text-fhS leading-fhL flex gap-2 items-center">
                         <img src='/icons/certificate.svg' className='w-5' />
-                        {/*                         <WorkspacePremiumIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
- */}                        Certificates
+                        Certificates
                     </p>
                     <div>
                         <EditIcon
@@ -197,116 +197,125 @@ const Certificate = () => {
                 tipText='Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos architecto dolore sint tenetur dolores, repellendus autem temporibus modi officia soluta. Facilis, dignissimos? Error, assumenda. Laborum, animi hic. Ab, doloremque id.'
                 text='Certificate' icon={<img src='/icons/certificate.svg' className='w-7' />}
                 addText='Add Certificate' openModal={openCertificate} setOpenModal={setOpenCertificate}>
-                {!editOneCertificate && !displayCertificate && certificateArray.length !== 0 && (
-                    <div className="col-span-11 gap-4 grid grid-cols-12 mt-6 sm:max-md:gap-x-3 md:max-lg:gap-x-2 gap-y-4">
-                        {certificateArray &&
-                            !editOneCertificate &&
-                            certificateArray.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className="col-span-12 grid grid-cols-12 border-2 rounded-2xl p-5 sm:max-md:col-span-6 lg:col-span-6"
-                                >
-                                    <div className="col-span-2">
-                                        <WorkspacePremiumIcon sx={{ color: 'green' }} className="mt-2" />
-                                    </div>
-                                    <div className="col-span-9">
-                                        <p className="font-dfvW text-dfvS leading-dfvL">{item.name}</p>
-                                        <p className="font-fhW text-fhS leading-fhL text-lightGrey">{item.issuedBy}</p>
-                                        <p className="text-smRs mt-2">
-                                            <CalendarTodayIcon sx={{ fontSize: '0.8rem', marginTop: '-0.3rem' }} />
-                                            <span className="text-fadedText ml-1">{item.year}</span>
-                                        </p>
-                                    </div>
-                                    <div className="col-span-1">
-                                        <EditIcon
-                                            onClick={() => {
-                                                setEditOneCertificate(true);
-                                                indexCertificate(index);
-                                            }}
-                                            sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                            className="w-6 h-6 p-1.5 mr-2 cursor-pointer"
-                                        />
-                                        <DeleteIcon
-                                            onClick={() => {
-                                                setConfirmDelete(true);
-                                                setCertificateIndex(index);
-                                            }}
-                                            sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                            className="w-6 h-6 p-1.5 mr-2 mt-5 cursor-pointer"
-                                        />
-                                    </div>
-                                    {confirmDelete && certificateIndex == index && <DeleteConfirmation
-                                        setConfirmDelete={setConfirmDelete}
-                                        deleteItem={() => deleteCertificate(index)}
-                                    />
+                <div className='w-full flex flex-wrap'>
+                    {!editOneCertificate && !displayCertificate && certificateArray.length !== 0 && (
+                        <div className="w-full flex flex-wrap gap-3 pr-3">
+                            {certificateArray &&
+                                !editOneCertificate &&
+                                certificateArray.map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className="w-full flex justify-between border-2 rounded-2xl p-3 h-auto"
+                                    >
+                                        <div className='flex w-full flex-wrap gap-2'>
+                                            <div className='flex w-full justify-between'>
+                                                <div className='flex gap-2'>
+                                                    <div className="col-span-2">
+                                                        <WorkspacePremiumIcon sx={{ color: 'green' }} className="mt-2" />
+                                                    </div>
+                                                    <div className="col-span-9">
+                                                        <p className="font-dfvW text-dfvS leading-dfvL">{item.name}</p>
+                                                        <p className="font-fhW text-fhS leading-fhL text-lightGrey">{item.issuedBy}</p>
+                                                        <p className="text-smRs mt-2">
+                                                            <CalendarTodayIcon sx={{ fontSize: '0.8rem', marginTop: '-0.3rem' }} />
+                                                            <span className="text-fadedText ml-1">{item.year}</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <EditIcon
+                                                        onClick={() => {
+                                                            setEditOneCertificate(true);
+                                                            indexCertificate(index);
+                                                        }}
+                                                        sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
+                                                        className="w-6 h-6 p-1.5 mr-2 cursor-pointer"
+                                                    />
+                                                    <CloseIcon
+                                                        onClick={() => {
+                                                            setConfirmDelete(true);
+                                                            setCertificateIndex(index);
+                                                        }}
+                                                        sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
+                                                        className="w-6 h-6 p-1.5 mr-2 mt-5 cursor-pointer"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className='w-full px-3'>
+                                                {confirmDelete && certificateIndex == index && <DeleteConfirmation
+                                                    setConfirmDelete={setConfirmDelete}
+                                                    deleteItem={() => deleteCertificate(index)}
+                                                />
 
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                        </div>
+                    )}
+                    {(displayCertificate || editOneCertificate || certificateArray.length == 0) && (
+                        <form onSubmit={editOneCertificate == true ? editCertificate : addCertificate} className="gap-5 flex flex-col w-full">
+                            <div className='flex flex-col gap-2'>
+                                <p className="font-fhW text-smS leading-shL">Certificate Name</p>
+                                <input
+                                    value={certificateData.name}
+                                    type="text"
+                                    onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                                        setCertificateData({ ...certificateData, name: e.currentTarget.value })
                                     }
-                                </div>
-                            ))}
-                    </div>
-
-                )}
-                {(displayCertificate || editOneCertificate || certificateArray.length == 0) && (
-                    <form onSubmit={editOneCertificate == true ? editCertificate : addCertificate} className="gap-5 flex flex-col w-full">
-                        <div className='flex flex-col gap-2'>
-                            <p className="font-fhW text-smS leading-shL">Certificate Name</p>
-                            <input
-                                value={certificateData.name}
-                                type="text"
-                                onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                    setCertificateData({ ...certificateData, name: e.currentTarget.value })
-                                }
-                                placeholder="Add Certificate Name"
-                                className={`h-12 pl-5 bg-textW rounded-xl border focus:ring-gradientSecond focus:border-0 w-full lg:w-96 ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
-                            />
-                            {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
-                        </div>
-                        <div className='flex flex-col gap-2'>
-                            <p className="font-fhW text-smS leading-shL">Certificate Issued By</p>
-                            <input
-                                value={certificateData.issuedBy}
-                                type="text"
-                                onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                    setCertificateData({ ...certificateData, issuedBy: e.currentTarget.value })
-                                }
-                                placeholder="Certificate Issued By"
-                                className={`h-12 pl-5 bg-white rounded-xl border  focus:ring-gradientSecond focus:border-0 w-full lg:w-96 ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
-                            />
-                            {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
-                        </div>
-                        <div className='flex flex-col gap-2'>
-                            <p className="font-fhW text-smS leading-shL">Year Issued</p>
-                            <input
-                                value={certificateData.year}
-                                type="date"
-                                onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                    const selectedDate = e.currentTarget.value;
-                                    if (selectedDate <= new Date().toISOString().split('T')[0])
-                                        setCertificateData({ ...certificateData, year: selectedDate });
-                                }}
-                                placeholder="Year Issued"
-                                className={`h-12 pl-5 bg-white rounded-xl border  focus:ring-gradientSecond focus:border-0 w-full lg:w-96 appearNone ${errorCode == 3 ? 'border-orange-500' : 'border-gray-200'}`}
-                                max={new Date().toISOString().split('T')[0]}
-                            />
-                            {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}
-                        </div>
-                        <div className='w-full flex mt-5 '>
-                            <div className='w-full md:w-52'>
-                                <SubmitButton loading={loadings} buttonText="Save" />
+                                    placeholder="Add Certificate Name"
+                                    className={`h-12 pl-5 bg-textW rounded-xl border focus:ring-gradientSecond focus:border-0 w-full lg:w-96 ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                />
+                                {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
                             </div>
+                            <div className='flex flex-col gap-2'>
+                                <p className="font-fhW text-smS leading-shL">Certificate Issued By</p>
+                                <input
+                                    value={certificateData.issuedBy}
+                                    type="text"
+                                    onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                                        setCertificateData({ ...certificateData, issuedBy: e.currentTarget.value })
+                                    }
+                                    placeholder="Certificate Issued By"
+                                    className={`h-12 pl-5 bg-white rounded-xl border  focus:ring-gradientSecond focus:border-0 w-full lg:w-96 ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
+                                />
+                                {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
+                            </div>
+                            <div className='flex flex-col gap-2'>
+                                <p className="font-fhW text-smS leading-shL">Year Issued</p>
+                                <input
+                                    value={certificateData.year}
+                                    type="date"
+                                    onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                                        const selectedDate = e.currentTarget.value;
+                                        if (selectedDate <= new Date().toISOString().split('T')[0])
+                                            setCertificateData({ ...certificateData, year: selectedDate });
+                                    }}
+                                    placeholder="Year Issued"
+                                    className={`h-12 pl-5 bg-white rounded-xl border  focus:ring-gradientSecond focus:border-0 w-full lg:w-96 appearNone ${errorCode == 3 ? 'border-orange-500' : 'border-gray-200'}`}
+                                    max={new Date().toISOString().split('T')[0]}
+                                />
+                                {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}
+                            </div>
+                            <div className='w-full flex mt-5 '>
+                                <div className='w-full md:w-52'>
+                                    <SubmitButton loading={loadings} buttonText="Save" />
+                                </div>
+                            </div>
+                        </form>
+                    )}
+                    {!displayCertificate && !editOneCertificate && certificateArray.length !== 0 && certificateArray.length <= maximumCertificates && (
+                        <div className='w-full pt-10 flex md:justify-end'>
+                            <button
+                                onClick={() => setDisplayCertificate(true)}
+                                className="bg-black rounded-xl text-textW h-14 w-full md:w-1/2"
+                            >
+                                Add new
+                            </button>
                         </div>
-                    </form>
-                )}
-                {!displayCertificate && !editOneCertificate && certificateArray.length !== 0 && certificateArray.length <= maximumCertificates && (
-                    <div className='w-full pt-10 flex md:justify-end'>
-                        <button
-                            onClick={() => setDisplayCertificate(true)}
-                            className="bg-black rounded-xl text-textW h-14 w-full md:w-1/2"
-                        >
-                            Add new
-                        </button>
-                    </div>
-                )}
+                    )}
+                </div>
             </FormModal>
         </div>
     );

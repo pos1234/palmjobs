@@ -17,21 +17,22 @@ import SearchBar from '@/components/job/SearchBar';
 import CheckProfileCompletion from '@/components/CheckProfileCompletion';
 import SearchOutlined from '@mui/icons-material/SearchOutlined';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
-const Jobs = () => {
+
+const Jobs = ({ documents }: any) => {
     const router = useRouter();
     const [datePostedHolder, setDatePostedHolder] = useState('');
     const [expLevelHolder, setExpLevelHolder] = useState('');
     const [jobTypeHolder, setJobTypeHolder] = useState('');
-    const [jobDetailId, setJobDetailId] = useState('');
+    const [jobDetailId, setJobDetailId] = useState<string>(/* documents[0].$id */);
     const [openJobDetail, setOpenJobDetail] = useState(false);
-    const [jobDetails, setJobDetails] = useState<any>(null);
+    const [jobDetails, setJobDetails] = useState<any>(/* documents[0] */);
     const [company, setCompany] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [address, setAddress] = useState('');
     const [addressHolder, setAddressHolder] = useState('');
     const [searchWord, setSearchWord] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [data, setData] = useState<any>();
+    const [data, setData] = useState<any>(/* documents */);
     const [maxPaginate, setMaxPaginate] = useState(5);
     const [minPaginate, setMinPaginate] = useState(1);
     const [companyData, setCompanyData] = useState<any>();
@@ -39,6 +40,8 @@ const Jobs = () => {
     const [employerId, setEmployerId] = useState('');
     const [allLoading, setAllLoading] = useState(false);
     const [applyEmp, setApplyEmp] = useState(false);
+    const [forYou, setForYou] = useState(false)
+    const [localValue, setLocalValue] = useState('')
     useEffect(() => {
         const documents = getCompanyData(employerId);
         documents.then(async (res) => {
@@ -56,14 +59,26 @@ const Jobs = () => {
             let isMatch = true;
             const postedDate = new Date(item.datePosted);
             const now = new Date();
-            const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
-            const endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (6 - now.getDay()));
+            const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (now.getDay() - 6));
             const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
-
+            const title = localStorage.getItem('jobTitle')
             if (searchQuery.toLocaleLowerCase()) {
-                const searchRegex = new RegExp(searchQuery, 'i');
-                isMatch = isMatch && searchRegex.test(item.jobTitle);
+                const title = localStorage.getItem('jobTitle')
+                if (forYou == false) {
+                    const searchRegex = new RegExp(searchQuery, 'i');
+                    isMatch = isMatch && searchRegex.test(item.jobTitle);
+                }
+                if (forYou == true && title !== null) {
+                    const searchRegex = new RegExp(title.toLocaleLowerCase(), 'i');
+                    isMatch = isMatch && searchRegex.test(item.jobTitle)
+                    /* const searchRegex2 = new RegExp('', 'i');
+                    const result2 = isMatch && searchRegex2.test(item.jobTitle);
+                    isMatch = (result && forYou
+                        ) ? isMatch && searchRegex.test(item.jobTitle) : isMatch && searchRegex2.test(item.jobTitle);
+                    console.log(isMatch); */
+                }
             }
+
             if (addressHolder !== '' && address.toLocaleLowerCase()) {
                 const searchRegex = new RegExp(addressHolder, 'i');
                 isMatch = isMatch && searchRegex.test(item.jobLocation);
@@ -73,7 +88,7 @@ const Jobs = () => {
                     isMatch = isMatch && postedDate == new Date();
                 }
                 if (datePostedHolder == 'Past week') {
-                    isMatch = isMatch && postedDate >= startOfWeek && postedDate <= endOfWeek;
+                    isMatch = isMatch && postedDate >= startOfWeek;
                 }
                 if (datePostedHolder == 'Past month') {
                     isMatch = isMatch && postedDate >= thirtyDaysAgo && postedDate <= now;
@@ -88,7 +103,6 @@ const Jobs = () => {
             return isMatch;
         });
 
-    const [filtered, setFiltered] = useState(data);
     const itemsPerPage = 8;
     const pageCount = filData && Math.ceil(filData.length / itemsPerPage);
     const currentData = filData && filData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -98,13 +112,16 @@ const Jobs = () => {
         });
         setSearchQuery(searchWord);
         setAddress(addressHolder);
-    };
+        typeof window !== 'undefined' && searchWord !== '' && localStorage.setItem('jobTitle', searchWord)
+/*         typeof window !== 'undefined' && localStorage.setItem('jobLocation', addressHolder)
+ */    };
+
     useEffect(() => {
         setAllLoading(true);
         fetchJobs().then((res) => {
             setData(res.documents);
-            res.total !== 0 && setJobDetails(res.documents[0]);
-            res.total !== 0 && setJobDetailId(res.documents[0].$id);
+            /* res.total !== 0 && setJobDetails(res.documents[0]);
+            res.total !== 0 && setJobDetailId(res.documents[0].$id); */
             filData && filData.length == 0 && setJobDetails(null)
             setAllLoading(false);
         });
@@ -116,6 +133,9 @@ const Jobs = () => {
             param2 && setAddressHolder(param2.toString());
         }
     }, [router.query]);
+    useEffect(() => {
+        filData && filData.length == 0 && setJobDetails(filData[0])
+    }, [])
     const showPage = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
@@ -148,12 +168,9 @@ const Jobs = () => {
     };
     useEffect(() => {
         data && data.length !== 0 && setJobDetails(data.find((items: any) => items.$id == jobDetailId));
-/*         filData && filData.length == 0 && setJobDetails(null)
- */    }, [jobDetailId]);
+    }, [jobDetailId]);
     useEffect(() => {
-        if (searchQuery == '') {
-            setFiltered(data);
-        }
+        filData && filData.length !== 0 && setJobDetails(filData[0]);
     }, [searchQuery]);
     const createCandidateAccount = () => {
         signOut()
@@ -183,18 +200,18 @@ const Jobs = () => {
                                         />
                                     </div>
                                     <div className='w-full justify-center flex gap-5 mt-6 items-center font-[500]'>
-                                        <div className='pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] border-textW hover:border-b-gradientFirst hover:text-gradientFirst'>
-                                            <SearchOutlined sx={{ fontSize: '1rem' }} />
+                                        <div onClick={() => setForYou(true)} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] ${forYou ? 'text-gradientFirst border-b-gradientFirst' : ' border-textW hover:border-b-gradientFirst hover:text-gradientFirst'}`}>
+                                            <WbSunnyIcon sx={{ fontSize: '1rem' }} />
                                             <p>For You</p>
                                         </div>
-                                        <div className='pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] border-textW hover:border-b-gradientFirst hover:text-gradientFirst'>
+                                        <div onClick={() => setForYou(false)} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px]  ${forYou ? 'border-textW hover:border-b-gradientFirst hover:text-gradientFirst' : 'text-gradientFirst border-b-gradientFirst'}`}>
                                             <SearchOutlined sx={{ fontSize: '1rem' }} />
                                             <p>Search</p>
                                         </div>
-                                        <div className='pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] border-textW hover:border-b-gradientFirst hover:text-gradientFirst'>
+                                        {/* <div className='pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] border-textW hover:border-b-gradientFirst hover:text-gradientFirst'>
                                             <WbSunnyIcon sx={{ fontSize: '1rem' }} />
                                             <p>Trending</p>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <div className={!openJobDetail ? 'w-full flex gap-3 xl:px-40 mb-3' : 'max-md:hidden w-full flex gap-3 xl:px-40 mb-3'}>
@@ -211,8 +228,8 @@ const Jobs = () => {
                                         <option value="">Experience</option>
                                         <option value="0-2 years">0-2 years</option>
                                         <option value="3-5 years">3-5 years</option>
-                                        <option value="5-7 years">5-7 years</option>
-                                        <option value="8-10 years">8-10 years</option>
+                                        <option value="6-8 years">6-8 years</option>
+                                        <option value="9-10 years">9-10 years</option>
                                         <option value="10+ years">10+ years</option>
                                     </select>
                                     <select value={datePostedHolder} onChange={(e) => setDatePostedHolder(e.currentTarget.value)} name="dateposted" id="dateposted" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
@@ -244,7 +261,7 @@ const Jobs = () => {
                                                 : 'max-md:w-full grid grid-cols-12 gap-x-5 xl:col-span-9 md:w-2/3 xl:w-3/5 max-md:hidden'
                                         }
                                     >
-                                        {jobDetails && <JobDetail
+                                        {jobDetails && currentData.length !== 0 && <JobDetail
                                             jobDetails={jobDetails}
                                             companyName={companyName}
                                             company={company}
@@ -259,8 +276,7 @@ const Jobs = () => {
                                 </div>
                                 {
                                     currentData && currentData.length == 0 && <div className='w-full items-center h-60 flex justify-center'>
-                                        <p className='font-bold text-2xl'>Ooops!!!!
-                                            <span className='text-xl'> There is no job with this search try different word.</span></p>
+                                        <p className='text-xl font-[500] w-full text-center leading-[40px] flex justify-center flex-wrap xl:w-[70%]'> Looks like there aren't any matches right now. <br /> Why not try some different keywords or tweak your filters?</p>
                                     </div>
                                 }
                             </div>
@@ -270,7 +286,7 @@ const Jobs = () => {
                                 pageCount > 1
                                     ? openJobDetail
                                         ? 'col-span-5 flex justify-center items-center gap-x-3 mt-4 max-md:hidden'
-                                        : 'flex justify-center items-center gap-x-3 mt-4 col-span-12 md:col-span-6 lg:col-span-3'
+                                        : 'flex justify-center items-center gap-x-3 mt-4 col-span-12 md:col-span-6 lg:col-span-5'
                                     : 'hidden'
                             }
                         >
@@ -351,14 +367,15 @@ const Jobs = () => {
 export default Jobs;
 
 
-/* export async function getServerSideProps() {
+/* export async function getStaticProps() {
     const promise = fetchJobs()
 
-    const jobs = await promise;
+    const { documents } = await promise;
 
     return {
         props: {
-            jobs
-        }
+            documents
+        },
+        revalidate: 60
     };
 } */

@@ -55,7 +55,7 @@ const Login = () => {
                     if (loggedIn !== 'failed') {
                         const role = await getRole();
                         if (role && role.documents[0].userRole == 'candidate') {
-                            typeof window !== 'undefined' && router.push('/users/candidate/profile');
+                            typeof window !== 'undefined' && router.push('/jobs');
                         }
                         if (role && role.documents[0].userRole == 'employer') {
                             typeof window !== 'undefined' && router.push('/users/employer');
