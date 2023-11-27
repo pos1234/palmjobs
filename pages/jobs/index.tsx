@@ -120,7 +120,8 @@ const Jobs = ({ documents }: any) => {
         setAllLoading(true);
         fetchJobs().then((res) => {
             setData(res.documents);
-            /* res.total !== 0 && setJobDetails(res.documents[0]);
+/*             res.total !== 0 && setJobDetails(res.documents[0]);
+ */            /* res.total !== 0 && setJobDetails(res.documents[0]);
             res.total !== 0 && setJobDetailId(res.documents[0].$id); */
             filData && filData.length == 0 && setJobDetails(null)
             setAllLoading(false);
@@ -134,7 +135,7 @@ const Jobs = ({ documents }: any) => {
         }
     }, [router.query]);
     useEffect(() => {
-        filData && filData.length == 0 && setJobDetails(filData[0])
+        filData && filData.length !== 0 && setJobDetails(filData[0])
     }, [])
     const showPage = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
