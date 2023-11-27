@@ -123,8 +123,8 @@ const Jobs = ({ documents }: any) => {
 /*             res.total !== 0 && setJobDetails(res.documents[0]);
  */            /* res.total !== 0 && setJobDetails(res.documents[0]);
             res.total !== 0 && setJobDetailId(res.documents[0].$id); */
-            filData && filData.length == 0 && setJobDetails(null)
-            setAllLoading(false);
+/*             filData && filData.length == 0 && setJobDetails(null)
+ */            setAllLoading(false);
         });
         if (Object.keys(router.query).length > 0) {
             const { param1, param2 } = router.query;
@@ -135,8 +135,10 @@ const Jobs = ({ documents }: any) => {
         }
     }, [router.query]);
     useEffect(() => {
+
+        filData && filData.length !== 0 && setJobDetailId(filData[0].$id)
         filData && filData.length !== 0 && setJobDetails(filData[0])
-    }, [])
+    }, [data])
     const showPage = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
