@@ -1,7 +1,7 @@
 import ConfirmModal from '@/components/ConfirmModal';
-import { fetchActivePostedJobs, fetchClosedPostedJobs, fetchSinglePostedJobs, getCompanyData, getNoApplicants, updateJobStatus, updateJobs } from '@/lib/employerBackend';
+import { fetchActivePostedJobs, fetchClosedPostedJobs, fetchSinglePostedJobs, getCompanyData, getNoApplicants, updateJobStatus, updateJobs } from '@/backend/employerBackend';
 import React, { useEffect, useState } from 'react';
-import { getAccount } from '@/lib/accountBackend';
+import { getAccount } from '@/backend/accountBackend';
 import dynamic from 'next/dynamic';
 import { Popover } from '@headlessui/react';
 import { toast } from 'react-toastify';

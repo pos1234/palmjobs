@@ -4,7 +4,7 @@ import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds, getCompanyData } from '@/lib/candidateBackend';
+import { fetchSavedJobIds, unSaveJobs, fetchSavedJobsData, getSavedJobId, fetchAppliedJobIds, getCompanyData } from '@/backend/candidateBackend';
 import { useEffect, useState } from 'react';
 import ApplyToJob from './ApplyToJobs';
 import { toast } from 'react-toastify';
@@ -90,6 +90,17 @@ const SavedJobs = (props: any) => {
     };
     return (
         <>
+            {!allLoading && !savedJobs && props.view && (
+                <div className="col-span-12 text-center flex flex-col items-center gap-y-8">
+                    <p>No saved jobs under your palm tree yet. Browse the listings to find your next opportunity.</p>
+                    <Link
+                        href="/jobs"
+                        className="w-60 bg-black text-textW h-14 rounded-[3px] flex justify-center items-center text-textW cursor-pointer hover:border-b-4 hover:border-b-gradientFirst buttonBounce"
+                    >
+                        Find Job
+                    </Link>
+                </div>
+            )}
             {savedJobs &&
                 !allLoading &&
                 savedJobs.map((datas: any) => {
@@ -228,75 +239,7 @@ const SavedJobs = (props: any) => {
                     </div>
                 </div>
             )}
-            {!allLoading && savedJobs.length == 0 && props.view && (
-                <div className="col-span-12 text-center flex flex-col items-center gap-y-3">
-                    <p>No saved jobs under your palm tree yet. Browse the listings to find your next opportunity.</p>
-                    <Link
-                        href="/jobs"
-                        className="w-60 bg-gradient-to-r from-gradientFirst to-gradientSecond px-10 py-5 rounded-full text-textW cursor-pointer"
-                    >
-                        Find Job
-                    </Link>
-                </div>
-            )}
-            {/*  {savedJobs &&
-                !allLoading &&
-                savedJobs.map((datas: any) => {
-                    return (
-                        <div className={props.view ? 'col-span-12 grid grid-cols-12 py-3 bg-textW' : 'hidden'} key={datas.$id}>
-                            <JobImage id={datas.employerId} className="hidden md:col-span-2 md:block lg:col-span-1" />
-                            <div className="col-span-12 pl-5 grid grid-cols-12 md:col-span-10 lg:col-span-8">
-                                <JobImage id={datas.employerId} className="col-span-2 md:hidden" />
-                                <div className="col-span-10 pl-1">
-                                    <CompanyName id={datas.employerId} />
 
-                                    <Link href={`/jobs/${datas.$id}`} target="_blank" className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-frhS">{datas.jobTitle}</Link>
-                                    <p className="text-fadedText rounded-full md:hidden">
-                                        <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} /> {datas.jobLocation}
-                                    </p>
-                                </div>
-                                <ul className="mt-5 text-[11px] flex gap-x-3 col-span-12 md:text-[0.8rem] md:mt-1 md:gap-x-5">
-                                    <li className="hidden md:bg-textW md:text-fadedText md:flex md:p-0">
-                                        <PinDropOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem]" /> {datas.jobLocation}
-                                    </li>
-                                    <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-3 md:bg-textW md:text-fadedText md:p-0">
-                                        <AccessTimeOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1  md:text-[1.2rem]" />
-                                        {datas.jobType}
-                                    </li>
-
-                                    <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-4 md:bg-textW md:text-fadedText md:p-0">
-                                        <CalendarTodayOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " />
-                                        {new Date(datas.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}
-                                    </li>
-                                </ul>
-
-                            </div>
-                            <div className="col-span-12 flex items-center justify-center md:col-span-12 md:max-lg:pt-10 md:max-lg:px-20 lg:col-span-3 lg:px-10">
-                                <button>
-                                    <DeleteIcon
-                                        onClick={() => {
-                                            removeSave(datas.$id);
-                                        }}
-                                        sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                        className="w-7 h-7 p-1.5 mr-2 cursor-pointer"
-                                    />
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        setApply(true);
-                                        setJobId(datas.$id);
-                                        setEmployerId(datas.employerId);
-                                        setJobTitle(datas.jobTitle);
-                                        setCompanyName(datas.companyName);
-                                    }}
-                                    className=" h-[4.5rem] w-full bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW rounded-full cursor-pointer md:full"
-                                >
-                                    Apply Now
-                                </button>
-                            </div>
-                        </div>
-                    );
-                })} */}
             {apply && (
                 <ApplyToJob jobId={jobId} employerId={employerId} setterFunction={setApply} jobTitle={jobTitle} companyName={companyName} />
             )}

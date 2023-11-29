@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProfilePicture from '@/components/candidateProfileComponents/ProfilePicture';
 import SocialLinks from '@/components/candidateProfileComponents/SocialLinks';
-import { getUserDetail } from '@/lib/candidateBackend';
+import { getUserDetail } from '@/backend/candidateBackend';
 import CoverLetter from '@/components/candidateProfileComponents/CoverLetter';
 import WorkHitory from '@/components/candidateProfileComponents/WorkHistory';
 import Education from '@/components/candidateProfileComponents/Education';

@@ -18,6 +18,28 @@ const TextInput = (props: any) => {
         </>
     );
 };
+export const TextInputRelated = (props: any) => {
+    const value = props.value;
+    const change = props.change
+    const dataDistruct = props.dataDistruct
+    return (
+        <>
+            <input
+                placeholder={props.placeHolder}
+                value={value}
+                onChange={(e) => props.setFunction({ ...dataDistruct, [change]: e.currentTarget.value })}
+                className={
+                    props.errorMessage
+                        ? ` ${'h-12 pl-5 bg-white rounded-xl border border-red-500 focus:ring-gradientFirst focus:border-0 w-full '} ${!props.class && 'md:w-96'
+                        }`
+                        : ` ${'h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientSecond focus:border-0 w-full'} ${!props.class && 'md:w-96'
+                        }`
+                }
+            />
+            {props.errorMessage && <p className="text-red-500 text-[13px] mt-2">{props.errorMessage}</p>}
+        </>
+    );
+};
 export const SubmitButton = (props: any) => {
     return (
         <button disabled={props.loading ? true : false} type="submit" className="bg-black w-full rounded-xl text-textW h-14">
@@ -54,9 +76,9 @@ interface List {
     items: string
 }
 export const SmallLists = ({ icon, items }: List) => {
-    return <li className="inline bg-[#FAFAFA] flex items-center gap-1 text-xs text-gradientFirst rounded-[4px] p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:h-[28px]">
+    return <div className="inline bg-[#FAFAFA] flex items-center gap-1 text-xs text-gradientFirst rounded-[4px] p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:h-[28px]">
         {icon}
         <span className='text-[#20262E]'>{items}</span>
-    </li>
+    </div>
 }
 export default TextInput;

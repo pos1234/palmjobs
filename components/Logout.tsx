@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import ConfirmModal from './ConfirmModal'
-import { signOut } from '@/lib/accountBackend';
+import { signOut } from '@/backend/accountBackend';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 

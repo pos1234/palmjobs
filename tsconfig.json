@@ -18,6 +18,6 @@
             "@/*": ["./*"]
         }
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "unusedFiles/index2.tsx", "lib/employerBackend.tsx", "lib/context.tsx", "pages/api/email/route.ts"],
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "unusedFiles/index2.tsx", "backend/employerBackend.ts", "contextApi/userData.tsx", "pages/api/email/route.ts"],
     "exclude": ["node_modules"]
 }

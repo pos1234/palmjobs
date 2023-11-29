@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import { getCandidateDocument } from '@/lib/candidateBackend';
+import { getCandidateDocument } from '@/backend/candidateBackend';
 import Link from 'next/link';
 
 const CheckProfileCompletion = () => {

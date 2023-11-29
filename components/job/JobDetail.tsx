@@ -8,17 +8,16 @@ import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { alreadySaved, getCandidateDocument, saveJobs, } from '@/lib/candidateBackend'
-import { getAccount, getRole } from '@/lib/accountBackend';
+import { alreadySaved, getCandidateDocument, saveJobs, } from '@/backend/candidateBackend'
+import { getAccount, getRole } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import ApplyToJob from '../candidateProfileComponents/ApplyToJobs';
 import { SmallLists } from '../TextInput';
 import CheckIcon from '@mui/icons-material/Check';
-import { fetchCandidateDetail } from '@/lib/employerBackend';
+import { fetchCandidateDetail } from '@/backend/employerBackend';
+import moment from 'moment';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
-
-
 const JobDetail = (props: any) => {
     const [savedJobId, setSavedJobId] = useState<any[]>([]);
     const [savedJobs, setSavedJobs] = useState<any[]>([]);
@@ -34,6 +33,14 @@ const JobDetail = (props: any) => {
     const [openShare, setOpenShare] = useState(false);
     const [userSkill, setUserSkill] = useState<any>()
     const router = useRouter();
+    const isToday = moment(props.jobDetails.datePosted).isSame(moment());
+    const isWithinWeek = moment(props.jobDetails.datePosted).isAfter(moment().subtract(7, 'days')) && moment(props.jobDetails.datePosted).isBefore(moment());
+    const date = new Date(props.jobDetails.datePosted);
+    const today = new Date();
+    const difference = today.getTime() - date.getTime();
+    const weeks = Math.floor(difference / (1000 * 60 * 60 * 24 * 7));
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+
     const parseToArray = (text: string) => {
         const arrayValue = JSON.parse(text)
         return arrayValue
@@ -91,7 +98,7 @@ const JobDetail = (props: any) => {
     const handleEmailApply = (email: string) => {
         const subject = `Application for ${jobTitle} Position`;
         const body = `Dear ${props.companName} Team.\n\n
-        I hope this message finds you well. My name is yonas abebe, and I came across the ${jobTitle} position on Palm Jobs.
+        I hope this message finds you well. My name is yonas abebe, and I came across the ${props.jobDetails.jobTitle} position on Palm Jobs.
         I am highly interested in this opportunity and believe my skills and experiences make me an excellent fit for the role.\n\n
         Attached, please find my resume and cover letter for your consideration. I would love the chance to further discuss my qualifications with you in an interview.
         \n
@@ -106,26 +113,25 @@ const JobDetail = (props: any) => {
         const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoLink;
     };
-    const arrayToCheck = ['react', 'node.js']
     return (
         <div
             className={
                 props.openJobDetail == true
-                    ? 'col-span-12 flex border-2 pb-2 rounded-xl'
-                    : 'col-span-12 hidden md:flex border-2 pb-2 rounded-xl'
+                    ? 'col-span-12 flex border-[1px] pb-2 border-[#DEDEDE] rounded-xl'
+                    : 'col-span-12 hidden md:flex border-[1px] border-[#DEDEDE] pb-2 rounded-xl'
             }
         >
             <div className=" w-full flex flex-col">
                 {
                     props.single !== true && <p
                         onClick={() => props.setOpenJobDetail(false)}
-                        className="p-3 border-2 rounded-xl flex justify-center cursor-pointer m-5 md:hidden"
+                        className="p-3 border-[1px] rounded-[12px] border-[#DEDEDE] flex justify-center cursor-pointer m-5 md:hidden"
                     >
                         Back To Search
                     </p>
                 }
-                <div className="flex flex-col gap-y-5 bg-textW pt-7 z-[0] rounded-t-xl ">
-                    <div className='px-6 border-b-2 flex flex-col gap-y-3 pb-5'>
+                <div className="flex flex-col gap-y-5 h-[800px] pt-7 rounded-t-xl ">
+                    <div className='px-6 border-b-[1px] border-[#DEDEDE] flex flex-col gap-y-3 pb-5'>
                         <div className='flex items-center gap-3'>
                             <JobImage
                                 id={props.jobDetails.employerId}
@@ -152,7 +158,7 @@ const JobDetail = (props: any) => {
                                 </p>
                             )}
                         </div>
-                        <ul className="text-[10px] flex md:text-[11px] md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] xl:text-[0.6rem] gap-3 flex-wrap">
+                        <div className="text-[10px] flex md:text-[11px] md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] xl:text-[0.6rem] gap-3 flex-wrap">
                             {props.jobDetails.jobType &&
                                 <SmallLists icon={<img src='/icons/suitCase.svg' />}
                                     items={props.jobDetails.jobType} />
@@ -188,25 +194,20 @@ const JobDetail = (props: any) => {
                                             : props.jobDetails.minSalary + '-' + props.jobDetails.maxSalary}
                                 />
                             )}
+                            {props.jobDetails.expreienceLevel && (
+                                <SmallLists
+                                    icon={<img src='/icons/briefCase.svg' className='w-5 h-5' />}
+                                    items={props.jobDetails.expreienceLevel}
+                                />
+                            )}
                             {props.jobDetails.datePosted && (
-                                <SmallLists
-                                    icon={
-                                        <img src='/icons/hourGlassUp.svg' />
-                                    }
-                                    items={new Date(props.jobDetails.datePosted)
-                                        .toLocaleDateString('en-GB')
-                                        .replace(/\//g, '-')}
-                                />
+                                <div className="inline bg-[#FAFAFA] flex items-center gap-1 text-xs text-gradientFirst rounded-[4px] p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:h-[28px]">
+                                    <img src='/icons/hourGlassUp.svg' />
+                                    <span className='text-[#20262E]'>{isToday && isToday ? <p className='text-[12px]'>posted today</p> : isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
+                                    </span>
+                                </div>
                             )}
-                            {props.jobDetails.applicationDeadline && (
-                                <SmallLists
-                                    icon={<img src='/icons/hourGlassDown.svg' />}
-                                    items={new Date(props.jobDetails.applicationDeadline)
-                                        .toLocaleDateString('en-GB')
-                                        .replace(/\//g, '-')}
-                                />
-                            )}
-                        </ul>
+                        </div>
                         <div className='flex gap-5 mt-4'>
                             {props.jobDetails.externalLink ? (
                                 <a
@@ -242,7 +243,7 @@ const JobDetail = (props: any) => {
                             </div>
                         </div>
                     </div>
-                    <div className='flex px-6 flex-col gap-5'>
+                    <div className='flex px-6 flex-col gap-5 pb-4 overflow-hidden h-[100%]'>
                         <div className="flex gap-5 mb-3">
                             <div
                                 className={`font-[500] flex items-center cursor-pointer text-[18px] border-b-[0.2rem] pb-2 ${props.company == true ? 'border-b-textW text-gray-500 hover:border-b-gradientFirst' : 'border-b-gradientFirst'}`}
@@ -260,7 +261,7 @@ const JobDetail = (props: any) => {
                             </div>
                         </div>
                         {!props.company &&
-                            <div className="max-h-64 overflow-y-auto thinScrollBar">
+                            <div className='max-h-[100%] max-h-full h-full overflow-y-auto thinScrollBar'>
                                 <div className='flex flex-wrap gap-3'>
                                     <div className='flex w-full gap-2'>
                                         <img src='/icons/fire.svg' alt='fire' />
@@ -286,6 +287,7 @@ const JobDetail = (props: any) => {
                                         dangerouslySetInnerHTML={{ __html: props.jobDetails.jobDescription }}
                                         className="text-[14px] text-[#727272] min-h-[180px]"
                                     />
+                                    
                                 </div>
                             </div>
                         }
@@ -331,16 +333,18 @@ const JobDetail = (props: any) => {
                 </div>
             </div>
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.jobDetails.$id} />
-            {apply && (
-                <ApplyToJob
-                    jobId={applyJobId}
-                    employerId={applyEmployerId}
-                    setterFunction={setApply}
-                    jobTitle={jobTitle}
-                    companyName={props.companyName}
-                />
-            )}
-        </div>
+            {
+                apply && (
+                    <ApplyToJob
+                        jobId={applyJobId}
+                        employerId={applyEmployerId}
+                        setterFunction={setApply}
+                        jobTitle={jobTitle}
+                        companyName={props.companyName}
+                    />
+                )
+            }
+        </div >
     )
 }
 export default JobDetail

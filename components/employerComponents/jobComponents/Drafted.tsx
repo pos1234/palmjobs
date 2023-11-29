@@ -1,4 +1,4 @@
-import { deleteDraftedJobs, fetchDraftedJobs, } from '@/lib/employerBackend';
+import { deleteDraftedJobs, fetchDraftedJobs, } from '@/backend/employerBackend';
 import React, { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';

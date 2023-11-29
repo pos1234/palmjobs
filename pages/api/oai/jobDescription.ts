@@ -1,5 +1,5 @@
 // This code is for v4 of the openai package: npmjs.com/package/openai
-import openai from '@/lib/openai';
+import openai from '@/backend/openai';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function jobDescription(req: NextApiRequest, res: NextApiResponse) {

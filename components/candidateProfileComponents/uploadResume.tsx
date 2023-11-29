@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import { getResumeName } from '@/lib/candidateBackend';
+import { getResumeName } from '@/backend/candidateBackend';
 import { FileUploader } from 'react-drag-drop-files';
-import { deleteResume, getUserDetail, updateResumeId, uploadResume } from '@/lib/candidateBackend';
+import { deleteResume, getUserDetail, updateResumeId, uploadResume } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
 const FileUploadForm = (props: any) => {
     const pdfIcon = '/images/pdfIcon.svg';

@@ -1,4 +1,4 @@
-import { sendRecovery } from '@/lib/accountBackend';
+import { sendRecovery } from '@/backend/accountBackend';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { SubmitButton } from '../TextInput';

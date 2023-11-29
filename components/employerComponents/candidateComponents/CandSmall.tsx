@@ -1,4 +1,4 @@
-import { fetchCandidateDetail } from '@/lib/employerBackend';
+import { fetchCandidateDetail } from '@/backend/employerBackend';
 import { useEffect, useState } from 'react';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
 import { ProfilePic } from '@/components/JobImage';

@@ -1,7 +1,7 @@
 import React, { useState, ReactNode } from 'react'
 import TextInput, { SubmitButton } from './TextInput';
 import RadioInput from './RadioInput';
-import { createSalarySurvey } from '@/lib/employerBackend';
+import { createSalarySurvey } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
 const FlexDiv = ({ children }: { children: ReactNode }) => {
     return <div className='flex flex-wrap gap-x-5'>

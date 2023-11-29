@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Register, defineRole, sendEmailVerification } from '@/lib/accountBackend';
+import { Register, defineRole, sendEmailVerification } from '@/backend/accountBackend';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { toast } from 'react-toastify';

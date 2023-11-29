@@ -9,7 +9,7 @@ import InsertLinkOutlinedIcon from '@mui/icons-material/InsertLinkOutlined';
 import dynamic from 'next/dynamic';
 import { FileUploader } from 'react-drag-drop-files';
 import 'react-quill/dist/quill.snow.css';
-import { deletePictures, getUserDetail, updateProjects, uploadProfilePictures } from '@/lib/candidateBackend';
+import { deletePictures, getUserDetail, updateProjects, uploadProfilePictures } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
 import { ProfilePic } from '../JobImage';
 import FormModal from './FormModal';
@@ -233,81 +233,82 @@ const Project = () => {
             <FormModal tipText='Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos architecto dolore sint tenetur dolores, repellendus autem temporibus modi officia soluta. Facilis, dignissimos? Error, assumenda. Laborum, animi hic. Ab, doloremque id.'
                 text='Project' icon={<AttachFileIcon />}
                 addText='Add Project' openModal={openProject} setOpenModal={setOpenProject}>
-                <div className='max-lg:w-full max-lg:pr-2 h-full '>
+                <div className='w-full h-full'>
                     {(projectEdit || projectsArray.length == 0) && (
-                        <form className="flex flex-col gap-5 w-full" onSubmit={projectEdit ? editProject : addProject}>
-
-                            <div className='flex flex-col gap-2'>
-                                <p className="font-fhW text-smS leading-shL">Project Name</p>
-                                <input
-                                    value={projectData.projectName}
-                                    type="text"
-                                    onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                        setProjectData({ ...projectData, projectName: e.currentTarget.value })
-                                    }
-                                    placeholder="Project Name"
-                                    className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
-                                />
-                                {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="font-fhW text-smS leading-shL">Project Link</p>
-                                <input
-                                    value={projectData.url}
-                                    type="text"
-                                    onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                        setProjectData({ ...projectData, url: e.currentTarget.value })
-                                    }
-                                    placeholder="Project Link"
-                                    className="focus:ring-gradientSecond focus:border-0 border-2 w-full border-gray-200 rounded-xl h-12 pl-5 text-addS"
-                                />
-                            </div>
-                            {
-                                projectsArray.length == 0 &&
-                                <div className='flex flex-col w-full overflow-x-hidden'>
-                                    <p className="font-fhW text-smS leading-shL">Project Thumbnail</p>
-                                    <FileUploader
-                                        multiple={false}
-                                        maxSize={1}
-                                        onSizeError={sizeError}
-                                        onTypeError={displayError}
-                                        handleChange={handleProjectImage}
-                                        classes="col-span-12 py-5 mt-2 bg-white rounded-xl shadow border border-gray-200 flex flex-col items-center gap-y-3 justify-center lg:max-xl:px-5"
-                                        name="file"
-                                        types={fileTypes}
-                                    >
-                                        <div className="text-gray-200">
-                                            <CloudUploadOutlinedIcon className="text-[3rem]" />
-                                        </div>
-                                        <div className="text-black text-xs font-normal">
-                                            {fileName ? fileName : <p>Select a file or drag and drop here</p>}
-                                        </div>
-
-                                        <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
-                                            JEPG, JPG or PNG, file size no more than 1MB
-                                        </div>
-                                        <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
-                                            <div className="cursor-pointer absolute z-0 top-3 w-full">
-                                                <div className="text-gradientFirst text-xs font-normal uppercase">Select file</div>
-                                            </div>
-                                        </div>
-                                        {errorCode !== 1 && errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}
-                                    </FileUploader>
-                                </div>
-                            }
-                            <div className="flex flex-col gap-2">
-                                <p className="font-fhW text-smS leading-shL">Description</p>
-                                <ReactQuill
-                                    theme="snow"
-                                    value={projectData.detail}
-                                    onChange={(e) => {
-                                        if (e.length <= 200) {
-                                            setProjectData({ ...projectData, detail: e })
+                        <form className="flex flex-col gap-5 w-full " onSubmit={projectEdit ? editProject : addProject}>
+                            <div className='h-64 overflow-y-auto pr-2 thinScrollBar'>
+                                <div className='flex flex-col gap-2'>
+                                    <p className="font-fhW text-smS leading-shL">Project Name</p>
+                                    <input
+                                        value={projectData.projectName}
+                                        type="text"
+                                        onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                                            setProjectData({ ...projectData, projectName: e.currentTarget.value })
                                         }
-                                    }}
-                                    placeholder="Add description...."
-                                    className="h-28 text-addS "
-                                />
+                                        placeholder="Project Name"
+                                        className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                    />
+                                    {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <p className="font-fhW text-smS leading-shL">Project Link</p>
+                                    <input
+                                        value={projectData.url}
+                                        type="text"
+                                        onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                                            setProjectData({ ...projectData, url: e.currentTarget.value })
+                                        }
+                                        placeholder="Project Link"
+                                        className="focus:ring-gradientSecond focus:border-0 border-2 w-full border-gray-200 rounded-xl h-12 pl-5 text-addS"
+                                    />
+                                </div>
+                                {
+                                    projectsArray.length == 0 &&
+                                    <div className='flex flex-col w-full overflow-x-hidden'>
+                                        <p className="font-fhW text-smS leading-shL">Project Thumbnail</p>
+                                        <FileUploader
+                                            multiple={false}
+                                            maxSize={1}
+                                            onSizeError={sizeError}
+                                            onTypeError={displayError}
+                                            handleChange={handleProjectImage}
+                                            classes="col-span-12 py-5 mt-2 bg-white rounded-xl shadow border border-gray-200 flex flex-col items-center gap-y-3 justify-center lg:max-xl:px-5"
+                                            name="file"
+                                            types={fileTypes}
+                                        >
+                                            <div className="text-gray-200">
+                                                <CloudUploadOutlinedIcon className="text-[3rem]" />
+                                            </div>
+                                            <div className="text-black text-xs font-normal">
+                                                {fileName ? fileName : <p>Select a file or drag and drop here</p>}
+                                            </div>
+
+                                            <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
+                                                JEPG, JPG or PNG, file size no more than 1MB
+                                            </div>
+                                            <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
+                                                <div className="cursor-pointer absolute z-0 top-3 w-full">
+                                                    <div className="text-gradientFirst text-xs font-normal uppercase">Select file</div>
+                                                </div>
+                                            </div>
+                                            {errorCode !== 1 && errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}
+                                        </FileUploader>
+                                    </div>
+                                }
+                                <div className="flex flex-col gap-2">
+                                    <p className="font-fhW text-smS leading-shL">Description</p>
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={projectData.detail}
+                                        onChange={(e) => {
+                                            if (e.length <= 200) {
+                                                setProjectData({ ...projectData, detail: e })
+                                            }
+                                        }}
+                                        placeholder="Add description...."
+                                        className="h-28 text-addS "
+                                    />
+                                </div>
                             </div>
                             <div className='w-full col-span-12 flex mt-16 sm:mt-10'>
                                 <div className='w-full md:w-52'>

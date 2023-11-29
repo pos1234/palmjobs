@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import CandSmall from './CandSmall';
 import CandidateDetail from './CandidateDetail';
-import { fetchCandidateDetail, fetchShortListed } from '@/lib/employerBackend';
+import { fetchCandidateDetail, fetchShortListed } from '@/backend/employerBackend';
 const Shortlisted = (props: any) => {
     const [openCanDetail, setOpenCanDetail] = useState(false);
     const [imageUrl, setImageUrl] = useState('');

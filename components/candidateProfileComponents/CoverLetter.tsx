@@ -1,4 +1,4 @@
-import { getUserDetail, insertCoverLetter } from '@/lib/candidateBackend'
+import { getUserDetail, insertCoverLetter } from '@/backend/candidateBackend'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
