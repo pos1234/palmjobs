@@ -3,7 +3,7 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditIcon from '@mui/icons-material/Edit';
 import { toast } from 'react-toastify';
-import { getUserDetail, updateCertificates } from '@/lib/candidateBackend';
+import { getUserDetail, updateCertificates } from '@/backend/candidateBackend';
 import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
 import CloseIcon from '@mui/icons-material/Close';

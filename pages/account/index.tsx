@@ -5,19 +5,20 @@ import Link from 'next/link';
 import ForgotPassword from '@/components/account/ForgotPassword';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { getRole } from '@/lib/candidateBackend';
-import { getAccount, googleRegister, googleSignIn, signIn, signOut } from '@/lib/accountBackend';
+import { getRole } from '@/backend/candidateBackend';
+import { getAccount, googleRegister, googleSignIn, signIn, signOut } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
 import RegisterComponent from '@/components/account/Register';
 import Slider from '@/components/Slider';
 import { SubmitButton } from '@/components/TextInput';
+import { useGlobalContext } from '@/contextApi/userData';
+import { GlobalContextProvider } from '@/contextApi/jobPostData';
 const Login = () => {
     const router = useRouter();
     const logo = '/images/logo.svg';
     const google = '/images/google.svg';
-    const facebook = '/images/facebook.svg';
     const [register, setRegister] = useState(false);
     const [registerForm, setRegisterForm] = useState(false);
     const [forgotPassword, setForgotPassword] = useState(false);
@@ -31,7 +32,7 @@ const Login = () => {
         email: '',
         password: ''
     });
-    const loadingIn = '/images/loading.svg';
+    const { setUserData } = useGlobalContext()
     function validateEmail(email: string): boolean {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -51,7 +52,12 @@ const Login = () => {
                 sign.then(async (res) => {
                     setLoading(false);
                     toast.success('Successfully LoggedIn');
+                    typeof window !== 'undefined' && router.push('/jobs');
                     const loggedIn = await getAccount();
+                    if (loggedIn !== 'failed') {
+                        setUserData(loggedIn)
+                    }
+                    /* const loggedIn = await getAccount();
                     if (loggedIn !== 'failed') {
                         const role = await getRole();
                         if (role && role.documents[0].userRole == 'candidate') {
@@ -63,7 +69,7 @@ const Login = () => {
                     }
                     if (loggedIn == 'failed') {
                         typeof window !== 'undefined' && router.push('/account');
-                    }
+                    } */
                     /* const role = getRole();
                     role.then((rep) => {
                         if (rep.documents[0].userRole === 'candidate') router.push('/jobs');
@@ -264,23 +270,12 @@ const Login = () => {
                                         <SubmitButton loading={loading} buttonText="Login" />
                                     </div>
                                 </div>
-                                {/*  {!loading && (
-                                    <button className="mt-5 col-span-10 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl">
-                                        Login
-                                    </button>
-                                )}
-                                {loading && (
-                                    <div className="mt-5 col-span-10 text-textW h-16 w-full rounded-xl">
-                                        <img src={loadingIn} className="self-end text-textW h-16 w-full xl:w-56 rounded-xl" />
-                                    </div>
-                                )} */}
                             </form>
                         </>
                     )}
                     {register && (
                         <div className="w-full flex gap-x-3 mt-2 px-2 sm:px-0 max-lg:mb-8">
                             <div className="bg-gradientFirst inline h-2 w-full rounded-2xl"></div>
-                            {/*  <div className="bg-gradientFirst inline h-2 w-full rounded-2xl"></div> */}
                             <div
                                 className={
                                     registerForm == true
@@ -294,6 +289,7 @@ const Login = () => {
                 </div>
             </div>
         </>
+
     );
 };
 export default Login;

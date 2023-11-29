@@ -3,8 +3,8 @@ import LocalFireDepartmentOutlinedIcon from '@mui/icons-material/LocalFireDepart
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import skillsData from '@/lib/skillData';
-import { getUserDetail, updateSkills } from '@/lib/candidateBackend';
+import skillsData from '@/backend/skillData';
+import { getUserDetail, updateSkills } from '@/backend/candidateBackend';
 interface Data {
     word: string;
 }

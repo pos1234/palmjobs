@@ -1,8 +1,8 @@
 'use client';
 import { createContext, useContext, Dispatch, useState, SetStateAction, useEffect } from "react";
-import { getAccount, getRole } from "./accountBackend";
-import { getCandidateDocument } from "./candidateBackend";
-import { getProfileData } from "./employerBackend";
+import { getAccount, getRole } from "../backend/accountBackend";
+import { getCandidateDocument } from "../backend/candidateBackend";
+import { getProfileData } from "../backend/employerBackend";
 
 interface UserData {
     loading: boolean,
@@ -33,7 +33,6 @@ export const GlobalContextProvider = ({ children }: any) => {
             setUserData(userInfo);
             const role = await getRole();
             role && setUserRole(role.documents[0].userRole);
-
             if (role && role.documents[0].userRole == 'candidate') {
                 const candidate = await getCandidateDocument();
                 if (candidate) {
@@ -53,7 +52,7 @@ export const GlobalContextProvider = ({ children }: any) => {
     };
     useEffect(() => {
         getUserData();
-    }, []);
+    }, [userData]);
     return < GlobalContext.Provider value={{ userDetail, setUserDetail, loading, userData, setUserData, userRole }} >{children}</GlobalContext.Provider >
 }
 export const useGlobalContext = () => useContext(GlobalContext)

@@ -1,8 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { getAccount, getRole, signOut } from '@/lib/accountBackend';
-import { getCandidateDocument } from '@/lib/candidateBackend';
-import { getProfileData } from '@/lib/employerBackend'
+import { getAccount, getRole, signOut } from '@/backend/accountBackend';
+import { getCandidateDocument } from '@/backend/candidateBackend';
+import { getProfileData } from '@/backend/employerBackend'
 import styles from '@/styles/navigation.module.css';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import Link from 'next/link';
@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 import { ProfilePic } from './JobImage';
 import Image from 'next/image';
 import Logout from './Logout';
-import { useGlobalContext } from '@/lib/context';
+import { useGlobalContext } from '@/contextApi/userData';
 const Navigation = (props: any) => {
     const logo = '/images/logo.svg';
     const loadingIn = '/images/loading.svg';
@@ -70,7 +70,7 @@ const Navigation = (props: any) => {
     }, []); */
     return (
         <div>
-            <div className="flex flex-wrap gap-5 pt-3  md:border-2 md:border-t-0 xl:px-40 xl:h-[109px]">
+            <div className="flex flex-wrap gap-5 pt-3  md:border-2 md:border-t-0 xl:px-40 xl:h-[83px]">
                 <div className='md:max-lg:w-full flex justify-center xl:h-full xl:items-center'>
                     <Link href="/">
                         <img src={logo} alt="Image description" className="w-[160px] h-[70px]" />
@@ -118,7 +118,7 @@ const Navigation = (props: any) => {
                                             className="text-textW flex items-center gap-2 justify-center bg-black h-14 w-full rounded-[3px] hover:border-b-4 hover:border-b-gradientFirst buttonBounce"
                                         >
                                             <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
-                                            <p className='font-[400] text-[16px]'>Hire Talent</p>
+                                            <p className='font-[400] text-[16px]'>Post Job</p>
                                         </Link>
                                     </>
                                 )}
@@ -225,16 +225,16 @@ const Navigation = (props: any) => {
                                         className="text-textW flex items-center gap-2 justify-center bg-black h-[42px] w-[166px] rounded-[3px] hover:border-b-4 hover:border-b-gradientFirst buttonBounce"
                                     >
                                         <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
-                                        <p className='font-[400] text-[16px]'>Hire Talent</p>
+                                        <p className='font-[400] text-[16px]'>Post Job</p>
                                     </Link>
                                 </div>
                             </>
                         )}
                         {userData && (
                             <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
-                                <div className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 text-stone-500 bg-gray-50 rounded-full">
+                                <div className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 bg-gray-50 rounded-full">
                                     <Popover className="focus:ring-0 focus:border-0 focus:outline-0">
-                                        <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex items-center text-stone-500">
+                                        <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex items-center ">
                                             {userDetail && userDetail.profilePictureId && (
                                                 <div className="w-10 h-10 ">
                                                     <ProfilePic id={userDetail.profilePictureId} className="w-full h-full border-0 rounded-full outline-0 ring-none"

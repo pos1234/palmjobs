@@ -12,12 +12,12 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import PhonelinkIcon from '@mui/icons-material/Phonelink';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
-import { downLoadResume } from '@/lib/candidateBackend';
+import { downLoadResume } from '@/backend/candidateBackend';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
 import { ProfilePic } from '@/components/JobImage';
 import { useEffect, useState } from 'react';
-import { deleteShortListedCandidate, fetchShortListed, shortListedCandidate } from '@/lib/employerBackend';
+import { deleteShortListedCandidate, fetchShortListed, shortListedCandidate } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
 const CandidateDetail = (props: any) => {
     const pdfIcon = '/images/pdf2.svg';

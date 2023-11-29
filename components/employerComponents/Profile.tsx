@@ -1,10 +1,10 @@
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import { getEmployerDocument, getProfileData, updateProfile, updateUserName } from '@/lib/employerBackend';
+import { getEmployerDocument, getProfileData, updateProfile, updateUserName } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
 import { EmployerProfilePicture } from '../candidateProfileComponents/ProfilePicture';
-import { getAccount } from '@/lib/accountBackend';
+import { getAccount } from '@/backend/accountBackend';
 import { SubmitButton } from '../TextInput';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false

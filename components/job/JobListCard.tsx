@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import JobImage from '../JobImage';
-import { getCompanyData } from '@/lib/employerBackend';
+import { getCompanyData } from '@/backend/employerBackend';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
@@ -12,11 +12,12 @@ import ShareIcon from '@mui/icons-material/Share';
 import Share from '../Share';
 import { SmallLists, SubmitButton } from '../TextInput';
 import { Popover } from '@headlessui/react';
-import { alreadySaved, saveJobs } from '@/lib/candidateBackend';
-import { getAccount, getRole } from '@/lib/accountBackend';
+import { alreadySaved, saveJobs } from '@/backend/candidateBackend';
+import { getAccount, getRole } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/dist/client/router';
 import FormModal from '../candidateProfileComponents/FormModal';
+import moment from 'moment';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReturnName = (props: any) => {
     const [companyName, setCompanyName] = useState('');
@@ -43,6 +44,14 @@ const JobListCard = (props: any) => {
         employerId: '',
         message: ''
     })
+    const isToday = moment(props.items.datePosted).isSame(moment());
+    const isWithinWeek = moment(props.items.datePosted).isAfter(moment().subtract(7, 'days')) && moment(props.items.datePosted).isBefore(moment());
+    const date = new Date(props.items.datePosted);
+    const today = new Date();
+    const difference = today.getTime() - date.getTime();
+    const weeks = Math.floor(difference / (1000 * 60 * 60 * 24 * 7));
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+
     const getUserData = async () => {
         const userInfo = await getAccount();
         if (userInfo !== 'failed') {
@@ -118,7 +127,7 @@ const JobListCard = (props: any) => {
                 props.setOpenJobDetail(true);
             }}
             key={props.index}
-            className={`cursor-pointer bg-textW w-full max-h-[234px] h-[234px] flex flex-col gap-2 rounded-[12px] border-[1px]  px-5 py-4 ${props.items.$id == props.jobDetailId ? 'border-gradientFirst' : 'border-[#DEDEDE] hover:border-gradientFirst'} `}
+            className={`cursor-pointer bg-textW w-full max-h-[234px] h-[234px] xl:w-[458px] xl:max-w-[458px] flex flex-col gap-2 rounded-[12px] border-[1px]  px-5 py-4 ${props.items.$id == props.jobDetailId ? 'border-gradientFirst' : 'border-[#DEDEDE] hover:border-gradientFirst'} `}
         >
             <div className='flex justify-between flex-wrap gap-1'>
                 <div className='flex items-center gap-3'>
@@ -159,44 +168,50 @@ const JobListCard = (props: any) => {
                     )}
                 </div>
             </div>
-            <div>
-                <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 justify-between flex-wrap">
-                    {props.items.jobType &&
-                        <SmallLists icon={<img src='/icons/suitCase.svg' />}
-                            items={props.items.jobType} />
-                    }
-                    {(props.items.minSalary || props.items.maxSalary) && (
-                        <SmallLists icon={props.items.currency == 'euro' ? (
-                            <EuroIcon
-                                sx={{ fontSize: '1rem' }}
-                                className="-mt-0.5 mr-1"
-                            />
-                        ) : props.items.currency == 'usd' ? (
-                            <AttachMoneyOutlined
-                                sx={{ fontSize: '1rem' }}
-                                className="-mt-0.5 mr-1"
-                            />
-                        ) : props.items.currency == 'gpb' ? (
-                            <CurrencyPoundIcon
-                                sx={{ fontSize: '1rem' }}
-                                className="-mt-0.5 mr-1"
-                            />
-                        ) : props.items.currency == 'rnp' ? (
-                            <CurrencyRupeeIcon
-                                sx={{ fontSize: '1rem' }}
-                                className="-mt-0.5 mr-1"
-                            />
-                        ) : (
-                            <span className="text-[12px] mr-1">ETB</span>
-                        )}
-                            items={!props.items.minSalary && props.items.maxSalary
-                                ? props.items.maxSalary
-                                : props.items.minSalary && !props.items.maxSalary
-                                    ? props.items.minSalary
-                                    : props.items.minSalary + '-' + props.items.maxSalary}
+            <div className="text-[10px] flex gap-y-2 gap-x-3  md:text-[11px] md:mt-1 flex-wrap">
+                {props.items.jobType &&
+                    <SmallLists icon={<img src='/icons/suitCase.svg' />}
+                        items={props.items.jobType} />
+                }
+                {(props.items.minSalary || props.items.maxSalary) && (
+                    <SmallLists icon={props.items.currency == 'euro' ? (
+                        <EuroIcon
+                            sx={{ fontSize: '1rem' }}
+                            className="-mt-0.5 mr-1"
                         />
+                    ) : props.items.currency == 'usd' ? (
+                        <AttachMoneyOutlined
+                            sx={{ fontSize: '1rem' }}
+                            className="-mt-0.5 mr-1"
+                        />
+                    ) : props.items.currency == 'gpb' ? (
+                        <CurrencyPoundIcon
+                            sx={{ fontSize: '1rem' }}
+                            className="-mt-0.5 mr-1"
+                        />
+                    ) : props.items.currency == 'rnp' ? (
+                        <CurrencyRupeeIcon
+                            sx={{ fontSize: '1rem' }}
+                            className="-mt-0.5 mr-1"
+                        />
+                    ) : (
+                        <span className="text-[12px] mr-1">ETB</span>
                     )}
-                    {props.items.datePosted && (
+                        items={!props.items.minSalary && props.items.maxSalary
+                            ? props.items.maxSalary
+                            : props.items.minSalary && !props.items.maxSalary
+                                ? props.items.minSalary
+                                : props.items.minSalary + '-' + props.items.maxSalary}
+                    />
+                )}
+                {/* !props.items.externalLink && !props.items.emailApplication && */}
+                {!props.items.externalLink && !props.items.emailApplication && (
+                    <SmallLists
+                        icon={<span>Easy Apply</span>}
+                        items={''}
+                    />
+                )}
+                {/*  {props.items.datePosted && (
                         <SmallLists
                             icon={<img src='/icons/hourGlassUp.svg' />}
                             items={new Date(props.items.datePosted)
@@ -211,40 +226,42 @@ const JobListCard = (props: any) => {
                                 .toLocaleDateString('en-GB')
                                 .replace(/\//g, '-')}
                         />
-                    )}
-                </ul>
+                    )} */}
             </div>
-            <div className="w-full text-[#20262E] text-sm leading-[24px] my-5 md:my-0 md:mt-2 overflow-hidden max-h-[45%] sm:max-h-[90%] pr-2">
+            <div className="w-full text-[#20262E] text-sm leading-[24px] overflow-hidden pr-2">
                 <div className="w-full">
                     <div
                         className="overflow-ellipsis font-[400] leading-[20px] text-[11px] text-[#20262E]"
                         style={{
                             display: '-webkit-box',
-                            WebkitLineClamp: 3,
+                            WebkitLineClamp: 2,
                             WebkitBoxOrient: 'vertical'
                         }}
                         dangerouslySetInnerHTML={{ __html: props.items.jobDescription }}
                     />
                 </div>
             </div>
+            {isToday && isToday ? <p className='text-[12px]'>posted today</p> : isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.items.$id} />
             <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={'Survey'} text={''} tipText={"Thank you for helping us maintain a professional and safe environment on our job board. If you've found a job listing that violates our terms or seems inappropriate, please provide the information below to assist our review."}>
-                <form onSubmit={handleReportSubmit} className=" flex flex-col gap-10">
-                    <p>Reason for Reporting</p>
-                    <div className='flex flex-col gap-3'>
-                        <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 1 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(1)}>Discriminatory Language</p>
-                        <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 2 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(2)}>False Information</p>
-                        <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 3 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(3)}>Spam or Fraudulent</p>
-                        {reportCode == 4 && <p className='text-red-500 text-[14px]'>Please Select one of the above</p>}
-                        <textarea value={reportData.message} onChange={(e) => {
-                            if (e.currentTarget.value.length <= 200) {
-                                setReportData({ ...reportData, message: e.currentTarget.value })
-                            }
-                        }} cols={30} rows={20} className='w-[376px] resize-none h-60 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
+                <form onSubmit={handleReportSubmit} className="w-full flex flex-col gap-10">
+                    <div className='h-80 w-full overflow-y-auto pr-2 thinScrollBar flex flex-col gap-5'>
+                        <p>Reason for Reporting</p>
+                        <div className='flex flex-col gap-3'>
+                            <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 1 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(1)}>Discriminatory Language</p>
+                            <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 2 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(2)}>False Information</p>
+                            <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 3 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(3)}>Spam or Fraudulent</p>
+                            {reportCode == 4 && <p className='text-red-500 text-[14px]'>Please Select one of the above</p>}
+                            <textarea value={reportData.message} onChange={(e) => {
+                                if (e.currentTarget.value.length <= 200) {
+                                    setReportData({ ...reportData, message: e.currentTarget.value })
+                                }
+                            }} cols={30} rows={20} className='w-[376px] resize-none h-60 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
+                        </div>
                     </div>
                     <div className='w-full flex md:justify-end'>
                         <div className='w-full md:w-80'>
-                            <SubmitButton loading={reportLoading} buttonText="Save" />
+                            <SubmitButton loading={reportLoading} buttonText="Report" />
                         </div>
                     </div>
                 </form>

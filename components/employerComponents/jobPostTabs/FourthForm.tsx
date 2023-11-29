@@ -1,78 +1,78 @@
 import { SendJobPostedEmail } from '@/components/SendEmail';
-import { getAccount } from '@/lib/accountBackend';
-import { postFourthTab } from '@/lib/employerBackend';
+import { getAccount } from '@/backend/accountBackend';
+import { postFourthTab } from '@/backend/employerBackend';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import ArticleIcon from '@mui/icons-material/Article';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import { RequiredTextLabel } from './RequiredTextLabel';
-import TextInput, { SubmitButton } from '@/components/TextInput';
+import TextInput, { SubmitButton, TextInputRelated } from '@/components/TextInput';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import { useJobPostContext } from '@/contextApi/jobPostData';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const FourthForm = (props: any) => {
+    const { firstTabData, fourthTabData, setFourthTabData } = useJobPostContext()
     const router = useRouter();
-    const [loading, setLoading] = useState(false)
-    const [emailSent, setEmailSent] = useState('');
-    const [externalLink, setExternalLink] = useState('');
     const today = new Date();
-    const fifteenthDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14);
-    const [deadline, setDeadline] = useState(`${fifteenthDay}`);
-    const [palm, setPalm] = useState(true);
-    const [email, setEmail] = useState(false);
-    const [emailError, setEmailError] = useState('');
-    const [link, setLink] = useState(false);
-    const [linkError, setLinkError] = useState('');
-    const [emailNotify, setEmailNotify] = useState('');
     const todaysDate = new Date();
     const maxDate = new Date();
     maxDate.setMonth(today.getMonth() + 1);
-
     const validateLink = (link: string) => {
         if (link && !link.startsWith('https://')) {
             link = 'https://' + link;
         }
         return link;
     };
-    useEffect(() => {
-        if (props.editedData) {
-            if (props.editedData.emailApplication) {
-                setPalm(false);
-                setEmail(true);
-                setLink(false);
-                props.editedData.emailApplication && setEmailSent(props.editedData.emailApplication);
-            }
-            if (props.editedData.externalLink) {
-                setPalm(false);
-                setEmail(false);
-                setLink(true);
-                props.editedData.externalLink && setExternalLink(props.editedData.externalLink);
-            }
-        }
-    }, [props.editedData])
+    /*  useEffect(() => {
+         if (props.editedData) {
+             if (props.editedData.emailApplication) {
+                 setPalm(false);
+                 setEmail(true);
+                 setLink(false);
+                 props.editedData.emailApplication && setEmailSent(props.editedData.emailApplication);
+             }
+             if (props.editedData.externalLink) {
+                 setPalm(false);
+                 setEmail(false);
+                 setLink(true);
+                 props.editedData.externalLink && setExternalLink(props.editedData.externalLink);
+             }
+         }
+     }, [props.editedData]) */
     const handleFourthSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-        if (email && emailSent == '') {
-            setEmailError('please provide email address');
-        } else if (link && externalLink == '') {
-            setLinkError('please provide link');
+        if (fourthTabData.email && fourthTabData.emailSent == '') {
+            setFourthTabData({
+                ...fourthTabData, emailError: 'please provide email address'
+            })
+        } else if (fourthTabData.link && fourthTabData.externalLink == '') {
+            setFourthTabData({
+                ...fourthTabData, linkError: 'please provide link'
+            })
         } else {
-            setLoading(true);
-            postFourthTab(props.postingJobId, deadline, '', emailSent, validateLink(externalLink))
+            setFourthTabData({
+                ...fourthTabData, loading: true
+            })
+            postFourthTab(props.postingJobId, fourthTabData.deadline, '', fourthTabData.emailSent, validateLink(fourthTabData.externalLink))
                 .then((res: any) => {
-                    setLoading(false);
+                    setFourthTabData({
+                        ...fourthTabData, loading: false
+                    })
                     toast.success('Job posted successfully');
                     getAccount().then((result: any) => {
                         result &&
-                            emailNotify !== 'false' &&
-                            SendJobPostedEmail(result.email, /* jobTitle, */'', `${VERIFY}/jobs/${res.$id}`, result.name);
+                            fourthTabData.emailNotify !== 'false' &&
+                            SendJobPostedEmail(result.email, firstTabData.jobTitle, `${VERIFY}/jobs/${res.$id}`, result.name);
                     });
                     typeof window !== 'undefined' && router.push(`/jobs/${res.$id}`);
                 })
                 .catch((error) => {
-                    setLoading(false);
+                    setFourthTabData({
+                        ...fourthTabData, loading: false
+                    })
                     toast.error('Job not posted');
                     console.log(error);
                 });
@@ -88,11 +88,13 @@ const FourthForm = (props: any) => {
                 <div
                     title="Recieve Application Through Palmjobs"
                     onClick={() => {
-                        setPalm(true);
-                        setEmail(false);
-                        setLink(false);
+                        setFourthTabData({
+                            ...fourthTabData, palm: true,
+                            email: false,
+                            link: false
+                        })
                     }}
-                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${palm ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${fourthTabData.palm ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
 
                 >
                     <ArticleIcon className="-ml-0.5" />
@@ -101,11 +103,13 @@ const FourthForm = (props: any) => {
                 <div
                     title="Recieve Application Through Email"
                     onClick={() => {
-                        setPalm(false);
-                        setEmail(true);
-                        setLink(false);
+                        setFourthTabData({
+                            ...fourthTabData, palm: false,
+                            email: true,
+                            link: false
+                        })
                     }}
-                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${email ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${fourthTabData.email ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
 
                 >
                     <AlternateEmailIcon className="-ml-2" />
@@ -114,38 +118,43 @@ const FourthForm = (props: any) => {
                 <div
                     title="Recieve Application Through External Link"
                     onClick={() => {
-                        setPalm(false);
-                        setEmail(false);
-                        setLink(true);
+                        setFourthTabData({
+                            ...fourthTabData, palm: false,
+                            email: false,
+                            link: true
+                        })
                     }}
-                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${link ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                    className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${fourthTabData.link ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
                 >
                     <InsertLinkIcon className="-ml-2" />
                     <p>External Link</p>
                 </div>
             </div>
-            {email && (
+            {fourthTabData.email && (
                 <>
                     <RequiredTextLabel text="Email" />
-                    <TextInput placeHolder="Email Address" value={emailSent} setFunction={setEmailSent} />
-                    <p className="text-red-500 text-[13px]">{emailError}</p>
+                    <TextInputRelated placeHolder="Email Address" value={fourthTabData.emailSent} setFunction={setFourthTabData}
+                        dataDistruct={fourthTabData} change={'email'}
+                    />
+                    <p className="text-red-500 text-[13px]">{fourthTabData.emailError}</p>
                 </>
             )}
-            {link && (
+            {fourthTabData.link && (
                 <>
                     <RequiredTextLabel text="External Link" />
-                    <TextInput placeHolder="External Link" value={externalLink} setFunction={setExternalLink} />
-                    <p className="text-red-500 text-[13px]">{linkError}</p>
+                    <TextInputRelated placeHolder="External Link" value={fourthTabData.externalLink} setFunction={setFourthTabData}
+                        dataDistruct={fourthTabData} change={'link'} />
+                    <p className="text-red-500 text-[13px]">{fourthTabData.linkError}</p>
                 </>
             )}
             <div className="flex flex-col pt-2 gap-y-4 pb-7">
                 <RequiredTextLabel text="Closing Date" req="nReq" />
                 <input
-                    value={deadline}
+                    value={fourthTabData.deadline}
                     type="date"
                     min={todaysDate.toISOString().split('T')[0]}
                     max={maxDate.toISOString().split('T')[0]}
-                    onChange={(e) => setDeadline(e.currentTarget.value)}
+                    onChange={(e) => setFourthTabData({ ...fourthTabData, deadline: e.currentTarget.value })}
                     className="rounded-xl  border-stone-300 py-3 cursor-pointer focus:border-orange-500 focus:ring-0 w-full px-20 md:px-28 md:w-96"
                 />
             </div>
@@ -162,7 +171,6 @@ const FourthForm = (props: any) => {
                         See Preview &nbsp; <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
                     </div>
                 </div>
-
                 <div
                     onClick={props.handleBack}
                     className={
@@ -176,7 +184,7 @@ const FourthForm = (props: any) => {
                 <div className="flex justify-end">
                     <div className='w-full col-span-12 flex md:justify-end'>
                         <div className='w-full md:w-60'>
-                            <SubmitButton loading={loading} buttonText="Post Job" />
+                            <SubmitButton loading={fourthTabData.loading} buttonText="Post Job" />
                         </div>
                     </div>
                 </div>

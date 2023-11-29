@@ -1,4 +1,4 @@
-import { fetchActivePostedJobs, } from '@/lib/employerBackend';
+import { fetchActivePostedJobs, } from '@/backend/employerBackend';
 import React, { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';

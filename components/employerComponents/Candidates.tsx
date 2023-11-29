@@ -11,7 +11,7 @@ import {
     fetchPostedJobs,
     fetchShortListed,
 
-} from '@/lib/employerBackend';
+} from '@/backend/employerBackend';
 import JobsShimmer from '../shimmer/JobsShimmer';
 import Active from './candidateComponents/ActiveCandidates';
 import Shortlisted from './candidateComponents/Shortlisted';

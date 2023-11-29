@@ -14,8 +14,8 @@ import {
     getResumeName,
     uploadResume,
     downLoadResume,
-} from '@/lib/candidateBackend';
-import { getAccount } from '@/lib/accountBackend';
+} from '@/backend/candidateBackend';
+import { getAccount } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
 import { SendJobAppliedEmail } from '../SendEmail';
 import Link from 'next/link';

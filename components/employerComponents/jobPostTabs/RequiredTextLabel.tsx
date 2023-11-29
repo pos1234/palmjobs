@@ -9,10 +9,14 @@ export const RequiredTextLabel = (props: any) => {
     );
 };
 export const RequredExp = (props: any) => {
+    const change = props.change
+    const dataDistruct = props.dataDistruct
     return (
         <div
-            onClick={() => props.setFuntioner(props.text)}
-            className={`h-9 w-auto px-3 flex gap-x-2 items-center justify-center rounded-full ${props.value == props.text ? 'bg-gradientFirst text-textW' : 'cursor-pointer bg-textW text-gray-400 border-[1px] border-gray-200 hover:bg-gradientFirst hover:text-textW'}`}
+            onClick={(e) => props.setFuntioner({ ...dataDistruct, [change]: props.text })}
+
+/*             onClick={() => props.setFuntioner(props.text)}
+ */            className={`h-9 w-auto px-3 flex gap-x-2 items-center justify-center rounded-full ${props.value == props.text ? 'bg-gradientFirst text-textW' : 'cursor-pointer bg-textW text-gray-400 border-[1px] border-gray-200 hover:bg-gradientFirst hover:text-textW'}`}
         >
             <AddIcon sx={{ fontSize: '1.3rem' }} />
             <p className="text-[0.9rem]"> {props.text}</p>
@@ -27,6 +31,23 @@ export const Jobtype = (props: any) => {
                 {props.icon}
                 {props.money}
             </p>
+        </div>
+    );
+};
+export const RadioInput = (props: any) => {
+    const change = props.change
+    const dataDistruct = props.dataDistruct
+    return (
+        <div className="flex items-center gap-x-2">
+            <input
+                onChange={(e) => props.setFunction({ ...dataDistruct, [change]: e.currentTarget.value })}
+                type="radio"
+                checked={props.checked}
+                value={props.radioValue}
+                name={props.radioName}
+                className="form-radio text-gradientFirst ring-green-500 cursor-pointer"
+            />
+            <span className="text-neutral-900 text-opacity-40 text-lg font-medium ">{props.radioText}</span>
         </div>
     );
 };

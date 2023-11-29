@@ -13,7 +13,7 @@ import SpaIcon from '@mui/icons-material/Spa';
 import EditOffIcon from '@mui/icons-material/EditOff';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
 import PauseIcon from '@mui/icons-material/Pause';
-import { fetchDraftedJobs, fetchPostedJobs } from '@/lib/employerBackend';
+import { fetchDraftedJobs, fetchPostedJobs } from '@/backend/employerBackend';
 const Jobs = (props: any) => {
     const [opened, setOpened] = useState(true);
     const [draft, setDraft] = useState(false);

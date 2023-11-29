@@ -32,7 +32,7 @@ const SearchBar = (props: any) => {
                     </div>
                 </div>
                 <div onClick={props.setTheSearchTerm} className='cursor-pointer bg-green-500 p-2 rounded-full text-textW'>
-                    <img src='/icons/search.svg' className='w-5' />
+                    <img src='/icons/search.svg' className='w-5' alt='search icon' />
                 </div>
             </div>
 

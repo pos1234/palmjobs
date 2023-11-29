@@ -5,7 +5,7 @@ import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import EditIcon from '@mui/icons-material/Edit';
 import { toast } from 'react-toastify';
-import { getUserDetail, updateEducation } from '@/lib/candidateBackend';
+import { getUserDetail, updateEducation } from '@/backend/candidateBackend';
 import FormModal from './FormModal';
 import CloseIcon from '@mui/icons-material/Close';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
@@ -265,68 +265,70 @@ const Education = () => {
                         )}
                         {(displayEducation || EditEducation || educationArray.length == 0) && (
                             <form className="flex flex-col gap-5 w-full" onSubmit={EditEducation == true ? editEducations : addEducation}>
-                                <div className="flex flex-col gap-2 cursor-pointer">
-                                    <p className="font-fhW text-smS leading-shL">Level of Education</p>
-                                    <div className="relative" >
-                                        <select
-                                            className="w-full rounded-xl appearance-none px-4 p-3 focus:ring-gradientSecond focus:border-0 cursor-pointer"
-                                            value={education.educationLevel}
-                                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                                                setEducation({ ...education, educationLevel: e.currentTarget.value })
-                                            }
-                                        >
-                                            <option value="High School Diploma">High School Diploma</option>
-                                            <option value="Vocational Training/Certificate">Vocational Training/Certificate</option>
-                                            <option value="Associate Degree">Associate Degree</option>
-                                            <option value="Bachelor's Degree">Bachelor's Degree</option>
-                                            <option value="Postgraduate Certificate/Diploma">Postgraduate Certificate/Diploma</option>
-                                            <option value="Master's Degree">Master's Degree</option>
-                                            <option value="Professional Degree">Professional Degree</option>
-                                            <option value="Doctorate (PhD)">Doctorate (PhD)</option>
-                                            <option value="Post-Doctorate">Post-Doctorate</option>
-                                        </select>
+                                <div className='h-80 overflow-y-auto pr-2 thinScrollBar'>
+                                    <div className="flex flex-col gap-2 cursor-pointer">
+                                        <p className="font-fhW text-smS leading-shL">Level of Education</p>
+                                        <div className="relative" >
+                                            <select
+                                                className="w-full rounded-xl appearance-none px-4 p-3 focus:ring-gradientSecond focus:border-0 cursor-pointer"
+                                                value={education.educationLevel}
+                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                                                    setEducation({ ...education, educationLevel: e.currentTarget.value })
+                                                }
+                                            >
+                                                <option value="High School Diploma">High School Diploma</option>
+                                                <option value="Vocational Training/Certificate">Vocational Training/Certificate</option>
+                                                <option value="Associate Degree">Associate Degree</option>
+                                                <option value="Bachelor's Degree">Bachelor's Degree</option>
+                                                <option value="Postgraduate Certificate/Diploma">Postgraduate Certificate/Diploma</option>
+                                                <option value="Master's Degree">Master's Degree</option>
+                                                <option value="Professional Degree">Professional Degree</option>
+                                                <option value="Doctorate (PhD)">Doctorate (PhD)</option>
+                                                <option value="Post-Doctorate">Post-Doctorate</option>
+                                            </select>
 
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <p className="font-fhW text-smS leading-shL">Field of Study/Major</p>
-                                    <input
-                                        type="text"
-                                        value={education.fieldStudy}
-                                        onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                            setEducation({ ...education, fieldStudy: e.currentTarget.value })
-                                        }
-                                        placeholder="Enter Field of Study/Major"
-                                        className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
-                                    />
-                                    {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <p className="font-fhW text-smS leading-shL">University / Institution</p>
-                                    <input
-                                        type="text"
-                                        value={education.university}
-                                        onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                            setEducation({ ...education, university: e.currentTarget.value })
-                                        }
-                                        placeholder="Enter Your University / Institution"
-                                        className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
-                                    />
-                                    {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <p className="font-fhW text-smS leading-shL">Graduation year</p>
-                                    <input
-                                        max={new Date().toISOString().split('T')[0]}
-                                        value={education.yearIssued}
-                                        type="date"
-                                        onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                            setEducation({ ...education, yearIssued: e.currentTarget.value })
-                                        }
-                                        placeholder="Year Issued"
-                                        className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS appearNone ${errorCode == 3 ? 'border-orange-500' : 'border-gray-200'}`}
-                                    />
-                                    {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}
+                                    <div className="flex flex-col gap-2">
+                                        <p className="font-fhW text-smS leading-shL">Field of Study/Major</p>
+                                        <input
+                                            type="text"
+                                            value={education.fieldStudy}
+                                            onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                                                setEducation({ ...education, fieldStudy: e.currentTarget.value })
+                                            }
+                                            placeholder="Enter Field of Study/Major"
+                                            className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                        />
+                                        {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <p className="font-fhW text-smS leading-shL">University / Institution</p>
+                                        <input
+                                            type="text"
+                                            value={education.university}
+                                            onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                                                setEducation({ ...education, university: e.currentTarget.value })
+                                            }
+                                            placeholder="Enter Your University / Institution"
+                                            className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
+                                        />
+                                        {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <p className="font-fhW text-smS leading-shL">Graduation year</p>
+                                        <input
+                                            max={new Date().toISOString().split('T')[0]}
+                                            value={education.yearIssued}
+                                            type="date"
+                                            onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                                                setEducation({ ...education, yearIssued: e.currentTarget.value })
+                                            }
+                                            placeholder="Year Issued"
+                                            className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS appearNone ${errorCode == 3 ? 'border-orange-500' : 'border-gray-200'}`}
+                                        />
+                                        {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}
+                                    </div>
                                 </div>
                                 <div className='w-full col-span-12 flex '>
                                     <div className='w-full md:w-52'>

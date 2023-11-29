@@ -6,22 +6,22 @@ import PeopleIcon from '@mui/icons-material/People';
 import HelpIcon from '@mui/icons-material/Help';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useEffect, useState } from 'react';
-import PostAJob from '../../../components/employerComponents/EmployerPostJob';
+import PostAJob from '../../../components/employerComponents/PostJob';
 import styles from '@/styles/navigation.module.css';
 import ShieldIcon from '@mui/icons-material/Shield';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import Dashboard from '@/components/employerComponents/Dashoboard';
 import Jobs from '@/components/employerComponents/Jobs';
 import Candidates from '@/components/employerComponents/Candidates';
-import EmployerProfile from '@/components/employerComponents/EmployerProfile';
+import EmployerProfile from '@/components/employerComponents/Profile';
 import Privacy from '@/components/employerComponents/Privacy';
 import { employeeAuth } from '@/components/withAuth';
 import ConfirmModal from '@/components/ConfirmModal';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { useRouter } from 'next/dist/client/router';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import { getAccount, signOut } from '@/lib/accountBackend'
-import { getProfileData, } from '@/lib/employerBackend';
+import { getAccount, signOut } from '@/backend/accountBackend'
+import { getProfileData, } from '@/backend/employerBackend';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { ProfilePic } from '@/components/JobImage';

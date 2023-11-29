@@ -1,5 +1,5 @@
 /* import { UserProvider } from '@/lib/context';
- */ import { GlobalContextProvider } from '@/lib/context';
+ */ import { GlobalContextProvider } from '@/contextApi/userData';
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import { ToastContainer, toast } from 'react-toastify';

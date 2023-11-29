@@ -7,7 +7,7 @@ import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import PhoneIphoneOutlinedIcon from '@mui/icons-material/PhoneIphoneOutlined';
-import { addPhoneAddress, getUserDetail } from '@/lib/candidateBackend';
+import { addPhoneAddress, getUserDetail } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
 import SocialForm from './SocialForm';
 const SocialLinks = (props: any) => {

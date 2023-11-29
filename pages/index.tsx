@@ -39,7 +39,7 @@ const Home = () => {
                         </p> */}
                         <p className="font-shW text-shS max-md:justify-center flex items-center text-xl md:text-[46px] my-2">
                             Connect. Grow.<span className='-mt-6 md:-mt-9'>
-                                <img src="/images/connectLeaf.svg" alt="" className='h-full max-md:w-10' />
+                                <img src="/images/connectLeaf.svg" alt="leaf" className='h-full max-md:w-10' />
                             </span><span className="text-gradientFirst">Succeed.</span>
                         </p>
                         <p className="max-md:text-center text-[#20262E] font-[600] md:text-[27px]">Find your next job. Easy as a breeze.</p>

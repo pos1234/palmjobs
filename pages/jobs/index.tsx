@@ -6,8 +6,8 @@ import { useEffect, useState, Fragment } from 'react';
 import ConfirmModal from '@/components/ConfirmModal';
 import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
-import { signOut } from '@/lib/accountBackend';
-import { getCompanyData, fetchJobs, } from '@/lib/employerBackend'
+import { signOut } from '@/backend/accountBackend';
+import { getCompanyData, fetchJobs, } from '@/backend/employerBackend'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobsShimmer from '@/components/shimmer/JobsShimmer';
@@ -53,45 +53,51 @@ const Jobs = ({ documents }: any) => {
             }
         });
     }, [employerId]);
+    const handleForYou = () => {
+        if (forYou == false) {
+            const title = localStorage.getItem('jobTitle');
+            title && setLocalValue(title)
+            setForYou(true)
+        }
+        if (forYou == true) {
+            setLocalValue('')
+            setForYou(false)
+        }
+    }
     const filData =
         data &&
         data.filter((item: any) => {
             let isMatch = true;
             const postedDate = new Date(item.datePosted);
             const now = new Date();
-            const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (now.getDay() - 6));
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const lastHour = new Date(today);
+            lastHour.setHours(23, 59, 59, 999);
             const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
-            const title = localStorage.getItem('jobTitle')
+            const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
             if (searchQuery.toLocaleLowerCase()) {
-                const title = localStorage.getItem('jobTitle')
                 if (forYou == false) {
                     const searchRegex = new RegExp(searchQuery, 'i');
                     isMatch = isMatch && searchRegex.test(item.jobTitle);
                 }
-                if (forYou == true && title !== null) {
-                    const searchRegex = new RegExp(title.toLocaleLowerCase(), 'i');
-                    isMatch = isMatch && searchRegex.test(item.jobTitle)
-                    /* const searchRegex2 = new RegExp('', 'i');
-                    const result2 = isMatch && searchRegex2.test(item.jobTitle);
-                    isMatch = (result && forYou
-                        ) ? isMatch && searchRegex.test(item.jobTitle) : isMatch && searchRegex2.test(item.jobTitle);
-                    console.log(isMatch); */
-                }
             }
-
+            if (localValue !== '') {
+                const searchRegex = new RegExp(localValue, 'i');
+                isMatch = isMatch && searchRegex.test(item.jobTitle)
+            }
             if (addressHolder !== '' && address.toLocaleLowerCase()) {
                 const searchRegex = new RegExp(addressHolder, 'i');
                 isMatch = isMatch && searchRegex.test(item.jobLocation);
             }
             if (datePostedHolder !== 'Any time' && datePostedHolder !== '') {
                 if (datePostedHolder == 'Past 24hrs') {
-                    isMatch = isMatch && postedDate == new Date();
+                    isMatch = isMatch && postedDate.toISOString() <= lastHour.toISOString() && postedDate.toISOString() >= today.toISOString();
                 }
                 if (datePostedHolder == 'Past week') {
-                    isMatch = isMatch && postedDate >= startOfWeek;
+                    isMatch = isMatch && sevenDaysAgo.toISOString() < postedDate.toISOString();
                 }
                 if (datePostedHolder == 'Past month') {
-                    isMatch = isMatch && postedDate >= thirtyDaysAgo && postedDate <= now;
+                    isMatch = isMatch && postedDate.toISOString() >= thirtyDaysAgo.toISOString() && postedDate.toISOString() <= now.toISOString();
                 }
             }
             if (expLevelHolder !== '') {
@@ -135,7 +141,6 @@ const Jobs = ({ documents }: any) => {
         }
     }, [router.query]);
     useEffect(() => {
-
         filData && filData.length !== 0 && setJobDetailId(filData[0].$id)
         filData && filData.length !== 0 && setJobDetails(filData[0])
     }, [data])
@@ -174,7 +179,7 @@ const Jobs = ({ documents }: any) => {
     }, [jobDetailId]);
     useEffect(() => {
         filData && filData.length !== 0 && setJobDetails(filData[0]);
-    }, [searchQuery]);
+    }, [searchQuery, localValue]);
     const createCandidateAccount = () => {
         signOut()
             .then(() => {
@@ -190,9 +195,9 @@ const Jobs = ({ documents }: any) => {
                 <Navigation />
                 {allLoading && <div className='mt-8 md:mt-28 px-3 xl:px-40'> <JobsShimmer /></div>}
                 {!allLoading && (
-                    <div className="grid grid-cols-12 sm:gap-x-10 mt-8 md:mt-16 px-3">
+                    <div className="grid grid-cols-12 sm:gap-x-10 mt-8 px-3">
                         <div className="col-span-12 grid grid-cols-12 gap-x-2 xl:gap-x-5">
-                            <div className="col-span-12 flex flex-wrap gap-x-2 gap-y-4">
+                            <div className="col-span-12 flex flex-wrap relative xl:justify-center gap-x-2 gap-y-4">
                                 <div className={!openJobDetail ? 'xl:px-40 border-b-2 w-full flex flex-wrap gap-x-2 gap-y-4 mb-5' : 'max-md:hidden xl:px-40 border-b-2 w-full flex flex-wrap gap-x-2 gap-y-4 mb-5'}>
                                     <div className={openJobDetail ? 'max-md:hidden w-full' : 'w-full'}>
                                         <SearchBar searchWord={searchWord}
@@ -203,11 +208,11 @@ const Jobs = ({ documents }: any) => {
                                         />
                                     </div>
                                     <div className='w-full justify-center flex gap-5 mt-6 items-center font-[500]'>
-                                        <div onClick={() => setForYou(true)} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] ${forYou ? 'text-gradientFirst border-b-gradientFirst' : ' border-textW hover:border-b-gradientFirst hover:text-gradientFirst'}`}>
+                                        <div onClick={handleForYou} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] ${forYou ? 'text-gradientFirst border-b-gradientFirst' : ' border-textW hover:border-b-gradientFirst hover:text-gradientFirst'}`}>
                                             <WbSunnyIcon sx={{ fontSize: '1rem' }} />
                                             <p>For You</p>
                                         </div>
-                                        <div onClick={() => setForYou(false)} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px]  ${forYou ? 'border-textW hover:border-b-gradientFirst hover:text-gradientFirst' : 'text-gradientFirst border-b-gradientFirst'}`}>
+                                        <div onClick={handleForYou} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px]  ${forYou ? 'border-textW hover:border-b-gradientFirst hover:text-gradientFirst' : 'text-gradientFirst border-b-gradientFirst'}`}>
                                             <SearchOutlined sx={{ fontSize: '1rem' }} />
                                             <p>Search</p>
                                         </div>
@@ -217,7 +222,7 @@ const Jobs = ({ documents }: any) => {
                                         </div> */}
                                     </div>
                                 </div>
-                                <div className={!openJobDetail ? 'w-full flex gap-3 xl:px-40 mb-3' : 'max-md:hidden w-full flex gap-3 xl:px-40 mb-3'}>
+                                <div className={!openJobDetail ? 'w-full flex flex-wrap gap-3 xl:w-[1112px] mb-3' : 'max-md:hidden w-full flex gap-3 xl:w-[1112px] mb-3'}>
                                     <img src="/icons/filterIcon.svg" alt="filter" />
                                     <select value={jobTypeHolder} onChange={(e) => setJobTypeHolder(e.currentTarget.value)} name="jobType" id="jobType" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
                                         <option value="">Job Type</option>
@@ -243,12 +248,12 @@ const Jobs = ({ documents }: any) => {
                                         <option value="Past month">Past month</option>
                                     </select>
                                 </div>
-                                <div className="w-full flex gap-5 max-md:p-3 pb-0 rounded-x-2xl xl:px-40">
+                                <div className="w-full flex justify-center gap-5 max-md:p-3 pb-0 rounded-x-2xl">
                                     <div
                                         className={
                                             openJobDetail == true
-                                                ? 'w-full hidden flex flex-col gap-y-3 max-h-[40rem] overflow-auto hideScrollBar md:flex md:w-1/2 lg:col-span-5 xl:w-2/5'
-                                                : 'w-full flex flex-col max-h-[40rem] gap-y-3 overflow-auto hideScrollBar md:flex md:w-1/2 lg:col-span-5 xl:w-2/5'
+                                                ? 'hidden flex flex-col gap-y-3 max-h-[800px] overflow-auto h-[800px] hideScrollBar md:w-1/2 lg:w-1/3 md:flex xl:w-[458px]'
+                                                : 'flex flex-col max-h-[800px] gap-y-3 overflow-auto hideScrollBar h-[800px] md:w-1/2  lg:w-1/3 md:flex xl:w-[458px]'
                                         }
                                     >
                                         {currentData && currentData.length !== 0 && <CheckProfileCompletion />}
@@ -260,8 +265,8 @@ const Jobs = ({ documents }: any) => {
                                     <div
                                         className={
                                             openJobDetail == true
-                                                ? 'max-md:w-full grid grid-cols-12 gap-x-5 xl:col-span-9 md:w-2/3 xl:w-3/5'
-                                                : 'max-md:w-full grid grid-cols-12 gap-x-5 xl:col-span-9 md:w-2/3 xl:w-3/5 max-md:hidden'
+                                                ? 'grid grid-cols-12 gap-x-5 md:w-1/2 lg:w-3/5 xl:w-[654px] h-[800px]'
+                                                : 'grid grid-cols-12 gap-x-5 max-md:hidden md:w-1/2 lg:w-3/5 xl:w-[654px] h-[800px]'
                                         }
                                     >
                                         {jobDetails && currentData.length !== 0 && <JobDetail
@@ -277,6 +282,7 @@ const Jobs = ({ documents }: any) => {
                                     </div>
 
                                 </div>
+
                                 {
                                     currentData && currentData.length == 0 && <div className='w-full items-center h-60 flex justify-center'>
                                         <p className='text-xl font-[500] w-full text-center leading-[40px] flex justify-center flex-wrap xl:w-[70%]'> Looks like there aren't any matches right now. <br /> Why not try some different keywords or tweak your filters?</p>

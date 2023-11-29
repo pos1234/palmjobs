@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import RadioInput from '@/components/RadioInput';
-import { getProfileData, fetchPostedJobs, fetchSinglePostedJobs, fetchDraftedJobs, } from '@/lib/employerBackend';
+import { getProfileData, fetchPostedJobs, fetchSinglePostedJobs, fetchDraftedJobs, } from '@/backend/employerBackend';
 import 'react-quill/dist/quill.snow.css';
-import EmployerProfile from './EmployerProfile';
+import EmployerProfile from './Profile';
 import FirstForm from './jobPostTabs/FirstForm';
 import SecondForm from './jobPostTabs/SecondForm';
 import ThirdForm from './jobPostTabs/ThirdForm';
 import FourthForm from './jobPostTabs/FourthForm';
-import ConfirmModal from '../ConfirmModal';
 import PreviewJob from './jobPostTabs/PreviewJob';
+import { useJobPostContext } from '@/contextApi/jobPostData';
+import { GlobalContextProvider } from '@/contextApi/jobPostData';
 const PostAJob = (props: any) => {
     const [chooseJob, setChooseJob] = useState(false);
     const [selectedRadio, setSelectedRadio] = useState('empty');
@@ -30,7 +31,6 @@ const PostAJob = (props: any) => {
     const [emailNotify, setEmailNotify] = useState('');
     const [editedData, setEditedData] = useState<any>();
     const [companyData, setCompanyData] = useState<any>()
-    
     const initialData = () => {
         const result = getProfileData();
 
@@ -67,8 +67,7 @@ const PostAJob = (props: any) => {
         } */
     };
     const handleFront = () => {
-
-        if (chooseJob && !first && !second && !third && !fourth) {
+        if (chooseJob == true) {
             setFourth(false);
             setThird(false);
             setSecond(false);
@@ -91,52 +90,57 @@ const PostAJob = (props: any) => {
             setChooseJob(false);
         }
         if (!second && third && !fourth) {
-            /*  if (salaryRange.name === 'Range') {
-                 if (jobDesc == '') {
-                     setJobDescError('Job Description is required');
-                 } else {
-                     if (salaryRange.name === 'Range') {
-                         if (minSalary !== '' && maxSalary !== '') {
-                             setSalary(minSalary + '-' + maxSalary);
-                         } else if (minSalary !== '' && maxSalary == '') {
-                             setSalary(minSalary);
-                         } else if (minSalary == '' && maxSalary !== '') {
-                             setSalary(maxSalary);
-                         } else {
-                             setSalary('');
-                         }
-                         setFourth(true);
-                         setThird(false);
-                         setSecond(false);
-                         setFirst(false);
-                         setChooseJob(false);
-                     }
-                     else if (salaryRange.name === 'Starting amount') {
-                         setSalary(minSalary);
-                         setFourth(true);
-                         setThird(false);
-                         setSecond(false);
-                         setFirst(false);
-                         setChooseJob(false);
-                     } else if (salaryRange.name == 'Maximum amount') {
- 
-                         setSalary(maxSalary);
-                         setFourth(true);
-                         setThird(false);
-                         setSecond(false);
-                         setFirst(false);
-                         setChooseJob(false);
-                     }
-                 }
-             }
-             else if (salaryRange.name === 'Exact amount') {
-  */
             setFourth(true);
             setThird(false);
             setSecond(false);
             setFirst(false);
             setChooseJob(false);
-            /*  } */
+            /*  if (salaryRange.name === 'Range') {
+                  if (jobDesc == '') {
+                      setJobDescError('Job Description is required');
+                  } else {
+                      if (salaryRange.name === 'Range') {
+                          if (minSalary !== '' && maxSalary !== '') {
+                              setSalary(minSalary + '-' + maxSalary);
+                          } else if (minSalary !== '' && maxSalary == '') {
+                              setSalary(minSalary);
+                          } else if (minSalary == '' && maxSalary !== '') {
+                              setSalary(maxSalary);
+                          } else {
+                              setSalary('');
+                          }
+                          setFourth(true);
+                          setThird(false);
+                          setSecond(false);
+                          setFirst(false);
+                          setChooseJob(false);
+                      }
+                      else if (salaryRange.name === 'Starting amount') {
+                          setSalary(minSalary);
+                          setFourth(true);
+                          setThird(false);
+                          setSecond(false);
+                          setFirst(false);
+                          setChooseJob(false);
+                      } else if (salaryRange.name == 'Maximum amount') {
+  
+                          setSalary(maxSalary);
+                          setFourth(true);
+                          setThird(false);
+                          setSecond(false);
+                          setFirst(false);
+                          setChooseJob(false);
+                      }
+                  }
+              }
+              else if (salaryRange.name === 'Exact amount') {
+    * /
+                  setFourth(true);
+                  setThird(false);
+                  setSecond(false);
+                  setFirst(false);
+                  setChooseJob(false);
+                  /*  }*/
         }
     };
     /*  const generateJobDescription = async ({
@@ -230,7 +234,6 @@ const PostAJob = (props: any) => {
             getDrafted();
         }
     }, [selectedRadio]);
-
     useEffect(() => {
         initialData();
         fetchPostedJobs()
@@ -245,56 +248,81 @@ const PostAJob = (props: any) => {
             .catch((error) => {
                 console.log(error);
             });
-
-
     }, []);
-
-
     return (
-        <div className="pt-5 px-3 pb-10 bg-textW min-h-screen md:pl-10 xl:pr-28 xl:px-20">
+        <GlobalContextProvider>
+            <div className="pt-5 px-3 pb-10 bg-textW min-h-screen md:pl-10 xl:pr-28 xl:px-20">
 
-            {!chooseJob && noJobs && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
-            {!chooseJob && noJobs && (
-                <div
-                    className="col-span-12 grid grid-cols-12 gap-x-2 mt-1 md:pr-20 lg:pr-40
+                {!chooseJob && noJobs && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
+                {!chooseJob && noJobs && (
+                    <div
+                        className="col-span-12 grid grid-cols-12 gap-x-2 mt-1 md:pr-20 lg:pr-40
              xl:pr-60"
+                    >
+                        <div className="rounded-2xl bg-gradientFirst h-1.5 col-span-3"></div>
+                        <div
+                            className={
+                                second || third || fourth
+                                    ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3'
+                                    : 'rounded-2xl bg-fadedText h-1.5 col-span-3'
+                            }
+                        ></div>
+                        <div
+                            className={
+                                third || fourth ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3' : 'rounded-2xl bg-fadedText h-1.5 col-span-3'
+                            }
+                        ></div>
+                        <div
+                            className={fourth ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3' : 'rounded-2xl bg-fadedText h-1.5 col-span-3'}
+                        ></div>
+                    </div>
+                )}
+                <div
+                    className={
+                        (noJobs || noDraft) && first == false && chooseJob == true ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'
+                    }
                 >
-                    <div className="rounded-2xl bg-gradientFirst h-1.5 col-span-3"></div>
-                    <div
-                        className={
-                            second || third || fourth
-                                ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3'
-                                : 'rounded-2xl bg-fadedText h-1.5 col-span-3'
-                        }
-                    ></div>
-                    <div
-                        className={
-                            third || fourth ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3' : 'rounded-2xl bg-fadedText h-1.5 col-span-3'
-                        }
-                    ></div>
-                    <div
-                        className={fourth ? 'rounded-2xl bg-gradientFirst h-1.5 col-span-3' : 'rounded-2xl bg-fadedText h-1.5 col-span-3'}
-                    ></div>
-                </div>
-            )}
-            <div
-                className={
-                    (noJobs || noDraft) && chooseJob && !first && !second && !third && !fourth ? 'col-span-12 pt-5 space-y-3 ' : 'hidden'
-                }
-            >
-                <div className="text-neutral-900 h-20 flex items-center overflow-hidden justify-between pl-5 md:h-32 jobsBack">
-                    <div className='flex flex-col gap-2'>
-                        <p className='font-[700] text-[24px]'>Develop the Job Description using AI</p>
-                        <p className='font-[400] text-[14px] text-gray-500'>Lorem ipsum sit amet consectetur. Accumsan</p>
+                    <div className="text-neutral-900 h-20 flex items-center overflow-hidden justify-between pl-5 md:h-32 jobsBack">
+                        <div className='flex flex-col gap-2'>
+                            <p className='font-[700] text-[24px]'>Develop the Job Description using AI</p>
+                            <p className='font-[400] text-[14px] text-gray-500'>Lorem ipsum sit amet consectetur. Accumsan</p>
+                        </div>
+                        <div className='p-5 pr-10'>
+                            <img src="/images/bigSearch.svg" alt="" className='w-28' />
+                        </div>
                     </div>
-                    <div className='p-5 pr-10'>
-                        <img src="/images/bigSearch.svg" alt="" className='w-28' />
+                    <div className='pt-5 font-[600] text-xl'>
+                        Choose how to post a Job
                     </div>
-                </div>
-                <div className='pt-5 font-[600] text-xl'>
-                    Choose how to post a Job
-                </div>
-                <div className="flex flex-col gap-y-5 pt-5 pb-10">
+
+                    <div className="flex bg-forBack  p-2 gap-x-5 w-full lg:w-1/2">
+                        <div
+                            onClick={() => {
+                                setSelectedRadio('empty')
+                            }}
+                            className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${selectedRadio == "empty" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                        >
+                            <p >New Post</p>
+                        </div>
+                        <div
+                            onClick={() => {
+                                setSelectedRadio('duplicate')
+                            }}
+                            className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${selectedRadio == "duplicate" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                        >
+                            <p >Duplicate</p>
+                        </div>
+                        <div
+                            onClick={() => {
+                                setSelectedRadio('draft')
+                            }}
+                            className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${selectedRadio == "draft" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                        >
+                            <p>Draft</p>
+                        </div>
+                    </div>
+
+                    {/*  <div className="flex flex-col gap-y-5 pt-5 pb-10">
                     <RadioInput
                         radioName="selectedRadio"
                         radioText="Start with a new post"
@@ -317,102 +345,105 @@ const PostAJob = (props: any) => {
                             setFunction={setSelectedRadio}
                         />
                     )}
+                </div> */}
+                    <div>
+                        {(selectedRadio == 'duplicate' || selectedRadio == 'draft') && (
+                            <select
+                                style={{ maxHeight: '200px' }}
+                                onChange={(e) => {
+                                    setJobId(e.currentTarget.value);
+                                    handleJobSelection(e.currentTarget.value);
+                                }}
+                                className="form-select  h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96"
+                            >
+                                {postedJobs &&
+                                    postedJobs.map((item: any, index: number) => {
+                                        return (
+                                            <option value={item.$id} key={index}>
+                                                {item.jobTitle}
+                                            </option>
+                                        );
+                                    })}
+                            </select>
+                        )}
+                    </div>
                 </div>
-                <div>
-                    {(selectedRadio == 'duplicate' || selectedRadio == 'draft') && (
-                        <select
-                            style={{ maxHeight: '200px' }}
-                            onChange={(e) => {
-                                setJobId(e.currentTarget.value);
-                                handleJobSelection(e.currentTarget.value);
-                            }}
-                            className="form-select  h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-3xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96"
+                <div className={first == true ? '' : 'hidden'}>
+                    <FirstForm
+                        first={first}
+                        second={second}
+                        third={third}
+                        fourth={fourth}
+                        setFirst={setFirst}
+                        setSecond={setSecond}
+                        setThird={setThird}
+                        setFourth={setFourth} setPostingJobId={setPostingJobId}
+                        editedData={editedData}
+/*                 postingJobId={postingJobId}
+                    */                setChooseJob={setChooseJob}
+                    />
+                </div>
+                <div className={second == true ? '' : 'hidden'}>
+                    <SecondForm
+                        first={first}
+                        second={second}
+                        third={third}
+                        fourth={fourth}
+                        setFirst={setFirst}
+                        setSecond={setSecond}
+                        setThird={setThird}
+                        setFourth={setFourth}
+                        setPostingJobId={setPostingJobId}
+                        editedData={editedData}
+                        postingJobId={postingJobId}
+                        handleBack={handleBack}
+                    />
+                </div>
+                {profileFilled && <EmployerProfile setFilled={setProfileFilled} />}
+                {!profileFilled && <ThirdForm
+                    first={first}
+                    second={second}
+                    third={third}
+                    fourth={fourth}
+                    setFirst={setFirst}
+                    setSecond={setSecond}
+                    setThird={setThird}
+                    setFourth={setFourth}
+                    editedData={editedData}
+                    setPostingJobId={setPostingJobId}
+                    postingJobId={postingJobId}
+                    handleBack={handleBack}
+                />
+                }
+                <FourthForm
+                    first={first}
+                    second={second}
+                    third={third}
+                    fourth={fourth}
+                    setFirst={setFirst}
+                    setSecond={setSecond}
+                    setThird={setThird}
+                    setFourth={setFourth}
+                    setPostingJobId={setPostingJobId}
+                    postingJobId={postingJobId}
+                    handleBack={handleBack}
+                    openPreview={openPreview}
+                    setOpenPreview={setOpenPreview}
+                />
+                <div className="flex justify-end pt-5">
+                    {chooseJob == true && !first && (noJobs || noDraft) && (
+                        <div
+                            onClick={handleFront}
+                            className="text-textW bg-black flex items-center justify-center cursor-pointer h-16 max-md:mt-10 w-full md:w-5/12 rounded-xl lg:w-3/12"
                         >
-                            {postedJobs &&
-                                postedJobs.map((item: any, index: number) => {
-                                    return (
-                                        <option value={item.$id} key={index}>
-                                            {item.jobTitle}
-                                        </option>
-                                    );
-                                })}
-                        </select>
+                            Continue
+                        </div>
                     )}
                 </div>
-            </div>
-            <FirstForm
-                first={first}
-                second={second}
-                third={third}
-                fourth={fourth}
-                setFirst={setFirst}
-                setSecond={setSecond}
-                setThird={setThird}
-                setFourth={setFourth}
-                setPostingJobId={setPostingJobId}
-                editedData={editedData}
-/*                 postingJobId={postingJobId}
- */                setChooseJob={setChooseJob}
-            />
-            <SecondForm
-                first={first}
-                second={second}
-                third={third}
-                fourth={fourth}
-                setFirst={setFirst}
-                setSecond={setSecond}
-                setThird={setThird}
-                setFourth={setFourth}
-                setPostingJobId={setPostingJobId}
-                editedData={editedData}
-                postingJobId={postingJobId}
-                handleBack={handleBack}
-            />
-            {profileFilled && <EmployerProfile setFilled={setProfileFilled} />}
-            {!profileFilled && <ThirdForm
-                first={first}
-                second={second}
-                third={third}
-                fourth={fourth}
-                setFirst={setFirst}
-                setSecond={setSecond}
-                setThird={setThird}
-                setFourth={setFourth}
-                editedData={editedData}
-                setPostingJobId={setPostingJobId}
-                postingJobId={postingJobId}
-                handleBack={handleBack}
-            />
-            }
-            <FourthForm
-                first={first}
-                second={second}
-                third={third}
-                fourth={fourth}
-                setFirst={setFirst}
-                setSecond={setSecond}
-                setThird={setThird}
-                setFourth={setFourth}
-                setPostingJobId={setPostingJobId}
-                postingJobId={postingJobId}
-                handleBack={handleBack}
-                openPreview={openPreview}
-                setOpenPreview={setOpenPreview}
-            />
-            <div className="flex justify-end pt-5">
-                {chooseJob && !first && !second && !third && !fourth && (noJobs || noDraft) && (
-                    <div
-                        onClick={handleFront}
-                        className="text-textW bg-black flex items-center justify-center cursor-pointer h-16 max-md:mt-10 w-full md:w-5/12 rounded-xl lg:w-3/12"
-                    >
-                        Continue
-                    </div>
-                )}
-            </div>
-            <PreviewJob openModal={openPreview} setOpenModal={setOpenPreview} companyData={companyData}
-                jobId={jobId}
-            />
-            {/* <ConfirmModal isOpen={openPreview} handleClose={() => setOpenPreview(!openPreview)}>
+                <PreviewJob openModal={openPreview} setOpenModal={setOpenPreview} companyData={companyData}
+                    jobId={jobId}
+                />
+                {/* <ConfirmModal isOpen={openPreview} handleClose={() => setOpenPreview(!openPreview)}>
                 <div className="mx-2 pb-5 w-full  bg-textW rounded-2xl grid grid-cols-12 pt-6 sm:pl-5 md:pl-8 md:w-2/3 lg:w-1/2">
                     <div className="col-span-12 grid grid-cols-12">
                         <div className="col-span-10  flex items-center">
@@ -540,7 +571,8 @@ const PostAJob = (props: any) => {
                     </div>
                 </div>
             </ConfirmModal> */}
-        </div>
+            </div>
+        </GlobalContextProvider>
     );
 };
 export default PostAJob;

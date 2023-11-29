@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { ProfilePic } from '../JobImage';
-import { deleteProfilePicture, getCandidateDocument, updateProfileId, uploadProfilePictures } from '@/lib/candidateBackend';
+import { deleteProfilePicture, getCandidateDocument, updateProfileId, uploadProfilePictures } from '@/backend/candidateBackend';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { toast } from 'react-toastify';
-import { getAccount } from '@/lib/accountBackend';
-import { getEmployerDocument } from '@/lib/employerBackend';
+import { getAccount } from '@/backend/accountBackend';
+import { getEmployerDocument } from '@/backend/employerBackend';
 
 const ProfilePicture = () => {
     const loadingIn = '/images/loading.svg';

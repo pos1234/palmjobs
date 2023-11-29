@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import LanguageIcon from '@mui/icons-material/Language';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { addSocials, getCandidateDocument, getUserDetail } from '@/lib/candidateBackend';
+import { addSocials, getCandidateDocument, getUserDetail } from '@/backend/candidateBackend';
 const SocialForm = (props: any) => {
     const [phone, setPhone] = useState('')
     const [address, setAddress] = useState('')

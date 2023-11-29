@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
-import { getUserDetail, updateWorkHistory } from '@/lib/candidateBackend';
+import { getUserDetail, updateWorkHistory } from '@/backend/candidateBackend';
 import ElementWithIcon from './CertificateEducationComponent/ElementWithIcon'
 import { toast } from 'react-toastify';
 import FormModal from './FormModal';
@@ -241,84 +241,87 @@ const WorkHitory = () => {
 
                         {(workEdit || displayWorkHistory || workHistoryArray.length == 0) && (
                             <form className="gap-5 flex flex-col w-full" onSubmit={workEdit == true ? editWorkHistory : addWorkHistory}>
-                                <div className="flex flex-col gap-2">
-                                    <p className="font-fhW text-smS leading-shL">Title</p>
-                                    <input
-                                        value={workHistoryData.title}
-                                        type="text"
-                                        onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                                            const inputValue = e.currentTarget.value;
-                                            if (inputValue.length <= maxWorkHistoryTitle) {
-                                                setWorkHistoryData({ ...workHistoryData, title: inputValue });
-                                            }
-                                        }}
-                                        placeholder="Add Title"
-                                        className={`focus:ring-gradientSecond focus:border-0 border-2 rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
-                                    />
-                                    {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <p className="font-fhW text-smS leading-shL">Company Name</p>
-                                    <input
-                                        value={workHistoryData.companyName}
-                                        type="text"
-                                        onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                            setWorkHistoryData({ ...workHistoryData, companyName: e.currentTarget.value })
-                                        }
-                                        placeholder="Add Company Name"
-                                        className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
-                                    />
-                                    {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
-                                </div>
-                                <div className="flex gap-2 items-center">
-                                    <input
-                                        type="checkbox"
-                                        className="focus:ring-gradientSecond focus:border-0 border-[1px] rounded-xl h-4 pl-5 text-addS"
-                                        checked={isChecked}
-                                        onChange={handleCheckboxChange}
-                                    />
-                                    <span className="font-fhW text-smS pl-2 leading-shL">I currently work here</span>
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <p className="font-fhW text-smS leading-shL">Start Date</p>
-                                    <input
-                                        value={workHistoryData.startDate}
-                                        type="date"
-                                        onChange={(e) => setWorkHistoryData({ ...workHistoryData, startDate: e.currentTarget.value })}
-                                        className={`focus:ring-gradientSecond focus:border-0 pr-3 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
-                                    />
-                                    {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}
-                                </div>
-                                {!isChecked && (
+                                <div className='h-80 overflow-y-auto pr-2 thinScrollBar'>
                                     <div className="flex flex-col gap-2">
-                                        <p className="font-fhW text-smS leading-shL">End Date</p>
+                                        <p className="font-fhW text-smS leading-shL">Title</p>
                                         <input
-                                            max={new Date().toISOString().split('T')[0]}
-                                            value={workHistoryData.endDate}
-                                            type="date"
-                                            onChange={(e) =>
-                                                isChecked
-                                                    ? setWorkHistoryData({ ...workHistoryData, endDate: 'present' })
-                                                    : setWorkHistoryData({ ...workHistoryData, endDate: e.currentTarget.value })
+                                            value={workHistoryData.title}
+                                            type="text"
+                                            onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                                                const inputValue = e.currentTarget.value;
+                                                if (inputValue.length <= maxWorkHistoryTitle) {
+                                                    setWorkHistoryData({ ...workHistoryData, title: inputValue });
+                                                }
+                                            }}
+                                            placeholder="Add Title"
+                                            className={`focus:ring-gradientSecond focus:border-0 border-2 rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                        />
+                                        {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <p className="font-fhW text-smS leading-shL">Company Name</p>
+                                        <input
+                                            value={workHistoryData.companyName}
+                                            type="text"
+                                            onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                                                setWorkHistoryData({ ...workHistoryData, companyName: e.currentTarget.value })
                                             }
-                                            className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-xl h-12 pl-5 text-addS"
+                                            placeholder="Add Company Name"
+                                            className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
+                                        />
+                                        {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
+                                    </div>
+                                    <div className="flex gap-2 items-center">
+                                        <input
+                                            type="checkbox"
+                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] rounded-xl h-4 pl-5 text-addS"
+                                            checked={isChecked}
+                                            onChange={handleCheckboxChange}
+                                        />
+                                        <span className="font-fhW text-smS pl-2 leading-shL">I currently work here</span>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <p className="font-fhW text-smS leading-shL">Start Date</p>
+                                        <input
+                                            value={workHistoryData.startDate}
+                                            type="date"
+                                            onChange={(e) => setWorkHistoryData({ ...workHistoryData, startDate: e.currentTarget.value })}
+                                            className={`focus:ring-gradientSecond focus:border-0 pr-3 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                        />
+                                        {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}
+                                    </div>
+                                    {!isChecked && (
+                                        <div className="flex flex-col gap-2">
+                                            <p className="font-fhW text-smS leading-shL">End Date</p>
+                                            <input
+                                                max={new Date().toISOString().split('T')[0]}
+                                                value={workHistoryData.endDate}
+                                                type="date"
+                                                onChange={(e) =>
+                                                    isChecked
+                                                        ? setWorkHistoryData({ ...workHistoryData, endDate: 'present' })
+                                                        : setWorkHistoryData({ ...workHistoryData, endDate: e.currentTarget.value })
+                                                }
+                                                className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-xl h-12 pl-5 text-addS"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="mb-20 sm:mb-16">
+                                        <p className="font-fhW text-smS leading-shL">Job Description </p>
+                                        <ReactQuill
+                                            className="h-28 text-addS"
+                                            placeholder="Add Description"
+                                            theme="snow"
+
+                                            value={workHistoryData.jobDescription}
+                                            onChange={(e) => {
+                                                if (e.length <= 800) {
+                                                    setWorkHistoryData({ ...workHistoryData, jobDescription: e })
+                                                }
+                                            }
+                                            }
                                         />
                                     </div>
-                                )}
-                                <div className="mb-20 sm:mb-16">
-                                    <p className="font-fhW text-smS leading-shL">Job Description {workHistoryData.jobDescription.length} </p>
-                                    <ReactQuill
-                                        className="h-28 text-addS"
-                                        placeholder="Add Description"
-                                        theme="snow"
-                                        value={workHistoryData.jobDescription}
-                                        onChange={(e) => {
-                                            if (e.length <= 800) {
-                                                setWorkHistoryData({ ...workHistoryData, jobDescription: e })
-                                            }
-                                        }
-                                        }
-                                    />
                                 </div>
                                 <div className='w-full flex '>
                                     <div className='w-full md:w-52'>
