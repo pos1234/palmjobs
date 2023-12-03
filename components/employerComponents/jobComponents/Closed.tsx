@@ -3,20 +3,24 @@ import React, { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import JobCard from './JobCard';
+import { useJobPostContext } from '@/contextApi/jobPostData';
 const Closed = () => {
+    const { allEmployerJobs } = useJobPostContext()
     const [closedJobs, setClosedJobs] = useState<any>();
     const [allLoading, setAllLoading] = useState(false);
-    const getClosedJobs = async () => {
+   /*  const getClosedJobs = async () => {
         setAllLoading(true);
         const result = await fetchClosedPostedJobs();
         if (result && result.documents) {
             setClosedJobs(result.documents);
             setAllLoading(false);
         }
-    };
+    }; */
     useEffect(() => {
-        getClosedJobs();
-    }, []);
+        const closed = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Close');
+        closed && closed.length > 0 && setClosedJobs(closed)
+/*         getClosedJobs();
+ */    }, [allEmployerJobs]);
     return (
         <>
             {allLoading && (

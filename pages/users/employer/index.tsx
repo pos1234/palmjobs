@@ -3,7 +3,6 @@ import AddIcon from '@mui/icons-material/Add';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import PeopleIcon from '@mui/icons-material/People';
-import HelpIcon from '@mui/icons-material/Help';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useEffect, useState } from 'react';
 import PostAJob from '../../../components/employerComponents/PostJob';
@@ -16,16 +15,15 @@ import Candidates from '@/components/employerComponents/Candidates';
 import EmployerProfile from '@/components/employerComponents/Profile';
 import Privacy from '@/components/employerComponents/Privacy';
 import { employeeAuth } from '@/components/withAuth';
-import ConfirmModal from '@/components/ConfirmModal';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { useRouter } from 'next/dist/client/router';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
 import { getAccount, signOut } from '@/backend/accountBackend'
 import { getProfileData, } from '@/backend/employerBackend';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { ProfilePic } from '@/components/JobImage';
 import Logout from '@/components/Logout';
+import { GlobalContextProvider } from '@/contextApi/jobPostData';
 interface menuItems {
     icons: any,
     text: string,
@@ -50,7 +48,6 @@ const MenuItems = ({ icons, text, navText, active, handleNavigation, handleMenu 
 const AdminJob = () => {
     const logo = '/images/logo.svg';
     const router = useRouter();
-    const loadingIn = '/images/loading.svg';
     const [postJob, setPostJob] = useState(true);
     const [dashboard, setDashboard] = useState(false);
     const [jobs, setJobs] = useState(false);
@@ -81,7 +78,7 @@ const AdminJob = () => {
             setPrivacy(false);
             setView(false);
         }
-        if (name === 'dashboard') {
+      /*   if (name === 'dashboard') {
             setDashboard(true);
             setPostJob(false);
             setJobs(false);
@@ -89,7 +86,7 @@ const AdminJob = () => {
             setProfileSetting(false);
             setPrivacy(false);
             setView(false);
-        }
+        } */
         if (name === 'jobs') {
             setPostJob(false);
             setDashboard(false);
@@ -155,7 +152,7 @@ const AdminJob = () => {
         getUserData();
     }, []);
     return (
-        <>
+        <GlobalContextProvider>
             <div className="flex justify-between items-center pr-5 md:pr-0 md:flex md:pl-5 md:pt-5">
                 <Link href="/">
                     <img src={logo} alt="palmjobs logo" className="h-20 md:hidden" />
@@ -212,7 +209,7 @@ const AdminJob = () => {
                             handleMenu={setMenu}
 
                         />
-                        <MenuItems
+                       {/*  <MenuItems
                             icons={<AssessmentIcon sx={{ fontSize: '1.2rem' }} />
                             }
                             text='Analytics'
@@ -220,7 +217,7 @@ const AdminJob = () => {
                             active={dashboard}
                             handleNavigation={handleNavigation}
                             handleMenu={setMenu}
-                        />
+                        /> */}
                         <MenuItems
                             icons={<BusinessCenterIcon sx={{ fontSize: '1.5rem' }} />
                             }
@@ -342,7 +339,7 @@ const AdminJob = () => {
                 </div>
             </div>
             <Logout openLogout={openLogout} setOpenLogout={setOpenLogout} />
-        </>
+        </GlobalContextProvider>
     );
 };
 export default employeeAuth(AdminJob);

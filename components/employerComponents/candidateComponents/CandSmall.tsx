@@ -60,7 +60,7 @@ const CandSmall = (props: any) => {
                 {candidateData &&
                     skill &&
                     skill.map((item: any, index: number) => {
-                        return (<>
+                        return (<div key={index}>
                             {
                                 index < 3 && <p
                                     key={index}
@@ -70,7 +70,7 @@ const CandSmall = (props: any) => {
                                 </p>
                             }
 
-                        </>
+                        </div>
                         );
                     })}
             </div>

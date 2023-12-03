@@ -8,7 +8,6 @@ import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
 import { signOut } from '@/backend/accountBackend';
 import { getCompanyData, fetchJobs, } from '@/backend/employerBackend'
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobsShimmer from '@/components/shimmer/JobsShimmer';
 import JobListCard from '@/components/job/JobListCard';
@@ -17,6 +16,7 @@ import SearchBar from '@/components/job/SearchBar';
 import CheckProfileCompletion from '@/components/CheckProfileCompletion';
 import SearchOutlined from '@mui/icons-material/SearchOutlined';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import { GlobalContextProvider } from '@/contextApi/userData';
 
 const Jobs = ({ documents }: any) => {
     const router = useRouter();
@@ -119,8 +119,7 @@ const Jobs = ({ documents }: any) => {
         setSearchQuery(searchWord);
         setAddress(addressHolder);
         typeof window !== 'undefined' && searchWord !== '' && localStorage.setItem('jobTitle', searchWord)
-/*         typeof window !== 'undefined' && localStorage.setItem('jobLocation', addressHolder)
- */    };
+    };
 
     useEffect(() => {
         setAllLoading(true);
@@ -190,15 +189,15 @@ const Jobs = ({ documents }: any) => {
             });
     };
     return (
-        <>
+        <GlobalContextProvider>
             <div>
                 <Navigation />
                 {allLoading && <div className='mt-8 md:mt-28 px-3 xl:px-40'> <JobsShimmer /></div>}
                 {!allLoading && (
-                    <div className="grid grid-cols-12 sm:gap-x-10 mt-8 px-3">
+                    <div className="grid grid-cols-12 sm:gap-x-10 mt-5">
                         <div className="col-span-12 grid grid-cols-12 gap-x-2 xl:gap-x-5">
                             <div className="col-span-12 flex flex-wrap relative xl:justify-center gap-x-2 gap-y-4">
-                                <div className={!openJobDetail ? 'xl:px-40 border-b-2 w-full flex flex-wrap gap-x-2 gap-y-4 mb-5' : 'max-md:hidden xl:px-40 border-b-2 w-full flex flex-wrap gap-x-2 gap-y-4 mb-5'}>
+                                <div className={!openJobDetail ? 'xl:px-40 border-b-[1px] w-full flex flex-wrap gap-x-2 gap-y-4 mb-5' : 'max-md:hidden xl:px-40 border-b-[1px] w-full flex flex-wrap gap-x-2 gap-y-4 mb-5'}>
                                     <div className={openJobDetail ? 'max-md:hidden w-full' : 'w-full'}>
                                         <SearchBar searchWord={searchWord}
                                             setSearchWord={setSearchWord}
@@ -207,28 +206,23 @@ const Jobs = ({ documents }: any) => {
                                             setTheSearchTerm={setTheSearchTerm}
                                         />
                                     </div>
-                                    <div className='w-full justify-center flex gap-5 mt-6 items-center font-[500]'>
-                                        <div onClick={handleForYou} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] ${forYou ? 'text-gradientFirst border-b-gradientFirst' : ' border-textW hover:border-b-gradientFirst hover:text-gradientFirst'}`}>
-                                            <WbSunnyIcon sx={{ fontSize: '1rem' }} />
+                                    <div className='w-full justify-center flex gap-5 mt-2 items-center font-[500]'>
+                                        <div onClick={handleForYou} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] ${forYou ? 'border-b-gradientFirst' : ' border-textW hover:border-b-gradientFirst'}`}>
+                                            <img src="/icons/forYouApple.svg" alt="forYouApple" />
                                             <p>For You</p>
                                         </div>
-                                        <div onClick={handleForYou} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px]  ${forYou ? 'border-textW hover:border-b-gradientFirst hover:text-gradientFirst' : 'text-gradientFirst border-b-gradientFirst'}`}>
-                                            <SearchOutlined sx={{ fontSize: '1rem' }} />
+                                        <div onClick={handleForYou} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px]  ${forYou ? 'border-textW hover:border-b-gradientFirst' : 'border-b-gradientFirst'}`}>
+                                            <img src="/icons/jobSearch.svg" alt="jobSearch.svg" />
                                             <p>Search</p>
                                         </div>
-                                        {/* <div className='pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] border-textW hover:border-b-gradientFirst hover:text-gradientFirst'>
-                                            <WbSunnyIcon sx={{ fontSize: '1rem' }} />
-                                            <p>Trending</p>
-                                        </div> */}
                                     </div>
                                 </div>
                                 <div className={!openJobDetail ? 'w-full flex flex-wrap gap-3 xl:w-[1112px] mb-3' : 'max-md:hidden w-full flex gap-3 xl:w-[1112px] mb-3'}>
-                                    <img src="/icons/filterIcon.svg" alt="filter" />
                                     <select value={jobTypeHolder} onChange={(e) => setJobTypeHolder(e.currentTarget.value)} name="jobType" id="jobType" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
                                         <option value="">Job Type</option>
                                         <option value="Internship">Internship</option>
-                                        <option value="Full Time">Full Time</option>
-                                        <option value="Part Time">Part Time</option>
+                                        <option value="Full-Time">Full-Time</option>
+                                        <option value="Part-Time">Part-Time</option>
                                         <option value="Remote">Remote</option>
                                         <option value="Contract">Contract</option>
                                     </select>
@@ -248,6 +242,11 @@ const Jobs = ({ documents }: any) => {
                                         <option value="Past month">Past month</option>
                                     </select>
                                 </div>
+                                {
+                                    currentData && currentData.length == 0 && <div className='w-full items-center h-60 flex justify-center'>
+                                        <p className='text-xl font-[500] w-full text-center leading-[40px] flex justify-center flex-wrap xl:w-[70%]'> Looks like there aren't any matches right now. <br /> Why not try some different keywords or tweak your filters?</p>
+                                    </div>
+                                }
                                 <div className="w-full flex justify-center gap-5 max-md:p-3 pb-0 rounded-x-2xl">
                                     <div
                                         className={
@@ -283,11 +282,6 @@ const Jobs = ({ documents }: any) => {
 
                                 </div>
 
-                                {
-                                    currentData && currentData.length == 0 && <div className='w-full items-center h-60 flex justify-center'>
-                                        <p className='text-xl font-[500] w-full text-center leading-[40px] flex justify-center flex-wrap xl:w-[70%]'> Looks like there aren't any matches right now. <br /> Why not try some different keywords or tweak your filters?</p>
-                                    </div>
-                                }
                             </div>
                         </div>
                         <div
@@ -370,7 +364,7 @@ const Jobs = ({ documents }: any) => {
                     </div>
                 </div>
             </ConfirmModal>
-        </>
+        </GlobalContextProvider>
     );
 };
 export default Jobs;

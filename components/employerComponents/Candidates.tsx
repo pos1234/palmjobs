@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SearchIcon from '@mui/icons-material/Search';
-import { toast } from 'react-toastify';
-import TungstenOutlinedIcon from '@mui/icons-material/TungstenOutlined';
-import StarsOutlinedIcon from '@mui/icons-material/StarsOutlined';
-import StarOutlineOutlinedIcon from '@mui/icons-material/StarOutlineOutlined';
 import 'react-toastify/dist/ReactToastify.css';
 import {
     fetchAppliedCandidatesSingleJob,
@@ -150,14 +145,15 @@ const Candidates = (props: any) => {
                             </div>
                         </div>
                         <div className='w-full flex justify-center border-b-2 gap-10'>
-                            <div onClick={() => setAllCandidates('All Candidates')} className={allCandidates == "All Candidates" ? 'text-gradientFirst border-b-[3px] border-b-gradientFirst flex justify-around gap-1 text-[1rem] items-center pb-1 ' : ' pb-1 items-center text-[1rem] flex gap-1 cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst'}>
-                                <TungstenOutlinedIcon sx={{ fontSize: '1.2rem' }} className='rotate-180' /> <p className='text-[1rem]'>Active</p>
+                            <div onClick={() => setAllCandidates('All Candidates')}
+                                className={`border-b-[3px]  flex justify-around gap-2 text-[1rem] items-center pb-1 ${allCandidates == "All Candidates" ? 'border-b-gradientFirst' : 'cursor-pointer border-b-textW hover:border-b-gradientFirst'}`}>
+                                <img src="/icons/shortFire.svg" alt="activeCand" /> <p className='text-[1rem]'>Active</p>
                             </div>
                             <div onClick={() => {
                                 setAllCandidates('Shortlisted')
                                 setCandidateDetail(null)
-                            }} className={allCandidates == "Shortlisted" ? 'text-gradientFirst border-b-[3px] border-b-gradientFirst flex justify-around gap-1 text-[1rem] items-center pb-1 ' : ' pb-1 flex justify-around gap-1 text-[1rem] items-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst'}>
-                                <StarOutlineOutlinedIcon sx={{ fontSize: '1rem' }} />
+                            }} className={`border-b-[3px]  flex justify-around gap-2 text-[1rem] items-center pb-1 ${allCandidates == "Shortlisted" ? 'border-b-gradientFirst' : 'cursor-pointer border-b-textW hover:border-b-gradientFirst'}`}>
+                                <img src="/icons/shortPot.svg" alt="activeCand" />
                                 <p>Shortlist</p>
                             </div>
                         </div>

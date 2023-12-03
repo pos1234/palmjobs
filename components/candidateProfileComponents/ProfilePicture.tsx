@@ -98,8 +98,8 @@ const ProfilePicture = () => {
                     <>
                         {!profileLoading && !profileId && (
                             <>
-                                <p className="cursor-pointer h-full w-full bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex pb-4 justify-center items-center text-[3rem] font-frhW">
-                                    {firstLetter}
+                                <p className="cursor-pointer h-full w-full bg-gradientFirst text-textW flex justify-center items-center text-[3rem] font-frhW">
+                                    {firstLetter.toLocaleUpperCase()}
                                 </p>
                                 <div className="uploadProfile">
                                     <label htmlFor="photo-upload" className="custom-file-upload">
@@ -173,7 +173,7 @@ export const EmployerProfilePicture = () => {
     useEffect(() => {
         getProfilePic()
         getAccount().then((res: any) => {
-            setFirstLetter(res.name.charAt(0))
+            res && res.name && setFirstLetter(res.name.charAt(0))
         })
     }, [])
     return <div className="col-span-12 relative md:col-span-4 xl:col-span-4">

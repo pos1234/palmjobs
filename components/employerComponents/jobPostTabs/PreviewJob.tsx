@@ -23,8 +23,7 @@ const SmallLists = (props: any) => {
 }
 const PreviewJob = (props: any) => {
     const { firstTabData, secondTabData, thirdTabData, fourthTabData } = useJobPostContext()
-/*     const [jobDetails, setJobDetails] = useState<any>()
- */    const [company, setCompany] = useState(false)
+    const [company, setCompany] = useState(false)
     const parentRef = useRef<HTMLDivElement>(null);
     const handleParentClick = () => {
         props.setOpenModal(false)
@@ -32,17 +31,6 @@ const PreviewJob = (props: any) => {
     const handleChildClick = (event: React.MouseEvent<HTMLDivElement>) => {
         event.stopPropagation();
     };
-    /*  useEffect(() => {
-         fetchSinglePostedJobs(props.jobId).then(res => {
-             res.documents[0] && setJobDetails(res.documents[0])
-             console.log(res.documents[0]);
- 
-         })
-     }, [props.jobId]) */
-    /*  const parseToArray = (text: string) => {
-         const arrayValue = JSON.parse(text)
-         return arrayValue
-     } */
     return (
         <ConfirmModal isOpen={props.openModal} handleClose={() => {
             props.setOpenModal(!props.openModal);
@@ -50,7 +38,7 @@ const PreviewJob = (props: any) => {
         >
             <div ref={parentRef} onClick={handleParentClick} className='w-screen h-screen p-5 flex items-center justify-center md:p-10 lg:px-20 xl:px-40 xl:py-10'>
                 <div onClick={handleChildClick} className='bg-textW w-full h-full rounded-2xl p-5 sm:p-10'>
-                    <div className='flex flex-wrap gap-6'>
+                    <div className='flex flex-wrap h-full gap-6'>
                         <div className='max-md:max-h-96 overflow-y-auto w-full flex gap-5 flex-grow md:w-1/2 h-full order-2 md:order-1 overflow-hidden thinScrollBar'>
                             <div className="w-full flex flex-col gap-y-5 bg-textW pt-5 z-[0]  rounded-t-xl ">
                                 <div className='px-6 border-b-2 flex flex-col gap-y-4 pb-8'>
@@ -84,7 +72,7 @@ const PreviewJob = (props: any) => {
                                     </div>
                                     <div className="text-[10px] flex md:text-[11px] md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] xl:text-[0.6rem] gap-3 flex-wrap">
                                         {secondTabData.workType &&
-                                            <SmallLists icon={<img src='/icons/suitCase.svg' className='inline'/>}
+                                            <SmallLists icon={<img src='/icons/suitCase.svg' className='inline' />}
                                                 items={secondTabData.workType} />
                                         }
                                         {(secondTabData.minSalary || secondTabData.maxSalary) && (
@@ -231,7 +219,7 @@ const PreviewJob = (props: any) => {
  */}
 
                         </div>
-                        <div className='bg-gray-100 flex-grow flex  px-5 pt-5 max-md:pb-2 gap-7 md:flex-col md:flex md:w-1/5 order-1 md:order-2'>
+                        <div className='bg-gray-100 flex-grow flex h-full  px-5 pt-5 max-md:pb-2 gap-7 md:flex-col md:flex md:w-1/5 order-1 md:order-2'>
                             <div className=' flex justify-end max-md:order-3 md:w-full'>
                                 <div className='cursor-pointer hover:text-gradientFirst' onClick={() => props.setOpenModal(false)}>
                                     <CloseIcon />

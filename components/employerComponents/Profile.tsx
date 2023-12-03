@@ -28,7 +28,6 @@ const RequiredTextLabel = (props: any) => {
     );
 };
 const EmployerProfile = (props: any) => {
-    const loadingIn = '/images/loading.svg';
     const [companyName, setCompanyName] = useState('');
     const [userName, setUserName] = useState('');
     const [industry, setIndustry] = useState('');
@@ -78,8 +77,7 @@ const EmployerProfile = (props: any) => {
         <form className="pt-5  pb-10 bg-textW px-2 sm:pl-10 xl:pr-28 xl:px-20" onSubmit={handleProfile}>
             <div className="col-span-12 pt-5 space-y-3 mb-3">
                 <EmployerProfilePicture />
-{/*                 <div className="text-neutral-900  font-semibold text-2xl leading-10 md:text-3xl">Create employer account</div>
- */}                <RequiredTextLabel text="Your Company Name?" />
+                <RequiredTextLabel text="Your Company Name?" />
                 <TextInput placeHolder="company name" value={companyName} setFunction={setCompanyName} />
                 <RequiredTextLabel text="Your Name?" />
                 <TextInput placeHolder="your name" value={userName} setFunction={setUserName} />
@@ -134,27 +132,16 @@ const EmployerProfile = (props: any) => {
                     placeholder="Add Description"
                 />
             </div>
-            <div className='w-full flex mt-5'>
+            <div className='w-full flex mt-5 flex justify-between max-sm:flex-wrap gap-5'>
                 <div className='w-full md:w-52'>
                     <SubmitButton loading={loading} buttonText="Save" />
                 </div>
+                <div className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-black text-textW h-14'>
+                    Post Job
+                    {/* <SubmitButton loading={loading} buttonText="Post Job" /> */}
+                </div>
+
             </div>
-            {/*  <div className="flex justify-end pt-5">
-                {!loading && (
-                    <button
-                        type="submit"
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16  rounded-xl w-7/12 md:w-5/12 lg:w-3/12"
-                    >
-                        Save
-                    </button>
-                )}
-                {loading && (
-                    <img
-                        src={loadingIn}
-                        className="text-textW bg-gradient-to-r flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-xl w-7/12 md:w-5/12 lg:w-3/12"
-                    />
-                )}
-            </div> */}
         </form>
     );
 };

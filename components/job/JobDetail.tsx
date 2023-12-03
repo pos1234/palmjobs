@@ -8,8 +8,11 @@ import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { alreadySaved, getCandidateDocument, saveJobs, } from '@/backend/candidateBackend'
+import StairsOutlinedIcon from '@mui/icons-material/StairsOutlined'
+import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf'
+import { alreadySaved, saveJobs, } from '@/backend/candidateBackend'
 import { getAccount, getRole } from '@/backend/accountBackend';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import ApplyToJob from '../candidateProfileComponents/ApplyToJobs';
@@ -17,16 +20,18 @@ import { SmallLists } from '../TextInput';
 import CheckIcon from '@mui/icons-material/Check';
 import { fetchCandidateDetail } from '@/backend/employerBackend';
 import moment from 'moment';
+import { useGlobalContext } from '@/contextApi/userData';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const JobDetail = (props: any) => {
+    const { userRole } = useGlobalContext()
     const [savedJobId, setSavedJobId] = useState<any[]>([]);
     const [savedJobs, setSavedJobs] = useState<any[]>([]);
     const [allLoading, setAllLoading] = useState(false);
     const [applyEmp, setApplyEmp] = useState(false);
     const [jobTitle, setJobTitle] = useState('');
     const [userData, setUserData] = useState<any>();
-    const [userRole, setUserRole] = useState('');
-    const [userId, setUserId] = useState('')
+/*     const [userRole, setUserRole] = useState('');
+ */    const [userId, setUserId] = useState('')
     const [apply, setApply] = useState(false);
     const [applyJobId, setApplyJobId] = useState('');
     const [applyEmployerId, setApplyEmployerId] = useState('');
@@ -40,7 +45,6 @@ const JobDetail = (props: any) => {
     const difference = today.getTime() - date.getTime();
     const weeks = Math.floor(difference / (1000 * 60 * 60 * 24 * 7));
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-
     const parseToArray = (text: string) => {
         const arrayValue = JSON.parse(text)
         return arrayValue
@@ -58,25 +62,35 @@ const JobDetail = (props: any) => {
                     setUserSkill(lowercaseSkills)
                 })
             }
-            role && setUserRole(role && role.documents[0].userRole);
-        }
+/*             role && setUserRole(role && role.documents[0].userRole);
+ */        }
     };
-    useEffect(() => {
-        getUserData();
-    }, []);
+    /*  useEffect(() => {
+         getUserData();
+     }, []); */
     const handleApply = async (jobId: string, employerId: string, jobTitle: string) => {
         setApply(false);
-        if (userRole == 'candidate') {
-            setApply(true);
-            setApplyJobId(jobId);
-            setApplyEmployerId(employerId);
-            setJobTitle(jobTitle);
-        } else if (userRole == 'employer') {
-            setApplyEmp(true);
+        if (userRole) {
+            if (userRole == 'candidate') {
+                console.log('candidate');
+
+                setApply(true);
+                setApplyJobId(jobId);
+                setApplyEmployerId(employerId);
+                setJobTitle(jobTitle);
+            } else if (userRole == 'employer') {
+                setApplyEmp(true);
+                console.log('this is the employer');
+            }
+            /*  if (userRole == '') {
+             } */
         }
         if (userRole == '') {
             typeof window !== 'undefined' && router.push('/account');
+            console.log('not logged in');
+
         }
+
     }
     const handleSaveJob = async (id: string) => {
         if (userRole == 'candidate') {
@@ -123,12 +137,12 @@ const JobDetail = (props: any) => {
         >
             <div className=" w-full flex flex-col">
                 {
-                    props.single !== true && <p
+                    props.single !== true && <div
                         onClick={() => props.setOpenJobDetail(false)}
-                        className="p-3 border-[1px] rounded-[12px] border-[#DEDEDE] flex justify-center cursor-pointer m-5 md:hidden"
+                        className="p-3 border-[1px] rounded-[12px] border-[#DEDEDE] flex justify-center items-center cursor-pointer m-5 md:hidden"
                     >
-                        Back To Search
-                    </p>
+                        <ArrowBackIcon sx={{ fontSize: '1.2rem', marginRight: '0.7rem' }} />  <span> Back To Search</span>
+                    </div>
                 }
                 <div className="flex flex-col gap-y-5 h-[800px] pt-7 rounded-t-xl ">
                     <div className='px-6 border-b-[1px] border-[#DEDEDE] flex flex-col gap-y-3 pb-5'>
@@ -160,7 +174,7 @@ const JobDetail = (props: any) => {
                         </div>
                         <div className="text-[10px] flex md:text-[11px] md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] xl:text-[0.6rem] gap-3 flex-wrap">
                             {props.jobDetails.jobType &&
-                                <SmallLists icon={<img src='/icons/suitCase.svg' />}
+                                <SmallLists icon={<img src='/icons/suitCase.svg' alt='suitCaseIcon' />}
                                     items={props.jobDetails.jobType} />
                             }
                             {(props.jobDetails.minSalary || props.jobDetails.maxSalary) && (
@@ -196,13 +210,13 @@ const JobDetail = (props: any) => {
                             )}
                             {props.jobDetails.expreienceLevel && (
                                 <SmallLists
-                                    icon={<img src='/icons/briefCase.svg' className='w-5 h-5' />}
+                                    icon={<StairsOutlinedIcon sx={{ fontSize: '1.3rem' }} />}
                                     items={props.jobDetails.expreienceLevel}
                                 />
                             )}
                             {props.jobDetails.datePosted && (
                                 <div className="inline bg-[#FAFAFA] flex items-center gap-1 text-xs text-gradientFirst rounded-[4px] p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:h-[28px]">
-                                    <img src='/icons/hourGlassUp.svg' />
+                                    <img src='/icons/hourGlassUp.svg' alt='hourGlassUp' />
                                     <span className='text-[#20262E]'>{isToday && isToday ? <p className='text-[12px]'>posted today</p> : isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
                                     </span>
                                 </div>
@@ -232,7 +246,7 @@ const JobDetail = (props: any) => {
                                         );
                                     }}
                                     className='bg-gradient-to-r from-[#00A82D] to-[#0CBC8B] text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:border-b-4 hover:border-b-black buttonBounce'                                >
-                                    Easy Apply
+                                    <EnergySavingsLeafIcon sx={{ fontSize: '1.2rem' }} /> <span className='ml-2'> Easy Apply</span>
                                 </div>
                             )}
                             <div className='flex items-center cursor-pointer text-gray-500 hover:text-gradientFirst'>
@@ -280,14 +294,14 @@ const JobDetail = (props: any) => {
                                 </div>
                                 <div className='flex flex-wrap gap-5 mt-5'>
                                     <div className='flex w-full gap-2'>
-                                        <img src='/icons/plantInPot.svg' />
+                                        <img src='/icons/plantInPot.svg' alt='plantPot' />
                                         <p className='font-[600]'> Job Description</p>
                                     </div>
                                     <div
                                         dangerouslySetInnerHTML={{ __html: props.jobDetails.jobDescription }}
                                         className="text-[14px] text-[#727272] min-h-[180px]"
                                     />
-                                    
+
                                 </div>
                             </div>
                         }
@@ -333,8 +347,18 @@ const JobDetail = (props: any) => {
                 </div>
             </div>
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.jobDetails.$id} />
-            {
-                apply && (
+
+            <ApplyToJob
+                jobId={applyJobId}
+                employerId={applyEmployerId}
+                setterFunction={setApply}
+                jobTitle={jobTitle}
+                companyName={props.companyName}
+                openApply={apply}
+            />
+
+            {/*   {
+                apply == true && (
                     <ApplyToJob
                         jobId={applyJobId}
                         employerId={applyEmployerId}
@@ -343,7 +367,7 @@ const JobDetail = (props: any) => {
                         companyName={props.companyName}
                     />
                 )
-            }
+            } */}
         </div >
     )
 }
