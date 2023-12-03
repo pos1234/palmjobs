@@ -52,7 +52,7 @@ export const GlobalContextProvider = ({ children }: any) => {
     };
     useEffect(() => {
         getUserData();
-    }, [userData]);
+    }, []); /* there was a userData for useEffect here */
     return < GlobalContext.Provider value={{ userDetail, setUserDetail, loading, userData, setUserData, userRole }} >{children}</GlobalContext.Provider >
 }
 export const useGlobalContext = () => useContext(GlobalContext)

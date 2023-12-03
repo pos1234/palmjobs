@@ -32,10 +32,8 @@ const Footer = () => {
         setForGt(!forGt);
     };
     const getUserData = async () => {
-
         const role = await getRole();
         role && setUserRole(role.documents[0].userRole);
-
     };
     useEffect(() => {
         getUserData();
@@ -43,7 +41,7 @@ const Footer = () => {
     const year = new Date()
     return (
         <div className='flex flex-col mt-28 max-sm:px-3 '>
-            <div className="xl:px-40 border-y-2">
+            <div className="xl:px-40 border-y-[1px]">
                 <div className="flex flex-wrap pt-16 py-10 gap-y-7 md:gap-y-14 max-md:flex-col justify-between">
                     <div className='flex-grow'>
                         <img src={logo} alt="palmjobs logo" className=" h-16" />

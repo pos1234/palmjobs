@@ -175,7 +175,7 @@ const RegisterComponent = (props: any) => {
                     <input
                         onChange={(e) => setChecked(e.currentTarget.checked)}
                         type="checkbox"
-                        className="pl-5 text-addS max-h-[1rem]"
+                        className="text-addS h-4 rounded-sm focus:ring-gradientSecond focus:bg-gradientFirst checked:bg-gradientFirst active:bg-gradientFirst"
                     />
                     <span className="font-addW text-addS leading-addL pl-2">To continue please accept our Terms and Conditions. Thanks!</span>
                     {checkError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{checkError}</p>}
@@ -186,30 +186,16 @@ const RegisterComponent = (props: any) => {
                             <SubmitButton loading={loading} buttonText="Continue" />
                         </div>
                     </div>
-                    {/*  {loading && (
-                        <div className="mt-5 col-start-7 col-end-13 text-textW h-16 w-full rounded-xl">
-                            <img src={loadingIn} className="self-end text-textW h-16 w-full xl:w-56 rounded-xl" />
-                        </div>
-                    )}
-                    {!loading && (
-                        <button
-                            type="submit"
-                            className="mt-5 col-start-7 col-end-13 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
-                        >
-                            Continue
-                        </button>
-                    )} */}
                 </div>
             </form>
 
-            {openNotify && (
-                <Notification
-                    openNotify={openNotify}
-                    setOpenNotify={setOpenNotify}
-                    successText="success"
-                    successWord="Email Verfication has been sent"
-                />
-            )}
+
+            <Notification
+                openNotify={openNotify}
+                setOpenNotify={setOpenNotify}
+                successText="success"
+                successWord="Email Verfication has been sent"
+            />
 
         </>
     );

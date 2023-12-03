@@ -5,7 +5,18 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
+import { useJobPostContext } from '@/contextApi/jobPostData';
 const DraftedJobs = (props: any) => {
+    const { handleJobSelection, setPostingTabs, jobPostTabs } = useJobPostContext()
+    const handleSelection = (id: string) => {
+        handleJobSelection(id)
+        props.handleFullEdit()
+        setPostingTabs({
+            ...jobPostTabs,
+            chooseJob: false,
+            first: true
+        })
+    }
     const handleDelete = (id: any) => {
         deleteDraftedJobs(id).then((res) => {
             toast.success('Successfully Removed');
@@ -40,7 +51,7 @@ const DraftedJobs = (props: any) => {
 
                 <button
                     onClick={() => {
-                        props.setEditedJobId(props.id);
+                        handleSelection(props.id);
                     }}
                     className=" h-10 w-32 px-5 hover:text-gradientFirst cursor-pointer hover:underline"
                 >
@@ -60,28 +71,12 @@ const DraftedJobs = (props: any) => {
     );
 };
 const Drafted = (props: any) => {
+    const { allEmployerJobs, allLoading } = useJobPostContext()
     const [draftedJobs, setDraftedJobs] = useState<any>();
-    const [allLoading, setAllLoading] = useState(false);
-    const [editedJobId, setEditedJobId] = useState('');
-    const getDraftJobs = async () => {
-        setAllLoading(true);
-        const result = await fetchDraftedJobs();
-        if (result && result.documents) {
-            setDraftedJobs(result.documents);
-            setAllLoading(false);
-        }
-    };
     useEffect(() => {
-        getDraftJobs();
-    }, []);
-    const handleFullEdit = () => {
-        if (editedJobId) {
-            props.setJobId(editedJobId);
-        }
-    };
-    useEffect(() => {
-        handleFullEdit();
-    }, [editedJobId]);
+        const drafted = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Draft');
+        drafted && drafted.length > 0 && setDraftedJobs(drafted)
+    }, [allEmployerJobs]);
     return (
         <>
             {allLoading && (
@@ -96,7 +91,7 @@ const Drafted = (props: any) => {
                     draftedJobs.map((item: any, index: number) => {
                         return (
                             <DraftedJobs
-                                setEditedJobId={setEditedJobId}
+                                handleFullEdit={props.handleFullEdit}
                                 key={index}
                                 setterFuntion={setDraftedJobs}
                                 jobTitle={item.jobTitle}

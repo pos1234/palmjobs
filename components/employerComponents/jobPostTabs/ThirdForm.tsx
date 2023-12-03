@@ -1,29 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { RequiredTextLabel } from './RequiredTextLabel';
-import { fetchSinglePostedJobs, postThirdTab } from '@/backend/employerBackend';
-import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import { postThirdTab } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
 import dynamic from 'next/dynamic';
 import { SubmitButton } from '@/components/TextInput';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { useJobPostContext } from '@/contextApi/jobPostData';
 import { SkillsSecond } from '../Skills';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
-const salaryRangeData = [{ name: 'Range' }, { name: 'Starting amount' }, { name: 'Maximum amount' }, { name: 'Exact amount' }];
-const salaryPerData = [{ name: 'Per Month' }, { name: 'Per Hour' }, { name: 'Per Year' }];
 const ThirdForm = (props: any) => {
-    const { thirdTabData, setThirdTabData } = useJobPostContext()
+    const { thirdTabData, setThirdTabData, postingJobId, jobPostTabs, setPostingTabs } = useJobPostContext()
     const [loadingAi, setLoadingAi] = useState(false)
-    /*  useEffect(() => {
-         if (props.editedData) {
-             props.editedData.minSalary && setMinSalary(props.editedData.minSalary);
-             props.editedData.maxSalary && setMaxSalary(props.editedData.maxSalary);
-             props.editedData.jobDescription && setJobDesc(props.editedData.jobDescription);
- 
-         }
-     }, [props.editedData]) */
     const handleThirdSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setThirdTabData({
@@ -32,35 +23,35 @@ const ThirdForm = (props: any) => {
         setThirdTabData({
             ...thirdTabData, skillError: 'Please provide required skills'
         })
-        if (!props.second && props.third && !props.fourth) {
-            if (thirdTabData.jobDesc == '') {
-                setThirdTabData({
-                    ...thirdTabData, jobDescError: 'Job Description is required'
-                })
-            }
-            else if (thirdTabData.skillArray.length == 0) {
-                setThirdTabData({
-                    ...thirdTabData, skillError: 'Please provide required skills'
-                })
-            }
-            else {
-                setThirdTabData({
-                    ...thirdTabData, loading: true
-                })
-                postThirdTab(thirdTabData.jobDesc, JSON.stringify(thirdTabData.skillArray), props.postingJobId)
-                    .then((res: any) => {
-                        props.setFourth(true);
-                        props.setThird(false);
-                        toast.success('Saved as Draft');
-                        setThirdTabData({
-                            ...thirdTabData, loading: false
-                        })
+
+        if (thirdTabData.jobDesc == '') {
+            setThirdTabData({
+                ...thirdTabData, jobDescError: 'Job Description is required'
+            })
+        } else if (thirdTabData.skillArray.length == 0) {
+            setThirdTabData({
+                ...thirdTabData, skillError: 'Please provide required skills'
+            })
+        } else {
+            setThirdTabData({
+                ...thirdTabData, loading: true
+            })
+            postThirdTab(thirdTabData.jobDesc, JSON.stringify(thirdTabData.skillArray), postingJobId)
+                .then((res: any) => {
+                    toast.success('Saved as Draft');
+                    setThirdTabData({
+                        ...thirdTabData, loading: false
                     })
-                    .catch((error) => {
-                        toast.error('Draft Not Saved');
-                        console.log(error);
-                    });
-            }
+                    setPostingTabs({
+                        ...jobPostTabs,
+                        third: false,
+                        fourth: true
+                    })
+                })
+                .catch((error) => {
+                    toast.error('Draft Not Saved');
+                    console.log(error);
+                });
         }
     };
     const generateJobDescription = async ({ jobTitle, skills, yearsOfExperience }: Record<'jobTitle' | 'skills' | 'yearsOfExperience', string>) => {
@@ -89,20 +80,24 @@ const ThirdForm = (props: any) => {
         }
     };
     const handleAIJobDescription = () => {
-        setLoadingAi(true)
+        /* setLoadingAi(true)
         props.postingJobId && fetchSinglePostedJobs(props.postingJobId).then((res: any) => {
             const { jobTitle, requiredSkills, yearsOfExperience } = res && res.documents && res.documents[0];
             generateJobDescription({ jobTitle: jobTitle, skills: requiredSkills, yearsOfExperience: yearsOfExperience }).then((res) => {
                 console.log(res);
-
+    
             })
+        }) */
+    }
+    const handleBack = () => {
+        setPostingTabs({
+            ...jobPostTabs,
+            third: false,
+            second: true
         })
     }
     return (
-        <form
-            onSubmit={handleThirdSubmit}
-            className={props.third ? 'col-span-12 pt-5  space-y-4 ' : 'hidden'}
-        >
+        <form onSubmit={handleThirdSubmit} className='col-span-12 pt-5  space-y-4 '>
             <>
                 <div className="text-neutral-900 text-xl font-semibold leading-10">
                     Add Skills and Description
@@ -121,7 +116,7 @@ const ThirdForm = (props: any) => {
                             <span className='text-sm'>Draft with AI</span></>}
                     </button>
                 </div>
-                <RequiredTextLabel text="Job Description ?" />
+                <RequiredTextLabel text="Job Description?" />
                 <div className="pb-20 mr-2 relative xl:mr-64">
                     <ReactQuill
                         className="h-60 text-addS"
@@ -133,27 +128,16 @@ const ThirdForm = (props: any) => {
                     />
                     {thirdTabData.jobDescError && <p className="text-red-500 absolute bottom-3 text-[13px] ">{thirdTabData.jobDescError}</p>}
                 </div>
-                <RequiredTextLabel text="Required Skills ?" />
+                <RequiredTextLabel text="Required Skills?" />
                 <SkillsSecond array={thirdTabData.skillArray} setArray={setThirdTabData} dataDistruct={thirdTabData} change={'skillArray'} />
                 {thirdTabData.skillError && <p className="text-red-500 text-[13px]">{thirdTabData.skillError}</p>}
             </>
-            <div className="flex justify-between max-md:flex-col max-md:gap-y-8">
-                <div
-                    onClick={props.handleBack}
-                    className={
-                        props.second || props.third || props.fourth
-                            ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-14 rounded-xl max-md:order-2 w-full md:w-5/12 lg:w-60'
-                            : 'opacity-0'
-                    }
-                >
-                    <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
+            <div className="flex pt-10 justify-between gap-5 max-sm:flex-wrap">
+                <div onClick={handleBack} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
+                    <ArrowBackIcon sx={{ fontSize: '1rem' }} /> <span className='ml-2'>Back</span>
                 </div>
-                <div className="flex justify-end">
-                    <div className='w-full col-span-12 flex md:justify-end'>
-                        <div className='w-full md:w-60'>
-                            <SubmitButton loading={thirdTabData.loading} buttonText="Continue" />
-                        </div>
-                    </div>
+                <div className='w-full md:w-60'>
+                    <SubmitButton loading={thirdTabData.loading} buttonText="Continue" />
                 </div>
             </div>
         </form>

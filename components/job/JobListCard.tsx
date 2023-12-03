@@ -8,6 +8,7 @@ import EuroIcon from '@mui/icons-material/Euro';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import ReportIcon from '@mui/icons-material/Report';
+import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf'
 import ShareIcon from '@mui/icons-material/Share';
 import Share from '../Share';
 import { SmallLists, SubmitButton } from '../TextInput';
@@ -16,8 +17,67 @@ import { alreadySaved, saveJobs } from '@/backend/candidateBackend';
 import { getAccount, getRole } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/dist/client/router';
-import FormModal from '../candidateProfileComponents/FormModal';
 import moment from 'moment';
+import { useRef, } from 'react'
+import ConfirmModal from '../ConfirmModal'
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import CloseIcon from '@mui/icons-material/Close';
+import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+interface ConfirmModalProps {
+    children: React.ReactNode;
+    openModal: boolean,
+    setOpenModal: (openModal: boolean) => void;
+    addText: string,
+    icon?: any,
+    text: string,
+    tipText: string
+}
+const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tipText }: ConfirmModalProps) => {
+    const leaf = '/images/modalTipLeaf.svg'
+    const [tip, setTip] = useState(false)
+    const parentRef = useRef<HTMLDivElement>(null);
+    const handleParentClick = () => {
+        console.log('Parent div clicked');
+        setOpenModal(false)
+    };
+    const handleChildClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+    };
+    return (
+        <ConfirmModal isOpen={openModal} handleClose={() => {
+            setOpenModal(!openModal);
+        }}
+        >
+            <div ref={parentRef} onClick={handleParentClick} className='w-screen h-screen flex items-center justify-center px-3 py-10 sm:px-7 md:p-10 lg:px-20 xl:px-52 xl:py-16'>
+                <div onClick={handleChildClick} className='bg-textW w-full h-full rounded-2xl p-5 sm:px-10'>
+                    <div className='flex flex-col h-full'>
+                        <div className='w-full flex justify-end cursor-pointer hover:text-gradientFirst' onClick={() => setOpenModal(false)}>
+                            <CloseIcon />
+                        </div>
+                        <div className='flex w-full gap-5'>
+                            <p onClick={() => setTip(false)} className={tip ? 'cursor-pointer border-b-2 border-b-textW hover:border-b-gradientFirst md:border-0 lg:hidden' : 'border-b-2 border-b-gradientFirst md:border-0 lg:hidden'}>{addText}</p>
+                            <p onClick={() => setTip(true)} className={tip ? 'border-b-2 border-b-gradientFirst lg:hidden' : 'cursor-pointer border-b-2 border-b-textW hover:border-b-gradientFirst lg:hidden'}>Tips</p>
+                        </div>
+                        <div className='w-full flex h-full'>
+                            <div className={tip ? 'max-lg:hidden h-full lg:w-1/2 overflow-y-auto lg:max-h-[25rem] thinScrollBar flex' : 'flex w-full h-full lg:w-1/2 overflow-y-auto'}>
+                                {children}
+                            </div>
+                            <div className={`bg-gray-100 flex flex-wrap px-5 pt-5 rounded-r-2xl w-full gap-7 lg:flex items-center flex-grow justify-center h-full ${tip ? 'lg:w-1/2' : 'hidden overflow-y-auto lg:w-1/3'}`}>
+                                <div className='w-full flex flex-wrap self-center items-end h-1/2 font-[600] text-[20px] text-center'>
+                                    {tipText}
+                                </div>
+                                <div className='w-full flex items-end self-end justify-end '>
+                                    <img src='/images/salaryTipPattern.svg' className='w-full h-40 self-end' />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </ConfirmModal >
+    )
+}
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReturnName = (props: any) => {
     const [companyName, setCompanyName] = useState('');
@@ -119,6 +179,14 @@ const JobListCard = (props: any) => {
             setOpenReport(false)
         }
     }
+    const removeHtmlTags = (text: string) => {
+        // Create a regular expression to match all HTML tags.
+        const htmlTagPattern = /<[^>]+>/g;
+        // Remove all HTML tags from the text.
+        const result = text.replace(htmlTagPattern, " ");
+        // Return the text without HTML tags.
+        return result.split(" ").slice(0, 15).join(" ");
+    }
     return (
         <div
             onClick={() => {
@@ -143,7 +211,7 @@ const JobListCard = (props: any) => {
                             </Popover.Button>
                             <Popover.Panel className="absolute  text-[13px] right-0 border-2 rounded-md flex flex-col bg-textW shadow z-10 w-[8rem]">
                                 <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => setOpenShare(true)}><ShareIcon sx={{ fontSize: '1.2rem' }} />Share</p>
-                                <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => handleSaveJob(props.items.$id)}><img src="/icons/save.svg" alt="" className='w-4 h-4' /> Save</p>
+                                <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => handleSaveJob(props.items.$id)}><img src="/icons/save.svg" alt="saveImage" className='w-4 h-4' /> Save</p>
                                 <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => {
                                     setOpenReport(true)
                                     setReportData({ ...reportData, jobId: props.items.$id })
@@ -170,7 +238,7 @@ const JobListCard = (props: any) => {
             </div>
             <div className="text-[10px] flex gap-y-2 gap-x-3  md:text-[11px] md:mt-1 flex-wrap">
                 {props.items.jobType &&
-                    <SmallLists icon={<img src='/icons/suitCase.svg' />}
+                    <SmallLists icon={<img src='/icons/suitCase.svg' alt='suitCase' />}
                         items={props.items.jobType} />
                 }
                 {(props.items.minSalary || props.items.maxSalary) && (
@@ -204,33 +272,17 @@ const JobListCard = (props: any) => {
                                 : props.items.minSalary + '-' + props.items.maxSalary}
                     />
                 )}
-                {/* !props.items.externalLink && !props.items.emailApplication && */}
                 {!props.items.externalLink && !props.items.emailApplication && (
                     <SmallLists
-                        icon={<span>Easy Apply</span>}
-                        items={''}
+                        icon={<EnergySavingsLeafIcon sx={{ fontSize: '1rem' }} />}
+                        items={'Easy Apply'}
                     />
                 )}
-                {/*  {props.items.datePosted && (
-                        <SmallLists
-                            icon={<img src='/icons/hourGlassUp.svg' />}
-                            items={new Date(props.items.datePosted)
-                                .toLocaleDateString('en-GB')
-                                .replace(/\//g, '-')}
-                        />
-                    )}
-                    {props.items.datePosted && (
-                        <SmallLists
-                            icon={<img src='/icons/hourGlassDown.svg' />}
-                            items={new Date(props.items.datePosted)
-                                .toLocaleDateString('en-GB')
-                                .replace(/\//g, '-')}
-                        />
-                    )} */}
             </div>
-            <div className="w-full text-[#20262E] text-sm leading-[24px] overflow-hidden pr-2">
+            <div className="w-full text-[#20262E] text-sm leading-[24px] overflow-hiddenc pr-2">
                 <div className="w-full">
-                    <div
+                    {removeHtmlTags(props.items.jobDescription)}....
+                    {/* <div
                         className="overflow-ellipsis font-[400] leading-[20px] text-[11px] text-[#20262E]"
                         style={{
                             display: '-webkit-box',
@@ -238,15 +290,15 @@ const JobListCard = (props: any) => {
                             WebkitBoxOrient: 'vertical'
                         }}
                         dangerouslySetInnerHTML={{ __html: props.items.jobDescription }}
-                    />
+                    /> */}
                 </div>
             </div>
             {isToday && isToday ? <p className='text-[12px]'>posted today</p> : isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.items.$id} />
             <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={'Survey'} text={''} tipText={"Thank you for helping us maintain a professional and safe environment on our job board. If you've found a job listing that violates our terms or seems inappropriate, please provide the information below to assist our review."}>
-                <form onSubmit={handleReportSubmit} className="w-full flex flex-col gap-10">
-                    <div className='h-80 w-full overflow-y-auto pr-2 thinScrollBar flex flex-col gap-5'>
-                        <p>Reason for Reporting</p>
+                <form onSubmit={handleReportSubmit} className="w-full flex flex-col h-full md:max-lg:items-center">
+                    <div className='h-full w-full overflow-y-auto pr-2 thinScrollBar flex flex-col gap-5 md:max-lg:items-center'>
+                        <p className='font-[600] text-[24px]'>Reason for Reporting</p>
                         <div className='flex flex-col gap-3'>
                             <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 1 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(1)}>Discriminatory Language</p>
                             <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 2 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(2)}>False Information</p>
@@ -256,11 +308,11 @@ const JobListCard = (props: any) => {
                                 if (e.currentTarget.value.length <= 200) {
                                     setReportData({ ...reportData, message: e.currentTarget.value })
                                 }
-                            }} cols={30} rows={20} className='w-[376px] resize-none h-60 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
+                            }} cols={30} rows={20} className='w-[376px] resize-none h-52 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
                         </div>
                     </div>
-                    <div className='w-full flex md:justify-end'>
-                        <div className='w-full md:w-80'>
+                    <div className='w-full flex md:max-lg:justify-center pt-3'>
+                        <div className='w-80'>
                             <SubmitButton loading={reportLoading} buttonText="Report" />
                         </div>
                     </div>

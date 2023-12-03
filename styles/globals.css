@@ -115,7 +115,7 @@ body {
     background: url('../public/images/salaryTipPattern.svg') no-repeat;
     background-position: bottom;
     background-size: 100%;
-    background-position-y: 120%;
+    background-position-y: 100%;
     background-color: #f4f4f4;
 }
 /* .loginCoursel {

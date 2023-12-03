@@ -149,6 +149,13 @@ export const postFourthTab = async (id: string, deadline: string, education?: st
     const promise = updatePostedJobs(id, datas);
     return promise;
 };
+export const fetchAllEmployerJob = async () => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('employerId', userAccount.$id)]);
+        return promise;
+    }
+};
 export const NoPostedJobs = async () => {
     const userAccount = await getAccount();
     if (userAccount !== 'failed') {

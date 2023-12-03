@@ -1,12 +1,11 @@
-import { fetchActivePostedJobs, } from '@/backend/employerBackend';
 import React, { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import JobCard from './JobCard';
+import { useJobPostContext } from '@/contextApi/jobPostData';
 const Active = (props: any) => {
+    const { allEmployerJobs, allLoading } = useJobPostContext()
     const [activeJobs, setActiveJobs] = useState<any>();
-    const [allLoading, setAllLoading] = useState(false);
-    const [editedJobId, setEditedJobId] = useState('');
     const [noActive, setNoActive] = useState(false);
     const SortData = (sort: any) => {
         if (sort == 'asc') {
@@ -36,26 +35,11 @@ const Active = (props: any) => {
     useEffect(() => {
         activeJobs && SortData(props.sort);
     }, [props.sort]);
-
-    const getActiveJobs = () => {
-        setAllLoading(true);
-        fetchActivePostedJobs().then((res: any) => {
-            res && res.documents && setActiveJobs(res.documents);
-            res && res.total > 0 && setNoActive(true);
-            setAllLoading(false);
-        });
-    };
-    const handleFullEdit = () => {
-        if (editedJobId) {
-            props.setJobId(editedJobId);
-        }
-    };
     useEffect(() => {
-        handleFullEdit();
-    }, [editedJobId]);
-    useEffect(() => {
-        getActiveJobs();
-    }, []);
+        const active = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Active');
+        active && active.length > 0 && setActiveJobs(active)
+        active && active.length > 0 && setNoActive(true)
+    }, [allEmployerJobs]);
     return (
         <>
             {allLoading && (
@@ -69,14 +53,13 @@ const Active = (props: any) => {
                     <h1>You haven't posted a job yet</h1>
                 </div>
             )}
-
             {!allLoading && (
                 <div className="max-h-[30rem] overflow-y-auto p-1 xl:p-3 mt-7 flex flex-col gap-4 thinScrollBar">
                     {activeJobs &&
                         activeJobs.map((item: any, index: number) => {
                             return (
                                 <JobCard
-                                    setEditedJobId={setEditedJobId}
+                                    setEditedJobId={props.handleFullEdit}
                                     compName={item.companyName}
                                     jobId={item.$id}
                                     key={index}

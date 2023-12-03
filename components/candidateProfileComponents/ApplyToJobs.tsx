@@ -21,11 +21,13 @@ import { SendJobAppliedEmail } from '../SendEmail';
 import Link from 'next/link';
 import { ProfilePic } from '../JobImage';
 import TextInput, { SubmitButton } from '../TextInput';
+import { useGlobalContext } from '@/contextApi/userData';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const ApplyToJob = (props: any) => {
+    const { userDetail } = useGlobalContext()
     const pdfIcon = '/images/pdf2.svg';
     const [openApply, setOpenApply] = useState(false);
     const [fisrt, setFirst] = useState(true);
@@ -76,26 +78,26 @@ const ApplyToJob = (props: any) => {
         }
     };
     const getCanInfo = async () => {
-        const { documents }: any = await getCandidateDocument();
-        if (documents[0]) {
-            setUserData(documents[0]);
-            setPhone(documents[0].phoneNumber);
-            setLinked(documents[0].linkedIn);
-            setCover(documents[0].coverLetter);
-            if (documents[0].skills == null || documents[0].skills && documents[0].skills.length == 0) {
+/*         const { documents }: any = await getCandidateDocument();
+ */        if (userDetail) {
+            setUserData(userDetail);
+            setPhone(userDetail.phoneNumber);
+            setLinked(userDetail.linkedIn);
+            setCover(userDetail.coverLetter);
+            if (userDetail.skills == null || userDetail.skills && userDetail.skills.length == 0) {
                 setSkillLength(0)
             }
-            if (documents[0].educations == null || documents[0].educations && documents[0].educations.length == 0) {
+            if (userDetail.educations == null || userDetail.educations && userDetail.educations.length == 0) {
                 setEducationLength(0)
             }
         }
     };
     const checkApplied = async () => {
         setLoading(true);
-        const { documents }: any = await getCandidateDocument();
-        if (documents) {
-            alreadyApplied(documents[0].Id, props.jobId).then((applied) => {
-                const resume = documents[0].resumeId != null && getResumeName(documents[0].resumeId);
+/*         const { documents }: any = await getCandidateDocument();
+ */        if (userDetail) {
+            alreadyApplied(userDetail.Id, props.jobId).then((applied) => {
+                const resume = userDetail.resumeId != null && getResumeName(userDetail.resumeId);
                 resume &&
                     resume.then((res: any) => {
                         setFileName(res.name);
@@ -186,7 +188,7 @@ const ApplyToJob = (props: any) => {
                 <Notification openNotify={openNotify} setOpenNotify={setOpenNotify} successText="failed" successWord="Application Failed" />
             )}
             {userData && (
-                <ConfirmModal isOpen={openApply} handleClose={() => setOpenApply(!openApply)}>
+                <ConfirmModal isOpen={props.openApply} handleClose={() => props.setterFunction(!props.openApply)}>
                     {loading && (
                         <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0">
                             <div className="col-span-12 md:col-span-5 xl:col-span-6 pt-5">

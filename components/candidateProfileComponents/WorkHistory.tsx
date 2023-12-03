@@ -238,10 +238,9 @@ const WorkHitory = () => {
                                     </div>
                                 </div>
                             ))}
-
                         {(workEdit || displayWorkHistory || workHistoryArray.length == 0) && (
                             <form className="gap-5 flex flex-col w-full" onSubmit={workEdit == true ? editWorkHistory : addWorkHistory}>
-                                <div className='h-80 overflow-y-auto pr-2 thinScrollBar'>
+                                <div className='h-80 overflow-y-auto flex flex-col gap-4 pr-2 thinScrollBar'>
                                     <div className="flex flex-col gap-2">
                                         <p className="font-fhW text-smS leading-shL">Title</p>
                                         <input
@@ -271,10 +270,10 @@ const WorkHitory = () => {
                                         />
                                         {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
                                     </div>
-                                    <div className="flex gap-2 items-center">
+                                    <div className="flex gap-2 items-center pl-2">
                                         <input
                                             type="checkbox"
-                                            className="focus:ring-gradientSecond focus:border-0 border-[1px] rounded-xl h-4 pl-5 text-addS"
+                                            className="focus:ring-gradientSecond focus:bg-gradientFirst checked:bg-gradientFirst active:bg-gradientFirst focus:border-0 h-4 rounded-sm text-addS"
                                             checked={isChecked}
                                             onChange={handleCheckboxChange}
                                         />
@@ -307,7 +306,7 @@ const WorkHitory = () => {
                                         </div>
                                     )}
                                     <div className="mb-20 sm:mb-16">
-                                        <p className="font-fhW text-smS leading-shL">Job Description </p>
+                                        <p className="font-fhW text-smS leading-shL mb-3">Job Description </p>
                                         <ReactQuill
                                             className="h-28 text-addS"
                                             placeholder="Add Description"

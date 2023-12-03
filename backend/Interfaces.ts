@@ -52,8 +52,22 @@ export interface FirstTabData {
         linkError: string;
         emailNotify: string;
     };
+    jobPostTabs: {
+        first: boolean;
+        second: boolean;
+        third: boolean;
+        fourth: boolean;
+        chooseJob: boolean;
+    };
+    allEmployerJobs: any;
+    allLoading: boolean;
+    postingJobId: string;
+    setPostingTabs: Dispatch<SetStateAction<any>>;
+    setPostingJobId: Dispatch<SetStateAction<any>>;
+    setAllEmployerJobs: Dispatch<SetStateAction<any>>;
     setFirstTabData: Dispatch<SetStateAction<any>>;
     setSecondTabData: Dispatch<SetStateAction<any>>;
     setThirdTabData: Dispatch<SetStateAction<any>>;
     setFourthTabData: Dispatch<SetStateAction<any>>;
+    handleJobSelection: (id: string, jobType?: string) => void;
 }

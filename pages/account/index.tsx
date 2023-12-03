@@ -14,7 +14,6 @@ import RegisterComponent from '@/components/account/Register';
 import Slider from '@/components/Slider';
 import { SubmitButton } from '@/components/TextInput';
 import { useGlobalContext } from '@/contextApi/userData';
-import { GlobalContextProvider } from '@/contextApi/jobPostData';
 const Login = () => {
     const router = useRouter();
     const logo = '/images/logo.svg';
@@ -52,10 +51,10 @@ const Login = () => {
                 sign.then(async (res) => {
                     setLoading(false);
                     toast.success('Successfully LoggedIn');
-                    typeof window !== 'undefined' && router.push('/jobs');
                     const loggedIn = await getAccount();
                     if (loggedIn !== 'failed') {
                         setUserData(loggedIn)
+                        typeof window !== 'undefined' && router.push('/jobs');
                     }
                     /* const loggedIn = await getAccount();
                     if (loggedIn !== 'failed') {

@@ -2,19 +2,19 @@ import { SendJobPostedEmail } from '@/components/SendEmail';
 import { getAccount } from '@/backend/accountBackend';
 import { postFourthTab } from '@/backend/employerBackend';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { toast } from 'react-toastify';
 import ArticleIcon from '@mui/icons-material/Article';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import { RequiredTextLabel } from './RequiredTextLabel';
-import TextInput, { SubmitButton, TextInputRelated } from '@/components/TextInput';
+import { SubmitButton, TextInputRelated } from '@/components/TextInput';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useJobPostContext } from '@/contextApi/jobPostData';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const FourthForm = (props: any) => {
-    const { firstTabData, fourthTabData, setFourthTabData } = useJobPostContext()
+    const { firstTabData, fourthTabData, setFourthTabData, postingJobId, jobPostTabs, setPostingTabs } = useJobPostContext()
     const router = useRouter();
     const today = new Date();
     const todaysDate = new Date();
@@ -26,22 +26,6 @@ const FourthForm = (props: any) => {
         }
         return link;
     };
-    /*  useEffect(() => {
-         if (props.editedData) {
-             if (props.editedData.emailApplication) {
-                 setPalm(false);
-                 setEmail(true);
-                 setLink(false);
-                 props.editedData.emailApplication && setEmailSent(props.editedData.emailApplication);
-             }
-             if (props.editedData.externalLink) {
-                 setPalm(false);
-                 setEmail(false);
-                 setLink(true);
-                 props.editedData.externalLink && setExternalLink(props.editedData.externalLink);
-             }
-         }
-     }, [props.editedData]) */
     const handleFourthSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         if (fourthTabData.email && fourthTabData.emailSent == '') {
@@ -56,7 +40,7 @@ const FourthForm = (props: any) => {
             setFourthTabData({
                 ...fourthTabData, loading: true
             })
-            postFourthTab(props.postingJobId, fourthTabData.deadline, '', fourthTabData.emailSent, validateLink(fourthTabData.externalLink))
+            postFourthTab(postingJobId, fourthTabData.deadline, '', fourthTabData.emailSent, validateLink(fourthTabData.externalLink))
                 .then((res: any) => {
                     setFourthTabData({
                         ...fourthTabData, loading: false
@@ -64,8 +48,7 @@ const FourthForm = (props: any) => {
                     toast.success('Job posted successfully');
                     getAccount().then((result: any) => {
                         result &&
-                            fourthTabData.emailNotify !== 'false' &&
-                            SendJobPostedEmail(result.email, firstTabData.jobTitle, `${VERIFY}/jobs/${res.$id}`, result.name);
+                            fourthTabData.emailNotify !== 'false' && SendJobPostedEmail(result.email, firstTabData.jobTitle, `${VERIFY}/jobs/${res.$id}`, result.name);
                     });
                     typeof window !== 'undefined' && router.push(`/jobs/${res.$id}`);
                 })
@@ -78,11 +61,15 @@ const FourthForm = (props: any) => {
                 });
         }
     };
+    const handleBack = () => {
+        setPostingTabs({
+            ...jobPostTabs,
+            fourth: false,
+            third: true
+        })
+    }
     return (
-        <form
-            onSubmit={handleFourthSubmit}
-            className={props.fourth ? 'col-span-12 pt-5  space-y-3 ' : 'hidden'}
-        >
+        <form onSubmit={handleFourthSubmit} className='col-span-12 pt-5  space-y-3'>
             <div className="text-neutral-900 text-xl font-semibold leading-10">Set application Preference</div>
             <div className="flex bg-forBack w-full p-2 gap-x-5 md:w-1/2">
                 <div
@@ -162,30 +149,16 @@ const FourthForm = (props: any) => {
                 <div className="w-full">
                     <div
                         onClick={() => props.setOpenPreview(true)}
-                        className={
-                            props.fourth
-                                ? 'text-gradientFirst border flex items-center justify-center cursor-pointer h-14 rounded-xl w-full block  md:w-5/12 lg:w-60'
-                                : 'hidden'
-                        }
-                    >
+                        className='text-gradientFirst border flex items-center justify-center cursor-pointer h-14 rounded-xl w-full block  md:w-5/12 lg:w-60'                   >
                         See Preview &nbsp; <VisibilityIcon sx={{ fontSize: '1.3rem' }} />
                     </div>
                 </div>
-                <div
-                    onClick={props.handleBack}
-                    className={
-                        props.second || props.third || props.fourth
-                            ? 'text-gradientFirst border border-gray-300 flex items-center justify-center cursor-pointer h-14 rounded-xl max-md:order-3 w-full md:w-5/12 lg:w-60'
-                            : 'opacity-0'
-                    }
-                >
-                    <ArrowBackOutlinedIcon sx={{ fontSize: '1.2rem' }} /> &nbsp; Back
-                </div>
-                <div className="flex justify-end">
-                    <div className='w-full col-span-12 flex md:justify-end'>
-                        <div className='w-full md:w-60'>
-                            <SubmitButton loading={fourthTabData.loading} buttonText="Post Job" />
-                        </div>
+                <div className="w-full flex pt-10 justify-between gap-5 max-sm:flex-wrap">
+                    <div onClick={handleBack} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
+                        <ArrowBackIcon sx={{ fontSize: '1rem' }} /> <span className='ml-2'>Back</span>
+                    </div>
+                    <div className='w-full md:w-60'>
+                        <SubmitButton loading={fourthTabData.loading} buttonText="Continue" />
                     </div>
                 </div>
             </div>

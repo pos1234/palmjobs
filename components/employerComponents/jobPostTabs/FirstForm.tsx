@@ -9,99 +9,80 @@ import GroupWorkIcon from '@mui/icons-material/GroupWork';
 import { postFirstTab, updateFirstTab } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
 import { useJobPostContext } from '@/contextApi/jobPostData';
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const FirstForm = (props: any) => {
-    const { firstTabData, setFirstTabData } = useJobPostContext()
-    /*   useEffect(() => {
-          if (props.editedData) {
-              setJobTitle(props.editedData.jobTitle);
-              const value = parseInt(props.editedData.openPositions, 10);
-              if (!isNaN(value) && value > 1) {
-                  setOpenPositions(value);
-                  setOpenPositions(value);
-              }
-              if (props.editedData.jobLocation.toLowerCase() == 'remote') {
-                  setRemote(true);
-                  setHybrid(false);
-                  setAddLocation(false);
-              }
-              if (props.editedData.jobLocation.toLowerCase() == 'hybrid') {
-                  setRemote(false);
-                  setHybrid(true);
-                  setAddLocation(false);
-              }
-              if (props.editedData.jobLocation.toLowerCase() !== 'hybrid' && props.editedData.jobLocation.toLowerCase() !== 'remote') {
-                  setRemote(false);
-                  setHybrid(false);
-                  setAddLocation(true);
-                  setLocation(props.editedData.jobLocation);
-              }
-          }
-      }, [props.editedData]) */
+    const { firstTabData, setFirstTabData, postingJobId, setPostingJobId, jobPostTabs, setPostingTabs } = useJobPostContext()
     const handleFirstSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-        console.log(firstTabData);
-        if (props.first && !props.second && !props.third && !props.fourth) {
+        setFirstTabData({
+            ...firstTabData, jobTitleError: ''
+        })
+        if (firstTabData.jobTitle == '') {
             setFirstTabData({
-                ...firstTabData, jobTitleError: ''
+                ...firstTabData, jobTitleError: 'Job Titile is required'
             })
-            if (firstTabData.jobTitle == '') {
+        } else if (firstTabData.addLocation && firstTabData.location == '') {
+            setFirstTabData({
+                ...firstTabData, locationError: 'Please Provide Location'
+            })
+        } else {
+            if (postingJobId !== '') {
                 setFirstTabData({
-                    ...firstTabData, jobTitleError: 'Job Titile is required'
+                    ...firstTabData, loading: true
                 })
-            } else if (firstTabData.addLocation && firstTabData.location == '') {
-                setFirstTabData({
-                    ...firstTabData, locationError: 'Please Provide Location'
-                })
+                updateFirstTab(firstTabData.jobTitle, firstTabData.openPositions.toString(), firstTabData.location, postingJobId)
+                    .then((res: any) => {
+                        setFirstTabData({
+                            ...firstTabData, loading: false
+                        })
+                        toast.success('Updated Successfully');
+                        setPostingTabs({
+                            ...jobPostTabs,
+                            first: false,
+                            second: true
+                        })
+                        /*  props.setFourth(false);
+                         props.setThird(false);
+                         props.setSecond(true);
+                         props.setFirst(false);
+                         props.setChooseJob(false); */
+                    })
+                    .catch((error) => {
+                        setFirstTabData({
+                            ...firstTabData, loading: false
+                        })
+                        toast.error(`Not Updated ${error}`);
+                        console.log(error);
+                    });
             } else {
-                if (props.postingJobId) {
-                    setFirstTabData({
-                        ...firstTabData, loading: true
-                    })
-                    updateFirstTab(firstTabData.jobTitle, firstTabData.openPositions.toString(), firstTabData.location, props.postingJobId)
-                        .then((res: any) => {
-                            setFirstTabData({
-                                ...firstTabData, loading: false
-                            })
-                            toast.success('Saved as Draft');
-                            props.setFourth(false);
-                            props.setThird(false);
-                            props.setSecond(true);
-                            props.setFirst(false);
-                            props.setChooseJob(false);
+                setFirstTabData({
+                    ...firstTabData, loading: true
+                })
+                postFirstTab(firstTabData.jobTitle, firstTabData.openPositions.toString(), firstTabData.location)
+                    .then((res: any) => {
+                        setFirstTabData({
+                            ...firstTabData, loading: false
                         })
-                        .catch((error) => {
-                            setFirstTabData({
-                                ...firstTabData, loading: false
-                            })
-                            toast.error(`Draft Not Saved ${error}`);
-                            console.log(error);
-                        });
-                } else {
-                    setFirstTabData({
-                        ...firstTabData, loading: true
-                    })
-                    postFirstTab(firstTabData.jobTitle, firstTabData.openPositions.toString(), firstTabData.location)
-                        .then((res: any) => {
-                            setFirstTabData({
-                                ...firstTabData, loading: false
-                            })
-                            props.setPostingJobId(res.$id);
-                            toast.success('Saved as Draft');
-                            props.setFourth(false);
-                            props.setThird(false);
-                            props.setSecond(true);
-                            props.setFirst(false);
-                            props.setChooseJob(false);
+                        setPostingJobId(res.$id);
+                        toast.success('Saved as Draft');
+                        setPostingTabs({
+                            ...jobPostTabs,
+                            first: false,
+                            second: true
                         })
-                        .catch((error) => {
-                            setFirstTabData({
-                                ...firstTabData, loading: false
-                            })
-                            toast.error(`Draft Not Saved ${error}`);
-                            console.log(error);
-                        });
-                }
+                        /*   props.setFourth(false);
+                          props.setThird(false);
+                          props.setSecond(true);
+                          props.setFirst(false);
+                          props.setChooseJob(false); */
+                    })
+                    .catch((error) => {
+                        setFirstTabData({
+                            ...firstTabData, loading: false
+                        })
+                        toast.error(`Draft Not Saved ${error}`);
+                        console.log(error);
+                    });
             }
         }
     };
@@ -140,6 +121,13 @@ const FirstForm = (props: any) => {
             })
         }
     }
+    const handleBack = () => {
+        setPostingTabs({
+            ...jobPostTabs,
+            first: false,
+            chooseJob: true
+        })
+    }
     return (
         <form
             onSubmit={handleFirstSubmit}
@@ -154,7 +142,7 @@ const FirstForm = (props: any) => {
                 setFunction={setFirstTabData}
                 change={'jobTitle'}
                 dataDistruct={firstTabData} />
-            <RequiredTextLabel text="How many open roles ?" />
+            <RequiredTextLabel text="How many open roles?" />
             <div className="flex gap-x-5 items-center mt-3">
                 <div
                     onClick={() => {
@@ -177,7 +165,7 @@ const FirstForm = (props: any) => {
                     <AddIcon />
                 </div>
             </div>
-            <RequiredTextLabel text="Which option best describe this job's location ?" />
+            <RequiredTextLabel text="Which option best describe this job's location?" />
             <div className="flex bg-forBack  p-2 gap-x-5 w-full lg:w-1/2">
                 <div
                     onClick={() => handleLocationTab('1')}
@@ -215,11 +203,13 @@ const FirstForm = (props: any) => {
                     </>
                 )
             }
-            <div className="flex pt-10 justify-end">
-                <div className='w-full col-span-12 flex md:justify-end mt-0'>
-                    <div className='w-full md:w-60'>
-                        <SubmitButton loading={firstTabData.loading} buttonText="Continue" />
-                    </div>
+
+            <div className="flex pt-10 justify-between gap-5 max-sm:flex-wrap">
+                <div onClick={handleBack} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
+                    <ArrowBackIcon sx={{ fontSize: '1rem' }} /> <span className='ml-2'>Back</span>
+                </div>
+                <div className='w-full md:w-60'>
+                    <SubmitButton loading={firstTabData.loading} buttonText="Continue" />
                 </div>
             </div>
         </form >

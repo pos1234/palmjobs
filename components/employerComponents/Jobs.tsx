@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../shimmer/EmpJobShimmer';
 import Active from './jobComponents/Active';
@@ -10,21 +9,21 @@ import { Popover } from '@headlessui/react';
 import HeightIcon from '@mui/icons-material/Height';
 import StraightIcon from '@mui/icons-material/Straight';
 import SpaIcon from '@mui/icons-material/Spa';
-import EditOffIcon from '@mui/icons-material/EditOff';
 import PublicOffIcon from '@mui/icons-material/PublicOff';
 import PauseIcon from '@mui/icons-material/Pause';
-import { fetchDraftedJobs, fetchPostedJobs } from '@/backend/employerBackend';
+import { useJobPostContext } from '@/contextApi/jobPostData';
 const Jobs = (props: any) => {
+    const { allEmployerJobs } = useJobPostContext()
     const [opened, setOpened] = useState(true);
     const [draft, setDraft] = useState(false);
     const [closed, setClosed] = useState(false);
     const [sort, setSort] = useState('asc');
     const [allLoading, setAllLoading] = useState(false);
-    const [editFullJob, setEditFullJob] = useState(false);
     const [editedJobId, setEditedJobId] = useState('');
     const [noDraft, setNoDraft] = useState(false);
     const [noPosted, setNoPosted] = useState(false);
     const [noClosed, setNoClosed] = useState(false);
+    const [activeJobs, setActiveJobs] = useState<any>()
     const toggleTabs = (name: string) => {
         if (name === 'opened') {
             setOpened(true);
@@ -46,41 +45,21 @@ const Jobs = (props: any) => {
         props.postJob(text);
     };
     const handleFullEdit = () => {
-        if (editedJobId) {
-            props.setEditedJobId(editedJobId);
-            props.postJob('postJob');
-        }
-    };
+        props.postJob('postJob');
+    }
     useEffect(() => {
-        handleFullEdit();
-    }, [editedJobId]);
-    useEffect(() => {
-        fetchDraftedJobs()
-            .then((res) => {
-                res && res.total > 0 && setNoDraft(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-        fetchPostedJobs()
-            .then((res) => {
-                res && res.total > 0 && setNoPosted(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-        fetchPostedJobs()
-            .then((res) => {
-                res && res.total > 0 && setNoClosed(true);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, []);
+        const drafted = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Draft');
+        const active = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Active');
+        const closed = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Close');
+        drafted && drafted.length > 0 && setNoDraft(true)
+        active && active.length > 0 && setNoPosted(true)
+        closed && closed.length > 0 && setNoClosed(true)
+        active && active.length > 0 && setActiveJobs(active)
+    }, [allEmployerJobs]);
     return (
         <>
             <div className="bg-textW min-h-screen">
-                <div className="relative flex justify-between pt-10 items-center px-2 lg:pl-10">
+                < div className="relative flex justify-between pt-10 items-center px-2 lg:pl-10">
                     <p className="text-black text-3xl font-[700]">Jobs</p>
                     <div
                         onClick={() => handleNav('postJob')}
@@ -99,8 +78,8 @@ const Jobs = (props: any) => {
                                         onClick={() => toggleTabs('opened')}
                                         className={
                                             opened
-                                                ? 'flex items-center gap-2 justify-center border-b-[3px] text-gradientFirst border-b-gradientFirst pb-3'
-                                                : 'font-[600] gap-2 flex items-center justify-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst pb-3'
+                                                ? 'flex font-[600] items-center gap-2 justify-center border-b-[3px] border-b-gradientFirst pb-3'
+                                                : 'font-[600] gap-2 flex items-center justify-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst pb-3'
                                         }
                                     >
                                         <SpaIcon sx={{ fontSize: '1.2rem' }} />
@@ -112,11 +91,11 @@ const Jobs = (props: any) => {
                                         onClick={() => toggleTabs('draft')}
                                         className={
                                             draft
-                                                ? 'flex items-center gap-2 justify-center border-b-[3px] text-gradientFirst border-b-gradientFirst pb-3'
-                                                : 'font-[600] gap-2 flex items-center justify-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst pb-3'
+                                                ? 'flex font-[600] items-center gap-2 justify-center border-b-[3px] border-b-gradientFirst pb-3'
+                                                : 'font-[600] gap-2 flex items-center justify-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst pb-3'
                                         }
                                     >
-                                        <PauseIcon sx={{ fontSize: '1.2rem' }} />
+                                        <PauseIcon sx={{ fontSize: '1.5rem' }} />
                                         <span>Drafted</span>
 
                                     </div>
@@ -126,11 +105,11 @@ const Jobs = (props: any) => {
                                         onClick={() => toggleTabs('closed')}
                                         className={
                                             closed
-                                                ? 'flex items-center gap-2 justify-center border-b-[3px] text-gradientFirst border-b-gradientFirst pb-3'
-                                                : 'font-[600] gap-2 flex items-center justify-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst hover:text-gradientFirst pb-3'
+                                                ? 'flex font-[600] items-center gap-2 justify-center border-b-[3px] border-b-gradientFirst pb-3'
+                                                : 'font-[600] gap-2 flex items-center justify-center cursor-pointer border-b-[3px] border-b-textW hover:border-b-gradientFirst pb-3'
                                         }
                                     >
-                                        <PublicOffIcon sx={{ fontSize: '1.2rem' }} />
+                                        <img src="/icons/closedJob.svg" alt="closedIcon" />
                                         <span>Closed</span>
 
                                     </div>
@@ -171,19 +150,16 @@ const Jobs = (props: any) => {
                         </div>
                     )}
                     <div className={opened ? '' : 'hidden'}>
-                        <Active sort={sort} setJobId={setEditedJobId} applicants={props.applicants} />
+                        <Active sort={sort} handleFullEdit={handleFullEdit} applicants={props.applicants} />
                     </div>
                     <div className={draft ? '' : 'hidden'}>
-                        <Drafted setJobId={setEditedJobId} />
+                        <Drafted /* setJobId={setEditedJobId} */ handleFullEdit={handleFullEdit} />
                     </div>
                     <div className={closed ? '' : 'hidden'}>
                         <Closed />
                     </div>
-                    {/*                     {opened && }
-                     {draft && }
-                    {closed && }*/}
                 </div>
-            </div>
+            </div >
         </>
     );
 };
