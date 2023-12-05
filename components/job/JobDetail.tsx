@@ -284,10 +284,10 @@ const JobDetail = (props: any) => {
                                     {props.jobDetails.requiredSkills && parseToArray(props.jobDetails.requiredSkills).map((skill: string, index: number) => {
                                         return <div key={index}>
                                             {userSkill && userSkill.includes(skill.toLocaleLowerCase()) ?
-                                                <div key={index} className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-skillColor text-gradientFirst text-center flex px-7 gap-2 items-center">
+                                                <div key={index} className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-skillColor text-gradientFirst text-center flex px-7 max-sm:py-7 gap-2 items-center">
                                                     {skill} <CheckIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} />
                                                 </div> :
-                                                <div className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-gray-100 text-center flex px-7 items-center"
+                                                <div className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-gray-100 text-center flex px-7 max-sm:py-7 items-center"
                                                     key={index}>{skill}</div>}
                                         </div>
                                     })}

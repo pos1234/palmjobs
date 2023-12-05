@@ -61,7 +61,7 @@ const GlobalContext = createContext<FirstTabData>({
     setPostingJobId: () => { },
     handleJobSelection: (id: string, postingType?: string) => { }
 });
-export const GlobalContextProvider = ({ children }: any) => {
+export const JobPostContextProvider = ({ children }: any) => {
     const [jobPostTabs, setPostingTabs] = useState({
         first: false,
         second: false,

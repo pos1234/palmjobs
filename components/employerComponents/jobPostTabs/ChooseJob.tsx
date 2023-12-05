@@ -1,4 +1,4 @@
-import { GlobalContextProvider, useJobPostContext } from '@/contextApi/jobPostData';
+import { useJobPostContext } from '@/contextApi/jobPostData';
 import React, { useEffect, useState, Dispatch, SetStateAction } from 'react'
 
 const ChooseJob = (props: any) => {
@@ -26,9 +26,9 @@ const ChooseJob = (props: any) => {
           <div
             className='col-span-12 pt-5 space-y-3 '
           >
-            <div className="text-neutral-900 h-20 flex items-center overflow-hidden justify-between pl-5 md:h-32 jobsBack">
+            <div className="text-neutral-900 h-32 flex items-center overflow-hidden justify-between pl-5 md:h-32 jobsBack">
               <div className='flex flex-col gap-2'>
-                <p className='font-[700] text-[24px]'>Develop the Job Description using AI</p>
+                <p className='font-[700] sm:text-[24px]'>Develop the Job Description using AI</p>
                 <p className='font-[400] text-[14px] text-gray-500'>Lorem ipsum sit amet consectetur. Accumsan</p>
               </div>
               <div className='p-5 pr-10'>
@@ -44,7 +44,7 @@ const ChooseJob = (props: any) => {
                 onClick={() => {
                   setSelectedRadio('empty')
                 }}
-                className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${selectedRadio == "empty" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                className={`flex justify-center rounded-md  w-36 py-2 h-20 ${selectedRadio == "empty" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
               >
                 <p >New Post</p>
               </div>
@@ -52,7 +52,7 @@ const ChooseJob = (props: any) => {
                 onClick={() => {
                   setSelectedRadio('duplicate')
                 }}
-                className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${selectedRadio == "duplicate" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                className={`flex justify-center rounded-md w-36 py-2 h-20 ${selectedRadio == "duplicate" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
               >
                 <p >Duplicate</p>
               </div>
@@ -60,7 +60,7 @@ const ChooseJob = (props: any) => {
                 onClick={() => {
                   setSelectedRadio('draft')
                 }}
-                className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${selectedRadio == "draft" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                className={`flex justify-center rounded-md w-36 py-2 h-20 ${selectedRadio == "draft" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
               >
                 <p>Draft</p>
               </div>

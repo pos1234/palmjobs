@@ -106,7 +106,8 @@ const FourthForm = (props: any) => {
                     title="Recieve Application Through External Link"
                     onClick={() => {
                         setFourthTabData({
-                            ...fourthTabData, palm: false,
+                            ...fourthTabData,
+                            palm: false,
                             email: false,
                             link: true
                         })
@@ -121,7 +122,7 @@ const FourthForm = (props: any) => {
                 <>
                     <RequiredTextLabel text="Email" />
                     <TextInputRelated placeHolder="Email Address" value={fourthTabData.emailSent} setFunction={setFourthTabData}
-                        dataDistruct={fourthTabData} change={'email'}
+                        dataDistruct={fourthTabData} change={'emailSent'}
                     />
                     <p className="text-red-500 text-[13px]">{fourthTabData.emailError}</p>
                 </>
@@ -130,7 +131,7 @@ const FourthForm = (props: any) => {
                 <>
                     <RequiredTextLabel text="External Link" />
                     <TextInputRelated placeHolder="External Link" value={fourthTabData.externalLink} setFunction={setFourthTabData}
-                        dataDistruct={fourthTabData} change={'link'} />
+                        dataDistruct={fourthTabData} change={'externalLink'} />
                     <p className="text-red-500 text-[13px]">{fourthTabData.linkError}</p>
                 </>
             )}

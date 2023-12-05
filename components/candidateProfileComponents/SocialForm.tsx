@@ -93,8 +93,8 @@ const SocialForm = (props: any) => {
 
     return (
         <ConfirmModal isOpen={props.openProfile} handleClose={() => props.setOpenProfile(false)}>
-            <div className="mx-2 h-[80%] w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 pb-14 md:pt-8 max-sm:h-4/5 md:pl-14 md:w-2/3 lg:w-1/2 md:mx-0">
-                <form onSubmit={hanleLinkUpdate} className="col-span-12 order-1 flex flex-wrap grid-cols-12 pr-4">
+            <div className="mx-2 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 pb-14 md:pt-8 md:pl-14 md:w-2/3 lg:w-1/2 md:mx-0">
+                <form onSubmit={hanleLinkUpdate} className="col-span-12 max-sm:pl-1 order-1 flex flex-wrap grid-cols-12 pr-4">
                     <div className='w-full flex justify-between'>
                         <p className="font-[600] text-2xl leading-shL pb-5 ">Bio</p>
                         <button onClick={() => props.setOpenProfile(false)}>
@@ -130,12 +130,12 @@ const SocialForm = (props: any) => {
                         <div className="col-span-12 flex gap-3 h-[100%] grid grid-cols-1 md:grid-cols-2">
                             <div className="flex flex-col gap-3">
                                 <p className="font-fhW w-full text-smS leading-shL">Phone</p>
-                                <TextInput
-                                    placeHolder="Phone"
+                                <input
+                                    type='number'
+                                    placeholder="Phone"
                                     value={phone}
-                                    setFunction={setPhone}
-                                    class="full"
-                                />
+                                    onChange={(e) => setPhone(e.currentTarget.value)}
+                                    className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientSecond focus:ring-0 w-full hideIncrease' />
                             </div>
                             <div className="flex flex-col gap-3">
                                 <p className="w-full font-fhW text-smS leading-shL">Address</p>

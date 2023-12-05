@@ -18,22 +18,16 @@ const Navigation = (props: any) => {
     const [openLogout, setOpenLogout] = useState(false);
     return (
         <div>
-            <div className="flex flex-wrap gap-5 pt-3 md:border-[1px] md:border-t-0 xl:px-40 xl:h-[73px]">
-                <div className='md:max-lg:w-full flex justify-center xl:h-full xl:items-center'>
-                    <Link href="/">
-                        <img src={logo} alt="Image description" className="w-[160px] h-[60px]" />
-                    </Link>
-                </div>
+            <div className={`flex flex-wrap items-center gap-5 relative md:border-[1px] md:border-t-0 xl:px-40 xl:h-[73px] ${menu ? ' max-md:h-screen md:pt-3' : 'pt-3'}`}>
                 {menu && (
-                    <div className="fixed bg-textW -mt-[0.7rem] h-screen w-screen flex flex-col z-40 md:hidden">
+                    <div className="fixed bg-textW h-screen w-screen overflow-hidden flex flex-col z-40 md:hidden">
                         <div onClick={() => setMenu(!menu)} className="flex items-center justify-end pt-4 pr-2 cursor-pointer">
                             <CloseOutlinedIcon className="text-[3rem]" />
                         </div>
                         <div className="flex justify-center">
                             <Link href="/">
                                 <img src={logo} alt="Image description" className="w-[160px] h-[60px]" />
-                                {/*                                 <img src={logo} alt="palmjobs logo" className="h-16" />
- */}                            </Link>
+                            </Link>
                         </div>
                         <div className="relative flex mt-5 items-center justify-center gap-x-5">
                             {userDetail && userDetail.profilePictureId && (
@@ -53,7 +47,9 @@ const Navigation = (props: any) => {
                                 <Link href="/jobs" className="border-b-[1px] pb-2 text-lg">
                                     Find a Job
                                 </Link>
-                                <p className="border-b-[1px] pb-2 text-lg">Craft Resume</p>
+                                {
+                                    userRole !== 'employer' && <p className="border-b-[1px] pb-2 text-lg">Craft Resume</p>
+                                }
                                 <Link href="/salaries" className="border-b-[1px] pb-2 text-lg">
                                     Salaries
                                 </Link>
@@ -61,7 +57,7 @@ const Navigation = (props: any) => {
                                     <>
                                         <Link href="/account" className="border-b-[1px] pb-2 text-lg">Sign in</Link>
                                         <Link
-                                            href="/users/employer"
+                                            href="/account"
                                             className="text-textW flex items-center gap-2 justify-center bg-black h-14 w-full rounded-[3px] hover:border-b-[1px] hover:border-b-gradientFirst buttonBounce"
                                         >
                                             <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
@@ -70,55 +66,71 @@ const Navigation = (props: any) => {
                                     </>
                                 )}
                                 {userRole == 'candidate' ? (
-                                    <Link href="/users/candidate" className="border-b-[1px] text-xl pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-poniter">
+                                    <Link href="/users/candidate" className="border-b-[1px] text-lg pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-poniter">
                                         my jobs
                                     </Link>
                                 ) : userRole == 'employer' ? (
-                                    <Link href="/users/employer" className="border-b-[1px] text-xl pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
-                                        Dashboard
-                                    </Link>
+                                    <>
+                                        <Link href="/users/employer/post" className="border-b-[1px] text-lg pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
+                                            Post Job
+                                        </Link>
+                                        <Link href="/users/employer/jobs" className="border-b-[1px] text-lg pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
+                                            Jobs
+                                        </Link>
+                                        <Link href="/users/employer/candidates" className="border-b-[1px] text-lg pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
+                                            Applicants
+                                        </Link>
+                                        <Link href="/users/employer/privacy" className="border-b-[1px] text-lg pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
+                                            Privacy
+                                        </Link>
+                                    </>
                                 ) : null}
                                 {userRole == 'candidate' ? (
                                     <>
                                         <Link
                                             href="/users/candidate/profile"
-                                            className="border-b-[1px] pb-2 col-span-3 text-xl lg:col-span-3 xl:col-span-3 cursor-pointer"
+                                            className="border-b-[1px] pb-2 col-span-3 text-lg lg:col-span-3 xl:col-span-3 cursor-pointer"
                                         >
                                             <span>Profile</span>
                                         </Link>
                                         <Link
                                             href="/users/candidate/settings"
-                                            className="border-b-[1px] pb-2 col-span-3 text-xl lg:col-span-3 xl:col-span-3 cursor-pointer"
+                                            className="border-b-[1px] pb-2 col-span-3 text-lg lg:col-span-3 xl:col-span-3 cursor-pointer"
                                         >
                                             <span>Setting</span>
                                         </Link>
                                     </>
                                 ) : userRole == 'employer' ? (
-                                    <Link href="/users/employer/" className="border-b-[1px] text-xl pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
+                                    <Link href="/users/employer/profile" className="border-b-[1px] text-lg pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
                                         <span>Profile</span>
                                     </Link>
                                 ) : null}
-
                                 {userData && (
                                     <div
                                         onClick={() => {
                                             setMenu(false)
                                             setOpenLogout(!openLogout)
                                         }}
-                                        className="flex gap-x-3 text-[1.5rem] text-xl cursor-pointer items-center"
+                                        className="flex gap-x-3 text-[1.5rem] text-lg cursor-pointer items-center"
                                     >
                                         <span>Logout</span>
                                     </div>
                                 )}
                             </div>
                         </div>
-                        <div className="text-[12px] justify-around items-end absolute bottom-20 w-full font-midRW leading-midRL text-lightGrey flex">
+                        <div className="text-[12px] mt-3 flex-grow justify-around items-end w-full font-midRW leading-midRL text-lightGrey flex">
                             <p>2023. YES</p>
                             <p>Privacy Policy</p>
                             <p>Terms and Conditions</p>
                         </div>
                     </div>
                 )}
+                <div className='md:max-lg:w-full flex justify-center xl:h-full xl:items-center'>
+                    <Link href="/">
+                        <img src={logo} alt="Image description" className="w-[100px] h-[40px] sm:w-[160px] sm:h-[60px]" />
+                    </Link>
+                </div>
+
                 <div className="hidden flex-grow items-center lg:text-bigS lg:font-bigW lg:leading-bigL lg:text-textR md:flex md:items-center md:gap-x-7 xl:ml-10 xl:gap-x-10">
                     <Link href="/jobs" className="border-b-[3px] h-full border-b-textW font-[600] flex items-center hover:border-b-gradientFirst">
                         Find a Job
@@ -132,7 +144,7 @@ const Navigation = (props: any) => {
                             My jobs
                         </Link>
                     ) : userRole == 'employer' ? (
-                        <Link href="/users/employer" className="border-b-[3px] border-b-textW font-[600] h-full flex items-center hover:border-b-gradientFirst">
+                        <Link href="/users/employer/jobs" className="border-b-[3px] border-b-textW font-[600] h-full flex items-center hover:border-b-gradientFirst">
                             Dashboard
                         </Link>
                     ) : null}
@@ -155,8 +167,7 @@ const Navigation = (props: any) => {
                         >
                             <div className={styles['bar']}></div>
                             <div className={styles['bar']}></div>
-{/*                             <div className={styles['bar']}></div>
- */}                        </div>
+                        </div>
                     </div>
                     <div className="flex pt-2 gap-10">
                         {!userData && !loading && (
@@ -168,7 +179,7 @@ const Navigation = (props: any) => {
                                 </div>
                                 <div className="hidden justify-items-end md:flex md:items-center mb-[2px]">
                                     <Link
-                                        href="/users/employer"
+                                        href="/account"
                                         className="text-textW flex items-center gap-2 justify-center bg-black h-[42px] w-[166px] rounded-[3px] hover:border-b-[1px] hover:border-b-gradientFirst buttonBounce"
                                     >
                                         <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
@@ -225,7 +236,7 @@ const Navigation = (props: any) => {
                                                 </>
                                             ) : userRole == 'employer' ? (
                                                 <Link
-                                                    href="/users/employer/"
+                                                    href="/users/employer/profile"
                                                     className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
                                                 >
                                                     <ManageAccountsOutlinedIcon sx={{ fontSize: '1rem' }} />

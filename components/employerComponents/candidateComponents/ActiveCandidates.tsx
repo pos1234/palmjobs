@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CandSmall from './CandSmall';
 import CandidateDetail from './CandidateDetail';
 import { fetchAppliedCandidatesSingleJob } from '@/backend/employerBackend';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const Active = (props: any) => {
     const [openCanDetail, setOpenCanDetail] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
@@ -58,11 +59,11 @@ const Active = (props: any) => {
                             onClick={() => setOpenCanDetail(false)}
                             className={
                                 openCanDetail == true
-                                    ? 'cursor-pointer mb-3 rounded-xl text-gradientFirst text-center border-2 py-3 md:hidden'
+                                    ? 'cursor-pointer mb-3 rounded-xl text-center border-2 py-3 md:hidden'
                                     : 'hidden'
                             }
                         >
-                            Back To Candidate List
+                            <ArrowBackIcon/> Back To Candidate List
                         </p>
 
                         <CandidateDetail jobId={props.jobId} /* setShortListed={props.setShortListed} */ detailData={candidateDetail} imageLinkValue={imageUrl} short={false} />

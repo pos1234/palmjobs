@@ -1,5 +1,6 @@
 /* import { UserProvider } from '@/lib/context';
  */ import { GlobalContextProvider } from '@/contextApi/userData';
+import { JobPostContextProvider } from '@/contextApi/jobPostData'
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import { ToastContainer, toast } from 'react-toastify';
@@ -26,7 +27,9 @@ export default function App({ Component, pageProps }: AppProps) {
                 }}
             />
             <GlobalContextProvider>
-                <Component {...pageProps} />
+                <JobPostContextProvider>
+                    <Component {...pageProps} />
+                </JobPostContextProvider>
             </GlobalContextProvider>
         </>
     );

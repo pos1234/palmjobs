@@ -117,6 +117,7 @@ const ThirdForm = (props: any) => {
                     </button>
                 </div>
                 <RequiredTextLabel text="Job Description?" />
+                <p className='text-[12px]'>You are responsible for you job post. Review to ensure it has all required information.</p>
                 <div className="pb-20 mr-2 relative xl:mr-64">
                     <ReactQuill
                         className="h-60 text-addS"
