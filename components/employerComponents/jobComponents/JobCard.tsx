@@ -17,9 +17,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import Share from '@/components/Share';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Link from 'next/link';
+import BlockIcon from '@mui/icons-material/Block';
 import TextInput, { SmallLists } from '@/components/TextInput';
 import JobDetail from '@/components/job/JobDetail';
-import { GlobalContextProvider, useJobPostContext } from '@/contextApi/jobPostData';
+import { useJobPostContext } from '@/contextApi/jobPostData';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -54,16 +55,15 @@ const JobCard = (props: any) => {
     const [compnayDes, setCompanyDes] = useState<any>();
     const handleSelection = (id: string) => {
         handleJobSelection(id)
-        props.setEditedJobId()
-        setPostingTabs({
+/*         props.setEditedJobId()
+ */        setPostingTabs({
             ...jobPostTabs,
             chooseJob: false,
             first: true
         })
     }
-    const updateStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        e.preventDefault();
-        updateJobStatus(props.jobId, e.currentTarget.value)
+    const updateStatus = (e: string) => {
+        updateJobStatus(props.jobId, e)
             .then((res) => {
                 toast.success('Status Updated Successfully');
                 fetchAllEmployerJob().then((res: any) => {
@@ -154,7 +154,7 @@ const JobCard = (props: any) => {
     };
     return (
         <>
-            <div className="bg-textW flex sm:relative py-5 px-2 xl:px-6 border-2 rounded-lg">
+            <div className="flex sm:relative py-5 px-2 xl:px-6 border-2 rounded-lg">
                 <div className=" flex flex-grow  flex-col">
                     <Link href={`/jobs/${props.jobId}`} target="_blank" className="text-neutral-900 text-lg font-medium leading-normal">
                         {props.title}
@@ -197,7 +197,9 @@ const JobCard = (props: any) => {
                 <div className="flex max-sm:hidden lg:text-[0.9rem]">
                     <select
                         value={jobStatus}
-                        onChange={updateStatus}
+                        onChange={(e) => {
+                            updateStatus(e.currentTarget.value.toString())
+                        }}
                         className={
                             jobStatus == 'Close'
                                 ? 'bg-red-50 text-red-500 border-0 rounded-lg w-32 h-10 text-sm cursor-pointer gap-y-4 focus:ring-gradientFirst selector'
@@ -223,14 +225,13 @@ const JobCard = (props: any) => {
                                     : 'hidden'
                             }
                         >
-                            <select
-                                value={jobStatus}
-                                onChange={updateStatus}
-                                className="md:hidden flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
+                            <div
+                                onClick={() => updateStatus('Close')}
+                                className="md:hidden flex gap-x-3 border-0 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
                             >
-                                <ModeEditIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                <option value="Close">Close Job</option>
-                            </select>
+                                <BlockIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
+                                <div>Close Job</div>
+                            </div>
                             {jobStatus !== 'Close' && <>
                                 <div
                                     onClick={() => setOpenJobEdit(true)}
@@ -239,13 +240,16 @@ const JobCard = (props: any) => {
                                     <ModeEditIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
                                     <span>Quick Edit</span>
                                 </div>
-                                <div
-                                    onClick={() => { handleSelection(props.jobId) }}
+                                <Link href="/users/employer/post"
+                                    onClick={() => {
+                                        handleSelection(props.jobId)
+                                    }}
                                     className="flex gap-x-3 text-[0.8rem] md:max-lg:text-red-500 cursor-pointer items-center text-stone-400 hover:text-stone-700"
                                 >
                                     <BorderColorIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
                                     <span>Full Edit</span>
-                                </div></>
+                                </Link>
+                            </>
                             }
                             <div
                                 onClick={() => setOpenPreview(true)}

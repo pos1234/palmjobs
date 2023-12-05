@@ -23,7 +23,7 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { ProfilePic } from '@/components/JobImage';
 import Logout from '@/components/Logout';
-import { GlobalContextProvider } from '@/contextApi/jobPostData';
+import { JobPostContextProvider } from '@/contextApi/jobPostData';
 interface menuItems {
     icons: any,
     text: string,
@@ -78,15 +78,15 @@ const AdminJob = () => {
             setPrivacy(false);
             setView(false);
         }
-      /*   if (name === 'dashboard') {
-            setDashboard(true);
-            setPostJob(false);
-            setJobs(false);
-            setCandidates(false);
-            setProfileSetting(false);
-            setPrivacy(false);
-            setView(false);
-        } */
+        /*   if (name === 'dashboard') {
+              setDashboard(true);
+              setPostJob(false);
+              setJobs(false);
+              setCandidates(false);
+              setProfileSetting(false);
+              setPrivacy(false);
+              setView(false);
+          } */
         if (name === 'jobs') {
             setPostJob(false);
             setDashboard(false);
@@ -152,7 +152,7 @@ const AdminJob = () => {
         getUserData();
     }, []);
     return (
-        <GlobalContextProvider>
+        <>
             <div className="flex justify-between items-center pr-5 md:pr-0 md:flex md:pl-5 md:pt-5">
                 <Link href="/">
                     <img src={logo} alt="palmjobs logo" className="h-20 md:hidden" />
@@ -176,7 +176,7 @@ const AdminJob = () => {
                     <div
                         className={
                             menu
-                                ? 'fixed top-0 h-screen overflow-auto flex flex-col w-screen z-40 bg-red-500 gap-y-2 pt-16 px-20 flex-col md:min-h-screen md:px-0'
+                                ? 'fixed top-0 h-screen overflow-auto flex flex-col w-screen z-40 gap-y-2 pt-16 px-20 flex-col md:min-h-screen md:px-0'
                                 : 'hidden md:relative md:flex md:flex-col md:gap-y-2 md:pt-16 md:min-h-screen '
                         }
                     >
@@ -209,7 +209,7 @@ const AdminJob = () => {
                             handleMenu={setMenu}
 
                         />
-                       {/*  <MenuItems
+                        {/*  <MenuItems
                             icons={<AssessmentIcon sx={{ fontSize: '1.2rem' }} />
                             }
                             text='Analytics'
@@ -339,7 +339,7 @@ const AdminJob = () => {
                 </div>
             </div>
             <Logout openLogout={openLogout} setOpenLogout={setOpenLogout} />
-        </GlobalContextProvider>
+        </>
     );
 };
 export default employeeAuth(AdminJob);

@@ -99,7 +99,7 @@ const Login = () => {
     return (
         <>
             <div className="flex max-md:flex-wrap grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
-                <div className="w-full h-screen md:w-1/2 flex flex-col max-md:gap-10 items-center max-md:mt-10 md:col-span-6 md:order-1 accountBack">
+                <div className="w-full h-screen md:w-1/2 flex flex-col max-md:gap-10 items-center max-md:mt-10 md:col-span-6 order-2 md:order-1 accountBack">
                     <div className={/* forgotPassword == false ? 'w-full flex justify-center' : */ 'w-full flex justify-center mt-10 sm:mt-28'}>
                         <Link href="/">
                             <img src={logo} className=" w-[15rem]" />
@@ -207,13 +207,13 @@ const Login = () => {
                     {(register == false || registerForm == true) && forgotPassword == false && (
                         <div className="w-full p-2 grid gap-x-2 grid-cols-12 gap-y-4 lg:gap-y-0">
                             {
-                                registerForm == false && <button type='button' onClick={() => handleGoogleLogin()} className="col-span-12 border-2 rounded-xl cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-start-4 sm:col-end-10 md:max-lg:col-span-12">
-                                    <p> Sign in with Google</p> <img src={google} alt="google" className="w-[2rem] h-[2rem] inline ml-3" />
+                                registerForm == false && <button type='button' onClick={() => handleGoogleLogin()} className="col-span-12 border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center sm:col-start-3 sm:col-end-12 md:max-lg:col-span-12">
+                                    <img src={google} alt="google" className="w-[1rem] h-[1rem] inline ml-3" /> <p className='flex-grow text-center'> Continue with Google</p>
                                 </button>
                             }
                             {
-                                registerForm == true && <button type='button' onClick={() => handleGoogleRegister()} className="col-span-12 border-2 rounded-xl cursor-pointer py-[0.93rem] text-addS text-fadedText flex justify-evenly items-center sm:col-start-4 sm:col-end-10 md:max-lg:col-span-12">
-                                    <p>Continue with Google</p> <img src={google} alt="google" className="w-[2rem] h-[2rem] inline ml-3" />
+                                registerForm == true && <button type='button' onClick={() => handleGoogleRegister()} className="col-span-12 border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center sm:col-start-3 sm:col-end-12 md:max-lg:col-span-12">
+                                    <img src={google} alt="google" className="w-[1rem] h-[1rem] inline ml-3" /> <p className='flex-grow text-center'>Continue with Google</p>
                                 </button>
                             }
                         </div>
@@ -256,6 +256,12 @@ const Login = () => {
                                     {visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
                                 </span>
                                 {passwordError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{passwordError}</p>}
+
+                                <div className='w-full col-span-10 flex md:justify-end'>
+                                    <div className='w-full md:w-60 pt-5'>
+                                        <SubmitButton loading={loading} buttonText="Login" />
+                                    </div>
+                                </div>
                                 <div
                                     onClick={() => setForgotPassword(true)}
                                     className="col-span-12 flex justify-end sm:pr-32 md:pr-20 lg:pr-24"
@@ -263,11 +269,6 @@ const Login = () => {
                                     <span className="font-addW text-addS mt-5 mb-2 leading-addL cursor-pointer text-gradientFirst">
                                         Forgot Password?
                                     </span>
-                                </div>
-                                <div className='w-full col-span-10 flex md:justify-end'>
-                                    <div className='w-full md:w-60 pt-5'>
-                                        <SubmitButton loading={loading} buttonText="Login" />
-                                    </div>
                                 </div>
                             </form>
                         </>

@@ -48,7 +48,7 @@ const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tip
             setOpenModal(!openModal);
         }}
         >
-            <div ref={parentRef} onClick={handleParentClick} className='w-screen h-screen flex items-center justify-center px-3 py-10 sm:px-7 md:p-10 lg:px-20 xl:px-52 xl:py-16'>
+            <div ref={parentRef} onClick={handleParentClick} className='w-screen h-screen flex items-center justify-center px-3 py-3 sm:py-10 sm:px-7 md:p-10 lg:px-20 xl:px-52 xl:py-16'>
                 <div onClick={handleChildClick} className='bg-textW w-full h-full rounded-2xl p-5 sm:px-10'>
                     <div className='flex flex-col h-full'>
                         <div className='w-full flex justify-end cursor-pointer hover:text-gradientFirst' onClick={() => setOpenModal(false)}>
@@ -63,11 +63,11 @@ const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tip
                                 {children}
                             </div>
                             <div className={`bg-gray-100 flex flex-wrap px-5 pt-5 rounded-r-2xl w-full gap-7 lg:flex items-center flex-grow justify-center h-full ${tip ? 'lg:w-1/2' : 'hidden overflow-y-auto lg:w-1/3'}`}>
-                                <div className='w-full flex flex-wrap self-center items-end h-1/2 font-[600] text-[20px] text-center'>
+                                <div className='w-full flex flex-wrap self-center items-end h-1/2 font-[600] sm:text-[20px] text-center'>
                                     {tipText}
                                 </div>
                                 <div className='w-full flex items-end self-end justify-end '>
-                                    <img src='/images/salaryTipPattern.svg' className='w-full h-40 self-end' />
+                                    <img src='/images/salaryTipPattern.svg' className='w-full sm:h-40 self-end' />
                                 </div>
                             </div>
                         </div>
@@ -195,7 +195,7 @@ const JobListCard = (props: any) => {
                 props.setOpenJobDetail(true);
             }}
             key={props.index}
-            className={`cursor-pointer bg-textW w-full max-h-[234px] h-[234px] xl:w-[458px] xl:max-w-[458px] flex flex-col gap-2 rounded-[12px] border-[1px]  px-5 py-4 ${props.items.$id == props.jobDetailId ? 'border-gradientFirst' : 'border-[#DEDEDE] hover:border-gradientFirst'} `}
+            className={`cursor-pointer bg-textW w-full h-[300px] max-h-[350px] sm:max-h-[234px] sm:h-[234px] xl:w-[458px] xl:max-w-[458px] flex flex-col gap-2 rounded-[12px] border-[1px]  px-5 py-4 ${props.items.$id == props.jobDetailId ? 'border-gradientFirst' : 'border-[#DEDEDE] hover:border-gradientFirst'} `}
         >
             <div className='flex justify-between flex-wrap gap-1'>
                 <div className='flex items-center gap-3'>
@@ -297,18 +297,18 @@ const JobListCard = (props: any) => {
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.items.$id} />
             <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={'Survey'} text={''} tipText={"Thank you for helping us maintain a professional and safe environment on our job board. If you've found a job listing that violates our terms or seems inappropriate, please provide the information below to assist our review."}>
                 <form onSubmit={handleReportSubmit} className="w-full flex flex-col h-full md:max-lg:items-center">
-                    <div className='h-full w-full overflow-y-auto pr-2 thinScrollBar flex flex-col gap-5 md:max-lg:items-center'>
+                    <div className='h-full w-full overflow-y-auto overflow-x-hidden pr-2 thinScrollBar flex flex-col gap-5 md:max-lg:items-center'>
                         <p className='font-[600] text-[24px]'>Reason for Reporting</p>
                         <div className='flex flex-col gap-3'>
-                            <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 1 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(1)}>Discriminatory Language</p>
-                            <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 2 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(2)}>False Information</p>
-                            <p className={`w-[376px] h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 3 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(3)}>Spam or Fraudulent</p>
+                            <p className={`sm:w-[376px] h-[40px] sm:h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 1 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(1)}>Discriminatory Language</p>
+                            <p className={`sm:w-[376px] h-[40px] sm:h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 2 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(2)}>False Information</p>
+                            <p className={`sm:w-[376px] h-[40px] sm:h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 3 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(3)}>Spam or Fraudulent</p>
                             {reportCode == 4 && <p className='text-red-500 text-[14px]'>Please Select one of the above</p>}
                             <textarea value={reportData.message} onChange={(e) => {
                                 if (e.currentTarget.value.length <= 200) {
                                     setReportData({ ...reportData, message: e.currentTarget.value })
                                 }
-                            }} cols={30} rows={20} className='w-[376px] resize-none h-52 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
+                            }} cols={30} rows={20} className='sm:w-[376px] resize-none h-52 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
                         </div>
                     </div>
                     <div className='w-full flex md:max-lg:justify-center pt-3'>
