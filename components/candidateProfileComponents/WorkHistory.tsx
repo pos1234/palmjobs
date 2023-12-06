@@ -9,10 +9,12 @@ import ElementWithIcon from './CertificateEducationComponent/ElementWithIcon'
 import { toast } from 'react-toastify';
 import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
+import { useGlobalContext } from '@/contextApi/userData';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const WorkHitory = () => {
+    const { userDetail } = useGlobalContext()
     const [openWork, setOpenWork] = useState(false);
     const [displayWorkHistory, setDisplayWorkHistory] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
@@ -133,16 +135,16 @@ const WorkHitory = () => {
         setIsChecked(event.target.checked);
     };
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        if (userInfo !== null) {
-            const workhistory = convertToArray(userInfo.workHistory) || [];
+/*         const userInfo = await getUserDetail()
+ */        if (userDetail) {
+            const workhistory = convertToArray(userDetail.workHistory) || [];
             setWorkHistoryArray(workhistory || '');
         }
 
     }
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     useEffect(() => {
         if (openWork == false) {
             setDisplayWorkHistory(false);

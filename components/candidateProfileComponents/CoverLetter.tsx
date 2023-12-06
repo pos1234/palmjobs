@@ -5,15 +5,17 @@ import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import EditIcon from '@mui/icons-material/Edit';
 import FormModal from './FormModal';
 import { SubmitButton } from '../TextInput';
+import { useGlobalContext } from '@/contextApi/userData';
 
 const CoverLetter = () => {
+    const { userDetail } = useGlobalContext()
     const [coverLetter, setCoverLetter] = useState('');
     const [openCover, setOpenCover] = useState(false);
     const [loadings, setLoadings] = useState(false)
     const coverLetterLength = 500
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        userInfo && userInfo.coverLetter && setCoverLetter(userInfo.coverLetter)
+/*         const userInfo = await getUserDetail()
+ */        userDetail && userDetail.coverLetter && setCoverLetter(userDetail.coverLetter)
     }
     const handleCoverLetter = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault()
@@ -36,7 +38,7 @@ const CoverLetter = () => {
     };
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     return (
         <div className=" rounded-xl relative gap-5 p-6 border-2 flex-grow flex flex-col">
             <div className="flex justify-between">

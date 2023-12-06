@@ -92,6 +92,10 @@ const JobDetail = (props: any) => {
         }
 
     }
+    useEffect(() => {
+        console.log(apply);
+
+    }, [apply])
     const handleSaveJob = async (id: string) => {
         if (userRole == 'candidate') {
             const checkSaved = alreadySaved(userId, id);
@@ -347,15 +351,16 @@ const JobDetail = (props: any) => {
                 </div>
             </div>
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.jobDetails.$id} />
-
-            <ApplyToJob
-                jobId={applyJobId}
-                employerId={applyEmployerId}
-                setterFunction={setApply}
-                jobTitle={jobTitle}
-                companyName={props.companyName}
-                openApply={apply}
-            />
+            {
+                apply && <ApplyToJob
+                    jobId={applyJobId}
+                    employerId={applyEmployerId}
+                    setterFunction={setApply}
+                    jobTitle={jobTitle}
+                    companyName={props.companyName}
+                    openApply={apply}
+                />
+            }
 
             {/*   {
                 apply == true && (

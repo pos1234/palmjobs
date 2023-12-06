@@ -9,8 +9,9 @@ import { getUserDetail, updateEducation } from '@/backend/candidateBackend';
 import FormModal from './FormModal';
 import CloseIcon from '@mui/icons-material/Close';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
+import { useGlobalContext } from '@/contextApi/userData';
 const Education = () => {
-    const loadingIn = '/images/loading.svg';
+    const { userDetail } = useGlobalContext()
     const [openEducation, setOpenEducation] = useState(false);
     const [displayEducation, setDisplayEducation] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
@@ -135,23 +136,23 @@ const Education = () => {
         else return '';
     };
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        if (userInfo) {
-            const education = convertToArray(userInfo.educations) || [];
+/*         const userInfo = await getUserDetail()
+ */        if (userDetail) {
+            const education = convertToArray(userDetail.educations) || [];
             setEducationArray(education || '');
         }
 
     }
     useEffect(() => {
         userData()
-    }, [])
-    /*  useEffect(() => {
-         if (openEducation == false) {
-             setEditEducation(false);
-             setDisplayEducation(false);
-             setConfirmDelete(false);
-         }
-     }, [openEducation]); */
+    }, [userDetail])
+    useEffect(() => {
+        if (openEducation == false) {
+            setEditEducation(false);
+            setDisplayEducation(false);
+            setConfirmDelete(false);
+        }
+    }, [openEducation]);
     return (
         <div className=" flex flex-col p-6 rounded-xl border-2 w-full lg:w-auto">
             <div className="flex justify-between">

@@ -15,17 +15,19 @@ import { getUserDetail } from '@/backend/candidateBackend';
 import CoverLetter from '@/components/candidateProfileComponents/CoverLetter';
 import WorkHitory from '@/components/candidateProfileComponents/WorkHistory';
 import Education from '@/components/candidateProfileComponents/Education';
+import { useGlobalContext } from '@/contextApi/userData';
 const Profile = () => {
+    const { userDetail } = useGlobalContext()
     const [about, setAbout] = useState(true);
     const [allLoading, setAllLoading] = useState(false)
     const userData = async () => {
         setAllLoading(true)
-        const userInfo = await getUserDetail()
-        userInfo && setAllLoading(false)
+/*         const userInfo = await getUserDetail()
+ */        userDetail && setAllLoading(false)
     }
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     return (
         <div >
             <Navigation />
