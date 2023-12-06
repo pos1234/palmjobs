@@ -88,7 +88,7 @@ const Navigation = ({ active }: Active) => {
                                 : 'flex items-center pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
                         }>
                             <PeopleIcon sx={{ fontSize: '1.5rem' }} />
-                            <p className='text-lg'>Applicants</p>
+                            <p className='text-lg'>Candidates</p>
                         </Link>
                         <Link href='/users/employer/profile' className={
                             active == 'profile'

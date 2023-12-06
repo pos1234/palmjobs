@@ -78,7 +78,7 @@ const Navigation = (props: any) => {
                                             Jobs
                                         </Link>
                                         <Link href="/users/employer/candidates" className="border-b-[1px] text-lg pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
-                                            Applicants
+                                            Candidates
                                         </Link>
                                         <Link href="/users/employer/privacy" className="border-b-[1px] text-lg pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-pointer">
                                             Privacy

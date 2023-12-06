@@ -184,7 +184,7 @@ const WorkHitory = () => {
                     ))}
 
             </div>
-            <FormModal tipText='Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos architecto dolore sint tenetur dolores, repellendus autem temporibus modi officia soluta. Facilis, dignissimos? Error, assumenda. Laborum, animi hic. Ab, doloremque id.'
+            <FormModal tipText="Your work history is your professional footprint. For each role, clearly state your job title, the company name, and your start date. If you're currently employed there, tick the 'I currently work here' box. Remember, precise details and dates reflect your reliability and attention to detail, traits highly valued by employers."
                 text='Work History' icon={<img src='/icons/suitCase.svg' className='w-7' />
                 }
                 addText='Add Wrok History' openModal={openWork} setOpenModal={setOpenWork}>

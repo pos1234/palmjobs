@@ -11,13 +11,15 @@ import { useJobPostContext } from '@/contextApi/jobPostData';
 import ChooseJob from '@/components/employerComponents/jobPostTabs/ChooseJob';
 import Navigation from '@/components/employerComponents/Navigation';
 import { employeeAuth } from '@/components/withAuth';
+import { useGlobalContext } from '@/contextApi/userData';
 const PostAJob = (props: any) => {
-    const { jobPostTabs } = useJobPostContext()
+    const { jobPostTabs } = useJobPostContext();
+    const { userDetail } = useGlobalContext()
     const [compName, setCompName] = useState('');
     const [compDesc, setCompDesc] = useState('');
     const [company, setCompany] = useState(false);
     const [openPreview, setOpenPreview] = useState(false);
-    const [profileFilled, setProfileFilled] = useState(false);
+    const [profileFilled, setProfileFilled] = useState(true);
     const [emailNotify, setEmailNotify] = useState('');
     const [companyData, setCompanyData] = useState<any>()
     const initialData = () => {
@@ -28,29 +30,22 @@ const PostAJob = (props: any) => {
         });
     };
     const getProfile = async () => {
-        getProfileData().then((res: any) => {
-            if (res && res.documents[0]) {
-                if (
-                    res.documents[0].location == '' ||
-                    res.documents[0].phoneNumber == '' ||
-                    res.documents[0].description == '' ||
-                    res.documents[0].companyName == ''
-                ) {
-                    setProfileFilled(true);
-                    setCompName(res.documents[0].companyName);
-                    if (res.documents[0].receiveEmailNotification !== false) {
-                        setEmailNotify('true');
-                    }
-                    if (res.documents[0].receiveEmailNotification == false) {
-                        setEmailNotify('false');
-                    }
+        if (userDetail) {
+            if (
+                userDetail.location == null ||
+                userDetail.phoneNumber == null ||
+                userDetail.description == null ||
+                userDetail.companyName == null
+            ) {
+                if (jobPostTabs.third == true) {
+                    setProfileFilled(false);
                 }
             }
-        });
+        }
     };
     useEffect(() => {
         getProfile();
-    }, [])
+    }, [userDetail, jobPostTabs])
 
     return (
         <div className="flex gap-x-3 max-md:flex-wrap bg-textW">
@@ -86,15 +81,13 @@ const PostAJob = (props: any) => {
                 <div className={jobPostTabs.second == true ? '' : 'hidden'} >
                     <SecondForm />
                 </div>
-                <div className={jobPostTabs.third == true ? '' : 'hidden'}>
+                <div className={jobPostTabs.third == true && profileFilled == true ? '' : 'hidden'}>
                     <ThirdForm />
                 </div>
                 <div className={jobPostTabs.fourth == true ? '' : 'hidden'}>
                     <FourthForm setOpenPreview={setOpenPreview} />
                 </div>
-
-                {/*                 {!profileFilled && }
- */}                {profileFilled && <EmployerProfile setFilled={setProfileFilled} />}
+                {!profileFilled && <EmployerProfile setFilled={setProfileFilled} />}
                 <PreviewJob openModal={openPreview} setOpenModal={setOpenPreview} companyData={companyData}
                 />
             </div>

@@ -48,22 +48,27 @@ const ChooseJob = (props: any) => {
               >
                 <p >New Post</p>
               </div>
-              <div
-                onClick={() => {
-                  setSelectedRadio('duplicate')
-                }}
-                className={`flex justify-center rounded-md w-36 py-2 h-20 ${selectedRadio == "duplicate" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
-              >
-                <p >Duplicate</p>
-              </div>
-              <div
-                onClick={() => {
-                  setSelectedRadio('draft')
-                }}
-                className={`flex justify-center rounded-md w-36 py-2 h-20 ${selectedRadio == "draft" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
-              >
-                <p>Draft</p>
-              </div>
+              {postedJobs && postedJobs.length > 0 &&
+                <div
+                  onClick={() => {
+                    setSelectedRadio('duplicate')
+                  }}
+                  className={`flex justify-center rounded-md w-36 py-2 h-20 ${selectedRadio == "duplicate" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                >
+                  <p >Duplicate</p>
+                </div>
+              }
+              {draftedJobs && draftedJobs.length > 0 &&
+                <div
+                  onClick={() => {
+                    setSelectedRadio('draft')
+                  }}
+                  className={`flex justify-center rounded-md w-36 py-2 h-20 ${selectedRadio == "draft" ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
+                >
+                  <p>Draft</p>
+                </div>
+              }
+
             </div>
 
             <div>

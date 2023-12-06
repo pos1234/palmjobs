@@ -22,7 +22,7 @@ const Salaries = () => {
                     <div className={`flex items-center flex-col pt-16 surveryBack px-4 text-center sm:w-1/3 lg:w-1/4 ${tip ? 'max-md:flex-grow' : 'max-md:hidden'}`}>
                         <img src="/images/salaryTip.svg" alt="" className='w-[180px] h-[147px]' />
                         <p className='font-[600] text-[27px] mt-10 mb-3'>Salary Survey</p>
-                        <p className='font-[400]'>find and compare salary information</p>
+                        <p className='font-[400] text-left'>Join forces with your peers and contribute to our Salary Survey. Your valuable insights help ensure everyone, from job seekers to employers, has access to reliable and current salary data. Together, we can foster a transparent and fair job market. Share your details, and let's build a resource that benefits all professionals.</p>
                     </div>
                 </div>
                 <Footer />

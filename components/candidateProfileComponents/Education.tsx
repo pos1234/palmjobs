@@ -200,7 +200,7 @@ const Education = () => {
                 <p className="font-smW text-smS leading-smL text-lightGrey">Add your education and Degrees.</p>
                 <button className='bg-black text-textW px-16 py-3 rounded-xl' onClick={() => setOpenEducation(true)}>Add Education</button>
             </div>)}
-            <FormModal tipText='Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos architecto dolore sint tenetur dolores, repellendus autem temporibus modi officia soluta. Facilis, dignissimos? Error, assumenda. Laborum, animi hic. Ab, doloremque id.'
+            <FormModal tipText='Showcase your academic accomplishments by detailing your education level, field of study, alma mater, and graduation year. This information enriches your profile, highlighting your qualifications and knowledge base to potential employers.'
                 text='Education' icon={<SchoolOutlinedIcon />}
                 addText='Add Education' openModal={openEducation} setOpenModal={setOpenEducation}>
                 <div className='w-full pr-2'>

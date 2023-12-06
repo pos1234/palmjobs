@@ -7,7 +7,7 @@ import ConfirmModal from '@/components/ConfirmModal';
 import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
 import { signOut } from '@/backend/accountBackend';
-import { getCompanyData, fetchJobs, countActiveJobs, searchJobs, } from '@/backend/employerBackend'
+import { getCompanyData, searchJobs, } from '@/backend/employerBackend'
 import 'react-toastify/dist/ReactToastify.css';
 import JobsShimmer from '@/components/shimmer/JobsShimmer';
 import JobListCard from '@/components/job/JobListCard';
@@ -146,29 +146,23 @@ const Jobs = ({ documents }: any) => {
 const count = Math.ceil(res.total / 8);
 setPageCount(count)
 }) */
-        searchJobs(8, 0, searchWord, address, jobTypeHolder, expLevelHolder, datePostedHolder).then((res) => {
-            setAllLoading(false)
-            const count = Math.ceil(res.total / 8);
-            setPageCount(count)
-            /*  const sortedData = res.documents.sort((a, b) => {
-                 const firstDate = new Date(a.datePosted);
-                 const secondDate = new Date(b.datePosted);
-                 const firstTimestamp = firstDate.getTime();
-                 const secondTimestamp = secondDate.getTime();
-                 return secondTimestamp - firstTimestamp;
-             }); */
-            res.documents && setData(res.documents)
-            res.documents && res.documents.length !== 0 && setJobDetailId(res.documents[0].$id)
-            res.documents && res.documents.length !== 0 && setJobDetails(res.documents[0])
-        })
+
         if (Object.keys(router.query).length > 0) {
-            const { param1, param2 } = router.query;
+            const { param1, param2 }: any = router.query;
+            searchJobs(8, 0, param1, param2, jobTypeHolder, expLevelHolder, datePostedHolder).then((res) => {
+                setAllLoading(false)
+                const count = Math.ceil(res.total / 8);
+                setPageCount(count)
+                res.documents && setData(res.documents)
+                res.documents && res.documents.length !== 0 && setJobDetailId(res.documents[0].$id)
+                res.documents && res.documents.length !== 0 && setJobDetails(res.documents[0])
+            })
             param1 && setSearchQuery(param1.toString());
             param1 && setSearchWord(param1.toString());
             param2 && setAddress(param2.toString());
             param2 && setAddressHolder(param2.toString());
         }
-    }, [router.query, jobTypeHolder, expLevelHolder]);
+    }, [router.query, /* searchWord, addressHolder, */ jobTypeHolder, expLevelHolder]);
     const handleFetchPagination = async (offset: number) => {
         setAllLoading(true);
         const offsetValue = (offset - 1) * 8

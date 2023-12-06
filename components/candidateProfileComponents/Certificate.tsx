@@ -197,7 +197,7 @@ const Certificate = () => {
                 )}
             </div>
             <FormModal
-                tipText='Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos architecto dolore sint tenetur dolores, repellendus autem temporibus modi officia soluta. Facilis, dignissimos? Error, assumenda. Laborum, animi hic. Ab, doloremque id.'
+                tipText='Adding certifications can greatly enhance your profile. Be sure to include the full name of the certificate, the issuing organization, and the date you received it. This information showcases your commitment to professional development and can be a deciding factor for potential employers.'
                 text='Certificate' icon={<img src='/icons/certificate.svg' className='w-7' />}
                 addText='Add Certificate' openModal={openCertificate} setOpenModal={setOpenCertificate}>
                 <div className='w-full flex flex-wrap'>

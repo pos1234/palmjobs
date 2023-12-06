@@ -80,9 +80,18 @@ export const JobPostContextProvider = ({ children }: any) => {
         locationError: '',
         openPositions: 1,
     })
+    type numbers = number | string;
+    interface secondTab {
+        loading: boolean,
+        workType: string,
+        minSalary: numbers,
+        maxSalary: numbers,
+        currency: string,
+        expRequired: string
+    }
     const [secondTabData, setSecondTabData] = useState({
         loading: false,
-        workType: 'Full Time',
+        workType: 'Full-Time',
         minSalary: '',
         maxSalary: '',
         currency: 'etb',
@@ -135,11 +144,12 @@ export const JobPostContextProvider = ({ children }: any) => {
     const handleJobSelection = (id: string, postType?: string) => {
         postType && postType == 'duplicate' ? null : setPostingJobId(id)
         const selectedJob = allEmployerJobs && allEmployerJobs.filter((job: any) => job.$id == id)
+        console.log(selectedJob[0]);
         const remoteLocation = selectedJob[0].jobLocation == "Remote" ? true : false
         const hybridLocation = selectedJob[0].jobLocation == "Hybrid" ? true : false
         const locationAdded = selectedJob[0].jobLocation !== "Remote" && selectedJob[0].jobLocation !== "Hybrid" ? true : false
         const minSalary = selectedJob[0].minSalary !== null ? selectedJob[0].minSalary : ''
-        const maxSalary = selectedJob[0].maxSalary !== null ? selectedJob[0].minSalary : ''
+        const maxSalary = selectedJob[0].maxSalary !== null ? selectedJob[0].maxSalary : ''
         const currency = selectedJob[0].currency !== null ? selectedJob[0].currency : 'etb'
         const exp = selectedJob[0].expreienceLevel !== null ? selectedJob[0].expreienceLevel : '0-2 years'
         const skills = selectedJob[0].requiredSkills !== null ? JSON.parse(selectedJob[0].requiredSkills) : []
@@ -164,7 +174,7 @@ export const JobPostContextProvider = ({ children }: any) => {
         setSecondTabData({
             ...secondTabData,
             loading: false,
-            workType: selectedJob[0].JobType,
+            workType: selectedJob[0].jobType,
             minSalary: minSalary,
             maxSalary: maxSalary,
             currency: currency,

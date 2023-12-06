@@ -55,7 +55,7 @@ export const searchJobs = async (
     postedDate: string
 ) => {
     const searchWord = searchText ? Query.startsWith('jobTitle', searchText) : null;
-    const searchAddress = address ? Query.startsWith('jobLocation', address) : null;
+    const searchAddress = address !== '' ? Query.startsWith('jobLocation', address) : null;
     const jobType = jobTypes ? Query.equal('jobType', jobTypes) : null;
     const exp = expLevel ? Query.equal('expreienceLevel', expLevel) : null;
     const today = new Date();
@@ -79,7 +79,7 @@ export const searchJobs = async (
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, query);
     return promise;
 };
-export const fetchJobs = async (limit: number, offset: number) => {
+/* export const fetchJobs = async (limit: number, offset: number) => {
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
         Query.equal('jobStatus', 'Active'),
         Query.orderAsc('datePosted'),
@@ -91,7 +91,7 @@ export const fetchJobs = async (limit: number, offset: number) => {
 export const countActiveJobs = async () => {
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('jobStatus', 'Active'), Query.limit(1)]);
     return promise;
-};
+}; */
 /* export const fetchJobs = async () => {
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
         Query.limit(100),

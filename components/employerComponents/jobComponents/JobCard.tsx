@@ -272,7 +272,7 @@ const JobCard = (props: any) => {
                                     className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
                                 >
                                     <PeopleIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
-                                    <span>Applicants</span>
+                                    <span>Candidates</span>
                                 </div>
                             </>
                             }
