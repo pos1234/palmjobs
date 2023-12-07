@@ -18,11 +18,11 @@ const CheckProfileCompletion = () => {
                 percent += 20;
                 setProfilePercent(percent)
             }
-            if (userDetail.skills.length !== 0) {
+            if (userDetail.skills && userDetail.skills.length !== 0) {
                 percent += 20;
                 setProfilePercent(percent)
             }
-            if (JSON.parse(userDetail.educations).length !== 0) {
+            if (userDetail.educations && JSON.parse(userDetail.educations).length !== 0) {
                 percent += 20;
                 setProfilePercent(percent)
             }

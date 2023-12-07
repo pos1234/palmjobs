@@ -146,7 +146,16 @@ const Jobs = ({ documents }: any) => {
 const count = Math.ceil(res.total / 8);
 setPageCount(count)
 }) */
-
+        if (Object.keys(router.query).length == 0) {
+            searchJobs(8, 0, '', '', jobTypeHolder, expLevelHolder, datePostedHolder).then((res) => {
+                setAllLoading(false)
+                const count = Math.ceil(res.total / 8);
+                setPageCount(count)
+                res.documents && setData(res.documents)
+                res.documents && res.documents.length !== 0 && setJobDetailId(res.documents[0].$id)
+                res.documents && res.documents.length !== 0 && setJobDetails(res.documents[0])
+            })
+        }
         if (Object.keys(router.query).length > 0) {
             const { param1, param2 }: any = router.query;
             searchJobs(8, 0, param1, param2, jobTypeHolder, expLevelHolder, datePostedHolder).then((res) => {
@@ -211,15 +220,7 @@ setPageCount(count)
     /* useEffect(() => {
         data && data.length !== 0 && setJobDetails(data[0]);
     }, [searchQuery, localValue]); */
-    const createCandidateAccount = () => {
-        signOut()
-            .then(() => {
-                typeof window !== 'undefined' && router.push('/account');
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
+
     return (
         <GlobalContextProvider>
             <div>
@@ -387,28 +388,7 @@ setPageCount(count)
                 )}
                 <Footer />
             </div >
-            <ConfirmModal isOpen={applyEmp} handleClose={() => setApplyEmp(!applyEmp)}>
-                <div className="mx-2 pb-10 pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
-                    <div className="col-span-12 flex justify-end pr-7">
-                        <button onClick={() => setApplyEmp(!applyEmp)}>
-                            <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
-                        </button>
-                    </div>
-                    <div className="col-span-12 flex flex-col items-center justify-end pr-7 gap-3">
-                        <p className="text-center md:px-10 text-bigS text-lightGrey">
-                            Oops! You've set roots as an employer. To branch out and apply for jobs, consider a job seeker account.
-                            <br /> Thanks.
-                        </p>
-                        <button
-                            onClick={() => createCandidateAccount()}
-                            type="button"
-                            className="text-textW bg-gradient-to-r flex items-center justify-center from-gradientFirst to-gradientSecond h-16 w-full rounded-full md:w-1/2"
-                        >
-                            Create a candidate profile
-                        </button>
-                    </div>
-                </div>
-            </ConfirmModal>
+
         </GlobalContextProvider>
     );
 };

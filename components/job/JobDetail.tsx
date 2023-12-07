@@ -11,16 +11,18 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import StairsOutlinedIcon from '@mui/icons-material/StairsOutlined'
 import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf'
 import { alreadySaved, saveJobs, } from '@/backend/candidateBackend'
-import { getAccount, getRole } from '@/backend/accountBackend';
+import { getAccount, getRole, signOut } from '@/backend/accountBackend';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import ApplyToJob from '../candidateProfileComponents/ApplyToJobs';
 import { SmallLists } from '../TextInput';
 import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import { fetchCandidateDetail } from '@/backend/employerBackend';
 import moment from 'moment';
 import { useGlobalContext } from '@/contextApi/userData';
+import ConfirmModal from '../ConfirmModal';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const JobDetail = (props: any) => {
     const { userRole } = useGlobalContext()
@@ -73,7 +75,6 @@ const JobDetail = (props: any) => {
         if (userRole) {
             if (userRole == 'candidate') {
                 console.log('candidate');
-
                 setApply(true);
                 setApplyJobId(jobId);
                 setApplyEmployerId(employerId);
@@ -82,8 +83,6 @@ const JobDetail = (props: any) => {
                 setApplyEmp(true);
                 console.log('this is the employer');
             }
-            /*  if (userRole == '') {
-             } */
         }
         if (userRole == '') {
             typeof window !== 'undefined' && router.push('/account');
@@ -92,10 +91,15 @@ const JobDetail = (props: any) => {
         }
 
     }
-    useEffect(() => {
-        console.log(apply);
-
-    }, [apply])
+    const createCandidateAccount = () => {
+        signOut()
+            .then(() => {
+                typeof window !== 'undefined' && router.push('/account');
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
     const handleSaveJob = async (id: string) => {
         if (userRole == 'candidate') {
             const checkSaved = alreadySaved(userId, id);
@@ -361,7 +365,27 @@ const JobDetail = (props: any) => {
                     openApply={apply}
                 />
             }
-
+            <ConfirmModal isOpen={applyEmp} handleClose={() => setApplyEmp(!applyEmp)}>
+                <div className="mx-2 pb-10 pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
+                    <div className="col-span-12 flex justify-end pr-7">
+                        <button onClick={() => setApplyEmp(!applyEmp)}>
+                            <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
+                        </button>
+                    </div>
+                    <div className="col-span-12 flex flex-col items-center justify-end pr-7 gap-3">
+                        <p className="text-center md:px-10 text-bigS text-lightGrey">
+                            Looks like you’re currently logged in as an employer. To apply for this job, please log in with your job seeker account.
+                        </p>
+                        <button
+                            onClick={() => createCandidateAccount()}
+                            type="button"
+                            className="bg-black text-textW flex items-center justify-center  h-16 w-full rounded-lg md:w-1/2"
+                        >
+                            Create a candidate profile
+                        </button>
+                    </div>
+                </div>
+            </ConfirmModal>
             {/*   {
                 apply == true && (
                     <ApplyToJob
