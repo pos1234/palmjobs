@@ -1,4 +1,4 @@
-import { fetchAppliedJobsData, fetchAppliedJobIds, getCompanyData } from '@/lib/candidateBackend';
+import { fetchAppliedJobsData, fetchAppliedJobIds, getCompanyData } from '@/backend/candidateBackend';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
@@ -14,24 +14,8 @@ import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ShareIcon from '@mui/icons-material/Share';
-const CompanyName = (props: any) => {
-    const [compData, setCompData] = useState<any>();
-    const getCompData = () => {
-        getCompanyData(props.id).then((res) => {
-            res && res.documents && setCompData(res.documents[0]);
-        });
-    };
-    useEffect(() => {
-        getCompData();
-    }, []);
-    return <>{compData && <p className="text-[12px] text-darkBlue sm:text-fhS">{compData.companyName}</p>}</>;
-};
-const SmallLists = (props: any) => {
-    return <li className="inline bg-[#FAFAFA] text-xs text-gradientFirst rounded-md p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:py-2">
-        {props.icon}
-        <span className='text-[#20262E]'>{props.items}</span>
-    </li>
-}
+import { SmallLists } from '../TextInput';
+
 const ReturnName = (props: any) => {
     const [companyName, setCompanyName] = useState('');
     const documents = getCompanyData(props.id);
@@ -75,11 +59,11 @@ const Applied = (props: any) => {
     return (
         <>
             {!allLoading && appliedJobs.length == 0 && props.view && (
-                <div className="col-span-12 text-center flex flex-col items-center gap-y-3">
+                <div className="col-span-12 text-center flex flex-col items-center gap-y-8">
                     <p>No applied jobs under your palm tree yet. Browse the listings to find your next opportunity.</p>
                     <Link
                         href="/jobs"
-                        className="w-60 bg-gradient-to-r from-gradientFirst to-gradientSecond px-10 py-5 rounded-full text-textW cursor-pointer"
+                        className="w-60 bg-black text-textW h-14 rounded-[3px] flex justify-center items-center text-textW cursor-pointer hover:border-b-4 hover:border-b-gradientFirst buttonBounce"
                     >
                         Find Job
                     </Link>
@@ -96,9 +80,9 @@ const Applied = (props: any) => {
                                 </div>
                                 <div className="w-full flex flex-col justify-center">
                                     {datas.jobTitle && (
-                                        <p className="font-bold text-[1rem] sm:font-fhW sm:text-[2rem] md:text-[1.2rem] xl:text-[1.5rem]">
+                                        <Link href={`/jobs/${datas.$id}`} target="_blank" className="font-bold underline text-[1rem] sm:font-fhW sm:text-[2rem] md:text-[1.2rem] xl:text-[1.5rem]">
                                             {datas.jobTitle}
-                                        </p>
+                                        </Link>
                                     )}
                                     {datas.jobLocation && (
                                         <p className="text-fadedText max-sm:text-[14px] flex items-center gap-2">
@@ -109,11 +93,9 @@ const Applied = (props: any) => {
                                 </div>
                             </div>
                             <div className="w-full mt-4">
-                                <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 justify-between flex-wrap">
+                                <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 flex-wrap">
                                     {datas.jobType &&
-                                        <SmallLists icon={<BusinessCenterIcon
-                                            sx={{ fontSize: '1rem' }}
-                                            className="-mt-0.5 mr-1 " />}
+                                        <SmallLists icon={<img src='/icons/suitCase.svg' />}
                                             items={datas.jobType} />
                                     }
                                     {(datas.minSalary || datas.maxSalary) && (
@@ -147,11 +129,9 @@ const Applied = (props: any) => {
                                                     : datas.minSalary + '-' + datas.maxSalary}
                                         />
                                     )}
-                                    {datas.datePosted && (
+                                  {/*   {datas.datePosted && (
                                         <SmallLists
-                                            icon={<HourglassTopIcon
-                                                sx={{ fontSize: '1rem' }}
-                                                className="-mt-0.5 mr-1 "
+                                            icon={<img src='/icons/hourGlassUp.svg'
                                             />}
                                             items={new Date(datas.datePosted)
                                                 .toLocaleDateString('en-GB')
@@ -160,72 +140,19 @@ const Applied = (props: any) => {
                                     )}
                                     {datas.datePosted && (
                                         <SmallLists
-                                            icon={<HourglassTopIcon
-                                                sx={{ fontSize: '1rem' }}
-                                                className="-mt-0.5 mr-1 "
+                                            icon={<img src='/icons/hourGlassDown.svg'
                                             />}
                                             items={new Date(datas.datePosted)
                                                 .toLocaleDateString('en-GB')
                                                 .replace(/\//g, '-')}
                                         />
-                                    )}
+                                    )} */}
                                 </ul>
                             </div>
                         </div>
-                        {/* <div className='flex gap-5'>
-                            <div className='flex text-gradientFirst pt-3' onClick={() => {
-                                removeSave(datas.$id);
-                            }}>
-                                <BookmarkIcon sx={{ fontSize: '2rem' }}
-                                />
-                            </div>
-                            <button className='bg-gradientFirst text-textW px-20 py-3 h-14 cursor-pointer rounded-lg' onClick={() => {
-                                setApply(true);
-                                setJobId(datas.$id);
-                                setEmployerId(datas.employerId);
-                                setJobTitle(datas.jobTitle);
-                                setCompanyName(datas.companyName);
-                            }}>Apply</button>
-                            <div className='flex pt-3'>
-                                <ShareIcon />
-                            </div>
 
-                        </div> */}
                     </div>);
                 })}
-           {/*  {appliedJobs &&
-                appliedJobs.map((datas: any, index) => {
-                    return (
-                        <div className={props.view ? 'col-span-12 grid grid-cols-12 py-3 bg-textW' : 'hidden'} key={index}>
-                            <JobImage id={datas.employerId} className="hidden md:col-span-2 md:block lg:col-span-1" />
-                            <div className="col-span-12 pl-5 grid grid-cols-12 md:col-span-10 lg:col-span-8">
-                                <JobImage id={datas.employerId} className="col-span-2 h-full md:hidden" />
-                                <div className="col-span-10 pl-1">
-                                    <CompanyName id={datas.employerId} />
-                                    <Link href={`/jobs/${datas.$id}`} target="_blank" className="text-darkBlue font-midRW text-midRS sm:font-fhW sm:text-frhS">{datas.jobTitle}</Link>
-                                    <p className="text-fadedText rounded-full md:hidden">
-                                        <PinDropOutlinedIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} /> {datas.jobLocation}
-                                    </p>
-                                </div>
-                                <ul className="mt-5 text-[11px] flex gap-x-3 col-span-12 md:text-[0.8rem] md:mt-1 md:gap-x-5">
-                                    <li className="hidden md:bg-textW md:text-fadedText md:flex md:p-0">
-                                        <PinDropOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem]" /> {datas.jobLocation}
-                                    </li>
-                                    <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-3 md:bg-textW md:text-fadedText md:p-0">
-                                        <AccessTimeOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1  md:text-[1.2rem]" />
-                                        {datas.jobType}
-                                    </li>
-
-                                    <li className="inline bg-lightGreen text-green-800 rounded-full p-2 px-4 md:bg-textW md:text-fadedText md:p-0">
-                                        <CalendarTodayOutlinedIcon className="text-[0.9rem] -mt-0.5 mr-1 md:text-[1.2rem] " />{' '}
-                                        {new Date(datas.datePosted).toLocaleDateString('en-GB').replace(/\//g, '-')}
-                                    </li>
-                                </ul>
-
-                            </div>
-                        </div>
-                    );
-                })} */}
         </>
     );
 };

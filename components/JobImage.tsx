@@ -1,6 +1,6 @@
-import { getEmployerPicture } from '@/lib/employerBackend';
+import { getEmployerPicture } from '@/backend/employerBackend';
 import React, { useEffect, useState } from 'react';
-import { getProfilePictures } from '@/lib/candidateBackend';
+import { getProfilePictures } from '@/backend/candidateBackend';
 const jobImage = (props: any) => {
     const [imageUrl, setImageUrl] = useState('');
 

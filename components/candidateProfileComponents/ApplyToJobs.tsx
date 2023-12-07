@@ -1,45 +1,42 @@
 import { useEffect, useState } from 'react';
 import ConfirmModal from '../ConfirmModal';
-import CloseIcon from '@mui/icons-material/Close';
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import 'react-quill/dist/quill.snow.css';
 import { FileUploader } from 'react-drag-drop-files';
+import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import dynamic from 'next/dynamic';
 import Notification from '../Notification';
 import {
-/*     getUserData,
- */    alreadyApplied,
+    alreadyApplied,
     applyToJobs,
     getCandidateDocument,
     getResumeName,
     uploadResume,
     downLoadResume,
-} from '@/lib/candidateBackend';
-import { getAccount } from '@/lib/accountBackend';
+} from '@/backend/candidateBackend';
+import { getAccount } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
 import { SendJobAppliedEmail } from '../SendEmail';
 import Link from 'next/link';
 import { ProfilePic } from '../JobImage';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import TextInput, { SubmitButton } from '../TextInput';
+import { useGlobalContext } from '@/contextApi/userData';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const ApplyToJob = (props: any) => {
-    const profile = '/images/profile.svg';
+    const { userDetail, userData } = useGlobalContext()
     const pdfIcon = '/images/pdf2.svg';
-    const pdfIconSmall = '/images/pdfIcon.svg';
-    const loadingImage = '/images/loading.svg';
-    const [openApply, setOpenApply] = useState(true);
-    const [fisrt, setFirst] = useState(true);
+/*     const [openApply, setOpenApply] = useState(false);
+ */    const [first, setFirst] = useState(true);
     const [second, setSecond] = useState(false);
     const [third, setThird] = useState(false);
     const [fourth, setFourth] = useState(false);
-    const [userData, setUserData] = useState<any>();
-    const [cover, setCover] = useState('');
+/*     const [userData, setUserData] = useState<any>();
+ */    const [cover, setCover] = useState('');
     const [loading, setLoading] = useState(false);
     const [appliedJob, setAppliedJob] = useState(false);
     const [currentResume, setCurrentResume] = useState<any>();
@@ -57,7 +54,7 @@ const ApplyToJob = (props: any) => {
     const [skillLength, setSkillLength] = useState(0)
     const [educationLength, setEducationLength] = useState(0)
     const toggleTabs = () => {
-        if (fisrt == true) {
+        if (first == true) {
             setFirst(false);
             setSecond(true);
             setThird(false);
@@ -74,35 +71,47 @@ const ApplyToJob = (props: any) => {
             setFourth(true);
         }
     };
+    const backToggleTabs = () => {
+        if (second == true) {
+            setFirst(true);
+            setSecond(false);
+        }
+        if (third == true) {
+            setThird(false);
+            setSecond(true);
+        }
+        if (fourth == true) {
+            setFourth(false);
+            setThird(true);
+        }
+    };
     const getData = async () => {
-        const res: any = await getAccount();
-        if (res) {
-            setNewName(res.name);
-            setNewEmail(res.email);
+/*         const res: any = await getAccount();
+ */        if (userData) {
+            setNewName(userData.name);
+            setNewEmail(userData.email);
         }
     };
     const getCanInfo = async () => {
-        const { documents }: any = await getCandidateDocument();
-        if (documents[0]) {
-            setUserData(documents[0]);
-            setPhone(documents[0].phoneNumber);
-            setLinked(documents[0].linkedIn);
-            setCover(documents[0].coverLetter);
-            if (documents[0].skills == null || documents[0].skills && documents[0].skills.length == 0) {
+/*         const { documents }: any = await getCandidateDocument();
+ */        if (userDetail) {
+            /* setUserData(userDetail); */
+            setPhone(userDetail.phoneNumber);
+            setLinked(userDetail.linkedIn);
+            setCover(userDetail.coverLetter);
+            if (userDetail.skills == null || userDetail.skills && userDetail.skills.length == 0) {
                 setSkillLength(0)
             }
-            if (documents[0].educations == null || documents[0].educations && documents[0].educations.length == 0) {
+            if (userDetail.educations == null || userDetail.educations && JSON.parse(userDetail.educations).length == 0) {
                 setEducationLength(0)
             }
         }
     };
     const checkApplied = async () => {
         setLoading(true);
-        const { documents }: any = await getCandidateDocument();
-
-        if (documents) {
-            alreadyApplied(documents[0].Id, props.jobId).then((applied) => {
-                const resume = documents[0].resumeId != null && getResumeName(documents[0].resumeId);
+        if (userDetail) {
+            alreadyApplied(userDetail.Id, props.jobId).then((applied) => {
+                const resume = userDetail.resumeId != null && getResumeName(userDetail.resumeId);
                 resume &&
                     resume.then((res: any) => {
                         setFileName(res.name);
@@ -123,7 +132,7 @@ const ApplyToJob = (props: any) => {
         getData();
         getCanInfo();
         checkApplied();
-    }, [props.jobId]);
+    }, [userDetail]);
     const fileTypes = ['pdf', 'doc', 'docx'];
     const updateTheCv = (files: any) => {
         setFileName(files.name);
@@ -136,7 +145,6 @@ const ApplyToJob = (props: any) => {
     const sizeError = (err: any) => {
         setErrorMessage(err);
     };
-    useEffect(() => { }, [userData]);
     const apply = async (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadingApply(true);
@@ -144,7 +152,7 @@ const ApplyToJob = (props: any) => {
             uploadResume(replaceResume).then((res) => {
                 applyToJobs(userData.Id, props.jobId, props.employerId, newEmail, phone, cover, res.$id)
                     .then((res) => {
-                        setOpenApply(false);
+                        props.setterFunction(false);
                         setOpenNotify(true);
                         setFailed(false);
                         setLoadingApply(false);
@@ -161,9 +169,9 @@ const ApplyToJob = (props: any) => {
             applyToJobs(userData.Id, props.jobId, props.employerId, newEmail, phone, cover, currentResumeId)
                 .then((res) => {
                     getAccount().then((res: any) => {
-                        res && SendJobAppliedEmail(res.email, props.jobTitle, `${VERIFY}/jobs/`, res.name, props.companyName);
+                        res && SendJobAppliedEmail(res.email, props.jobTitle, /* res.name, */ props.companyName);
                     });
-                    setOpenApply(false);
+                    props.setterFunction(false);
                     setOpenNotify(true);
                     setFailed(false);
                     setLoadingApply(false);
@@ -193,7 +201,7 @@ const ApplyToJob = (props: any) => {
                 <Notification openNotify={openNotify} setOpenNotify={setOpenNotify} successText="failed" successWord="Application Failed" />
             )}
             {userData && (
-                <ConfirmModal isOpen={openApply} handleClose={() => setOpenApply(!openApply)}>
+                <ConfirmModal isOpen={props.openApply} handleClose={() => props.setterFunction(!props.openApply)}>
                     {loading && (
                         <div className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0">
                             <div className="col-span-12 md:col-span-5 xl:col-span-6 pt-5">
@@ -234,19 +242,18 @@ const ApplyToJob = (props: any) => {
                             </Link>
                         </div>
                     )}
-                    {!appliedJob && !loading && (
+                    {!appliedJob && !loading && userDetail && (
                         <form
                             onSubmit={apply}
-                            className="mx-2 pb-10 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 h-full overflow-y-auto md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0 xl:h-auto xl:overflow-y-hidden"
+                            className="mx-2 pb-10 w-full pl-5 bg-textW overflow-y-auto max-h-screen rounded-2xl grid grid-cols-12 pt-10 h-full overflow-y-auto md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0 xl:h-auto thinScrollBar"
                         >
                             <div className="col-span-12 grid grid-cols-12 ">
                                 <div className="col-span-12 grid grid-cols-12 mb-5">
-                                    <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                        <BusinessCenterIcon sx={{ marginRight: '0.5rem' }} className='text-gradientFirst' />
+                                    <p className="font-thW text-frhS flex gap-2 items-center leading-shL text-modalTitle col-span-10 md:col-span-11">
+                                        <img src="/icons/suitCase.svg" className='w-5 h-5' alt="" />
                                         Apply
                                     </p>
                                 </div>
-
                                 <div className="col-span-12 grid grid-cols-12 gap-x-2 pr-3 mt-5">
                                     <div className="rounded-2xl bg-gradientFirst h-1.5 col-span-3"></div>
                                     <div
@@ -272,52 +279,49 @@ const ApplyToJob = (props: any) => {
                                     ></div>
                                 </div>
                                 {fourth && (
-                                    <div className="col-span-12 grid grid-cols-12 pt-5 mb-5 ">
-                                        <p className="col-span-12 text-black text-3xl font-semibold leading-10">Review your application</p>
+                                    <div className="col-span-12 flex flex-col gap-2 pt-5 mb-5 ">
+                                        <p className="col-span-12 text-black text-lg font-semibold leading-10">Review your application</p>
                                         <p className="col-span-12 text-neutral-400 text-sm font-light">
                                             The employer will also receive a copy of your profile
                                         </p>
-                                        <div className="col-span-12 md:col-span-5 xl:col-span-6">
-                                            <p className="text-black text-lg font-semibold leading-10">Contact info</p>
-                                            <div className="flex gap-x-2 md:max-xl:flex-col pt-3">
-                                                {userData.profilePictureId && (
-                                                    <ProfilePic id={(userData.profilePictureId)} className="w-24 h-24 rounded-2xl" />
+                                        <p className="text-black text-md font-semibold leading-10">Contact info</p>
+                                        <div className="w-full flex justify-between items-start">
+                                            <div className="flex gap-x-2 md:max-xl:flex-col pt-5">
+                                                {userDetail.profilePictureId && (
+                                                    <ProfilePic id={(userDetail.profilePictureId)} className="w-16 h-16 rounded-2xl" />
                                                 )}
                                                 <div className="flex flex-col ">
-                                                    <div className="text-neutral-900 text-xl font-medium leading-7">{newName}</div>
-                                                    <div className="text-stone-300 text-lg font-normal leading-relaxed">
-                                                        {userData.bioHeadline}
-                                                    </div>
-                                                    <div className="text-neutral-900 text-opacity-70 text-xl font-normal leading-7">
-                                                        <PinDropOutlinedIcon className="w-6 h-6 relative" />
-                                                        {userData.address}
+                                                    <div className="text-neutral-900 text-md font-medium leading-7">{newName}</div>
+                                                    <div className="text-neutral-900 text-opacity-70 flex gap-1 items-center text-sm font-normal leading-7">
+                                                        <PlaceOutlinedIcon sx={{ fontSize: '1rem' }} className="relative" />
+                                                        <p>{userDetail.address}</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="col-span-12 md:col-span-7 xl:col-span-6 relative">
-                                            <EditIcon
-                                                onClick={() => {
-                                                    setSecond(false);
-                                                    setFirst(true);
-                                                    setThird(false);
-                                                    setFourth(false);
-                                                }}
-                                                sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                                className="w-7 h-7 p-1.5 mr-2 cursor-pointer absolute right-0 top-0"
-                                            />
-                                            <p className="font-fhW text-smS mt-5 leading-shL ">Email address</p>
-                                            <p className="text-neutral-400">{newEmail}</p>
-                                            <p className="font-fhW text-smS mt-2  leading-shL">Mobile phone number</p>
-                                            <p className="text-neutral-400">{phone}</p>
+                                            <div className="relative">
+                                                <EditIcon
+                                                    onClick={() => {
+                                                        setSecond(false);
+                                                        setFirst(true);
+                                                        setThird(false);
+                                                        setFourth(false);
+                                                    }}
+                                                    sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
+                                                    className="w-7 h-7 p-1.5 mr-2 cursor-pointer absolute right-0 top-0"
+                                                />
+                                                <p className="font-fhW text-smS mt-5 leading-shL ">Email address</p>
+                                                <p className="text-neutral-400">{newEmail}</p>
+                                                <p className="font-fhW text-smS mt-2  leading-shL">Mobile phone number</p>
+                                                <p className="text-neutral-400">{phone}</p>
+                                            </div>
                                         </div>
                                         {fileName && (
-                                            <div className="col-span-12 grid grid-cols-12 shadow border border-gradientFirst rounded-3xl mt-2">
-                                                <div className=" flex items-center justify-center bg-gradientFirst rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
-                                                    <img src={pdfIcon} className="w-10 h-16 relative" />
+                                            <div className="grid grid-cols-12 shadow border border-gradientFirst rounded-lg mt-2">
+                                                <div className=" flex items-center justify-center bg-gradientFirst rounded-tl-lg rounded-bl-lg shadow col-span-2">
+                                                    <img src={pdfIcon} className="w-7 h-10 relative" />
                                                 </div>
                                                 <div className="col-span-9 flex items-center pl-3">
-                                                    <p className="text-black text-2xl font-medium leading-loose">{fileName}</p>
+                                                    <p className="text-black text-sm font-medium leading-loose">{fileName}</p>
                                                 </div>
                                                 <div className="col-span-1 flex items-center justify-end pr-2">
                                                     <div className="col-span-3 flex items-center justify-end pt-1">
@@ -329,7 +333,7 @@ const ApplyToJob = (props: any) => {
                                                                 setFourth(false);
                                                             }}
                                                             sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                                            className="w-7 h-7 p-1.5 cursor-pointer"
+                                                            className="w-6 h-6 p-1.5 cursor-pointer"
                                                         />
                                                     </div>
                                                 </div>
@@ -344,28 +348,30 @@ const ApplyToJob = (props: any) => {
                                                     setFourth(false);
                                                 }}
                                                 sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                                className="w-7 h-7 p-1.5 mr-2 cursor-pointer absolute right-0 top-0"
+                                                className="w-6 h-6 p-1.5 mr-2 cursor-pointer absolute right-0 top-0"
                                             />
-                                            <p className="text-black text-lg font-semibold leading-10">Cover Letter</p>
-                                            <div className=" max-h-[9rem] overflow-y-auto" dangerouslySetInnerHTML={{ __html: cover }} />
+                                            <p className="text-black text-md font-semibold leading-10">Cover Letter</p>
+                                            <div className=" max-h-[9rem] overflow-y-auto text-sm" dangerouslySetInnerHTML={{ __html: cover }} />
                                         </div>
                                     </div>
                                 )}
-                                <div className={third ? 'col-span-12 pt-5 mb-5 md:mb-10 lg:mb-5' : 'hidden'}>
-                                    <p className="col-span-12 text-black text-3xl font-semibold leading-10">Cover Letter</p>
-                                    <p className="text-neutral-400 text-sm font-light mb-5">
-                                        Write a cover letter describing your skill and education.
-                                    </p>
-                                    <ReactQuill
-                                        className="h-28 text-addS"
-                                        value={cover}
-                                        onChange={(e) => setCover(e)}
-                                        placeholder="Add Description"
-                                    />
-                                </div>
+                                {
+                                    third && <div className='col-span-12 pt-5 mb-5 md:mb-10 lg:mb-5'>
+                                        <p className="col-span-12 text-black text-lg font-semibold leading-10">Cover Letter</p>
+                                        <p className="text-neutral-400 text-sm font-light mb-5">
+                                            Write a cover letter describing your skill and education.
+                                        </p>
+                                        <ReactQuill
+                                            className="h-28 text-addS"
+                                            value={cover}
+                                            onChange={(e) => setCover(e)}
+                                            placeholder="Add Description"
+                                        />
+                                    </div>
+                                }
                                 {second && (
                                     <div className="col-span-12 pt-5 grid grid-cols-12">
-                                        <p className="col-span-12 text-black text-3xl font-semibold leading-10">Resume</p>
+                                        <p className="col-span-12 text-black text-md font-semibold leading-10">Resume</p>
                                         <div className=" col-span-12">
                                             <FileUploader
                                                 multiple={false}
@@ -386,19 +392,20 @@ const ApplyToJob = (props: any) => {
                                                 </div>
                                                 <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
                                                     <div className="cursor-pointer absolute z-0 top-3 w-full">
-                                                        <div className="text-gradientFirst text-xs font-normal uppercase">Replace</div>
+                                                        {fileName ? <div className="text-gradientFirst text-xs font-normal uppercase">Replace</div> : <div className="text-gradientFirst text-xs font-normal uppercase">Select</div>}
+
                                                     </div>
                                                 </div>
                                                 {errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}
                                             </FileUploader>
                                         </div>
                                         {fileName && (
-                                            <div className="col-span-12 grid grid-cols-12 shadow border border-gradientFirst rounded-3xl mt-5">
-                                                <div className="py-4 flex items-center justify-center bg-gradientFirst rounded-tl-3xl rounded-bl-3xl shadow col-span-2">
-                                                    <img src={pdfIcon} className="w-12 h-5 relative" />
+                                            <div className="col-span-12 grid grid-cols-12 shadow border border-gradientFirst rounded-lg mt-5">
+                                                <div className="py-4 flex items-center justify-center bg-gradientFirst rounded-tl-lg rounded-bl-lg shadow col-span-2">
+                                                    <img src={pdfIcon} className="w-7 h-10 relative" />
                                                 </div>
                                                 <div className="col-span-8 flex items-center pl-3 break-all">
-                                                    <p className="text-black text-lg font-medium leading-loose sm:text-xl">{fileName}</p>
+                                                    <p className="text-black text-sm font-medium leading-loose">{fileName}</p>
                                                 </div>
                                                 <div className="col-span-2 flex items-center justify-around">
                                                     <div className="h-8 bg-fadedText flex w-0.5"></div>
@@ -413,27 +420,24 @@ const ApplyToJob = (props: any) => {
                                         )}
                                     </div>
                                 )}
-                                {fisrt && (
+                                {first && (
                                     <div className="col-span-12 md:col-span-5 xl:col-span-6 pt-5">
-                                        <p className="text-black text-3xl font-semibold leading-10 ">Contact info</p>
-                                        <div className="flex gap-x-2 md:max-xl:flex-col pt-3">
-                                            {userData.profilePictureId && (
-                                                <ProfilePic id={(userData.profilePictureId)} className="w-24 h-24 rounded-2xl" />
+                                        <p className="text-black text-lg font-semibold leading-10 ">Contact info</p>
+                                        <div className="flex gap-x-4 md:max-xl:flex-col pt-3">
+                                            {userDetail.profilePictureId && (
+                                                <ProfilePic id={(userDetail.profilePictureId)} className="w-20 h-20 rounded-2xl" />
                                             )}
                                             <div className="flex flex-col gap-0.5">
-                                                <div className="text-neutral-900 text-xl font-medium leading-7">{newName}</div>
-                                                <div className="text-stone-300 text-lg font-normal leading-relaxed">
-                                                    {userData.bioHeadline}
-                                                </div>
-                                                <div className="text-neutral-900 text-opacity-70 text-xl font-normal leading-7">
-                                                    <PinDropOutlinedIcon className="w-6 h-6 relative" />
-                                                    {userData.address}
+                                                <div className="text-neutral-900 text-lg font-medium leading-7">{newName}</div>
+                                                <div className="text-neutral-900 text-opacity-70 flex gap-1 items-center text-sm font-normal leading-7">
+                                                    <PlaceOutlinedIcon sx={{ fontSize: '1rem' }} className="relative" />
+                                                    <p>{userDetail.address}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 )}
-                                {fisrt && (
+                                {first && (
                                     <div className="col-span-12 md:col-span-7 xl:col-span-6">
                                         <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Email address</p>
                                         <TextInput setFunction={setNewEmail} value={newEmail} placeholder="JohnDoe@gmail.com"
@@ -449,35 +453,42 @@ const ApplyToJob = (props: any) => {
                                     </div>
                                 )}
                             </div>
-                            <div className="col-span-12 grid grid-cols-12 gap-y-5 gap-x-3 mt-5 md:gap-y-0 lg:mt-10">
-                                <p className="text-zinc-900 text-sm flex items-center font-light leading-normal order-3 col-span-12 sm:col-span-12 sm:pt-5 xl:order-1 xl:col-span-6">
+                            <div className="col-span-12 flex flex-wrap justify-between max-md:gap-y-5 md:gap-x-5 mt-5 lg:mt-10">
+                                <div className='flex-grow max-md:w-full'>
+                                    {
+                                        !first && <button type='button'
+                                            onClick={backToggleTabs}
+                                            className="border border-stone-500 h-14 w-full flex justify-center items-center gap-2 rounded-lg order-2 col-span-12 sm:order-1 sm:col-span-6 xl:col-span-3"
+                                        >
+                                            <ArrowBackIcon sx={{ fontSize: '1.2rem' }} /> Back
+                                        </button>
+                                    }
+                                </div>
+                                <div className='flex max-md:flex-wrap w-full md:w-2/3 gap-5'>
+                                    <button
+                                        onClick={() => props.setterFunction(false)}
+                                        className="text-stone-500 border border-stone-500 h-14 w-full md:w-1/2 rounded-lg"
+                                    >
+                                        Discard
+                                    </button>
+                                    {!fourth && !(second == true && (skillLength == 0 || educationLength == 0) && !fileName) ?
+                                        <button
+                                            onClick={toggleTabs}
+                                            type="button"
+                                            className="text-textW bg-black text-textW h-14 w-full md:w-1/2 rounded-lg"
+                                        >
+                                            Continue
+                                        </button> : null
+                                    }
+                                    {fourth && (
+                                        <div className='w-full md:w-1/2'>
+                                            <SubmitButton loading={loadingApply} buttonText="Apply" />
+                                        </div>
+                                    )}
+                                </div>
+                                <p className="text-zinc-900 w-full text-sm flex items-center font-light leading-normal order-3 col-span-12 sm:col-span-12 sm:pt-5 ">
                                     Submitting this application won’t change your profile.
                                 </p>
-                                <button
-                                    onClick={() => props.setterFunction(false)}
-                                    className="text-stone-500 border border-stone-500 h-14 w-full rounded-xl order-2 col-span-12 sm:order-1 sm:col-span-6 xl:col-span-3"
-                                >
-                                    Discard
-                                </button>
-                                {!fourth && !(second == true && (skillLength == 0 || educationLength == 0) && !fileName) ?
-                                    <button
-                                        onClick={toggleTabs}
-                                        type="button"
-                                        className="text-textW bg-black text-textW h-14 w-full rounded-xl  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                                    >
-                                        Continue
-                                    </button> : null
-                                }
-
-                                {fourth && (
-                                    <>
-                                        <div className='w-full flex md:justify-end order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3'>
-                                            <div className='w-full md:w-96'>
-                                                <SubmitButton loading={loadingApply} buttonText="Apply" />
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
                             </div>
                         </form>
                     )}

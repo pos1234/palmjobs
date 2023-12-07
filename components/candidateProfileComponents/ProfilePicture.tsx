@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { ProfilePic } from '../JobImage';
-import { deleteProfilePicture, getCandidateDocument, updateProfileId, uploadProfilePictures } from '@/lib/candidateBackend';
+import { deleteProfilePicture, getCandidateDocument, updateProfileId, uploadProfilePictures } from '@/backend/candidateBackend';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { toast } from 'react-toastify';
-import { getAccount } from '@/lib/accountBackend';
-import { getEmployerDocument } from '@/lib/employerBackend';
+import { getAccount } from '@/backend/accountBackend';
+import { getEmployerDocument } from '@/backend/employerBackend';
 
 const ProfilePicture = () => {
     const loadingIn = '/images/loading.svg';
@@ -15,14 +15,13 @@ const ProfilePicture = () => {
     const [file, setFile] = useState<any>();
     const [firstLetter, setFirstLetter] = useState('')
     const getProfilePic = async () => {
-        const { documents }: any = await getCandidateDocument()
-        documents && documents[0] && documents[0].profilePictureId && setProfileId(documents[0].profilePictureId)
+        const promise = await getCandidateDocument()
+        promise && promise.documents[0] && promise.documents[0].profilePictureId && setProfileId(promise.documents[0].profilePictureId)
     }
-
     useEffect(() => {
         getProfilePic()
         getAccount().then((res: any) => {
-            setFirstLetter(res.name.charAt(0))
+            res && res.name && setFirstLetter(res.name.charAt(0))
         })
     }, [])
 
@@ -99,8 +98,8 @@ const ProfilePicture = () => {
                     <>
                         {!profileLoading && !profileId && (
                             <>
-                                <p className="cursor-pointer h-full w-full bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex pb-4 justify-center items-center text-[3rem] font-frhW">
-                                    {firstLetter}
+                                <p className="cursor-pointer h-full w-full bg-gradientFirst text-textW flex justify-center items-center text-[3rem] font-frhW">
+                                    {firstLetter.toLocaleUpperCase()}
                                 </p>
                                 <div className="uploadProfile">
                                     <label htmlFor="photo-upload" className="custom-file-upload">
@@ -168,13 +167,13 @@ export const EmployerProfilePicture = () => {
         imageUploadChecker(uploadProfilePictures, e.currentTarget.files);
     };
     const getProfilePic = async () => {
-        const { documents }: any = await getEmployerDocument()
-        documents && documents[0] && documents[0].profilePictureId && setProfileId(documents[0].profilePictureId)
+        const promise = await getEmployerDocument()
+        promise && promise.documents[0] && promise.documents[0].profilePictureId && setProfileId(promise.documents[0].profilePictureId)
     }
     useEffect(() => {
         getProfilePic()
         getAccount().then((res: any) => {
-            setFirstLetter(res.name.charAt(0))
+            res && res.name && setFirstLetter(res.name.charAt(0))
         })
     }, [])
     return <div className="col-span-12 relative md:col-span-4 xl:col-span-4">

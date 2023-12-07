@@ -1,14 +1,34 @@
 import React from 'react';
 import emailjs from '@emailjs/browser';
 emailjs.init('QyQ9efsZzemYUKqOu');
-export const SendJobPostedEmail = (userEmail: string, jobTitle: string, jobLink: string, userName: string) => {
-    const templateParams = {
-        htmlMessage: `
+export const SendJobPostedEmail = (userEmail: string, jobTitle: string, jobId: string, userName: string) => {
+  const formData = {
+    userEmail,
+    jobTitle,
+    jobId
+  }
+  try {
+    fetch(`${process.env.NEXT_PUBLIC_VERIFY}/api/email/posted`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData)
+    }).then((res: any) => {
+      console.log('sent');
+
+    })
+  } catch (err) {
+    console.log(err);
+  }
+  /*  const templateParams = {
+    htmlMessage: `
         <div>
           <div style="padding: 12px; border-left: 4px solid #00A82D; margin-bottom: 2rem">
             <p>Greetings from Palm Jobs!</p>
             <p>
-              We're excited to let you know that your job listing for the position of ${jobTitle} is now live on our platform. We understand how vital it is to find the right talent, and we're here to make sure that happens.
+              We're excited to let you know that your job listing for the position of ${jobTitle} is now live on our platform. 
+              We understand how vital it is to find the right talent, and we're here to make sure that happens.
             </p>
             <p>Here's what you can expect:</p>
             <p>- Quality Candidates: Our platform attracts skilled and dedicated job seekers ready to make an impact.</p>
@@ -23,22 +43,22 @@ export const SendJobPostedEmail = (userEmail: string, jobTitle: string, jobLink:
           </div>
         </div>
       `,
-        toEmail: userEmail,
-        to_name: userName,
-        emailSubject: 'Your Job Post is Live and Shining!',
-        isHTML: true
-    };
-    emailjs.send('service_b5f7kkq', 'template_5lhc001', templateParams).then(
-        function (response) {
-            console.log('Email sent successfully!', response.status, response.text);
-        },
-        function (error) {
-            console.log('Email failed to send!', error);
-        }
-    );
+    toEmail: userEmail,
+    to_name: userName,
+    emailSubject: 'Your Job Post is Live and Shining!',
+    isHTML: true
+  };
+  emailjs.send('service_b5f7kkq', 'template_5lhc001', templateParams).then(
+    function (response) {
+      console.log('Email sent successfully!', response.status, response.text); 
+    },
+    function (error) {
+      console.log('Email failed to send!', error);
+    }
+  ); */
 };
 
-export const SendJobAppliedEmail = (userEmail: string, jobTitle: string, jobLink: string, userName: string,companyName:string) => {
+/* export const SendJobAppliedEmail = (userEmail: string, jobTitle: string, jobLink: string, userName: string,companyName:string) => {
     const templateParams = {
         htmlMessage: `
         <div>
@@ -75,4 +95,25 @@ export const SendJobAppliedEmail = (userEmail: string, jobTitle: string, jobLink
             console.log('Email failed to send!', error);
         }
     );
+}; */
+export const SendJobAppliedEmail = (userEmail: string, jobTitle: string,/*  userName: string, */ companyName: string) => {
+  const formData = {
+    userEmail,
+    jobTitle,
+    companyName
+  }
+  try {
+    fetch(`${process.env.NEXT_PUBLIC_VERIFY}/api/email/applied`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData)
+    }).then((res: any) => {
+      console.log('sent');
+
+    })
+  } catch (err) {
+    console.log(err);
+  }
 };

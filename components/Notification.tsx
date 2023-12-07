@@ -2,8 +2,6 @@ import React from 'react';
 import ConfirmModal from './ConfirmModal';
 import CloseIcon from '@mui/icons-material/Close';
 const Notification = (props: any) => {
-    const image1 = '../images/success.svg';
-    const image2 = '../images/failed.svg';
     return (
         <ConfirmModal
             isOpen={props.openNotify}
@@ -21,7 +19,7 @@ const Notification = (props: any) => {
                     <div className="flex justify-center gap-y-5 items-center w-full flex-col">
                         {props.successText == 'success' && (
                             <>
-                                <img src={image1} className="w-60 h-60" />
+                                <img src='/images/success.png' alt='success image' className="w-60 h-60" />
                                 <p className="text-[1.5rem] font-[500]">{props.successWord}</p>
                             </>
                         )}

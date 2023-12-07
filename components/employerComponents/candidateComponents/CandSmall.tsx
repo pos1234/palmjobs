@@ -1,11 +1,6 @@
-import { fetchCandidateDetail } from '@/lib/employerBackend';
+import { fetchCandidateDetail } from '@/backend/employerBackend';
 import { useEffect, useState } from 'react';
-import BookmarkBorderOutlined from '@mui/icons-material/BookmarkBorderOutlined';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import PersonIcon from '@mui/icons-material/Person';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import { ProfilePic } from '@/components/JobImage';
 const CandSmall = (props: any) => {
     const [candidateData, setCandidateData] = useState<any>();
@@ -14,85 +9,68 @@ const CandSmall = (props: any) => {
     const [skill, setSkill] = useState<any>([]);
     const [imageHref, setImageHref] = useState('');
     useEffect(() => {
-        fetchCandidateDetail(props.canId).then((res) => {
+        props.itemDetail.candidateId && fetchCandidateDetail(props.itemDetail.candidateId).then((res) => {
             setCandidateData(res.documents.length > 0 && res.documents[0]);
-            props.short !== 'true' && props.detailHolder(res.total > 0 && res.documents[0]);
+            props.detailHolder(res.total > 0 && res.documents[0]);
             const parsed = res.documents[0] && res.documents[0].skills && res.documents[0].skills;
             const imageLink = res.documents[0] && res.documents[0].skills && res.documents[0].profilePictureId !== null
-            imageLink && setImageHref(res.documents[0].profilePictureId)
-            imageLink && props.imageLinkSetter(res.documents[0].profilePictureId)
-            /*                 getProfilePicture(res.documents[0].profilePictureId);
-             */            /* if (imageLink) {
-                        setImageHref(imageLink.href);
-                    } */
+            imageLink ? setImageHref(res.documents[0].profilePictureId) : setImageHref('')
             setSkill(res.documents[0] && res.documents[0].skills && parsed);
         });
     }, []);
-
     return (
         <div
+            key={props.index}
             id={`item-${props.index}`}
             onClick={() => {
-                props.short !== 'true' && props.detailHolder(candidateData);
-                props.short !== 'true' && props.imageLinkSetter(imageHref);
-                (props.short !== 'true' || props.viewShort == false) && props.detailHolder(candidateData);
+                props.setDocumentId && props.setDocumentId(props.itemDetail)
+                props.detailHolder(candidateData);
+                props.imageLinkSetter(imageHref);
+                props.detailHolder(candidateData);
                 props.indexSetter(props.index);
                 props.detailSetter(true);
             }}
             className={
                 props.detailValue == true
-                    ? `bg-textW shadow flex flex-col p-3 rounded-2xl cursor-pointer max-md:hidden ${(props.short !== 'true' && props.index === props.indexValue) ||
-                        (props.viewShort === false && props.index === props.indexValue)
-                        ? 'border-[1px] bg-textW shadow border-gradientFirst max-md:hidden'
-                        : 'border-[1px] bg-textW shadow border-stone-200 max-md:hidden'
+                    ? `bg-textW border-[1px] shadow flex flex-col p-3 rounded-lg cursor-pointer max-md:hidden ${props.index === props.indexValue
+                        ? 'border-gradientFirst'
+                        : 'border-stone-200'
                     }`
-                    : `bg-textW shadow flex flex-col p-3 rounded-2xl cursor-pointer ${(props.short !== 'true' && props.index === props.indexValue) ||
-                        (props.viewShort === false && props.index === props.indexValue)
-                        ? 'border-[1px] bg-textW shadow border-gradientFirst'
-                        : 'border-[1px] bg-textW shadow border-stone-200'
-                    }`
+                    : `bg-textW border-[1px] shadow flex flex-col p-3 rounded-lg cursor-pointer ${props.index === props.indexValue
+                        ? 'border-gradientFirst'
+                        : 'border-stone-200'
+                    } `
             }
         >
-            <div className="grid grid-cols-12 gap-x-2">
-
-
-                {imageHref && <ProfilePic id={imageHref} className="col-span-2 sm:w-16 sm:h-16 md:col-span-4 rounded-xl" />}
-                <div className="col-span-9 flex flex-col md:col-span-7">
-                    <p className="text-neutral-900 text-md font-medium">{candidateData && candidateData.name}</p>
-                    <p className="text-stone-300 text-sm font-normal">{candidateData && candidateData.bioHeadline}</p>
-                    {candidateData && candidateData.address && (
-                        <p className="text-neutral-900 text-opacity-70 text-sm font-normal leading-normal">
-                            <PinDropOutlinedIcon sx={{ fontSize: '1rem' }} />
-                            {candidateData.address}
-                        </p>
-                    )}
+            <div className="flex justify-between">
+                <div className="flex gap-3">
+                    {imageHref && <ProfilePic id={imageHref} className=" w-16 h-16 md:col-span-4 rounded-xl" />}
+                    <div className="flex flex-col gap-2">
+                        <p className="text-neutral-900 text-md font-medium">{candidateData && candidateData.name}</p>
+                        {candidateData && candidateData.address && (
+                            <p className="text-neutral-900 text-opacity-70 text-sm font-normal leading-normal">
+                                <PinDropOutlinedIcon sx={{ fontSize: '1rem' }} />
+                                {candidateData.address}
+                            </p>
+                        )}
+                    </div>
                 </div>
-                {props.short !== 'true' && (
-                    <div
-                        onClick={() => props.handleFunction(props.canId)}
-                        title="Shortlist"
-                        className="col-span-1 cursor-pointer flex text-gradientFirst justify-center "
-                    >
-                        <AddIcon />
-                    </div>
-                )}
-                {props.short === 'true' && (
-                    <div title="Remove" className="col-span-1 cursor-pointer flex text-gradientFirst justify-center ">
-                        <RemoveIcon onClick={() => props.handleFunction(props.itemId)} />
-                    </div>
-                )}
             </div>
             <div className="flex gap-2 flex-wrap my-2">
                 {candidateData &&
                     skill &&
                     skill.map((item: any, index: number) => {
-                        return (
-                            <p
-                                key={index}
-                                className="px-2 py-1 flex items-center rounded-full bg-skillColor text-zinc-900 text-sm font-normal leading-tight"
-                            >
-                                {item}
-                            </p>
+                        return (<div key={index}>
+                            {
+                                index < 3 && <p
+                                    key={index}
+                                    className="px-2 py-1 flex items-center bg-skillColor text-gradientFirst text-sm font-normal leading-tight"
+                                >
+                                    {item}
+                                </p>
+                            }
+
+                        </div>
                         );
                     })}
             </div>

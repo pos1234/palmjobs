@@ -1,5 +1,5 @@
 // This code is for v4 of the openai package: npmjs.com/package/openai
-import openai from '@/lib/openai';
+import openai from '@/backend/openai';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function jobDescription(req: NextApiRequest, res: NextApiResponse) {
@@ -17,7 +17,6 @@ export default async function jobDescription(req: NextApiRequest, res: NextApiRe
         res.status(400).json({ error: 'Missing job title or skills' });
         return;
     }
-
     try {
         const response = await openai.chat.completions.create({
             model: 'gpt-3.5-turbo',

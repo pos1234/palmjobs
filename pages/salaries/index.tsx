@@ -1,31 +1,31 @@
+import Footer from '@/components/Footer';
+import Navigation from '@/components/Navigation';
 import SalarySurvey from '@/components/SalarySurvey';
 import Slider from '@/components/Slider'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 
 const Salaries = () => {
-    const logo = '/images/logo.svg';
-
+    const [tip, setTip] = useState(false)
     return (
         <>
-            <div className="flex max-md:flex-wrap grid-cols-12 overflow-y-auto relative  sm:pb-5 h-screen">
-                <div className='w-full md:w-1/2 flex flex-col max-md:gap-10 items-center rounded-tr-[5.75rem] rounded-br-[5.75rem] order-2 max-md:mt-10 md:col-span-6 md:order-1'>
-                    <div className=' h-full bg-skillColor rounded-tr-[5.75rem] rounded-br-[5.75rem] md:fixed'>
-                        <div className={/* forgotPassword == false ? 'w-full flex justify-center' : */ 'w-full flex justify-center mt-10 sm:mt-28'}>
-                            <Link href="/">
-                                <img src={logo} className=" w-[15rem]" />
-                            </Link>
-                        </div>
-                        <div
-                            className='loginCoursel w-full  lg:pt-[5%] flex justify-center md:h-[45%] lg:h-[75%] xl:h-[80%]'
-                        >
-                            <Slider />
-                        </div>
+            <div className="flex flex-col">
+                <Navigation />
+                <div className='w-full flex gap-5 pl-3 font-[500] pt-10 md:hidden'>
+                    <p onClick={() => setTip(!tip)} className={`border-b-[3px] pb-2 ${tip ? 'border-b-textW hover:border-b-gradientFirst cursor-pointer' : 'border-b-gradientFirst'}`}>Survey</p>
+                    <p onClick={() => setTip(!tip)} className={`border-b-[3px] pb-2 ${tip ? 'border-b-gradientFirst' : 'border-b-textW hover:border-b-gradientFirst cursor-pointer'}`}>Tip</p>
+                </div>
+                <div className='flex relative overflow-hidden gap-3 h-screen pt-10 md:pt-20 xl:px-40'>
+                    <div className={`border-2 rounded-md h-screen overflow-y-auto thinScrollBar ${tip ? 'max-md:hidden' : 'flex-grow'}`}>
+                        <SalarySurvey />
+                    </div>
+                    <div className={`flex items-center flex-col pt-16 surveryBack px-4 text-center sm:w-1/3 lg:w-1/4 ${tip ? 'max-md:flex-grow' : 'max-md:hidden'}`}>
+                        <img src="/images/salaryTip.svg" alt="" className='w-[180px] h-[147px]' />
+                        <p className='font-[600] text-[27px] mt-10 mb-3'>Salary Survey</p>
+                        <p className='font-[400] text-left'>Join forces with your peers and contribute to our Salary Survey. Your valuable insights help ensure everyone, from job seekers to employers, has access to reliable and current salary data. Together, we can foster a transparent and fair job market. Share your details, and let's build a resource that benefits all professionals.</p>
                     </div>
                 </div>
-                <div className="w-full max-md:px-3 md:w-1/2 order-1 justify-center md:order-2 flex flex-col gap-y-5 md:px-5 lg:px-10 xl:px-20 md:col-span-6 pt-0 employerBack">
-                    <SalarySurvey />
-                </div>
+                <Footer />
             </div>
         </>
     )

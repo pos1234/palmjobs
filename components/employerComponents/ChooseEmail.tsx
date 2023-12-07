@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import RadioInput from '../RadioInput'
-import { getProfileData, updateEmailNotification } from '@/lib/employerBackend';
+import { getProfileData, updateEmailNotification } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
 
 const ChooseEmail = () => {
@@ -52,13 +52,13 @@ const ChooseEmail = () => {
                         {loading && (
                             <img
                                 src={loadingIn}
-                                className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full"
+                                className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
                             />
                         )}
                         {!loading && (
                             <button
                                 type="submit"
-                                className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-full"
+                                className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
                             >
                                 Update
                             </button>

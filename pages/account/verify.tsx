@@ -1,4 +1,4 @@
-import { verfiyAccount } from '@/lib/accountBackend';
+import { verfiyAccount } from '@/backend/accountBackend';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { NextPageContext } from 'next/types';
@@ -45,7 +45,7 @@ const ConfirmAccount = ({ queryParams }: MyPageProps) => {
             <div className="col-span-12 order-1 md:order-2 text-center flex flex-col gap-y-5 items-center max-lg:mb-5 md:col-span-6 employerBack">
                 <div className="flex flex-col w-full items-center gap-y-3 mt-20 sm:mt-28">
                     <Link href="/">
-                        <img src={logo} className=" w-[15rem]   " />
+                        <img src={logo} className=" w-[15rem]" />
                     </Link>
                     <div className="text-center text-zinc-900 text-2xl font-bold leading-10">Email Verified</div>
                     <img src={emailVerfied} className="w-[20rem]" />

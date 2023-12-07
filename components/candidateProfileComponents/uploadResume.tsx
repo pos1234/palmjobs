@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import { getResumeName } from '@/lib/candidateBackend';
+import { getResumeName } from '@/backend/candidateBackend';
 import { FileUploader } from 'react-drag-drop-files';
-import { deleteResume, getUserDetail, updateResumeId, uploadResume } from '@/lib/candidateBackend';
+import { deleteResume, getUserDetail, updateResumeId, uploadResume } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
+import { useGlobalContext } from '@/contextApi/userData';
 const FileUploadForm = (props: any) => {
+    const { userDetail } = useGlobalContext()
     const pdfIcon = '/images/pdfIcon.svg';
     const [resumeId, setResumeId] = useState('');
     const [fileName, setFileName] = useState('');
@@ -71,12 +73,12 @@ const FileUploadForm = (props: any) => {
             });
     };
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        setResumeId(userInfo.resumeId || '');
+/*         const userInfo = await getUserDetail()
+ */        userDetail && setResumeId(userDetail.resumeId || '');
     }
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     return (
         <>
             {resumeId ? (
@@ -102,9 +104,9 @@ const FileUploadForm = (props: any) => {
                     <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
                         PDF, DOCX or DOC, file size no more than 1MB
                     </div>
-                    <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
+                    <div className="w-28 h-10 bg-black text-textW relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
                         <div className="cursor-pointer absolute z-0 top-3 w-full">
-                            <div className="text-gradientFirst text-xs font-normal uppercase">Replace</div>
+                            <div className=" text-xs font-normal uppercase">Replace</div>
                         </div>
                     </div>
                     {errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}
@@ -132,9 +134,9 @@ const FileUploadForm = (props: any) => {
                     <div className="w-64 text-center text-black text-opacity-40 text-xs font-normal">
                         PDF, DOCX or DOC, file size no more than 1MB
                     </div>
-                    <div className="w-28 h-10 bg-white relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
+                    <div className="w-28 h-10 bg-black text-textW relative rounded border cursor-pointer border-gradientFirst border-opacity-25 justify-start items-center flex  text-center">
                         <div className="cursor-pointer absolute z-0 top-3 w-full">
-                            <div className="text-gradientFirst text-xs font-normal uppercase">Select file</div>
+                            <div className=" text-xs font-normal uppercase">Select file</div>
                         </div>
                     </div>
                     {errorMessage && <div className="text-red-500 text-xs">{errorMessage}</div>}

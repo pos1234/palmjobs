@@ -3,12 +3,14 @@ import LocalFireDepartmentOutlinedIcon from '@mui/icons-material/LocalFireDepart
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import skillsData from '@/lib/skillData';
-import { getUserDetail, updateSkills } from '@/lib/candidateBackend';
+import skillsData from '@/backend/skillData';
+import { getUserDetail, updateSkills } from '@/backend/candidateBackend';
+import { useGlobalContext } from '@/contextApi/userData';
 interface Data {
     word: string;
 }
 const Skills = () => {
+    const { userDetail } = useGlobalContext()
     const [array, setArray] = useState<string[]>([]);
     const [inputSkill, setInputSkill] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -43,14 +45,14 @@ const Skills = () => {
         updateSkills(newArray);
     };
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        setArray(userInfo.skills || '');
+/*         const userInfo = await getUserDetail()
+ */        userDetail && setArray(userDetail.skills || '');
     }
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     return (
-        <div className="rounded-xl p-6 border-2 flex flex-col">
+        <div className="w-full rounded-xl p-6 border-2 flex flex-col">
             <p className="font-fhW text-fhS leading-fhL">
                 <LocalFireDepartmentOutlinedIcon sx={{ color: '#00A82D', marginRight: '0.5rem' }} />
                 Skills

@@ -11,29 +11,31 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProfilePicture from '@/components/candidateProfileComponents/ProfilePicture';
 import SocialLinks from '@/components/candidateProfileComponents/SocialLinks';
-import { getUserDetail } from '@/lib/candidateBackend';
+import { getUserDetail } from '@/backend/candidateBackend';
 import CoverLetter from '@/components/candidateProfileComponents/CoverLetter';
 import WorkHitory from '@/components/candidateProfileComponents/WorkHistory';
 import Education from '@/components/candidateProfileComponents/Education';
+import { useGlobalContext } from '@/contextApi/userData';
 const Profile = () => {
+    const { userDetail } = useGlobalContext()
     const [about, setAbout] = useState(true);
     const [allLoading, setAllLoading] = useState(false)
     const userData = async () => {
         setAllLoading(true)
-        const userInfo = await getUserDetail()
-        userInfo && setAllLoading(false)
+/*         const userInfo = await getUserDetail()
+ */        userDetail && setAllLoading(false)
     }
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     return (
-        <div className="px-3 xl:px-40">
+        <div >
             <Navigation />
             {allLoading && <CandidateProfileShimmer />}
             {!allLoading && (
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-5 px-3 xl:px-40">
                     <div className="w-full flex flex-wrap gap-10">
-                        <div className="w-full flex gap-10 max-md:flex-col mt-10 pt-10 pb-20 profilePattern md:pl-10">
+                        <div className="w-full flex gap-10 max-md:flex-col mt-10 py-5 bg-red-500 profilePattern max-md:pl-5 md:pl-10">
                             <ProfilePicture />
                             <SocialLinks />
                         </div>

@@ -1,4 +1,4 @@
-import { updatePassword } from '@/lib/accountBackend';
+import { updatePassword } from '@/backend/accountBackend';
 import { useState } from 'react';
 import { NextPageContext } from 'next/types';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
