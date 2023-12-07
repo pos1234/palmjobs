@@ -12,7 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
 import RegisterComponent from '@/components/account/Register';
 import Slider from '@/components/Slider';
-import { SubmitButton } from '@/components/TextInput';
+import { SubmitButton, TextInputRelated } from '@/components/TextInput';
 import { useGlobalContext } from '@/contextApi/userData';
 const Login = () => {
     const router = useRouter();
@@ -50,30 +50,17 @@ const Login = () => {
                 const sign = signIn(login.email, login.password);
                 sign.then(async (res) => {
                     setLoading(false);
-                    toast.success('Successfully LoggedIn');
-                    const loggedIn = await getAccount();
-                    if (loggedIn !== 'failed') {
-                        setUserData(loggedIn)
-                        typeof window !== 'undefined' && router.push('/jobs');
-                    }
-                    /* const loggedIn = await getAccount();
-                    if (loggedIn !== 'failed') {
-                        const role = await getRole();
-                        if (role && role.documents[0].userRole == 'candidate') {
+                    console.log(res);
+                    if (res == null) {
+                        toast.error('Please Verify Email')
+                    } else {
+                        toast.success('Successfully LoggedIn');
+                        const loggedIn = await getAccount();
+                        if (loggedIn !== 'failed') {
+                            setUserData(loggedIn)
                             typeof window !== 'undefined' && router.push('/jobs');
                         }
-                        if (role && role.documents[0].userRole == 'employer') {
-                            typeof window !== 'undefined' && router.push('/users/employer');
-                        }
                     }
-                    if (loggedIn == 'failed') {
-                        typeof window !== 'undefined' && router.push('/account');
-                    } */
-                    /* const role = getRole();
-                    role.then((rep) => {
-                        if (rep.documents[0].userRole === 'candidate') router.push('/jobs');
-                        if (rep.documents[0].userRole === 'employer') router.push('/users/employer');
-                    }); */
                 }).catch((error) => {
                     console.log(error.message);
                     setLoading(false);
@@ -98,20 +85,22 @@ const Login = () => {
     }
     return (
         <>
-            <div className="flex max-md:flex-wrap grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
-                <div className="w-full h-screen md:w-1/2 flex flex-col max-md:gap-10 items-center max-md:mt-10 md:col-span-6 order-2 md:order-1 accountBack">
-                    <div className={/* forgotPassword == false ? 'w-full flex justify-center' : */ 'w-full flex justify-center mt-10 sm:mt-28'}>
-                        <Link href="/">
-                            <img src={logo} className=" w-[15rem]" />
-                        </Link>
-                    </div>
-                    <div
-                        className={'loginCoursel w-full lg:pt-[5%] flex justify-center md:h-[45%] lg:h-[75%] xl:h-[50%]'}
-                    >
-                        <Slider />
+            <div className="flex max-md:flex-wrap overflow-y-auto sm:pb-5 ">
+                <div className="w-full h-screen md:w-1/2 flex flex-col max-md:gap-10 items-center max-md:mt-10 order-2 md:order-1 ">
+                    <div className='md:fixed md:w-1/2 accountBack h-full'>
+                        <div className={/* forgotPassword == false ? 'w-full flex justify-center' : */ 'w-full flex justify-center mt-10 sm:mt-28'}>
+                            <Link href="/">
+                                <img src={logo} className=" w-[15rem]" />
+                            </Link>
+                        </div>
+                        <div
+                            className={'loginCoursel w-full lg:pt-[5%] flex justify-center md:h-[45%] lg:h-[75%] xl:h-[50%]'}
+                        >
+                            <Slider />
+                        </div>
                     </div>
                 </div>
-                <div className="w-full md:w-1/2 order-1 justify-center md:order-2 text-center flex flex-col gap-y-5 items-center md:px-5 lg:px-10 xl:px-20 md:col-span-6 pt-20">
+                <div className="w-full md:w-1/2 max-md:px-5 order-1 justify-center md:order-2 text-center flex flex-col gap-y-5 items-center md:px-5 lg:px-10 xl:px-20 md:col-span-6 pt-20">
                     {forgotPassword == false && (
                         <p className="font-shW text-shS md:text-dshS">
                             Connect. Grow. <span className="text-gradientFirst">Succeed.</span>
@@ -205,49 +194,50 @@ const Login = () => {
                         </>
                     )}
                     {(register == false || registerForm == true) && forgotPassword == false && (
-                        <div className="w-full p-2 grid gap-x-2 grid-cols-12 gap-y-4 lg:gap-y-0">
+                        <div className="w-full justify-center flex">
                             {
-                                registerForm == false && <button type='button' onClick={() => handleGoogleLogin()} className="col-span-12 border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center sm:col-start-3 sm:col-end-12 md:max-lg:col-span-12">
+                                registerForm == false && <button type='button' onClick={() => handleGoogleLogin()} className="w-full border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center sm:w-96">
                                     <img src={google} alt="google" className="w-[1rem] h-[1rem] inline ml-3" /> <p className='flex-grow text-center'> Continue with Google</p>
                                 </button>
                             }
                             {
-                                registerForm == true && <button type='button' onClick={() => handleGoogleRegister()} className="col-span-12 border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center sm:col-start-3 sm:col-end-12 md:max-lg:col-span-12">
+                                registerForm == true && <button type='button' onClick={() => handleGoogleRegister()} className="w-full border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center sm:w-96">
                                     <img src={google} alt="google" className="w-[1rem] h-[1rem] inline ml-3" /> <p className='flex-grow text-center'>Continue with Google</p>
                                 </button>
                             }
                         </div>
                     )}
-                    {registerForm && <RegisterComponent name={name} role={getJob ? 'candidate' : 'employer'} />}
+                    {registerForm && <RegisterComponent role={getJob ? 'candidate' : 'employer'} />}
                     {!register && forgotPassword == false && (
-                        <>
-                            <form className="w-full pl-5 grid grid-cols-12 text-left pr-2 md:pr-0" onSubmit={handlelogin}>
+                        <form className="w-full items-center flex flex-col text-left md:pr-0" onSubmit={handlelogin}>
+                            <div className='flex flex-wrap w-full md:w-96'>
                                 <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL">Email Address</p>
-                                <input
-                                    onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                        setLogin({ ...login, email: e.currentTarget.value })
-                                    }
-                                    type="text"
-                                    placeholder="Enter Email"
-                                    className={
-                                        emailError
-                                            ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
-                                            : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
-                                    }
-                                />
-                                {emailError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{emailError}</p>}
-                                <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL">Password</p>
+                                <TextInputRelated placeHolder="Enter Email" value={login.email} change={"email"} dataDistruct={login} setFunction={setLogin} errorMessage={emailError} />
+                            </div>
+                            {/* <input
+                                onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                                    setLogin({ ...login, email: e.currentTarget.value })
+                                }
+                                type="text"
+                                placeholder="Enter Email"
+                                className={
+                                    emailError
+                                        ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
+                                        : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
+                                }
+                            /> */}
+                            {/*  
+                                                       {emailError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{emailError}</p>}
+ */}
+                            <div className='flex flex-wrap w-full md:w-96'>
+                                <p className="w-full font-thW text-smS mt-5 mb-2 text-left leading-shL">Password</p>
                                 <input
                                     onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                         setLogin({ ...login, password: e.currentTarget.value })
                                     }
                                     type={visible ? 'text' : 'password'}
                                     placeholder="Enter password"
-                                    className={
-                                        passwordError
-                                            ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
-                                            : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
-                                    }
+                                    className={`h-12 pl-5 bg-white rounded-xl border focus:ring-gradientFirst focus:border-0 w-full ${passwordError ? 'border-red-500' : 'border-gray-200'}`}
                                 />
                                 <span
                                     onClick={() => setVisible(!visible)}
@@ -255,23 +245,23 @@ const Login = () => {
                                 >
                                     {visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
                                 </span>
-                                {passwordError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{passwordError}</p>}
+                            </div>
+                            {passwordError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{passwordError}</p>}
 
-                                <div className='w-full col-span-10 flex md:justify-end'>
-                                    <div className='w-full md:w-60 pt-5'>
-                                        <SubmitButton loading={loading} buttonText="Login" />
-                                    </div>
+                            <div className='w-full col-span-10 flex md:justify-end'>
+                                <div className='w-full md:w-60 pt-5'>
+                                    <SubmitButton loading={loading} buttonText="Login" />
                                 </div>
-                                <div
-                                    onClick={() => setForgotPassword(true)}
-                                    className="col-span-12 flex justify-end sm:pr-32 md:pr-20 lg:pr-24"
-                                >
-                                    <span className="font-addW text-addS mt-5 mb-2 leading-addL cursor-pointer text-gradientFirst">
-                                        Forgot Password?
-                                    </span>
-                                </div>
-                            </form>
-                        </>
+                            </div>
+                            <div
+                                onClick={() => setForgotPassword(true)}
+                                className="w-full flex justify-end"
+                            >
+                                <span className="font-addW text-addS mt-5 mb-2 leading-addL cursor-pointer text-gradientFirst">
+                                    Forgot Password?
+                                </span>
+                            </div>
+                        </form>
                     )}
                     {register && (
                         <div className="w-full flex gap-x-3 mt-2 px-2 sm:px-0 max-lg:mb-8">

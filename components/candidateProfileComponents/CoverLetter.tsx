@@ -5,15 +5,17 @@ import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import EditIcon from '@mui/icons-material/Edit';
 import FormModal from './FormModal';
 import { SubmitButton } from '../TextInput';
+import { useGlobalContext } from '@/contextApi/userData';
 
 const CoverLetter = () => {
+    const { userDetail } = useGlobalContext()
     const [coverLetter, setCoverLetter] = useState('');
     const [openCover, setOpenCover] = useState(false);
     const [loadings, setLoadings] = useState(false)
     const coverLetterLength = 500
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        userInfo && userInfo.coverLetter && setCoverLetter(userInfo.coverLetter)
+/*         const userInfo = await getUserDetail()
+ */        userDetail && userDetail.coverLetter && setCoverLetter(userDetail.coverLetter)
     }
     const handleCoverLetter = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault()
@@ -36,7 +38,7 @@ const CoverLetter = () => {
     };
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     return (
         <div className=" rounded-xl relative gap-5 p-6 border-2 flex-grow flex flex-col">
             <div className="flex justify-between">
@@ -64,7 +66,7 @@ const CoverLetter = () => {
                 }
             </div>
 
-            <FormModal tipText='Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos architecto dolore sint tenetur dolores, repellendus autem temporibus modi officia soluta. Facilis, dignissimos? Error, assumenda. Laborum, animi hic. Ab, doloremque id.'
+            <FormModal tipText='Crafting a compelling cover letter? Start with a warm greeting, express your enthusiasm for the role, and highlight key experiences that align with the job description. Show how your unique skills can contribute to the company’s success. End with a courteous closing and an invitation for further discussion. Remember, your cover letter is your personal story—make it resonate with your future employer'
                 text='CoverLetter' icon={<TextSnippetIcon />}
                 addText='Add CoverLetter' openModal={openCover} setOpenModal={setOpenCover}>
                 <form onSubmit={handleCoverLetter} className='w-full flex flex-col gap-5'>

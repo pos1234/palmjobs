@@ -9,8 +9,9 @@ import { getUserDetail, updateEducation } from '@/backend/candidateBackend';
 import FormModal from './FormModal';
 import CloseIcon from '@mui/icons-material/Close';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
+import { useGlobalContext } from '@/contextApi/userData';
 const Education = () => {
-    const loadingIn = '/images/loading.svg';
+    const { userDetail } = useGlobalContext()
     const [openEducation, setOpenEducation] = useState(false);
     const [displayEducation, setDisplayEducation] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
@@ -135,23 +136,23 @@ const Education = () => {
         else return '';
     };
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        if (userInfo) {
-            const education = convertToArray(userInfo.educations) || [];
+/*         const userInfo = await getUserDetail()
+ */        if (userDetail) {
+            const education = convertToArray(userDetail.educations) || [];
             setEducationArray(education || '');
         }
 
     }
     useEffect(() => {
         userData()
-    }, [])
-    /*  useEffect(() => {
-         if (openEducation == false) {
-             setEditEducation(false);
-             setDisplayEducation(false);
-             setConfirmDelete(false);
-         }
-     }, [openEducation]); */
+    }, [userDetail])
+    useEffect(() => {
+        if (openEducation == false) {
+            setEditEducation(false);
+            setDisplayEducation(false);
+            setConfirmDelete(false);
+        }
+    }, [openEducation]);
     return (
         <div className=" flex flex-col p-6 rounded-xl border-2 w-full lg:w-auto">
             <div className="flex justify-between">
@@ -199,7 +200,7 @@ const Education = () => {
                 <p className="font-smW text-smS leading-smL text-lightGrey">Add your education and Degrees.</p>
                 <button className='bg-black text-textW px-16 py-3 rounded-xl' onClick={() => setOpenEducation(true)}>Add Education</button>
             </div>)}
-            <FormModal tipText='Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos architecto dolore sint tenetur dolores, repellendus autem temporibus modi officia soluta. Facilis, dignissimos? Error, assumenda. Laborum, animi hic. Ab, doloremque id.'
+            <FormModal tipText='Showcase your academic accomplishments by detailing your education level, field of study, alma mater, and graduation year. This information enriches your profile, highlighting your qualifications and knowledge base to potential employers.'
                 text='Education' icon={<SchoolOutlinedIcon />}
                 addText='Add Education' openModal={openEducation} setOpenModal={setOpenEducation}>
                 <div className='w-full pr-2'>

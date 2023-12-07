@@ -7,7 +7,7 @@ import ConfirmModal from '@/components/ConfirmModal';
 import { useRouter } from 'next/router';
 import CloseIcon from '@mui/icons-material/Close';
 import { signOut } from '@/backend/accountBackend';
-import { getCompanyData, fetchJobs, } from '@/backend/employerBackend'
+import { getCompanyData, searchJobs, } from '@/backend/employerBackend'
 import 'react-toastify/dist/ReactToastify.css';
 import JobsShimmer from '@/components/shimmer/JobsShimmer';
 import JobListCard from '@/components/job/JobListCard';
@@ -32,7 +32,7 @@ const Jobs = ({ documents }: any) => {
     const [addressHolder, setAddressHolder] = useState('');
     const [searchWord, setSearchWord] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [data, setData] = useState<any>(/* documents */);
+    const [data, setData] = useState<any>();
     const [maxPaginate, setMaxPaginate] = useState(5);
     const [minPaginate, setMinPaginate] = useState(1);
     const [companyData, setCompanyData] = useState<any>();
@@ -42,6 +42,13 @@ const Jobs = ({ documents }: any) => {
     const [applyEmp, setApplyEmp] = useState(false);
     const [forYou, setForYou] = useState(false)
     const [localValue, setLocalValue] = useState('')
+    const [pageCount, setPageCount] = useState<number>()
+    /* useEffect(() => {
+        countActiveJobs().then((res) => {
+            const count = Math.ceil(res.total / 8);
+            setPageCount(count)
+        })
+    }, []) */
     useEffect(() => {
         const documents = getCompanyData(employerId);
         documents.then(async (res) => {
@@ -64,7 +71,14 @@ const Jobs = ({ documents }: any) => {
             setForYou(false)
         }
     }
-    const filData =
+    const today = () => {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const lastHour = new Date(today);
+        lastHour.setHours(23, 59, 59, 999);
+        return 'hey'
+    }
+    /* const filData =
         data &&
         data.filter((item: any) => {
             let isMatch = true;
@@ -107,46 +121,73 @@ const Jobs = ({ documents }: any) => {
                 isMatch = isMatch && item.jobType == jobTypeHolder;
             }
             return isMatch;
-        });
+        }); */
 
     const itemsPerPage = 8;
-    const pageCount = filData && Math.ceil(filData.length / itemsPerPage);
-    const currentData = filData && filData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    /*     const pageCount = filData && Math.ceil(filData.length / itemsPerPage);
+     */    /* const currentData = filData && filData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); */
     const setTheSearchTerm = () => {
         typeof window !== 'undefined' && router.push({
             query: { param1: searchWord, param2: addressHolder }
         });
-        setSearchQuery(searchWord);
-        setAddress(addressHolder);
+        /* searchJobs(8, 0, searchWord).then((res) => {
+            setData(res.documents)
+            setPageCount(res.total)
+            console.log(res);
+        }) */
+        /* setSearchQuery(searchWord);
+        setAddress(addressHolder); */
         typeof window !== 'undefined' && searchWord !== '' && localStorage.setItem('jobTitle', searchWord)
     };
 
     useEffect(() => {
-        setAllLoading(true);
-        fetchJobs().then((res) => {
-            setData(res.documents);
-/*             res.total !== 0 && setJobDetails(res.documents[0]);
- */            /* res.total !== 0 && setJobDetails(res.documents[0]);
-            res.total !== 0 && setJobDetailId(res.documents[0].$id); */
-/*             filData && filData.length == 0 && setJobDetails(null)
- */            setAllLoading(false);
-        });
+        /*         setAllLoading(true);
+         */        /* countActiveJobs().then((res) => {
+const count = Math.ceil(res.total / 8);
+setPageCount(count)
+}) */
+        if (Object.keys(router.query).length == 0) {
+            searchJobs(8, 0, '', '', jobTypeHolder, expLevelHolder, datePostedHolder).then((res) => {
+                setAllLoading(false)
+                const count = Math.ceil(res.total / 8);
+                setPageCount(count)
+                res.documents && setData(res.documents)
+                res.documents && res.documents.length !== 0 && setJobDetailId(res.documents[0].$id)
+                res.documents && res.documents.length !== 0 && setJobDetails(res.documents[0])
+            })
+        }
         if (Object.keys(router.query).length > 0) {
-            const { param1, param2 } = router.query;
+            const { param1, param2 }: any = router.query;
+            searchJobs(8, 0, param1, param2, jobTypeHolder, expLevelHolder, datePostedHolder).then((res) => {
+                setAllLoading(false)
+                const count = Math.ceil(res.total / 8);
+                setPageCount(count)
+                res.documents && setData(res.documents)
+                res.documents && res.documents.length !== 0 && setJobDetailId(res.documents[0].$id)
+                res.documents && res.documents.length !== 0 && setJobDetails(res.documents[0])
+            })
             param1 && setSearchQuery(param1.toString());
             param1 && setSearchWord(param1.toString());
             param2 && setAddress(param2.toString());
             param2 && setAddressHolder(param2.toString());
         }
-    }, [router.query]);
-    useEffect(() => {
-        filData && filData.length !== 0 && setJobDetailId(filData[0].$id)
-        filData && filData.length !== 0 && setJobDetails(filData[0])
-    }, [data])
+    }, [router.query, /* searchWord, addressHolder, */ jobTypeHolder, expLevelHolder]);
+    const handleFetchPagination = async (offset: number) => {
+        setAllLoading(true);
+        const offsetValue = (offset - 1) * 8
+        searchJobs(8, offsetValue, searchWord, address, jobTypeHolder, expLevelHolder, datePostedHolder).then((res) => {
+            setData(res.documents);
+            setAllLoading(false);
+        });
+    }
+    /* useEffect(() => {
+        data && data.length !== 0 && setJobDetailId(data[0].$id)
+        data && data.length !== 0 && setJobDetails(data[0])
+    }, [data]) */
     const showPage = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        for (let i = 1; i <= filData.length; i++) {
+        for (let i = 1; i <= data.length; i++) {
             const item = document.getElementById(`item-${i}`);
             if (item) {
                 item.style.display = i >= startIndex && i < endIndex ? 'grid' : 'none';
@@ -155,7 +196,7 @@ const Jobs = ({ documents }: any) => {
         setCurrentPage(page);
     };
     const changePage = (page: number) => {
-        if (page > 0 && page <= pageCount) {
+        if (page > 0 && pageCount && pageCount !== 0 && page <= pageCount) {
             showPage(page);
         }
     };
@@ -167,27 +208,19 @@ const Jobs = ({ documents }: any) => {
         setMaxPaginate(maxPaginate - 1);
     };
     const nextPage = () => {
-        if (currentPage < pageCount) {
+        if (pageCount && pageCount !== 0 && currentPage < pageCount) {
             showPage(currentPage + 1);
         }
         setMaxPaginate(maxPaginate + 1);
         setMinPaginate(minPaginate + 1);
     };
-    useEffect(() => {
+    /* useEffect(() => {
         data && data.length !== 0 && setJobDetails(data.find((items: any) => items.$id == jobDetailId));
-    }, [jobDetailId]);
-    useEffect(() => {
-        filData && filData.length !== 0 && setJobDetails(filData[0]);
-    }, [searchQuery, localValue]);
-    const createCandidateAccount = () => {
-        signOut()
-            .then(() => {
-                typeof window !== 'undefined' && router.push('/account');
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
+    }, [jobDetailId]); */
+    /* useEffect(() => {
+        data && data.length !== 0 && setJobDetails(data[0]);
+    }, [searchQuery, localValue]); */
+
     return (
         <GlobalContextProvider>
             <div>
@@ -234,16 +267,25 @@ const Jobs = ({ documents }: any) => {
                                         <option value="9-10 years">9-10 years</option>
                                         <option value="10+ years">10+ years</option>
                                     </select>
-                                    <select value={datePostedHolder} onChange={(e) => setDatePostedHolder(e.currentTarget.value)} name="dateposted" id="dateposted" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
+                                    <select value={datePostedHolder} onChange={(e) => {
+                                        if (e.currentTarget.value == "Past week") {
+                                            const now = new Date();
+                                            const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
+                                            setDatePostedHolder(sevenDaysAgo.toString())
+                                        }
+                                    }} name="dateposted" id="dateposted" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
                                         <option value="">Date Posted</option>
                                         <option value="">Any time</option>
                                         <option value="Past 24hrs">Past 24hrs</option>
                                         <option value="Past week">Past week</option>
                                         <option value="Past month">Past month</option>
+                                        {/* <option value="Past 24hrs">Past 24hrs</option>
+                                        <option value="Past week">Past week</option>
+                                        <option value="Past month">Past month</option> */}
                                     </select>
                                 </div>
                                 {
-                                    currentData && currentData.length == 0 && <div className='w-full items-center h-60 flex justify-center'>
+                                    /* currentData && currentData.length == 0 && */ data && data.length == 0 && <div className='w-full items-center h-60 flex justify-center'>
                                         <p className='text-xl font-[500] w-full text-center leading-[40px] flex justify-center flex-wrap xl:w-[70%]'> Looks like there aren't any matches right now. <br /> Why not try some different keywords or tweak your filters?</p>
                                     </div>
                                 }
@@ -255,9 +297,10 @@ const Jobs = ({ documents }: any) => {
                                                 : 'flex flex-col max-h-[800px] gap-y-3 overflow-auto hideScrollBar h-[800px] md:w-1/2  lg:w-1/3 md:flex xl:w-[458px]'
                                         }
                                     >
-                                        {currentData && currentData.length !== 0 && <CheckProfileCompletion />}
-                                        {currentData &&
-                                            currentData.map((items: any, index: number) => {
+                                        {/* currentData && currentData.length !== 0 && */ data && data.length !== 0 && <CheckProfileCompletion />}
+                                        {/* currentData &&
+                                            currentData */data &&
+                                            data.map((items: any, index: number) => {
                                                 return <JobListCard items={items} key={index} jobDetailId={jobDetailId} setEmployerId={setEmployerId} setJobDetailId={setJobDetailId} setOpenJobDetail={setOpenJobDetail} />
                                             })}
                                     </div>
@@ -268,7 +311,7 @@ const Jobs = ({ documents }: any) => {
                                                 : 'grid grid-cols-12 gap-x-5 max-md:hidden md:w-1/2 lg:w-3/5 xl:w-[654px] h-[800px]'
                                         }
                                     >
-                                        {jobDetails && currentData.length !== 0 && <JobDetail
+                                        {jobDetails && data.length !== 0 && /* currentData.length !== 0 && */ <JobDetail
                                             jobDetails={jobDetails}
                                             companyName={companyName}
                                             company={company}
@@ -286,7 +329,7 @@ const Jobs = ({ documents }: any) => {
                         </div>
                         <div
                             className={
-                                pageCount > 1
+                                pageCount && pageCount !== 0 && pageCount > 1
                                     ? openJobDetail
                                         ? 'col-span-5 flex justify-center items-center gap-x-3 mt-4 max-md:hidden'
                                         : 'flex justify-center items-center gap-x-3 mt-4 col-span-12 md:col-span-6 lg:col-span-5'
@@ -298,7 +341,7 @@ const Jobs = ({ documents }: any) => {
                                 name="paginationBackWardButton"
                                 aria-labelledby="paginationBackWardButton"
                                 className={
-                                    maxPaginate > 5 && pageCount > 5
+                                    maxPaginate > 5 && pageCount && pageCount !== 0 && pageCount > 5
                                         ? 'border bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 text-center'
                                         : 'hidden'
                                 }
@@ -319,7 +362,10 @@ const Jobs = ({ documents }: any) => {
                                                 : 'hover:bg-gray-200 hover:border-gray-200 border border-gray-400 rounded-md px-3 py-1 mx-1'
                                             : 'hidden'
                                     }
-                                    onClick={() => changePage(index + 1)}
+                                    onClick={() => {
+                                        changePage(index + 1)
+                                        handleFetchPagination(index + 1)
+                                    }}
                                 >
                                     {index + 1}
                                 </button>
@@ -329,7 +375,7 @@ const Jobs = ({ documents }: any) => {
                                 id="paginationForwardButton"
                                 name="paginationForwardButton"
                                 className={
-                                    maxPaginate < pageCount
+                                    pageCount && pageCount !== 0 && maxPaginate < pageCount
                                         ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 '
                                         : 'hidden'
                                 }
@@ -342,28 +388,7 @@ const Jobs = ({ documents }: any) => {
                 )}
                 <Footer />
             </div >
-            <ConfirmModal isOpen={applyEmp} handleClose={() => setApplyEmp(!applyEmp)}>
-                <div className="mx-2 pb-10 pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
-                    <div className="col-span-12 flex justify-end pr-7">
-                        <button onClick={() => setApplyEmp(!applyEmp)}>
-                            <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
-                        </button>
-                    </div>
-                    <div className="col-span-12 flex flex-col items-center justify-end pr-7 gap-3">
-                        <p className="text-center md:px-10 text-bigS text-lightGrey">
-                            Oops! You've set roots as an employer. To branch out and apply for jobs, consider a job seeker account.
-                            <br /> Thanks.
-                        </p>
-                        <button
-                            onClick={() => createCandidateAccount()}
-                            type="button"
-                            className="text-textW bg-gradient-to-r flex items-center justify-center from-gradientFirst to-gradientSecond h-16 w-full rounded-full md:w-1/2"
-                        >
-                            Create a candidate profile
-                        </button>
-                    </div>
-                </div>
-            </ConfirmModal>
+
         </GlobalContextProvider>
     );
 };

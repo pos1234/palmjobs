@@ -43,7 +43,7 @@ const SalarySurvey = () => {
     const [fieldOfStudy, setFieldOfStudy] = useState('')
     const [additionalInsight, setAdditionalInsight] = useState('')
     const [emailAddress, setEmailAddress] = useState('')
-    const [currency, setCurrency] = useState('Birr');
+    const [currency, setCurrency] = useState('ETB');
     const [errorMessage, setErrorMessage] = useState('')
     const [errorCode, setErrorCode] = useState(0)
     const [loading, setLoading] = useState(false)
@@ -116,7 +116,29 @@ const SalarySurvey = () => {
             ).then((res) => {
                 setLoading(false);
                 toast.success('Successfully Submited Form')
+                setGender('');
+                setAgeRange('18-24');
+                setJobTitle('')
+                setSector('Private');
+                setIndustry('Agriculture')
+                setEmploymentStatus('Full Time')
+                setYearsInCurrentPostion('')
+                setYearsInProfessionalPosition('')
+                setLocation('Addis Abeba')
+                setMonthlySalary('')
+                setBonus('');
+                setBenefitsIncluded('')
+                setEducationLevel('High School')
+                setFieldOfStudy('');
+                setAdditionalInsight('');
+                setEmailAddress('');
+                setCurrency('ETB');
+                setErrorCode(0);
+                setErrorMessage('');
+                setSelectedValues([])
             }).catch((error) => {
+                console.log(error);
+
                 setLoading(false);
                 toast.error('Form Not Submitted')
             })
@@ -285,7 +307,7 @@ const SalarySurvey = () => {
                     <div className='flex gap-x-3'>
                         <input className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => setMonthlySalary(e.currentTarget.value)} />
                         <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setCurrency(e.currentTarget.value)}>
-                            <option value="Birr">Birr</option>
+                            <option value="ETB">ETB</option>
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
                             <option value="GBP">GBP</option>

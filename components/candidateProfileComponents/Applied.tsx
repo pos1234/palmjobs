@@ -80,9 +80,9 @@ const Applied = (props: any) => {
                                 </div>
                                 <div className="w-full flex flex-col justify-center">
                                     {datas.jobTitle && (
-                                        <p className="font-bold text-[1rem] sm:font-fhW sm:text-[2rem] md:text-[1.2rem] xl:text-[1.5rem]">
+                                        <Link href={`/jobs/${datas.$id}`} target="_blank" className="font-bold underline text-[1rem] sm:font-fhW sm:text-[2rem] md:text-[1.2rem] xl:text-[1.5rem]">
                                             {datas.jobTitle}
-                                        </p>
+                                        </Link>
                                     )}
                                     {datas.jobLocation && (
                                         <p className="text-fadedText max-sm:text-[14px] flex items-center gap-2">
@@ -93,7 +93,7 @@ const Applied = (props: any) => {
                                 </div>
                             </div>
                             <div className="w-full mt-4">
-                                <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 justify-between flex-wrap">
+                                <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 flex-wrap">
                                     {datas.jobType &&
                                         <SmallLists icon={<img src='/icons/suitCase.svg' />}
                                             items={datas.jobType} />
@@ -129,7 +129,7 @@ const Applied = (props: any) => {
                                                     : datas.minSalary + '-' + datas.maxSalary}
                                         />
                                     )}
-                                    {datas.datePosted && (
+                                  {/*   {datas.datePosted && (
                                         <SmallLists
                                             icon={<img src='/icons/hourGlassUp.svg'
                                             />}
@@ -146,7 +146,7 @@ const Applied = (props: any) => {
                                                 .toLocaleDateString('en-GB')
                                                 .replace(/\//g, '-')}
                                         />
-                                    )}
+                                    )} */}
                                 </ul>
                             </div>
                         </div>

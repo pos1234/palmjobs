@@ -14,10 +14,12 @@ import { toast } from 'react-toastify';
 import { ProfilePic } from '../JobImage';
 import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
+import { useGlobalContext } from '@/contextApi/userData';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const Project = () => {
+    const { userDetail } = useGlobalContext()
     const [openProject, setOpenProject] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [projectIndex, setProjectIndex] = useState(Number);
@@ -144,15 +146,15 @@ const Project = () => {
         else return '';
     };
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        if (userInfo) {
-            const projects = convertToArray(userInfo.projects) || [];
+/*         const userInfo = await getUserDetail()
+ */        if (userDetail) {
+            const projects = convertToArray(userDetail.projects) || [];
             setProjectsArray(projects || '');
         }
     }
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     const handleEditClick = () => {
         if (projectsArray.length !== 0) {
             setProjectEdit(true)

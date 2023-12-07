@@ -45,13 +45,53 @@ export const updateUserName = (name: string) => {
     return promise;
 };
 
-export const fetchJobs = async () => {
+export const searchJobs = async (
+    limit: number,
+    offset: number,
+    searchText: string,
+    address: string,
+    jobTypes: string,
+    expLevel: string,
+    postedDate: string
+) => {
+    const searchWord = searchText ? Query.startsWith('jobTitle', searchText) : null;
+    const searchAddress = address !== '' ? Query.startsWith('jobLocation', address) : null;
+    const jobType = jobTypes ? Query.equal('jobType', jobTypes) : null;
+    const exp = expLevel ? Query.equal('expreienceLevel', expLevel) : null;
+    const today = new Date();
+    const posted = jobTypes ? Query.between('datePosted', postedDate, today.toString()) : null;
+    const query = [Query.equal('jobStatus', 'Active'), Query.orderDesc('$createdAt'), Query.limit(limit), Query.offset(offset)];
+    if (searchWord) {
+        query.push(searchWord);
+    }
+    if (searchAddress) {
+        query.push(searchAddress);
+    }
+    if (jobType) {
+        query.push(jobType);
+    }
+    if (exp) {
+        query.push(exp);
+    }
+    /* if (posted) {
+        query.push(posted);
+    } */
+    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, query);
+    return promise;
+};
+/* export const fetchJobs = async (limit: number, offset: number) => {
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
         Query.equal('jobStatus', 'Active'),
-        Query.orderAsc('datePosted')
+        Query.orderAsc('datePosted'),
+        Query.limit(limit),
+        Query.offset(offset)
     ]);
     return promise;
 };
+export const countActiveJobs = async () => {
+    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('jobStatus', 'Active'), Query.limit(1)]);
+    return promise;
+}; */
 /* export const fetchJobs = async () => {
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
         Query.limit(100),

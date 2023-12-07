@@ -3,87 +3,104 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { getEmployerDocument, getProfileData, updateProfile, updateUserName } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
-import { EmployerProfilePicture } from '../candidateProfileComponents/ProfilePicture';
+import { EmployerProfilePicture } from '@/components/candidateProfileComponents/ProfilePicture';
 import { getAccount } from '@/backend/accountBackend';
-import { SubmitButton } from '../TextInput';
+import TextInput, { SubmitButton } from '@/components/TextInput';
+import Navigation from '@/components/employerComponents/Navigation';
+import Link from 'next/link';
+import { employeeAuth } from '@/components/withAuth';
+import { useGlobalContext } from '@/contextApi/userData';
+import { RequiredTextLabel } from './jobPostTabs/RequiredTextLabel';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
-const TextInput = (props: any) => {
-    return (
-        <input
-            placeholder={props.placeHolder}
-            value={props.value}
-            onChange={(e) => props.setFunction(e.currentTarget.value)}
-            className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-0 w-full md:w-96"
-        />
-    );
-};
-const RequiredTextLabel = (props: any) => {
-    return (
-        <div>
-            <span className="text-neutral-900 text-opacity-70 text-md font-medium sm:leading-loose md:text-lg">{props.text} </span>
-            <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 text-2xl font-medium sm:leading-loose'}>*</span>
-        </div>
-    );
-};
 const EmployerProfile = (props: any) => {
+    const { userData, userDetail } = useGlobalContext()
     const [companyName, setCompanyName] = useState('');
+    const [companyNameError, setCompanyNameError] = useState('');
     const [userName, setUserName] = useState('');
-    const [industry, setIndustry] = useState('');
+    const [userNameError, setUserNameError] = useState('');
+    const [industry, setIndustry] = useState('Agriculture');
     const [address, setAddress] = useState('');
     const [noEmployee, setNoEmployee] = useState('');
+    const [noEmployeeError, setNoEmployeeError] = useState('');
     const [phone, setPhone] = useState('');
+    const [phoneError, setPhoneError] = useState('');
     const [compDescription, setCompDescription] = useState('');
     const [webLink, setWebLink] = useState('');
     const [loading, setLoading] = useState(false);
     const initialData = async () => {
-        const { documents }: any = await getEmployerDocument();
-        if (documents) {
-            setCompanyName(documents[0].companyName);
-            setIndustry(documents[0].sector);
-            setAddress(documents[0].location);
-            setNoEmployee(documents[0].noOfEmployee);
-            setPhone(documents[0].phoneNumber);
-            setWebLink(documents[0].websiteLink);
-            setCompDescription(documents[0].description);
+        if (userDetail) {
+            userDetail.companyName !== null && setCompanyName(userDetail.companyName);
+            userDetail.sector !== null && setIndustry(userDetail.sector);
+            userDetail.location !== null && setAddress(userDetail.location);
+            userDetail.noOfEmployee !== null && setNoEmployee(userDetail.noOfEmployee);
+            userDetail.phoneNumber !== null && setPhone(userDetail.phoneNumber);
+            userDetail.websiteLink !== null && setWebLink(userDetail.websiteLink);
+            userDetail.description !== null && setCompDescription(userDetail.description);
+        }
+        if (userData) {
+            userData.name !== null && setUserName(userData.name)
         }
     };
     useEffect(() => {
         initialData();
-        getAccount().then((res: any) => {
-            res && res.name && setUserName(res.name);
-        });
-    }, []);
+    }, [userData, userDetail]);
+    const validateLink = (link: string) => {
+        if (link && !link.startsWith('https://')) {
+            link = 'https://' + link;
+        }
+        return link;
+    };
     const handleProfile = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
-        setLoading(true);
-        updateProfile(companyName, industry, address, noEmployee, phone, webLink, compDescription)
-            .then(() => {
-                toast.success('Successfully Updated Profile');
-                updateUserName(userName);
-                setLoading(false);
-                if (props.setFilled) {
-                    props.setFilled(false);
-                }
-            })
-            .catch((error) => {
-                toast.error('Profile Not Updated');
-                console.log(error);
-                setLoading(false);
-            });
+        setCompanyNameError('')
+        setUserNameError('')
+        setNoEmployeeError("")
+        setPhoneError('')
+        setPhoneError('')
+        const regex = /^\+2519\s[0-9]{8}$/;
+        if (companyName == '') {
+            setCompanyNameError('Please provide company name')
+        } else if (userName == '') {
+            setUserNameError('Please provide name')
+        } else if (noEmployee == '') {
+            setNoEmployeeError("Please provide number of employer's")
+        } else if (phone == '') {
+            setPhoneError('Please provide phone number')
+        } else if (!phone.match(regex)) {
+            console.log('valid');
+
+            setPhoneError('Invalid phone number')
+        } else {
+            setLoading(true);
+            updateProfile(companyName, industry, address, noEmployee, phone, validateLink(webLink), compDescription)
+                .then(() => {
+                    toast.success('Successfully Updated Profile');
+                    updateUserName(userName);
+                    setLoading(false);
+                    props.setFilled(true);
+                    
+                })
+                .catch((error) => {
+                    toast.error('Profile Not Updated');
+                    console.log(error);
+                    setLoading(false);
+                });
+        }
+
     };
     return (
-        <form className="pt-5  pb-10 bg-textW px-2 sm:pl-10 xl:pr-28 xl:px-20" onSubmit={handleProfile}>
+        <form className="pt-5 pl-10 xl:pl-5 px-3 pb-10 bg-textW w-full max-xl:flex-grow xl:w-2/3 min-h-screen" onSubmit={handleProfile}>
             <div className="col-span-12 pt-5 space-y-3 mb-3">
                 <EmployerProfilePicture />
                 <RequiredTextLabel text="Your Company Name?" />
-                <TextInput placeHolder="company name" value={companyName} setFunction={setCompanyName} />
+                <TextInput placeHolder="company name" errorMessage={companyNameError} value={companyName} setFunction={setCompanyName} />
                 <RequiredTextLabel text="Your Name?" />
-                <TextInput placeHolder="your name" value={userName} setFunction={setUserName} />
+                <TextInput placeHolder="your name" errorMessage={userNameError} value={userName} setFunction={setUserName} />
                 <RequiredTextLabel text="Your Company's Industry?" />
                 <select
-                    className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-0 cursor-pointer w-full md:w-96"
+                    className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientFirst focus:ring-0 cursor-pointer w-full md:w-96"
                     value={industry}
                     onChange={(e) => {
                         setIndustry(e.currentTarget.value);
@@ -112,18 +129,19 @@ const EmployerProfile = (props: any) => {
                 <RequiredTextLabel text="Your Company's number of employee?" />
                 <input
                     type="number"
-                    className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-0 hideIncrease w-full md:w-96"
-                    value={noEmployee}
-                    onChange={(e) => setNoEmployee(e.currentTarget.value)}
+                    className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientFirst focus:ring-0 hideIncrease w-full md:w-96"
+                    value={parseInt(noEmployee, 10)}
+                    onChange={(e) => setNoEmployee(e.currentTarget.value.toString())}
                 />
+                {noEmployeeError && <p className="text-red-500 text-[13px] mt-2">{noEmployeeError}</p>}
                 <RequiredTextLabel text="Your Phone Number?" />
-                <TextInput placeHolder="phone number" value={phone} setFunction={setPhone} />
-                <RequiredTextLabel text="Company Location ?" req="nReq" />
+                <TextInput placeHolder="+251 912345566" errorMessage={phoneError} value={phone} setFunction={setPhone} />
+                <RequiredTextLabel text="Company Location?" req="nReq" />
                 <TextInput placeHolder="address" value={address} setFunction={setAddress} />
-                <RequiredTextLabel text="Website Link ?" req="nReq" />
+                <RequiredTextLabel text="Website Link?" req="nReq" />
                 <TextInput placeHolder="web Link" value={webLink} setFunction={setWebLink} />
             </div>
-            <RequiredTextLabel text="Company Description ?" req="nReq" />
+            <RequiredTextLabel text="Company Description?" req="nReq" />
             <div className="pb-20 mr-2 mt-5 xl:mr-64">
                 <ReactQuill
                     className="h-60 text-addS"
@@ -136,13 +154,12 @@ const EmployerProfile = (props: any) => {
                 <div className='w-full md:w-52'>
                     <SubmitButton loading={loading} buttonText="Save" />
                 </div>
-                <div className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-black text-textW h-14'>
+                <Link href="/users/employer/post" className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-black text-textW h-14'>
                     Post Job
-                    {/* <SubmitButton loading={loading} buttonText="Post Job" /> */}
-                </div>
+                </Link>
 
             </div>
         </form>
     );
 };
-export default EmployerProfile;
+export default EmployerProfile

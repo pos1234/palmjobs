@@ -7,21 +7,16 @@ const USER_ROLE = process.env.NEXT_PUBLIC_USER_ROLE || '';
 const CANDIDATE_DATA = process.env.NEXT_PUBLIC_CANDIDATE_DATA || '';
 const COMPANY_DATA = process.env.NEXT_PUBLIC_COMPANY_DATA || '';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
-const { client, databases, account } = appwriteConfig()
+const { client, databases, account } = appwriteConfig();
 client
     .setEndpoint(ENDPOINT) // Your API Endpoint
     .setProject(PROJECT_ID);
 
 export const googleSignIn = () => {
-    account.createOAuth2Session('google', `${VERIFY}/jobs`, `${VERIFY}/account/`)
+    account.createOAuth2Session('google', `${VERIFY}/jobs`, `${VERIFY}/account/`);
 };
 export const googleRegister = async (userRole: string) => {
-    if (userRole == 'candidate') {
-        account.createOAuth2Session('google', `${VERIFY}/jobs`, `${VERIFY}/account/`);
-    }
-    if (userRole == 'employer') {
-        account.createOAuth2Session('google', `${VERIFY}/users/employer`, `${VERIFY}/account/`);
-    }
+    account.createOAuth2Session('google', `${VERIFY}/jobs`, `${VERIFY}/account/`);
     await new Promise<void>((resolve) => {
         const checkAccount = async () => {
             const userAccount = await getAccount();
@@ -73,7 +68,6 @@ export const sendEmailVerification = async (email: string, password: string) => 
     await account.createEmailSession(email, password);
     await account.createVerification(`${VERIFY}/account/verify`);
 };
-
 export const verfiyAccount = (userId: string, secret: string) => {
     try {
         const promise = userId && account.updateVerification(userId, secret);
@@ -98,7 +92,7 @@ export const signIn = async (email: string, password: string) => {
             return promise;
         } else {
             const deleted = account.deleteSession('current');
-            return deleted;
+            return null;
         }
     });
     return loggedIn;
@@ -125,5 +119,4 @@ export const getRole = async () => {
         const usersRole = await databases.listDocuments(DATABASE_ID, USER_ROLE, [Query.equal('userId', userInfo.$id)]);
         return usersRole;
     }
-
 };

@@ -55,9 +55,26 @@ const RegisterComponent = (props: any) => {
                 const fullName = register.firstName + ' ' + register.lastName;
                 Register(register.email, register.password, fullName)
                     .then((res) => {
-                        defineRole(res.$id, props.role, fullName);
-                    })
-                    .catch((error) => {
+                        defineRole(res.$id, props.role, fullName).then((res) => {
+                            sendEmailVerification(register.email, register.password)
+                                .then((res) => {
+                                    setOpenNotify(true)
+                                    setRegister({
+                                        email: '',
+                                        password: '',
+                                        firstName: '',
+                                        lastName: ''
+                                    });
+                                    setRetypedPassword('');
+                                    setLoading(false);
+                                })
+                                .catch((error) => {
+                                    setLoading(false);
+                                    toast.error(error);
+                                    console.log(error);
+                                });
+                        });
+                    }).catch((error) => {
                         console.log(error);
                         setLoading(false);
                         if (error.code == 409) {
@@ -66,25 +83,7 @@ const RegisterComponent = (props: any) => {
                             toast.error(error.message);
                         }
                     })
-                    .then(() => {
-                        sendEmailVerification(register.email, register.password)
-                            .then((res) => {
-                                setOpenNotify(true)
-                                setRegister({
-                                    email: '',
-                                    password: '',
-                                    firstName: '',
-                                    lastName: ''
-                                });
-                                setRetypedPassword('');
-                                setLoading(false);
-                            })
-                            .catch((error) => {
-                                setLoading(false);
-                                toast.error(error);
-                                console.log(error);
-                            });
-                    });
+
             } else {
                 setEmailError('Invalid Email');
                 setLoading(false);
@@ -93,85 +92,91 @@ const RegisterComponent = (props: any) => {
     };
     return (
         <>
-            <form onSubmit={handleRegister} className="w-full pl-5 grid grid-cols-12 text-left pr-2 md:pr-0 gap-x-5">
-                <div className="col-span-12 sm:col-span-6">
-                    <p className="col-span-6 font-thW text-smS mt-5 mb-2 leading-shL">First name</p>
-                    <input
-                        value={register.firstName}
-                        onChange={(e: React.FormEvent<HTMLInputElement>) => setRegister({ ...register, firstName: e.currentTarget.value })}
-                        type="text"
-                        placeholder="Enter First Name"
-                        className={
-                            firstNameError
-                                ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                                : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
-                        }
-                    />
-                    {firstNameError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{firstNameError}</p>}
-                </div>
-                <div className="col-span-12 sm:col-span-6">
-                    <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL sm:col-span-6">Last name</p>
-                    <input
-                        value={register.lastName}
-                        onChange={(e: React.FormEvent<HTMLInputElement>) => setRegister({ ...register, lastName: e.currentTarget.value })}
-                        type="text"
-                        placeholder="Enter Last Name"
-                        className={
-                            lastNameError
-                                ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                                : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
-                        }
-                    />
-                    {lastNameError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{lastNameError}</p>}
-                </div>
-                <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL">Email Address</p>
-                <input
-                    value={register.email}
-                    onChange={(e) => setRegister({ ...register, email: e.currentTarget.value })}
-                    type="text"
-                    placeholder="Enter your Email"
-                    className={
-                        emailError
-                            ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                            : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
-                    }
-                />
-                {emailError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{emailError}</p>}
-                <div className="col-span-12 sm:col-span-6 flex flex-col">
-                    <p className="col-span-6 font-thW text-smS mt-5 mb-2 leading-shL">Password</p>
-                    <div className="flex ">
+            <form onSubmit={handleRegister} className="w-full flex gap-5 flex-wrap text-left md:pr-0 gap-x-5">
+                <div className='w-full gap-5 flex max-sm:flex-col md:flex-col xl:flex-row'>
+                    <div className='flex-grow'>
+                        <p className="font-thW text-smS mb-2 leading-shL">First name</p>
                         <input
-                            value={register.password}
-                            onChange={(e: React.FormEvent<HTMLInputElement>) => setRegister({ ...register, password: e.currentTarget.value })}
-                            type={visible ? 'text' : 'password'}
-                            placeholder="Enter Your Password"
+                            value={register.firstName}
+                            onChange={(e: React.FormEvent<HTMLInputElement>) => setRegister({ ...register, firstName: e.currentTarget.value })}
+                            type="text"
+                            placeholder="Enter First Name"
                             className={
-                                passwordError
-                                    ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                                    : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
+                                firstNameError
+                                    ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
+                                    : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
                             }
                         />
-                        <span onClick={() => setVisible(!visible)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
-                            {visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                        </span>
+                        {firstNameError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{firstNameError}</p>}
+                    </div>
+                    <div className='flex-grow'>
+                        <p className=" font-thW text-smS mb-2 leading-shL sm:col-span-6">Last name</p>
+                        <input
+                            value={register.lastName}
+                            onChange={(e: React.FormEvent<HTMLInputElement>) => setRegister({ ...register, lastName: e.currentTarget.value })}
+                            type="text"
+                            placeholder="Enter Last Name"
+                            className={
+                                lastNameError
+                                    ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
+                                    : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
+                            }
+                        />
+                        {lastNameError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{lastNameError}</p>}
                     </div>
                 </div>
-                <div className="col-span-12 sm:col-span-6">
-                    <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL sm:col-span-6">Confirm Password</p>
+                <div className='w-full'>
+                    <p className="font-thW text-smS mb-2 leading-shL">Email Address</p>
                     <input
-                        value={retypedPassword}
-                        onChange={(e: React.FormEvent<HTMLInputElement>) => setRetypedPassword(e.currentTarget.value)}
-                        type={visible ? 'text' : 'password'}
-                        placeholder="Retype password"
+                        value={register.email}
+                        onChange={(e) => setRegister({ ...register, email: e.currentTarget.value })}
+                        type="text"
+                        placeholder="Enter your Email"
                         className={
-                            passwordError
+                            emailError
                                 ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
                                 : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
                         }
                     />
+                    {emailError && <p className=" pt-3 text-[13px] text-red-500">{emailError}</p>}
                 </div>
-                {passwordError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{passwordError}</p>}
-                <div className="col-span-12 mt-5">
+                <div className='w-full gap-5 flex max-sm:flex-col md:flex-col xl:flex-row'>
+                    <div className='flex-grow'>
+                        <p className="font-thW text-smS mb-2 leading-shL">Password</p>
+                        <div className="flex ">
+                            <input
+                                value={register.password}
+                                onChange={(e: React.FormEvent<HTMLInputElement>) => setRegister({ ...register, password: e.currentTarget.value })}
+                                type={visible ? 'text' : 'password'}
+                                placeholder="Enter Your Password"
+                                className={
+                                    passwordError
+                                        ? 'focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
+                                        : 'focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
+                                }
+                            />
+                            <span onClick={() => setVisible(!visible)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
+                                {visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                            </span>
+                        </div>
+                    </div>
+                    <div className='flex-grow'>
+                        <p className=" font-thW text-smS mb-2 leading-shL">Confirm Password</p>
+                        <input
+                            value={retypedPassword}
+                            onChange={(e: React.FormEvent<HTMLInputElement>) => setRetypedPassword(e.currentTarget.value)}
+                            type={visible ? 'text' : 'password'}
+                            placeholder="Retype password"
+                            className={
+                                passwordError
+                                    ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
+                                    : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
+                            }
+                        />
+                        {passwordError && <p className="pt-3 text-[13px] text-red-500">{passwordError}</p>}
+                    </div>
+                </div>
+                <div className="w-full">
                     <input
                         onChange={(e) => setChecked(e.currentTarget.checked)}
                         type="checkbox"
@@ -180,16 +185,12 @@ const RegisterComponent = (props: any) => {
                     <span className="font-addW text-addS leading-addL pl-2">To continue please accept our Terms and Conditions. Thanks!</span>
                     {checkError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{checkError}</p>}
                 </div>
-                <div className="col-span-12 grid grid-cols-12 justify-items-end">
-                    <div className='w-full col-span-12 flex md:justify-end'>
-                        <div className='w-full md:w-60 pt-5'>
-                            <SubmitButton loading={loading} buttonText="Continue" />
-                        </div>
+                <div className='w-full flex md:justify-end'>
+                    <div className='w-full md:w-60 pt-5'>
+                        <SubmitButton loading={loading} buttonText="Continue" />
                     </div>
                 </div>
             </form>
-
-
             <Notification
                 openNotify={openNotify}
                 setOpenNotify={setOpenNotify}

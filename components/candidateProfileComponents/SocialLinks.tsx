@@ -10,7 +10,9 @@ import PhoneIphoneOutlinedIcon from '@mui/icons-material/PhoneIphoneOutlined';
 import { addPhoneAddress, getUserDetail } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
 import SocialForm from './SocialForm';
+import { useGlobalContext } from '@/contextApi/userData';
 const SocialLinks = (props: any) => {
+    const { userDetail } = useGlobalContext()
     const [locate, setLocate] = useState('')
     const [call, setCall] = useState('');
     const [linked, setLinked] = useState('');
@@ -30,24 +32,24 @@ const SocialLinks = (props: any) => {
 
     };
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        if (userInfo) {
-            userInfo.linkedIn && setLinked(userInfo.linkedIn)
-            userInfo.github && setGithubLink(userInfo.github)
-            userInfo.behance && setBehan(userInfo.behance)
-            userInfo.protfolio && setPortfolio(userInfo.protfolio)
-            userInfo.address && setLocate(userInfo.address)
-            userInfo.phoneNumber && setCall(userInfo.phoneNumber)
+/*         const userInfo = await getUserDetail()
+ */        if (userDetail) {
+            userDetail.linkedIn && setLinked(userDetail.linkedIn)
+            userDetail.github && setGithubLink(userDetail.github)
+            userDetail.behance && setBehan(userDetail.behance)
+            userDetail.protfolio && setPortfolio(userDetail.protfolio)
+            userDetail.address && setLocate(userDetail.address)
+            userDetail.phoneNumber && setCall(userDetail.phoneNumber)
         }
 
     }
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     return (
         <>
             <div className="font-midRW text-midRS justify-center leading-midRL text-lightGrey flex flex-col gap-y-4 mt-2">
-               {/*  <div className="flex items-center border-[1px] rounded-xl bg-textW">
+                {/*  <div className="flex items-center border-[1px] rounded-xl bg-textW">
                     <span className="w-5 h-5 text-stone-400 z-[2] pl-3">
                         <FmdGoodOutlinedIcon className="-mt-[4px]" />
                     </span>

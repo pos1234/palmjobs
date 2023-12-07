@@ -13,7 +13,9 @@ const SecondForm = (props: any) => {
         setSecondTabData({
             ...secondTabData, loading: true
         })
-        postSecondTab(secondTabData.workType, secondTabData.expRequired, secondTabData.minSalary, secondTabData.maxSalary, secondTabData.currency, postingJobId)
+        const minSal = secondTabData.minSalary !== null ? secondTabData.minSalary.toString() : ''
+        const maxSal = secondTabData.maxSalary !== null ? secondTabData.maxSalary.toString() : ''
+        postSecondTab(secondTabData.workType, secondTabData.expRequired, minSal, maxSal, secondTabData.currency, postingJobId)
             .then((res: any) => {
                 setSecondTabData({
                     ...secondTabData, loading: false
@@ -80,20 +82,22 @@ const SecondForm = (props: any) => {
                     <option value="rnp">RMB</option>
                 </select>
                 <input
+                    value={Number(secondTabData.minSalary)}
                     type="number"
                     onChange={(e) => {
                         setSecondTabData({
-                            ...secondTabData, minSalary: e.currentTarget.value
+                            ...secondTabData, minSalary: e.currentTarget.value.toString()
                         });
                     }}
                     placeholder="Minimum"
                     className="pl-5 w-40 rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 hideIncrease"
                 />
                 <input
+                    value={Number(secondTabData.maxSalary)}
                     type="number"
                     onChange={(e) => {
                         setSecondTabData({
-                            ...secondTabData, maxSalary: e.currentTarget.value
+                            ...secondTabData, maxSalary: e.currentTarget.value.toString()
                         });
                     }}
                     placeholder="Maximum"

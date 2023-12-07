@@ -7,6 +7,7 @@ import { getUserDetail, updateCertificates } from '@/backend/candidateBackend';
 import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
 import CloseIcon from '@mui/icons-material/Close';
+import { useGlobalContext } from '@/contextApi/userData';
 
 const CertificateDetails = (props: any) => {
     return (
@@ -29,6 +30,7 @@ const CertificateDetails = (props: any) => {
     );
 };
 const Certificate = () => {
+    const { userDetail } = useGlobalContext()
     const [openCertificate, setOpenCertificate] = useState(false);
     const [editOneCertificate, setEditOneCertificate] = useState(false);
     const [displayCertificate, setDisplayCertificate] = useState(false);
@@ -82,7 +84,6 @@ const Certificate = () => {
                 toast.success('Successfully Added Certificate');
                 const certificate = JSON.parse(res.certificates);
                 setCertificateArray(certificate);
-
                 setErrorCode(0);
                 setErrorMessage('')
 
@@ -147,16 +148,18 @@ const Certificate = () => {
             });
     };
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        if (userInfo) {
-            const certificate = convertToArray(userInfo && userInfo.certificates) || [];
+        /*         const userInfo = await getUserDetail()
+         */
+
+        if (userDetail) {
+            const certificate = convertToArray(userDetail && userDetail.certificates) || [];
             setCertificateArray(certificate || '');
         }
 
     }
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     useEffect(() => {
         if (openCertificate == false) {
             setEditOneCertificate(false);
@@ -194,7 +197,7 @@ const Certificate = () => {
                 )}
             </div>
             <FormModal
-                tipText='Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos architecto dolore sint tenetur dolores, repellendus autem temporibus modi officia soluta. Facilis, dignissimos? Error, assumenda. Laborum, animi hic. Ab, doloremque id.'
+                tipText='Adding certifications can greatly enhance your profile. Be sure to include the full name of the certificate, the issuing organization, and the date you received it. This information showcases your commitment to professional development and can be a deciding factor for potential employers.'
                 text='Certificate' icon={<img src='/icons/certificate.svg' className='w-7' />}
                 addText='Add Certificate' openModal={openCertificate} setOpenModal={setOpenCertificate}>
                 <div className='w-full flex flex-wrap'>

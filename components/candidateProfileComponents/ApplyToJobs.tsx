@@ -20,6 +20,7 @@ import { toast } from 'react-toastify';
 import { SendJobAppliedEmail } from '../SendEmail';
 import Link from 'next/link';
 import { ProfilePic } from '../JobImage';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import TextInput, { SubmitButton } from '../TextInput';
 import { useGlobalContext } from '@/contextApi/userData';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
@@ -27,15 +28,15 @@ const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const ApplyToJob = (props: any) => {
-    const { userDetail } = useGlobalContext()
+    const { userDetail, userData } = useGlobalContext()
     const pdfIcon = '/images/pdf2.svg';
-    const [openApply, setOpenApply] = useState(false);
-    const [fisrt, setFirst] = useState(true);
+/*     const [openApply, setOpenApply] = useState(false);
+ */    const [first, setFirst] = useState(true);
     const [second, setSecond] = useState(false);
     const [third, setThird] = useState(false);
     const [fourth, setFourth] = useState(false);
-    const [userData, setUserData] = useState<any>();
-    const [cover, setCover] = useState('');
+/*     const [userData, setUserData] = useState<any>();
+ */    const [cover, setCover] = useState('');
     const [loading, setLoading] = useState(false);
     const [appliedJob, setAppliedJob] = useState(false);
     const [currentResume, setCurrentResume] = useState<any>();
@@ -53,7 +54,7 @@ const ApplyToJob = (props: any) => {
     const [skillLength, setSkillLength] = useState(0)
     const [educationLength, setEducationLength] = useState(0)
     const toggleTabs = () => {
-        if (fisrt == true) {
+        if (first == true) {
             setFirst(false);
             setSecond(true);
             setThird(false);
@@ -70,32 +71,45 @@ const ApplyToJob = (props: any) => {
             setFourth(true);
         }
     };
+    const backToggleTabs = () => {
+        if (second == true) {
+            setFirst(true);
+            setSecond(false);
+        }
+        if (third == true) {
+            setThird(false);
+            setSecond(true);
+        }
+        if (fourth == true) {
+            setFourth(false);
+            setThird(true);
+        }
+    };
     const getData = async () => {
-        const res: any = await getAccount();
-        if (res) {
-            setNewName(res.name);
-            setNewEmail(res.email);
+/*         const res: any = await getAccount();
+ */        if (userData) {
+            setNewName(userData.name);
+            setNewEmail(userData.email);
         }
     };
     const getCanInfo = async () => {
 /*         const { documents }: any = await getCandidateDocument();
  */        if (userDetail) {
-            setUserData(userDetail);
+            /* setUserData(userDetail); */
             setPhone(userDetail.phoneNumber);
             setLinked(userDetail.linkedIn);
             setCover(userDetail.coverLetter);
             if (userDetail.skills == null || userDetail.skills && userDetail.skills.length == 0) {
                 setSkillLength(0)
             }
-            if (userDetail.educations == null || userDetail.educations && userDetail.educations.length == 0) {
+            if (userDetail.educations == null || userDetail.educations && JSON.parse(userDetail.educations).length == 0) {
                 setEducationLength(0)
             }
         }
     };
     const checkApplied = async () => {
         setLoading(true);
-/*         const { documents }: any = await getCandidateDocument();
- */        if (userDetail) {
+        if (userDetail) {
             alreadyApplied(userDetail.Id, props.jobId).then((applied) => {
                 const resume = userDetail.resumeId != null && getResumeName(userDetail.resumeId);
                 resume &&
@@ -118,7 +132,7 @@ const ApplyToJob = (props: any) => {
         getData();
         getCanInfo();
         checkApplied();
-    }, [props.jobId]);
+    }, [userDetail]);
     const fileTypes = ['pdf', 'doc', 'docx'];
     const updateTheCv = (files: any) => {
         setFileName(files.name);
@@ -131,7 +145,6 @@ const ApplyToJob = (props: any) => {
     const sizeError = (err: any) => {
         setErrorMessage(err);
     };
-    useEffect(() => { }, [userData]);
     const apply = async (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setLoadingApply(true);
@@ -139,7 +152,7 @@ const ApplyToJob = (props: any) => {
             uploadResume(replaceResume).then((res) => {
                 applyToJobs(userData.Id, props.jobId, props.employerId, newEmail, phone, cover, res.$id)
                     .then((res) => {
-                        setOpenApply(false);
+                        props.setterFunction(false);
                         setOpenNotify(true);
                         setFailed(false);
                         setLoadingApply(false);
@@ -158,7 +171,7 @@ const ApplyToJob = (props: any) => {
                     getAccount().then((res: any) => {
                         res && SendJobAppliedEmail(res.email, props.jobTitle, /* res.name, */ props.companyName);
                     });
-                    setOpenApply(false);
+                    props.setterFunction(false);
                     setOpenNotify(true);
                     setFailed(false);
                     setLoadingApply(false);
@@ -229,7 +242,7 @@ const ApplyToJob = (props: any) => {
                             </Link>
                         </div>
                     )}
-                    {!appliedJob && !loading && (
+                    {!appliedJob && !loading && userDetail && (
                         <form
                             onSubmit={apply}
                             className="mx-2 pb-10 w-full pl-5 bg-textW overflow-y-auto max-h-screen rounded-2xl grid grid-cols-12 pt-10 h-full overflow-y-auto md:pl-8 pr-5 md:w-2/3 lg:w-1/2 md:mx-0 xl:h-auto thinScrollBar"
@@ -274,14 +287,14 @@ const ApplyToJob = (props: any) => {
                                         <p className="text-black text-md font-semibold leading-10">Contact info</p>
                                         <div className="w-full flex justify-between items-start">
                                             <div className="flex gap-x-2 md:max-xl:flex-col pt-5">
-                                                {userData.profilePictureId && (
-                                                    <ProfilePic id={(userData.profilePictureId)} className="w-16 h-16 rounded-2xl" />
+                                                {userDetail.profilePictureId && (
+                                                    <ProfilePic id={(userDetail.profilePictureId)} className="w-16 h-16 rounded-2xl" />
                                                 )}
                                                 <div className="flex flex-col ">
                                                     <div className="text-neutral-900 text-md font-medium leading-7">{newName}</div>
                                                     <div className="text-neutral-900 text-opacity-70 flex gap-1 items-center text-sm font-normal leading-7">
                                                         <PlaceOutlinedIcon sx={{ fontSize: '1rem' }} className="relative" />
-                                                        <p>{userData.address}</p>
+                                                        <p>{userDetail.address}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -342,18 +355,20 @@ const ApplyToJob = (props: any) => {
                                         </div>
                                     </div>
                                 )}
-                                <div className={third ? 'col-span-12 pt-5 mb-5 md:mb-10 lg:mb-5' : 'hidden'}>
-                                    <p className="col-span-12 text-black text-lg font-semibold leading-10">Cover Letter</p>
-                                    <p className="text-neutral-400 text-sm font-light mb-5">
-                                        Write a cover letter describing your skill and education.
-                                    </p>
-                                    <ReactQuill
-                                        className="h-28 text-addS"
-                                        value={cover}
-                                        onChange={(e) => setCover(e)}
-                                        placeholder="Add Description"
-                                    />
-                                </div>
+                                {
+                                    third && <div className='col-span-12 pt-5 mb-5 md:mb-10 lg:mb-5'>
+                                        <p className="col-span-12 text-black text-lg font-semibold leading-10">Cover Letter</p>
+                                        <p className="text-neutral-400 text-sm font-light mb-5">
+                                            Write a cover letter describing your skill and education.
+                                        </p>
+                                        <ReactQuill
+                                            className="h-28 text-addS"
+                                            value={cover}
+                                            onChange={(e) => setCover(e)}
+                                            placeholder="Add Description"
+                                        />
+                                    </div>
+                                }
                                 {second && (
                                     <div className="col-span-12 pt-5 grid grid-cols-12">
                                         <p className="col-span-12 text-black text-md font-semibold leading-10">Resume</p>
@@ -405,24 +420,24 @@ const ApplyToJob = (props: any) => {
                                         )}
                                     </div>
                                 )}
-                                {fisrt && (
+                                {first && (
                                     <div className="col-span-12 md:col-span-5 xl:col-span-6 pt-5">
                                         <p className="text-black text-lg font-semibold leading-10 ">Contact info</p>
                                         <div className="flex gap-x-4 md:max-xl:flex-col pt-3">
-                                            {userData.profilePictureId && (
-                                                <ProfilePic id={(userData.profilePictureId)} className="w-20 h-20 rounded-2xl" />
+                                            {userDetail.profilePictureId && (
+                                                <ProfilePic id={(userDetail.profilePictureId)} className="w-20 h-20 rounded-2xl" />
                                             )}
                                             <div className="flex flex-col gap-0.5">
                                                 <div className="text-neutral-900 text-lg font-medium leading-7">{newName}</div>
                                                 <div className="text-neutral-900 text-opacity-70 flex gap-1 items-center text-sm font-normal leading-7">
                                                     <PlaceOutlinedIcon sx={{ fontSize: '1rem' }} className="relative" />
-                                                    <p>{userData.address}</p>
+                                                    <p>{userDetail.address}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 )}
-                                {fisrt && (
+                                {first && (
                                     <div className="col-span-12 md:col-span-7 xl:col-span-6">
                                         <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Email address</p>
                                         <TextInput setFunction={setNewEmail} value={newEmail} placeholder="JohnDoe@gmail.com"
@@ -438,35 +453,42 @@ const ApplyToJob = (props: any) => {
                                     </div>
                                 )}
                             </div>
-                            <div className="col-span-12 grid grid-cols-12 gap-y-5 gap-x-3 mt-5 md:gap-y-0 lg:mt-10">
-                                <p className="text-zinc-900 text-sm flex items-center font-light leading-normal order-3 col-span-12 sm:col-span-12 sm:pt-5 xl:order-1 xl:col-span-6">
+                            <div className="col-span-12 flex flex-wrap justify-between max-md:gap-y-5 md:gap-x-5 mt-5 lg:mt-10">
+                                <div className='flex-grow max-md:w-full'>
+                                    {
+                                        !first && <button type='button'
+                                            onClick={backToggleTabs}
+                                            className="border border-stone-500 h-14 w-full flex justify-center items-center gap-2 rounded-lg order-2 col-span-12 sm:order-1 sm:col-span-6 xl:col-span-3"
+                                        >
+                                            <ArrowBackIcon sx={{ fontSize: '1.2rem' }} /> Back
+                                        </button>
+                                    }
+                                </div>
+                                <div className='flex max-md:flex-wrap w-full md:w-2/3 gap-5'>
+                                    <button
+                                        onClick={() => props.setterFunction(false)}
+                                        className="text-stone-500 border border-stone-500 h-14 w-full md:w-1/2 rounded-lg"
+                                    >
+                                        Discard
+                                    </button>
+                                    {!fourth && !(second == true && (skillLength == 0 || educationLength == 0) && !fileName) ?
+                                        <button
+                                            onClick={toggleTabs}
+                                            type="button"
+                                            className="text-textW bg-black text-textW h-14 w-full md:w-1/2 rounded-lg"
+                                        >
+                                            Continue
+                                        </button> : null
+                                    }
+                                    {fourth && (
+                                        <div className='w-full md:w-1/2'>
+                                            <SubmitButton loading={loadingApply} buttonText="Apply" />
+                                        </div>
+                                    )}
+                                </div>
+                                <p className="text-zinc-900 w-full text-sm flex items-center font-light leading-normal order-3 col-span-12 sm:col-span-12 sm:pt-5 ">
                                     Submitting this application won’t change your profile.
                                 </p>
-                                <button
-                                    onClick={() => props.setterFunction(false)}
-                                    className="text-stone-500 border border-stone-500 h-14 w-full rounded-xl order-2 col-span-12 sm:order-1 sm:col-span-6 xl:col-span-3"
-                                >
-                                    Discard
-                                </button>
-                                {!fourth && !(second == true && (skillLength == 0 || educationLength == 0) && !fileName) ?
-                                    <button
-                                        onClick={toggleTabs}
-                                        type="button"
-                                        className="text-textW bg-black text-textW h-14 w-full rounded-xl  order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3"
-                                    >
-                                        Continue
-                                    </button> : null
-                                }
-
-                                {fourth && (
-                                    <>
-                                        <div className='w-full flex md:justify-end order-1 col-span-12 sm:order-2 sm:col-span-6 xl:col-span-3'>
-                                            <div className='w-full md:w-96'>
-                                                <SubmitButton loading={loadingApply} buttonText="Apply" />
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
                             </div>
                         </form>
                     )}

@@ -4,7 +4,9 @@ import { getResumeName } from '@/backend/candidateBackend';
 import { FileUploader } from 'react-drag-drop-files';
 import { deleteResume, getUserDetail, updateResumeId, uploadResume } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
+import { useGlobalContext } from '@/contextApi/userData';
 const FileUploadForm = (props: any) => {
+    const { userDetail } = useGlobalContext()
     const pdfIcon = '/images/pdfIcon.svg';
     const [resumeId, setResumeId] = useState('');
     const [fileName, setFileName] = useState('');
@@ -71,12 +73,12 @@ const FileUploadForm = (props: any) => {
             });
     };
     const userData = async () => {
-        const userInfo = await getUserDetail()
-        userInfo && setResumeId(userInfo.resumeId || '');
+/*         const userInfo = await getUserDetail()
+ */        userDetail && setResumeId(userDetail.resumeId || '');
     }
     useEffect(() => {
         userData()
-    }, [])
+    }, [userDetail])
     return (
         <>
             {resumeId ? (

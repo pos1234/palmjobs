@@ -44,7 +44,7 @@ const Active = (props: any) => {
                         );
                     })}
                 {
-                    appliedCan && appliedCan.length == 0 && <p>Currently there are no applied applicants.</p>
+                    appliedCan && appliedCan.length == 0 && <p>Currently there are no applied Candidates.</p>
                 }
 
             </div>

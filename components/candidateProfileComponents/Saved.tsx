@@ -127,7 +127,7 @@ const SavedJobs = (props: any) => {
                                     </div>
                                 </div>
                                 <div className="w-full mt-4">
-                                    <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 justify-between flex-wrap">
+                                    <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 flex-wrap">
                                         {datas.jobType &&
                                             <SmallLists icon={<img src='/icons/suitCase.svg' />}
                                                 items={datas.jobType} />
@@ -163,7 +163,7 @@ const SavedJobs = (props: any) => {
                                                         : datas.minSalary + '-' + datas.maxSalary}
                                             />
                                         )}
-                                        {datas.datePosted && (
+                                      {/*   {datas.datePosted && (
                                             <SmallLists
                                                 icon={<img src='/icons/hourGlassUp.svg'
                                                 />}
@@ -180,7 +180,7 @@ const SavedJobs = (props: any) => {
                                                     .toLocaleDateString('en-GB')
                                                     .replace(/\//g, '-')}
                                             />
-                                        )}
+                                        )} */}
                                     </ul>
                                 </div>
                             </div>

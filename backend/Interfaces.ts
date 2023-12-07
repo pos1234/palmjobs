@@ -13,6 +13,7 @@ export interface PostedJob {
     jobStatus: String;
     $id: String;
 }
+type numbers = number | null;
 export interface FirstTabData {
     firstTabData: {
         loading: boolean;
