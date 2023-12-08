@@ -29,7 +29,7 @@ const Home = () => {
                 <Navigation />
                 <div className='flex pt-20 flex-wrap gap-y-10 gap-5 xl:px-40 md:max-xl:justify-center'>
                     <div className='w-full flex max-lg:flex-wrap'>
-                        <div className='flex-grow flex flex-col gap-3 md:gap-5 justify-center md:max-xl:items-center sm:max-lg:items-center'>
+                        <div className='flex-grow flex flex-col gap-3 md:gap-5 justify-center md:w-2/3 md:max-xl:items-center sm:max-lg:items-center'>
                             <p className="font-shW text-shS max-md:justify-center flex items-center text-xl md:text-[46px] my-2">
                                 Connect. Grow.<span className='-mt-6 md:-mt-9'>
                                     <img src="/images/connectLeaf.svg" alt="leaf" className='h-full max-md:w-10' />

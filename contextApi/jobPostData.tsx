@@ -94,7 +94,7 @@ export const JobPostContextProvider = ({ children }: any) => {
         workType: 'Full-Time',
         minSalary: '',
         maxSalary: '',
-        currency: 'etb',
+        currency: 'ETB',
         expRequired: '0-2 years',
     })
     const [thirdTabData, setThirdTabData] = useState({
@@ -148,17 +148,18 @@ export const JobPostContextProvider = ({ children }: any) => {
         const remoteLocation = selectedJob[0].jobLocation == "Remote" ? true : false
         const hybridLocation = selectedJob[0].jobLocation == "Hybrid" ? true : false
         const locationAdded = selectedJob[0].jobLocation !== "Remote" && selectedJob[0].jobLocation !== "Hybrid" ? true : false
-        const minSalary = selectedJob[0].minSalary !== null ? selectedJob[0].minSalary : ''
-        const maxSalary = selectedJob[0].maxSalary !== null ? selectedJob[0].maxSalary : ''
-        const currency = selectedJob[0].currency !== null ? selectedJob[0].currency : 'etb'
-        const exp = selectedJob[0].expreienceLevel !== null ? selectedJob[0].expreienceLevel : '0-2 years'
-        const skills = selectedJob[0].requiredSkills !== null ? JSON.parse(selectedJob[0].requiredSkills) : []
-        const desc = selectedJob[0].jobDescription !== null ? selectedJob[0].jobDescription : ''
-        const email = selectedJob[0].emailApplication !== null ? selectedJob[0].emailApplication : ''
-        const link = selectedJob[0].externalLink !== null ? selectedJob[0].externalLink : ''
+        const minSalary = selectedJob[0].minSalary ? selectedJob[0].minSalary : ''
+        const maxSalary = selectedJob[0].maxSalary ? selectedJob[0].maxSalary : ''
+        const currency = selectedJob[0].currency ? selectedJob[0].currency : 'ETB'
+        const exp = selectedJob[0].expreienceLevel ? selectedJob[0].expreienceLevel : '0-2 years'
+        const skills = selectedJob[0].requiredSkills ? JSON.parse(selectedJob[0].requiredSkills) : []
+        const desc = selectedJob[0].jobDescription ? selectedJob[0].jobDescription : ''
+        const email = selectedJob[0].emailApplication ? selectedJob[0].emailApplication : ''
+        const link = selectedJob[0].externalLink ? selectedJob[0].externalLink : ''
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const deadline = selectedJob[0].applicationDeadline !== null ? selectedJob[0].applicationDeadline <= today.toISOString() ? fifteenthDay : selectedJob[0].applicationDeadline : ''
+        const jobType = selectedJob[0].jobType ? selectedJob[0].jobType : 'Full-Time'
         setFirstTabData({
             ...firstTabData,
             loading: false,
@@ -174,7 +175,7 @@ export const JobPostContextProvider = ({ children }: any) => {
         setSecondTabData({
             ...secondTabData,
             loading: false,
-            workType: selectedJob[0].jobType,
+            workType: jobType,
             minSalary: minSalary,
             maxSalary: maxSalary,
             currency: currency,
