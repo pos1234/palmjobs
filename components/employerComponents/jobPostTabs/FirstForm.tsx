@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { RequiredTextLabel } from './RequiredTextLabel';
-import TextInput, { SubmitButton, TextInputRelated } from '@/components/TextInput';
+import { SubmitButton, TextInputRelated } from '@/components/TextInput';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import EditLocationAltOutlinedIcon from '@mui/icons-material/EditLocationAltOutlined';
@@ -41,11 +41,6 @@ const FirstForm = (props: any) => {
                             first: false,
                             second: true
                         })
-                        /*  props.setFourth(false);
-                         props.setThird(false);
-                         props.setSecond(true);
-                         props.setFirst(false);
-                         props.setChooseJob(false); */
                     })
                     .catch((error) => {
                         setFirstTabData({
@@ -70,11 +65,6 @@ const FirstForm = (props: any) => {
                             first: false,
                             second: true
                         })
-                        /*   props.setFourth(false);
-                          props.setThird(false);
-                          props.setSecond(true);
-                          props.setFirst(false);
-                          props.setChooseJob(false); */
                     })
                     .catch((error) => {
                         setFirstTabData({

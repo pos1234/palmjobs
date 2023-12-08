@@ -49,6 +49,9 @@ const Footer = () => {
                         <div className='pl-3'>
                             <LinkList link="/faq" text="FAQ" />
                         </div>
+                        <div className='pl-3'>
+                            <LinkList link="/about" text="About" />
+                        </div>
                     </div>
                     <div className="cursor-pointer md:cursor-default flex-grow flex flex-col">
                         {/*   {(!userRole || userRole == 'employer') && ( */}

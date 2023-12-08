@@ -1,7 +1,7 @@
 import { ID, Query } from 'appwrite';
 import { getAccount, getRole } from './accountBackend';
 import appwriteConfig from './appwrite';
-const { client, databases, account, storage } = appwriteConfig()
+const { client, databases, account, storage } = appwriteConfig();
 const DATABASE_ID = process.env.NEXT_PUBLIC_DATABASE_ID || '';
 const POSTED_JOBS = process.env.NEXT_PUBLIC_POSTED_JOBS || '';
 const APPLIED_JOBS = process.env.NEXT_PUBLIC_APPLIED_JOBS || '';
@@ -11,9 +11,9 @@ const COMPANY_DATA = process.env.NEXT_PUBLIC_COMPANY_DATA || '';
 const IMAGE = process.env.NEXT_PUBLIC_IMAGE || '';
 const RESUME = process.env.NEXT_PUBLIC_FILE || '';
 const updateDocuments = async (datas: any) => {
-    const data: any = await getCandidateDocument()
-    const fileId = data && data.documents[0].$id
-    const promise = databases.updateDocument(DATABASE_ID, CANDIDATE_DATA, fileId, datas)
+    const data: any = await getCandidateDocument();
+    const fileId = data && data.documents[0].$id;
+    const promise = databases.updateDocument(DATABASE_ID, CANDIDATE_DATA, fileId, datas);
     return promise;
 };
 export const getCandidateDocument = async () => {
@@ -25,21 +25,21 @@ export const getCandidateDocument = async () => {
             const promise = await databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', $id)]);
             return promise;
         }
-        return null
+        return null;
     }
-    return null
+    return null;
 };
 export const getUserDetail = async () => {
-    const data: any = await getCandidateDocument()
-    return data && data.documents[0]
-}
+    const data: any = await getCandidateDocument();
+    return data && data.documents[0];
+};
 export const uploadProfilePictures = (file: any) => {
     const resultProfile = storage.createFile(IMAGE, ID.unique(), file);
     return resultProfile;
 };
 export const deletePictures = async (fileId: string) => {
     const promise = await storage.deleteFile(IMAGE, fileId);
-    return promise
+    return promise;
 };
 export const getProfilePictures = async (id: string) => {
     const url = storage.getFileView(IMAGE, id);
@@ -47,8 +47,8 @@ export const getProfilePictures = async (id: string) => {
 };
 export const deleteProfilePicture = async (fileId: string) => {
     const promise = await storage.deleteFile(IMAGE, fileId);
-    updateProfileId('')
-    return promise
+    updateProfileId('');
+    return promise;
 };
 export const updateProfileId = (fileId: string) => {
     const datas = {
@@ -56,14 +56,21 @@ export const updateProfileId = (fileId: string) => {
     };
     return updateDocuments(datas);
 };
-export const addSocials = (linkedIn: string, github: string, behance: string, protfolio: string,phoneNumber?:string,address?:string) => {
+export const addSocials = (
+    linkedIn: string,
+    github: string,
+    behance: string,
+    protfolio: string,
+    phoneNumber?: string,
+    address?: string
+) => {
     const datas = {
         linkedIn,
         github,
         behance,
         protfolio,
         phoneNumber,
-        address,
+        address
     };
 
     return updateDocuments(datas);
@@ -88,21 +95,21 @@ export const updateCertificates = async (certificateData: string) => {
         certificates: certificateData
     };
     const promise = await updateDocuments(datas);
-    return promise
+    return promise;
 };
 export const updateWorkHistory = async (workHistoryData: string) => {
     const datas = {
         workHistory: workHistoryData
     };
     const promise = await updateDocuments(datas);
-    return promise
+    return promise;
 };
 export const updateEducation = async (education: string) => {
     const datas = {
         educations: education
     };
     const promise = await updateDocuments(datas);
-    return promise
+    return promise;
 };
 export const updateProjects = async (name: string, url: string, desc: string, thumbId: string) => {
     const datas = [
@@ -118,14 +125,14 @@ export const updateProjects = async (name: string, url: string, desc: string, th
         projects: stringData
     };
     const promise = await updateDocuments(sendData);
-    return promise
+    return promise;
 };
 export const updateSkills = async (skillsData: string[]) => {
     const datas = {
         skills: skillsData
     };
     const promise = await updateDocuments(datas);
-    return promise
+    return promise;
 };
 export const updateResumeId = (resume: string) => {
     const datas = {
@@ -259,4 +266,3 @@ export const alreadySaved = async (id: string, jobId: string) => {
     }
 };
 export { getRole };
-

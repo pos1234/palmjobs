@@ -3,7 +3,6 @@ import Navigation from '@/components/Navigation';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
 import Head from 'next/head';
 import SearchBar from '@/components/job/SearchBar';
 const Home = () => {

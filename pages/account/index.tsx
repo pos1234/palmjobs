@@ -50,7 +50,6 @@ const Login = () => {
                 const sign = signIn(login.email, login.password);
                 sign.then(async (res) => {
                     setLoading(false);
-                    console.log(res);
                     if (res == null) {
                         toast.error('Please Verify Email')
                     } else {
@@ -214,21 +213,6 @@ const Login = () => {
                                 <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL">Email Address</p>
                                 <TextInputRelated placeHolder="Enter Email" value={login.email} change={"email"} dataDistruct={login} setFunction={setLogin} errorMessage={emailError} />
                             </div>
-                            {/* <input
-                                onChange={(e: React.FormEvent<HTMLInputElement>) =>
-                                    setLogin({ ...login, email: e.currentTarget.value })
-                                }
-                                type="text"
-                                placeholder="Enter Email"
-                                className={
-                                    emailError
-                                        ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
-                                        : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
-                                }
-                            /> */}
-                            {/*  
-                                                       {emailError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{emailError}</p>}
- */}
                             <div className='flex flex-wrap w-full md:w-96'>
                                 <p className="w-full font-thW text-smS mt-5 mb-2 text-left leading-shL">Password</p>
                                 <input

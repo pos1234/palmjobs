@@ -3,10 +3,7 @@ import Navigation from '@/components/Navigation';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useEffect, useState, Fragment } from 'react';
-import ConfirmModal from '@/components/ConfirmModal';
 import { useRouter } from 'next/router';
-import CloseIcon from '@mui/icons-material/Close';
-import { signOut } from '@/backend/accountBackend';
 import { getCompanyData, searchJobs, } from '@/backend/employerBackend'
 import 'react-toastify/dist/ReactToastify.css';
 import JobsShimmer from '@/components/shimmer/JobsShimmer';
@@ -14,11 +11,7 @@ import JobListCard from '@/components/job/JobListCard';
 import JobDetail from '@/components/job/JobDetail';
 import SearchBar from '@/components/job/SearchBar';
 import CheckProfileCompletion from '@/components/CheckProfileCompletion';
-import SearchOutlined from '@mui/icons-material/SearchOutlined';
-import WbSunnyIcon from '@mui/icons-material/WbSunny';
-import { GlobalContextProvider } from '@/contextApi/userData';
-
-const Jobs = ({ documents }: any) => {
+const Jobs = () => {
     const router = useRouter();
     const [datePostedHolder, setDatePostedHolder] = useState('');
     const [expLevelHolder, setExpLevelHolder] = useState('');
@@ -39,16 +32,10 @@ const Jobs = ({ documents }: any) => {
     const [companyName, setCompanyName] = useState('');
     const [employerId, setEmployerId] = useState('');
     const [allLoading, setAllLoading] = useState(false);
-    const [applyEmp, setApplyEmp] = useState(false);
     const [forYou, setForYou] = useState(false)
     const [localValue, setLocalValue] = useState('')
     const [pageCount, setPageCount] = useState<number>()
-    /* useEffect(() => {
-        countActiveJobs().then((res) => {
-            const count = Math.ceil(res.total / 8);
-            setPageCount(count)
-        })
-    }, []) */
+    const [datePosted, setDatePosted] = useState('')
     useEffect(() => {
         const documents = getCompanyData(employerId);
         documents.then(async (res) => {
@@ -62,8 +49,18 @@ const Jobs = ({ documents }: any) => {
     }, [employerId]);
     const handleForYou = () => {
         if (forYou == false) {
+            setAllLoading(true)
             const title = localStorage.getItem('jobTitle');
-            title && setLocalValue(title)
+            const jobTitle = title ? title : ''
+            title && setLocalValue(jobTitle)
+            searchJobs(8, 0, jobTitle, '', jobTypeHolder, expLevelHolder, datePosted).then((res) => {
+                setAllLoading(false)
+                const count = Math.ceil(res.total / 8);
+                setPageCount(count)
+                res.documents && setData(res.documents)
+                res.documents && res.documents.length !== 0 && setJobDetailId(res.documents[0].$id)
+                res.documents && res.documents.length !== 0 && setJobDetails(res.documents[0])
+            })
             setForYou(true)
         }
         if (forYou == true) {
@@ -71,83 +68,33 @@ const Jobs = ({ documents }: any) => {
             setForYou(false)
         }
     }
-    const today = () => {
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const lastHour = new Date(today);
-        lastHour.setHours(23, 59, 59, 999);
-        return 'hey'
-    }
-    /* const filData =
-        data &&
-        data.filter((item: any) => {
-            let isMatch = true;
-            const postedDate = new Date(item.datePosted);
+    const handleDatePosted = (date: string) => {
+        if (date == "Past 24hrs") {
             const now = new Date();
             const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const lastHour = new Date(today);
-            lastHour.setHours(23, 59, 59, 999);
-            const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
+            setDatePosted(today.toISOString())
+        }
+        if (date == "Past week") {
+            const now = new Date();
             const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
-            if (searchQuery.toLocaleLowerCase()) {
-                if (forYou == false) {
-                    const searchRegex = new RegExp(searchQuery, 'i');
-                    isMatch = isMatch && searchRegex.test(item.jobTitle);
-                }
-            }
-            if (localValue !== '') {
-                const searchRegex = new RegExp(localValue, 'i');
-                isMatch = isMatch && searchRegex.test(item.jobTitle)
-            }
-            if (addressHolder !== '' && address.toLocaleLowerCase()) {
-                const searchRegex = new RegExp(addressHolder, 'i');
-                isMatch = isMatch && searchRegex.test(item.jobLocation);
-            }
-            if (datePostedHolder !== 'Any time' && datePostedHolder !== '') {
-                if (datePostedHolder == 'Past 24hrs') {
-                    isMatch = isMatch && postedDate.toISOString() <= lastHour.toISOString() && postedDate.toISOString() >= today.toISOString();
-                }
-                if (datePostedHolder == 'Past week') {
-                    isMatch = isMatch && sevenDaysAgo.toISOString() < postedDate.toISOString();
-                }
-                if (datePostedHolder == 'Past month') {
-                    isMatch = isMatch && postedDate.toISOString() >= thirtyDaysAgo.toISOString() && postedDate.toISOString() <= now.toISOString();
-                }
-            }
-            if (expLevelHolder !== '') {
-                isMatch = isMatch && item.expreienceLevel == expLevelHolder;
-            }
-            if (jobTypeHolder !== '') {
-                isMatch = isMatch && item.jobType == jobTypeHolder;
-            }
-            return isMatch;
-        }); */
-
-    const itemsPerPage = 8;
-    /*     const pageCount = filData && Math.ceil(filData.length / itemsPerPage);
-     */    /* const currentData = filData && filData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); */
+            setDatePosted(sevenDaysAgo.toISOString())
+        }
+        if (date == "Past month") {
+            const now = new Date();
+            const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
+            setDatePosted(thirtyDaysAgo.toISOString())
+        }
+    }
     const setTheSearchTerm = () => {
         typeof window !== 'undefined' && router.push({
             query: { param1: searchWord, param2: addressHolder }
         });
-        /* searchJobs(8, 0, searchWord).then((res) => {
-            setData(res.documents)
-            setPageCount(res.total)
-            console.log(res);
-        }) */
-        /* setSearchQuery(searchWord);
-        setAddress(addressHolder); */
         typeof window !== 'undefined' && searchWord !== '' && localStorage.setItem('jobTitle', searchWord)
     };
-
     useEffect(() => {
-        /*         setAllLoading(true);
-         */        /* countActiveJobs().then((res) => {
-const count = Math.ceil(res.total / 8);
-setPageCount(count)
-}) */
+        setAllLoading(true)
         if (Object.keys(router.query).length == 0) {
-            searchJobs(8, 0, '', '', jobTypeHolder, expLevelHolder, datePostedHolder).then((res) => {
+            searchJobs(8, 0, '', '', jobTypeHolder, expLevelHolder, datePosted).then((res) => {
                 setAllLoading(false)
                 const count = Math.ceil(res.total / 8);
                 setPageCount(count)
@@ -158,7 +105,7 @@ setPageCount(count)
         }
         if (Object.keys(router.query).length > 0) {
             const { param1, param2 }: any = router.query;
-            searchJobs(8, 0, param1, param2, jobTypeHolder, expLevelHolder, datePostedHolder).then((res) => {
+            searchJobs(8, 0, param1, param2, jobTypeHolder, expLevelHolder, datePosted).then((res) => {
                 setAllLoading(false)
                 const count = Math.ceil(res.total / 8);
                 setPageCount(count)
@@ -171,19 +118,16 @@ setPageCount(count)
             param2 && setAddress(param2.toString());
             param2 && setAddressHolder(param2.toString());
         }
-    }, [router.query, /* searchWord, addressHolder, */ jobTypeHolder, expLevelHolder]);
+    }, [router.query, datePosted, jobTypeHolder, expLevelHolder]);
     const handleFetchPagination = async (offset: number) => {
         setAllLoading(true);
         const offsetValue = (offset - 1) * 8
-        searchJobs(8, offsetValue, searchWord, address, jobTypeHolder, expLevelHolder, datePostedHolder).then((res) => {
+        searchJobs(8, offsetValue, searchWord, address, jobTypeHolder, expLevelHolder, datePosted).then((res) => {
             setData(res.documents);
             setAllLoading(false);
         });
     }
-    /* useEffect(() => {
-        data && data.length !== 0 && setJobDetailId(data[0].$id)
-        data && data.length !== 0 && setJobDetails(data[0])
-    }, [data]) */
+    const itemsPerPage = 8
     const showPage = (page: number) => {
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
@@ -214,15 +158,14 @@ setPageCount(count)
         setMaxPaginate(maxPaginate + 1);
         setMinPaginate(minPaginate + 1);
     };
-    /* useEffect(() => {
-        data && data.length !== 0 && setJobDetails(data.find((items: any) => items.$id == jobDetailId));
-    }, [jobDetailId]); */
-    /* useEffect(() => {
-        data && data.length !== 0 && setJobDetails(data[0]);
-    }, [searchQuery, localValue]); */
+
+    const handleJobSelection = (jobId: string) => {
+        const selected = data && data.filter((item: any) => item.$id == jobId)
+        selected && setJobDetails(selected[0])
+    }
 
     return (
-        <GlobalContextProvider>
+        <>
             <div>
                 <Navigation />
                 {allLoading && <div className='mt-8 md:mt-28 px-3 xl:px-40'> <JobsShimmer /></div>}
@@ -256,8 +199,8 @@ setPageCount(count)
                                         <option value="Internship">Internship</option>
                                         <option value="Full-Time">Full-Time</option>
                                         <option value="Part-Time">Part-Time</option>
-                                        <option value="Remote">Remote</option>
-                                        <option value="Contract">Contract</option>
+                                        {/*                                         <option value="Remote">Remote</option>
+ */}                                        <option value="Contract">Contract</option>
                                     </select>
                                     <select value={expLevelHolder} onChange={(e) => setExpLevelHolder(e.currentTarget.value)} name="experience" id="experience" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
                                         <option value="">Experience</option>
@@ -268,11 +211,8 @@ setPageCount(count)
                                         <option value="10+ years">10+ years</option>
                                     </select>
                                     <select value={datePostedHolder} onChange={(e) => {
-                                        if (e.currentTarget.value == "Past week") {
-                                            const now = new Date();
-                                            const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
-                                            setDatePostedHolder(sevenDaysAgo.toString())
-                                        }
+                                        setDatePostedHolder(e.currentTarget.value)
+                                        handleDatePosted(e.currentTarget.value)
                                     }} name="dateposted" id="dateposted" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
                                         <option value="">Date Posted</option>
                                         <option value="">Any time</option>
@@ -301,7 +241,8 @@ setPageCount(count)
                                         {/* currentData &&
                                             currentData */data &&
                                             data.map((items: any, index: number) => {
-                                                return <JobListCard items={items} key={index} jobDetailId={jobDetailId} setEmployerId={setEmployerId} setJobDetailId={setJobDetailId} setOpenJobDetail={setOpenJobDetail} />
+                                                return <JobListCard items={items} key={index} jobDetailId={jobDetailId} setEmployerId={setEmployerId} setJobDetailId={setJobDetailId} setOpenJobDetail={setOpenJobDetail} handleJobSelection={handleJobSelection}
+                                                />
                                             })}
                                     </div>
                                     <div
@@ -389,7 +330,7 @@ setPageCount(count)
                 <Footer />
             </div >
 
-        </GlobalContextProvider>
+        </>
     );
 };
 export default Jobs;
