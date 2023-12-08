@@ -3,19 +3,30 @@ import CandSmall from './CandSmall';
 import CandidateDetail from './CandidateDetail';
 import { fetchAppliedCandidatesSingleJob } from '@/backend/employerBackend';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import JobsShimmer from '@/components/shimmer/JobsShimmer';
 const Active = (props: any) => {
     const [openCanDetail, setOpenCanDetail] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
     const [jobDetailIndex, setJobDetailIndex] = useState(0);
     const [candidateDetail, setCandidateDetail] = useState<any>();
     const [appliedCan, setAppliedCan] = useState<any>()
-    const getPosted = async () => {
-        const applied = await fetchAppliedCandidatesSingleJob(props.jobId);
-        applied && setAppliedCan(applied.documents);
+    const [loading, setLoading] = useState(false)
+    const getPosted = async (id: string) => {
+        setLoading(true)
+        fetchAppliedCandidatesSingleJob(id).then((res) => {
+            res && res.documents && setAppliedCan(res.documents);
+            setLoading(false)
+        }).catch((error) => {
+            setLoading(false)
+            console.log(error);
+        })
+
     };
     useEffect(() => {
-        getPosted();
-    }, [props.jobId, props.allCandidates]);
+        getPosted(props.jobId);
+        console.log('job id changed', props.jobId);
+
+    }, [props.jobId]);
     return (
         <div className='flex w-full max-md:flex-wrap gap-6 max-md:px-2'>
             <div
@@ -25,7 +36,10 @@ const Active = (props: any) => {
                         : 'hidden'
                 }
             >
-                {appliedCan &&
+                {
+                    loading && <JobsShimmer />
+                }
+                {!loading && appliedCan &&
                     appliedCan.map((item: any, index: number) => {
                         return (
                             <div className='relative' key={index}>
@@ -53,7 +67,7 @@ const Active = (props: any) => {
                 }
             >
                 {
-                    appliedCan && appliedCan.length !== 0 &&
+                    !loading && appliedCan && appliedCan.length !== 0 &&
                     <div className='w-full'>
                         <p
                             onClick={() => setOpenCanDetail(false)}
@@ -63,7 +77,7 @@ const Active = (props: any) => {
                                     : 'hidden'
                             }
                         >
-                            <ArrowBackIcon/> Back To Candidate List
+                            <ArrowBackIcon /> Back To Candidate List
                         </p>
 
                         <CandidateDetail jobId={props.jobId} /* setShortListed={props.setShortListed} */ detailData={candidateDetail} imageLinkValue={imageUrl} short={false} />

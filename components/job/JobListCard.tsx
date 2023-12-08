@@ -205,8 +205,8 @@ const JobListCard = (props: any) => {
                 {
                     !openShare && !openReport &&
                     <div className='flex items-center relative'>
-                        <Popover className="focus:ring-0 focus:border-0 focus:outline-0">
-                            <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex items-center text-stone-500">
+                        <Popover id={`click ${props.index}`} aria-label={`click ${props.index}`} className="focus:ring-0 focus:border-0 focus:outline-0">
+                            <Popover.Button id={`menu ${props.index}`} aria-label={`menu ${props.index}`} className="focus:ring-0 focus:border-0 focus:outline-0 flex items-center text-stone-500">
                                 <MoreVertOutlinedIcon sx={{ fontSize: '1.5rem' }} />
                             </Popover.Button>
                             <Popover.Panel className="absolute  text-[13px] right-0 border-2 rounded-md flex flex-col bg-textW shadow z-10 w-[8rem]">

@@ -1,7 +1,6 @@
 import ConfirmModal from '@/components/ConfirmModal';
-import { fetchActivePostedJobs, fetchAllEmployerJob, fetchClosedPostedJobs, fetchSinglePostedJobs, getCompanyData, getNoApplicants, updateJobStatus, updateJobs } from '@/backend/employerBackend';
+import { fetchAllEmployerJob, fetchSinglePostedJobs, getCompanyData, getNoApplicants, updateJobStatus, updateJobs } from '@/backend/employerBackend';
 import React, { useEffect, useState } from 'react';
-import { getAccount } from '@/backend/accountBackend';
 import dynamic from 'next/dynamic';
 import { Popover } from '@headlessui/react';
 import { toast } from 'react-toastify';
@@ -18,13 +17,17 @@ import Share from '@/components/Share';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Link from 'next/link';
 import BlockIcon from '@mui/icons-material/Block';
-import TextInput, { SmallLists } from '@/components/TextInput';
+import TextInput, { SmallLists, SubmitButton } from '@/components/TextInput';
 import JobDetail from '@/components/job/JobDetail';
 import { useJobPostContext } from '@/contextApi/jobPostData';
+import { useGlobalContext } from '@/contextApi/userData';
+import { useRouter } from 'next/router';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const JobCard = (props: any) => {
+    const router = useRouter()
+    const { userData } = useGlobalContext()
     const { handleJobSelection, jobPostTabs, setPostingTabs, setAllEmployerJobs } = useJobPostContext()
     const loadingIn = '/images/loading.svg';
     const [loading, setLoading] = useState(false);
@@ -55,12 +58,17 @@ const JobCard = (props: any) => {
     const [compnayDes, setCompanyDes] = useState<any>();
     const handleSelection = (id: string) => {
         handleJobSelection(id)
-/*         props.setEditedJobId()
- */        setPostingTabs({
+        setPostingTabs({
             ...jobPostTabs,
             chooseJob: false,
             first: true
         })
+    }
+    const handleApplicants = (id: string) => {
+        typeof window !== 'undefined' && router.push({
+            pathname: '/users/employer/candidates',
+            query: { param1: id }
+        });
     }
     const updateStatus = (e: string) => {
         updateJobStatus(props.jobId, e)
@@ -126,10 +134,9 @@ const JobCard = (props: any) => {
         });
     }, [props.jobId]);
     const getCompInfo = async () => {
-        const accountInfo = await getAccount();
-        if (accountInfo !== 'failed') {
-            const documents = getCompanyData(accountInfo.$id);
-            setEmpId(accountInfo.$id);
+        if (userData) {
+            const documents = getCompanyData(userData.$id);
+            setEmpId(userData.$id);
             documents.then((res) => {
                 if (res.documents && res.documents[0] && res.documents[0]) {
                     setCompanyData(res.documents[0]);
@@ -146,7 +153,7 @@ const JobCard = (props: any) => {
     };
     useEffect(() => {
         getCompInfo();
-    }, [empId]);
+    }, [empId, userData]);
     const handleDateChange = (date: string) => {
         const [year, month, day] = date.split('-');
         const formattedDate = `${day}-${month}-${year}`;
@@ -185,13 +192,13 @@ const JobCard = (props: any) => {
                                     .replace(/\//g, '-')}
                             />
                         )}
-                        <SmallLists
-                            icon={<Groups2OutlinedIcon
+                        <div onClick={() => handleApplicants(props.jobId)} className="inline cursor-pointer bg-[#FAFAFA] flex items-center gap-1 text-xs text-gradientFirst rounded-[4px] p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:h-[28px]">
+                            <Groups2OutlinedIcon
                                 sx={{ fontSize: '1rem' }}
                                 className="-mt-0.5 mr-1 "
-                            />}
-                            items={noApplicant.toString()}
-                        />
+                            />
+                            <span className='text-[#20262E]'>{noApplicant.toString()}</span>
+                        </div>
                     </div>
                 </div>
                 <div className="flex max-sm:hidden lg:text-[0.9rem]">
@@ -221,7 +228,7 @@ const JobCard = (props: any) => {
                         <Popover.Panel
                             className={
                                 openShare == false && openJobEdit == false && openPreview == false
-                                    ? 'absolute -ml-28  w-[10rem] border-2 rounded-2xl flex flex-col gap-y-3 bg-textW py-3 px-3 bg-white shadow z-10'
+                                    ? 'absolute -ml-28  w-[10rem] border-2 rounded-lg flex flex-col gap-y-3 bg-textW py-3 px-3 bg-white shadow z-10'
                                     : 'hidden'
                             }
                         >
@@ -268,7 +275,7 @@ const JobCard = (props: any) => {
                                     <span>Share</span>
                                 </div>
                                 <div
-                                    onClick={() => props.applicants(props.jobId)}
+                                    onClick={() => handleApplicants(props.jobId)}
                                     className="flex gap-x-3 text-[0.8rem] cursor-pointer items-center text-stone-400 hover:text-stone-700"
                                 >
                                     <PeopleIcon sx={{ fontSize: '1rem' }} className="text-[1rem]" />
@@ -280,9 +287,8 @@ const JobCard = (props: any) => {
                     </Popover>
                 </div>
                 <Share openShare={openShare} setOpenShare={setOpenShare} link={props.jobId} />
-
                 <ConfirmModal isOpen={openPreview} handleClose={() => setOpenPreview(!openPreview)}>
-                    <div className="mx-2 pb-5 w-full  bg-textW rounded-2xl grid grid-cols-12 pt-6 sm:pl-5 md:pl-8 md:w-2/3 lg:w-1/2 h-full overflow-y-auto">
+                    <div className="mx-2 pb-5 w-full  bg-textW rounded-lg grid grid-cols-12 pt-6 sm:pl-5 md:pl-8 md:w-2/3 lg:w-1/2 h-full overflow-y-auto">
                         <div className="col-span-12 flex justify-end pr-3 md:pr-10">
                             <button onClick={() => setOpenPreview(!openPreview)}>
                                 <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
@@ -300,7 +306,7 @@ const JobCard = (props: any) => {
                     </div>
                 </ConfirmModal>
                 <ConfirmModal isOpen={openJobEdit} handleClose={() => setOpenJobEdit(!openJobEdit)}>
-                    <div className="mx-2 pb-5 w-full px-5 bg-textW rounded-2xl grid grid-cols-12 pt-6 overflow-auto h-full md:pl-8 md:w-2/3 lg:w-1/2">
+                    <div className="mx-2 pb-5 w-full px-5 bg-textW rounded-lg grid grid-cols-12 pt-6 overflow-auto h-full md:pl-8 md:w-2/3 lg:w-1/2">
                         <div className="col-span-12 grid grid-cols-12">
                             <div className="col-span-11  flex items-center text-2xl font-[600] text-gradientFirst">Edit Job Post</div>
                             <div className="col-span-2 mb-4 md:col-span-1 grid pr-2 justify-items-end">
@@ -333,11 +339,11 @@ const JobCard = (props: any) => {
                                     <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Job Type</p>
                                     <select
                                         onChange={(e) => setJobType(e.currentTarget.value)}
-                                        className="h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96"
+                                        className="h-12 pl-5 bg-white rounded-lg border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96"
                                     >
                                         <option value="Internship">Internship</option>
-                                        <option value="Full Time">Full Time</option>
-                                        <option value="Part Time">Part Time</option>
+                                        <option value="Full-Time">Full Time</option>
+                                        <option value="Part-Time">Part Time</option>
                                         <option value="Remote">Remote</option>
                                         <option value="Contract">Contract</option>
                                     </select>
@@ -351,8 +357,8 @@ const JobCard = (props: any) => {
                                             type="number"
                                             className={
                                                 props.errorMessage
-                                                    ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
-                                                    : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
+                                                    ? 'h-12 pl-5 bg-white rounded-lg border border-red-500 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
+                                                    : 'h-12 pl-5 bg-white rounded-lg border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
                                             }
                                             placeholder="Minimum Salary"
                                         />
@@ -363,8 +369,8 @@ const JobCard = (props: any) => {
                                             type="number"
                                             className={
                                                 props.errorMessage
-                                                    ? 'h-12 pl-5 bg-white rounded-3xl border border-red-500 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
-                                                    : 'h-12 pl-5 bg-white rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
+                                                    ? 'h-12 pl-5 bg-white rounded-lg border border-red-500 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
+                                                    : 'h-12 pl-5 bg-white rounded-lg border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-auto hideIncrease'
                                             }
                                         />
                                     </div>
@@ -373,7 +379,7 @@ const JobCard = (props: any) => {
                                     <p className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose"> Deadline</p>
                                     <input
                                         type="date"
-                                        className="h-12 pl-5 bg-white cursor-pointer rounded-3xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96"
+                                        className="h-12 pl-5 bg-white cursor-pointer rounded-lg border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full grow md:w-96"
                                         value={handleDateChange(jobDeadline)}
                                         onChange={(e) => setJobDeadline(e.currentTarget.value)}
                                     />
@@ -388,7 +394,12 @@ const JobCard = (props: any) => {
                                     />
                                     {jobDescError && <p className="text-red-500 absolute bottom-3 text-[13px] ">{jobDescError}</p>}
                                 </div>
-                                {!loading && (
+                                <div className='w-full flex justify-end'>
+                                    <div className='w-full md:w-80'>
+                                        <SubmitButton loading={loading} buttonText="Update Job" />
+                                    </div>
+                                </div>
+                                {/* {!loading && (
                                     <button
                                         type="submit"
                                         className="text-textW bg-gradient-to-r flex self-end items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-xl w-full md:w-5/12 lg:w-3/12"
@@ -401,7 +412,7 @@ const JobCard = (props: any) => {
                                         src={loadingIn}
                                         className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-xl w-full md:w-5/12 lg:w-3/12"
                                     />
-                                )}
+                                )} */}
                             </form>
                         </div>
                     </div>

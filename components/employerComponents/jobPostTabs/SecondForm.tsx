@@ -75,11 +75,11 @@ const SecondForm = (props: any) => {
                     onChange={(e) => setSecondTabData(e.currentTarget.value)}
                     className="form-select h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-gradientFirst focus:border-0"
                 >
-                    <option value="etb">ETB</option>
-                    <option value="usd">USD </option>
-                    <option value="euro">EURO</option>
-                    <option value="gpb">GBP</option>
-                    <option value="rnp">RMB</option>
+                    <option value="ETB">ETB</option>
+                    <option value="USD">USD </option>
+                    <option value="EURO">EURO</option>
+                    <option value="GBP">GBP</option>
+                    <option value="RMB">RMB</option>
                 </select>
                 <input
                     value={Number(secondTabData.minSalary)}

@@ -1,6 +1,6 @@
 import { SendJobPostedEmail } from '@/components/SendEmail';
 import { getAccount } from '@/backend/accountBackend';
-import { postFourthTab } from '@/backend/employerBackend';
+import { fetchAllEmployerJob, postFourthTab } from '@/backend/employerBackend';
 import { useRouter } from 'next/router';
 import React from 'react'
 import { toast } from 'react-toastify';
@@ -14,7 +14,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useJobPostContext } from '@/contextApi/jobPostData';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const FourthForm = (props: any) => {
-    const { firstTabData, fourthTabData, setFourthTabData, postingJobId, jobPostTabs, setPostingTabs } = useJobPostContext()
+    const { firstTabData, fourthTabData, setFourthTabData, postingJobId, jobPostTabs, setPostingTabs, setAllEmployerJobs } = useJobPostContext()
     const router = useRouter();
     const today = new Date();
     const todaysDate = new Date();
@@ -44,6 +44,11 @@ const FourthForm = (props: any) => {
                 .then((res: any) => {
                     setFourthTabData({
                         ...fourthTabData, loading: false
+                    })
+                    fetchAllEmployerJob().then((res: any) => {
+                        setAllEmployerJobs(res?.documents)
+                    }).catch((error) => {
+                        console.log(error);
                     })
                     toast.success('Job posted successfully');
                     getAccount().then((result: any) => {
