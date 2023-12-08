@@ -193,6 +193,7 @@ const JobListCard = (props: any) => {
                 props.setEmployerId(props.items.employerId);
                 props.setJobDetailId(props.items.$id);
                 props.setOpenJobDetail(true);
+                props.handleJobSelection(props.items.$id)
             }}
             key={props.index}
             className={`cursor-pointer bg-textW w-full h-[300px] max-h-[350px] sm:max-h-[234px] sm:h-[234px] xl:w-[458px] xl:max-w-[458px] flex flex-col gap-2 rounded-[12px] border-[1px]  px-5 py-4 ${props.items.$id == props.jobDetailId ? 'border-gradientFirst' : 'border-[#DEDEDE] hover:border-gradientFirst'} `}

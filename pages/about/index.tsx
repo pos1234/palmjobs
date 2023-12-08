@@ -22,7 +22,7 @@ const RightImage = ({ headline, text, imageUrl }: LeftImage) => {
                 </div>
             </div>
             <div className='flex items-center pt-32 max-md:justify-center max-md:w-full'>
-                <img src="/images/HeroSection.webp" alt="" className='w-[383px] h-[365px]' />
+                <img src={imageUrl} alt="" className='w-[383px] h-[365px]' />
             </div>
         </div>
     )
@@ -31,7 +31,7 @@ const LeftImage = ({ headline, text, imageUrl }: LeftImage) => {
     return (
         <div className='flex  justify-between items-center max-md:flex-wrap mx-5 lg:mx-10 xl:mx-40'>
             <div className='flex items-center pt-32 max-md:w-full max-md:justify-center max-md:order-2'>
-                <img src="/images/HeroSection.webp" alt="" className='w-[383px] h-[365px]' />
+                <img src={imageUrl} alt="" className='w-[383px] h-[365px]' />
             </div>
             <div className='md:w-1/2'>
                 <p className='font-[700] text-[32px] py-10'>{headline}</p>
@@ -53,13 +53,13 @@ const About = () => {
         <div>
             <Navigation />
             <div className='flex flex-col gap-10'>
-                <RightImage headline='About Palm Jobs' />
+                <RightImage headline='About Palm Jobs' imageUrl={"/images/super-hero-on-duty-in-business-leader-concept-2194246-0 (1).svg"} />
                 <div className='bg-[#FAFAFA]'>
-                    <LeftImage headline='Our People' />
+                    <LeftImage headline='Our People' imageUrl={'/images/small-team-discussing-ideas-2194220-0.svg'} />
                 </div>
-                <RightImage headline='Our Leadership' />
+                <RightImage headline='Our Leadership' imageUrl={'/images/people-discussing-about-online-payment-2194234-0 (1).svg'} />
                 <div className='bg-[#FAFAFA]'>
-                    <LeftImage headline='Our Leadership' />
+                    <LeftImage headline='Our Leadership' imageUrl={'/images/problem-solving-2194252-0 (1).svg'} />
                 </div>
             </div>
             <Footer />

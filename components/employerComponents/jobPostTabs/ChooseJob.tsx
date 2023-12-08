@@ -38,8 +38,7 @@ const ChooseJob = (props: any) => {
             <div className='pt-5 font-[600] text-xl'>
               Choose how to post a Job
             </div>
-
-            <div className="flex bg-forBack  p-2 gap-x-5 w-full lg:w-1/2">
+            <div className="flex p-2 gap-x-5 w-full lg:w-1/2">
               <div
                 onClick={() => {
                   setSelectedRadio('empty')

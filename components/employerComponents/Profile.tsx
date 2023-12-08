@@ -1,14 +1,11 @@
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import { getEmployerDocument, getProfileData, updateProfile, updateUserName } from '@/backend/employerBackend';
+import { updateProfile, updateUserName } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
 import { EmployerProfilePicture } from '@/components/candidateProfileComponents/ProfilePicture';
-import { getAccount } from '@/backend/accountBackend';
 import TextInput, { SubmitButton } from '@/components/TextInput';
-import Navigation from '@/components/employerComponents/Navigation';
 import Link from 'next/link';
-import { employeeAuth } from '@/components/withAuth';
 import { useGlobalContext } from '@/contextApi/userData';
 import { RequiredTextLabel } from './jobPostTabs/RequiredTextLabel';
 const ReactQuill = dynamic(() => import('react-quill'), {
@@ -59,7 +56,7 @@ const EmployerProfile = (props: any) => {
         setNoEmployeeError("")
         setPhoneError('')
         setPhoneError('')
-        const regex = /^\+2519\s[0-9]{8}$/;
+        const regex = /^\+251\s9[0-9]{8}$/;
         if (companyName == '') {
             setCompanyNameError('Please provide company name')
         } else if (userName == '') {
@@ -70,7 +67,6 @@ const EmployerProfile = (props: any) => {
             setPhoneError('Please provide phone number')
         } else if (!phone.match(regex)) {
             console.log('valid');
-
             setPhoneError('Invalid phone number')
         } else {
             setLoading(true);
@@ -80,7 +76,6 @@ const EmployerProfile = (props: any) => {
                     updateUserName(userName);
                     setLoading(false);
                     props.setFilled(true);
-                    
                 })
                 .catch((error) => {
                     toast.error('Profile Not Updated');
