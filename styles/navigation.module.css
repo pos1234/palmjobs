@@ -1,27 +1,23 @@
 .hamburger-menu {
     align-items: center;
-    width: 60px;
-    height: 47px;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
     padding: 3px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    row-gap: 5px;
-}
-.bar {
-    width: 100%;
-    transition: transform 0.3s ease;
+    row-gap: 5px; 
 }
 .bar:first-child {
-    width: 30px;
-    margin-right: 10px;
-    height: 3px;
-    background-color: black;
+    width: 24px;
+    margin-right: 8px;
+    height: 2px;
+    background-color: rgb(43, 43, 43);
 }
 .bar:last-child {
-    width: 30px;
-    margin-left: 10px;
+    width: 24px;
+    margin-left: 8px;
     height: 2px;
-    background-color: black;
+    background-color: rgb(43, 43, 43);
 }

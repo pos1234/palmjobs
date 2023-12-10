@@ -28,7 +28,7 @@ export const GlobalContextProvider = ({ children }: any) => {
     const getUserData = async () => {
         const userInfo = await getAccount();
         if (userInfo !== 'failed') {
-            setUserData(userInfo);
+            !userData && setUserData(userInfo);
             const role = await getRole();
             role && setUserRole(role.documents[0].userRole);
             if (role && role.documents[0].userRole == 'candidate') {
@@ -36,7 +36,6 @@ export const GlobalContextProvider = ({ children }: any) => {
                 if (candidate) {
                     setUserDetail(candidate.documents[0]);
                     setLoading(false);
-
                 }
             }
             if (role && role.documents[0].userRole == 'employer') {

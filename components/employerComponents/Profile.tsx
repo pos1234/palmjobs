@@ -17,7 +17,8 @@ const EmployerProfile = (props: any) => {
     const [companyNameError, setCompanyNameError] = useState('');
     const [userName, setUserName] = useState('');
     const [userNameError, setUserNameError] = useState('');
-    const [industry, setIndustry] = useState('Agriculture');
+    const [industry, setIndustry] = useState('');
+    const [industryError, setIndustryError] = useState('')
     const [address, setAddress] = useState('');
     const [noEmployee, setNoEmployee] = useState('');
     const [noEmployeeError, setNoEmployeeError] = useState('');
@@ -26,8 +27,8 @@ const EmployerProfile = (props: any) => {
     const [compDescription, setCompDescription] = useState('');
     const [webLink, setWebLink] = useState('');
     const [loading, setLoading] = useState(false);
-    const initialData = async () => {
-        if (userDetail) {
+    const initialData = () => {
+        if (userDetail && !companyName) {
             userDetail.companyName !== null && setCompanyName(userDetail.companyName);
             userDetail.sector !== null && setIndustry(userDetail.sector);
             userDetail.location !== null && setAddress(userDetail.location);
@@ -42,7 +43,7 @@ const EmployerProfile = (props: any) => {
     };
     useEffect(() => {
         initialData();
-    }, [userData, userDetail]);
+    }, [userDetail]);
     const validateLink = (link: string) => {
         if (link && !link.startsWith('https://')) {
             link = 'https://' + link;
@@ -59,6 +60,10 @@ const EmployerProfile = (props: any) => {
         const regex = /^\+251\s9[0-9]{8}$/;
         if (companyName == '') {
             setCompanyNameError('Please provide company name')
+        } else if (userName == '') {
+            setUserNameError('Please provide name')
+        } else if (industry == '') {
+            setIndustryError('Please select industry')
         } else if (userName == '') {
             setUserNameError('Please provide name')
         } else if (noEmployee == '') {
@@ -90,7 +95,7 @@ const EmployerProfile = (props: any) => {
             <div className="col-span-12 pt-5 space-y-3 mb-3">
                 <EmployerProfilePicture />
                 <RequiredTextLabel text="Your Company Name?" />
-                <TextInput placeHolder="company name" errorMessage={companyNameError} value={companyName} setFunction={setCompanyName} />
+                <TextInput placeHolder="" errorMessage={companyNameError} value={companyName} setFunction={setCompanyName} />
                 <RequiredTextLabel text="Your Name?" />
                 <TextInput placeHolder="your name" errorMessage={userNameError} value={userName} setFunction={setUserName} />
                 <RequiredTextLabel text="Your Company's Industry?" />
@@ -101,6 +106,7 @@ const EmployerProfile = (props: any) => {
                         setIndustry(e.currentTarget.value);
                     }}
                 >
+                    <option value="">Select an Industry</option>
                     <option value="Agriculture">Agriculture</option>
                     <option value="Construction">Construction</option>
                     <option value="Education">Education</option>
@@ -121,6 +127,7 @@ const EmployerProfile = (props: any) => {
                     <option value="Telecommunications">Telecommunications</option>
                     <option value="Food & Beverage">Food & Beverage</option>
                 </select>
+                {industryError && <p className="text-red-500 text-[13px] mt-2">{industryError}</p>}
                 <RequiredTextLabel text="Your Company's number of employee?" />
                 <input
                     type="number"
@@ -132,9 +139,9 @@ const EmployerProfile = (props: any) => {
                 <RequiredTextLabel text="Your Phone Number?" />
                 <TextInput placeHolder="+251 912345566" errorMessage={phoneError} value={phone} setFunction={setPhone} />
                 <RequiredTextLabel text="Company Location?" req="nReq" />
-                <TextInput placeHolder="address" value={address} setFunction={setAddress} />
+                <TextInput placeHolder="" value={address} setFunction={setAddress} />
                 <RequiredTextLabel text="Website Link?" req="nReq" />
-                <TextInput placeHolder="web Link" value={webLink} setFunction={setWebLink} />
+                <TextInput placeHolder="" value={webLink} setFunction={setWebLink} />
             </div>
             <RequiredTextLabel text="Company Description?" req="nReq" />
             <div className="pb-20 mr-2 mt-5 xl:mr-64">
