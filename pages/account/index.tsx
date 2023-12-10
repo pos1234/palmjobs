@@ -31,7 +31,7 @@ const Login = () => {
         email: '',
         password: ''
     });
-    const { setUserData } = useGlobalContext()
+    const { userData, setUserData } = useGlobalContext()
     function validateEmail(email: string): boolean {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -57,7 +57,9 @@ const Login = () => {
                         const loggedIn = await getAccount();
                         if (loggedIn !== 'failed') {
                             setUserData(loggedIn)
-                            typeof window !== 'undefined' && router.push('/jobs');
+                            console.log(userData);
+
+                             typeof window !== 'undefined' && router.push('/jobs');
                         }
                     }
                 }).catch((error) => {
@@ -99,41 +101,43 @@ const Login = () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-full md:w-1/2 max-md:px-5 order-1 justify-center md:order-2 text-center flex flex-col gap-y-5 items-center md:px-5 lg:px-10 xl:px-20 md:col-span-6 pt-20">
+                <div className="w-full md:w-1/2 order-1 md:order-2 flex justify-center flex-wrap px-5 sm:px-20 gap-2 md:px-10 lg:px-24 xl:px-32 pt-16">
                     {forgotPassword == false && (
-                        <p className="font-shW text-shS md:text-dshS">
+                        <p className="font-shW w-full text-center text-shS md:text-dshS">
                             Connect. Grow. <span className="text-gradientFirst">Succeed.</span>
                         </p>
                     )}
                     {forgotPassword == false && (
-                        <div className="bg-[#E9FDF1] w-80 rounded-xl p-2 flex grid-cols-12">
-                            <button
-                                className={
-                                    register == false
-                                        ? 'w-1/2 h-11 bg-gradientFirst text-textW rounded-xl cursor-pointer'
-                                        : 'w-1/2 h-11 text-gradientFirst rounded-xl cursor-pointer'
-                                }
-                                onClick={() => {
-                                    setRegister(false);
-                                    setRegisterForm(false);
-                                }}
-                            >
-                                Login
-                            </button>
-                            <button
-                                className={
-                                    register == true
-                                        ? 'w-1/2 h-11 bg-gradientFirst h-full text-textW rounded-xl cursor-pointer'
-                                        : 'w-1/2 h-11 text-gradientFirst rounded-xl cursor-pointer'
-                                }
-                                onClick={() => setRegister(true)}
-                            >
-                                Register
-                            </button>
+                        <div className='flex justify-center w-80'>
+                            <div className="bg-[#FAFAFA] w-full rounded-xl h-16 p-2 flex">
+                                <button
+                                    className={
+                                        register == false
+                                            ? 'w-1/2 h-11 bg-gradientFirst text-textW rounded-xl cursor-pointer'
+                                            : 'w-1/2 h-11 rounded-xl cursor-pointer'
+                                    }
+                                    onClick={() => {
+                                        setRegister(false);
+                                        setRegisterForm(false);
+                                    }}
+                                >
+                                    Login
+                                </button>
+                                <button
+                                    className={
+                                        register == true
+                                            ? 'w-1/2 h-11 bg-gradientFirst h-full text-textW rounded-xl cursor-pointer'
+                                            : 'w-1/2 h-11 rounded-xl cursor-pointer'
+                                    }
+                                    onClick={() => setRegister(true)}
+                                >
+                                    Register
+                                </button>
+                            </div>
                         </div>
                     )}
                     {!register && forgotPassword == false && (
-                        <p className="text-midRS font-midRW leading-midRL text-[#5B5B5B]">
+                        <p className="lg:text-midRS flex justify-center text-center my-3 font-midRW leading-midRL text-[#5B5B5B]">
                             Building bridges, paving pathways. Dive into Palm Jobs.
                         </p>
                     )}
@@ -195,12 +199,12 @@ const Login = () => {
                     {(register == false || registerForm == true) && forgotPassword == false && (
                         <div className="w-full justify-center flex">
                             {
-                                registerForm == false && <button type='button' onClick={() => handleGoogleLogin()} className="w-full border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center sm:w-96">
+                                registerForm == false && <button type='button' onClick={() => handleGoogleLogin()} className="w-full border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center">
                                     <img src={google} alt="google" className="w-[1rem] h-[1rem] inline ml-3" /> <p className='flex-grow text-center'> Continue with Google</p>
                                 </button>
                             }
                             {
-                                registerForm == true && <button type='button' onClick={() => handleGoogleRegister()} className="w-full border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center sm:w-96">
+                                registerForm == true && <button type='button' onClick={() => handleGoogleRegister()} className="w-full border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center">
                                     <img src={google} alt="google" className="w-[1rem] h-[1rem] inline ml-3" /> <p className='flex-grow text-center'>Continue with Google</p>
                                 </button>
                             }
@@ -208,13 +212,13 @@ const Login = () => {
                     )}
                     {registerForm && <RegisterComponent role={getJob ? 'candidate' : 'employer'} />}
                     {!register && forgotPassword == false && (
-                        <form className="w-full items-center flex flex-col text-left md:pr-0" onSubmit={handlelogin}>
-                            <div className='flex flex-wrap w-full md:w-96'>
-                                <p className="col-span-10 font-thW text-smS mt-5 mb-2 leading-shL">Email Address</p>
-                                <TextInputRelated placeHolder="Enter Email" value={login.email} change={"email"} dataDistruct={login} setFunction={setLogin} errorMessage={emailError} />
+                        <form className="w-full flex justify-center flex-wrap gap-5" onSubmit={handlelogin}>
+                            <div className=' w-full flex flex-wrap gap-3'>
+                                <p className="font-thW text-smS leading-shL">Email Address</p>
+                                <TextInputRelated placeHolder="Enter Email" value={login.email} change={"email"} dataDistruct={login} setFunction={setLogin} errorMessage={emailError} class="w-full" />
                             </div>
-                            <div className='flex flex-wrap w-full md:w-96'>
-                                <p className="w-full font-thW text-smS mt-5 mb-2 text-left leading-shL">Password</p>
+                            <div className='flex flex-wrap w-full flex flex-wrap gap-3'>
+                                <p className="w-full font-thW text-smS text-left leading-shL">Password</p>
                                 <input
                                     onChange={(e: React.FormEvent<HTMLInputElement>) =>
                                         setLogin({ ...login, password: e.currentTarget.value })
@@ -227,12 +231,12 @@ const Login = () => {
                                     onClick={() => setVisible(!visible)}
                                     className="flex items-center -ml-10 text-stone-400 cursor-pointer"
                                 >
-                                    {visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                    {visible ? <VisibilityIcon sx={{ fontSize: '1.2rem' }} /> : <VisibilityOffIcon sx={{ fontSize: '1.2rem' }} />}
                                 </span>
                             </div>
                             {passwordError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{passwordError}</p>}
 
-                            <div className='w-full col-span-10 flex md:justify-end'>
+                            <div className='w-full col-span-10 flex md:justify-end mt-5'>
                                 <div className='w-full md:w-60 pt-5'>
                                     <SubmitButton loading={loading} buttonText="Login" />
                                 </div>
@@ -241,7 +245,7 @@ const Login = () => {
                                 onClick={() => setForgotPassword(true)}
                                 className="w-full flex justify-end"
                             >
-                                <span className="font-addW text-addS mt-5 mb-2 leading-addL cursor-pointer text-gradientFirst">
+                                <span className="font-addW text-addS leading-addL cursor-pointer text-gradientFirst">
                                     Forgot Password?
                                 </span>
                             </div>

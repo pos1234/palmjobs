@@ -22,7 +22,7 @@ const Navigation = (props: any) => {
                 {menu && (
                     <div className="fixed bg-textW h-screen w-screen overflow-hidden flex flex-col z-40 md:hidden">
                         <div onClick={() => setMenu(!menu)} className="flex items-center justify-end pt-4 pr-2 cursor-pointer">
-                            <CloseOutlinedIcon className="text-[3rem]" />
+                            <CloseOutlinedIcon className="text-[2rem]" />
                         </div>
                         <div className="flex justify-center">
                             <Link href="/">
@@ -150,7 +150,7 @@ const Navigation = (props: any) => {
                     ) : null}
                 </div>
                 <div className='max-md:flex max-md:items-end max-md:flex-grow max-md:justify-end xl:h-full xl:flex'>
-                    <div className="flex items-center justify-end gap-x-10 md:hidden">
+                    <div className="flex items-center justify-end gap-x-10 md:hidden pr-3">
                         {!userData && (
                             <div className="text-fhS leading-fhL font-fhW text-textR">
                                 <Link href="/account">Sign in</Link>

@@ -10,7 +10,7 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import LaunchIcon from '@mui/icons-material/Launch';
 import StairsOutlinedIcon from '@mui/icons-material/StairsOutlined'
 import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf'
-import { alreadySaved, saveJobs, } from '@/backend/candidateBackend'
+import { alreadyApplied, alreadySaved, saveJobs, } from '@/backend/candidateBackend'
 import { getAccount, getRole, signOut } from '@/backend/accountBackend';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { toast } from 'react-toastify';
@@ -25,20 +25,21 @@ import { useGlobalContext } from '@/contextApi/userData';
 import ConfirmModal from '../ConfirmModal';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const JobDetail = (props: any) => {
-    const { userRole } = useGlobalContext()
+    const { userRole, userDetail, loading, userData } = useGlobalContext()
     const [savedJobId, setSavedJobId] = useState<any[]>([]);
     const [savedJobs, setSavedJobs] = useState<any[]>([]);
-    const [allLoading, setAllLoading] = useState(false);
+    const [allLoading, setAllLoading] = useState(loading);
     const [applyEmp, setApplyEmp] = useState(false);
     const [jobTitle, setJobTitle] = useState('');
-    const [userData, setUserData] = useState<any>();
-/*     const [userRole, setUserRole] = useState('');
+/*     const [userData, setUserData] = useState<any>();
+ *//*     const [userRole, setUserRole] = useState('');
  */    const [userId, setUserId] = useState('')
     const [apply, setApply] = useState(false);
     const [applyJobId, setApplyJobId] = useState('');
     const [applyEmployerId, setApplyEmployerId] = useState('');
     const [openShare, setOpenShare] = useState(false);
     const [userSkill, setUserSkill] = useState<any>()
+    const [applied, setApplied] = useState(false)
     const router = useRouter();
     const isToday = moment(props.jobDetails.datePosted).isSame(moment());
     const isWithinWeek = moment(props.jobDetails.datePosted).isAfter(moment().subtract(7, 'days')) && moment(props.jobDetails.datePosted).isBefore(moment());
@@ -51,42 +52,40 @@ const JobDetail = (props: any) => {
         const arrayValue = JSON.parse(text)
         return arrayValue
     }
-    const getUserData = async () => {
-        const userInfo = await getAccount();
-        if (userInfo !== 'failed') {
-            setUserId(userInfo.$id)
-            setUserData(userInfo);
-            const role = await getRole();
-            if (role && role.documents[0].userRole == 'candidate') {
-                fetchCandidateDetail(userInfo.$id).then((res) => {
-                    res && res.documents[0] && res.documents[0].skills && setUserSkill(res.documents[0].skills)
-                    const lowercaseSkills = res && res.documents[0] && res.documents[0].skills && res.documents[0].skills.map((skill: string, index: number) => skill.toLowerCase());
-                    setUserSkill(lowercaseSkills)
-                })
-            }
-/*             role && setUserRole(role && role.documents[0].userRole);
- */        }
+    const checkApplied = async () => {
+/*         setLoading(true);
+ */        if (userData && userDetail) {
+            setAllLoading(true)
+            alreadyApplied(userDetail.$id, props.jobDetails.$id).then((applied) => {
+                setAllLoading(false)
+
+                if (applied.total !== 0) {
+                    setApplied(true);
+                }
+                if (applied.total == 0) {
+/*                     setLoading(false);
+ */                    setApplied(false);
+                }
+            });
+        }
     };
-    /*  useEffect(() => {
-         getUserData();
-     }, []); */
+    useEffect(() => {
+        checkApplied()
+    }, [userData, userDetail, props.jobDetails.$id])
     const handleApply = async (jobId: string, employerId: string, jobTitle: string) => {
         setApply(false);
         if (userRole) {
             if (userRole == 'candidate') {
-                console.log('candidate');
                 setApply(true);
                 setApplyJobId(jobId);
                 setApplyEmployerId(employerId);
                 setJobTitle(jobTitle);
             } else if (userRole == 'employer') {
                 setApplyEmp(true);
-                console.log('this is the employer');
             }
         }
-        if (userRole == '') {
+        if (!userData && userRole == '') {
             typeof window !== 'undefined' && router.push('/account');
-            console.log('not logged in');
 
         }
 
@@ -244,18 +243,33 @@ const JobDetail = (props: any) => {
                                     className='bg-gradientFirst text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:border-b-4 hover:border-b-black buttonBounce'                                >
                                     Apply
                                 </div>
-                            ) : (
-                                <div
-                                    onClick={() => {
-                                        handleApply(
-                                            props.jobDetails.$id,
-                                            props.jobDetails.employerId,
-                                            props.jobDetails.jobTitle
-                                        );
-                                    }}
-                                    className='bg-gradient-to-r from-[#00A82D] to-[#0CBC8B] text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:border-b-4 hover:border-b-black buttonBounce'                                >
-                                    <EnergySavingsLeafIcon sx={{ fontSize: '1.2rem' }} /> <span className='ml-2'> Easy Apply</span>
-                                </div>
+                            ) : (<>
+                                {
+                                    allLoading && <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
+                                        <div className="text-neutral-900  text-opacity-70 text-xl font-normal leading-7">
+                                            <div className="bg-gray-300 rounded animate-pulse w-[195px] h-[40px] rounded-[4px]"></div>
+                                        </div>
+                                    </div>
+                                }
+                                {
+                                    !allLoading ? !applied && !userData ? <div
+                                        onClick={() => {
+                                            handleApply(
+                                                props.jobDetails.$id,
+                                                props.jobDetails.employerId,
+                                                props.jobDetails.jobTitle
+                                            );
+                                        }}
+                                        className='bg-gradient-to-r from-[#00A82D] to-[#0CBC8B] text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:border-b-4 hover:border-b-black buttonBounce'                                >
+                                        <EnergySavingsLeafIcon sx={{ fontSize: '1.2rem' }} /> <span className='ml-2'> Easy Apply</span>
+                                    </div> : <div
+                                        className='bg-gray-100 text-gray-00 w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center '          >
+                                        <EnergySavingsLeafIcon sx={{ fontSize: '1.2rem' }} /> <span className='ml-2'> Applied</span>
+                                    </div> : null
+
+                                }
+
+                            </>
                             )}
                             <div className='flex items-center cursor-pointer text-gray-500 hover:text-gradientFirst'>
                                 <BookmarkBorderOutlinedIcon
