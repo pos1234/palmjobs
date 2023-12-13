@@ -126,22 +126,38 @@ const EmployerProfile = (props: any) => {
                     <option value="Transportation & Logisitics">Transportation & Logisitics</option>
                     <option value="Wholesale Trade">Wholesale Trade</option>
                     <option value="Creative & Media">Creative & Media</option>
-                    <option value="Automative">Automative</option>
+                    <option value="Automative">Automotive</option>
                     <option value="Pharmaceuticals">Pharmaceuticals</option>
                     <option value="Telecommunications">Telecommunications</option>
                     <option value="Food & Beverage">Food & Beverage</option>
                 </select>
                 {industryError && <p className="text-red-500 text-[13px] mt-2">{industryError}</p>}
-                <RequiredTextLabel text="Your Company's number of employee?" />
-                <input
+                <RequiredTextLabel text="Number of Employees in Your Company?" />
+                <select
+                    className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientFirst focus:ring-0 cursor-pointer w-full md:w-96"
+                    value={noEmployee}
+                    onChange={(e) => {
+                        setNoEmployee(e.currentTarget.value);
+                    }}
+                >
+                    <option value="">Select number of employees</option>
+                    <option value="1 to 10 Employees">1 to 10 Employees</option>
+                    <option value="11 to 50 Employees">11 to 50 Employees</option>
+                    <option value="51 to 200 Employees">51 to 200 Employees</option>
+                    <option value="201 to 500 Employees">201 to 500 Employees</option>
+                    <option value="501 to 1,000 Employees">501 to 1,000 Employees</option>
+                    <option value="1,000+ Employees">1,000+ Employees</option>
+                </select>
+                {/* <input
                     type="number"
                     className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientFirst focus:ring-0 hideIncrease w-full md:w-96"
                     value={parseInt(noEmployee, 10)}
                     onChange={(e) => setNoEmployee(e.currentTarget.value.toString())}
-                />
+                /> */}
                 {noEmployeeError && <p className="text-red-500 text-[13px] mt-2">{noEmployeeError}</p>}
                 <RequiredTextLabel text="Your Phone Number?" />
                 <PhoneInput
+                    defaultCountry="ET"
                     placeholder="Enter phone number"
                     value={phone}
                     onChange={setPhone}
@@ -150,8 +166,7 @@ const EmployerProfile = (props: any) => {
                     `}
                 />
                 {phoneError && <p className="text-red-500 text-[13px] mt-2">{phoneError}</p>}
-                {/*                 <TextInput placeHolder="+251 912345566" errorMessage={phoneError} value={phone} setFunction={setPhone} />
- */}                <RequiredTextLabel text="Company Location?" req="nReq" />
+                <RequiredTextLabel text="Company Location?" req="nReq" />
                 <TextInput placeHolder="" value={address} setFunction={setAddress} />
                 <RequiredTextLabel text="Website Link?" req="nReq" />
                 <TextInput placeHolder="" value={webLink} setFunction={setWebLink} />

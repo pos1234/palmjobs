@@ -24,8 +24,6 @@ const Active = (props: any) => {
     };
     useEffect(() => {
         getPosted(props.jobId);
-        console.log('job id changed', props.jobId);
-
     }, [props.jobId]);
     return (
         <div className='flex w-full max-md:flex-wrap gap-6 max-md:px-2'>
@@ -80,7 +78,7 @@ const Active = (props: any) => {
                             <ArrowBackIcon /> Back To Candidate List
                         </p>
 
-                        <CandidateDetail jobId={props.jobId} /* setShortListed={props.setShortListed} */ detailData={candidateDetail} imageLinkValue={imageUrl} short={false} />
+                        <CandidateDetail jobId={props.jobId} detailData={candidateDetail} imageLinkValue={imageUrl} short={false} />
                     </div>}
             </div>
         </div>

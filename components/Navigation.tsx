@@ -178,13 +178,15 @@ const Navigation = (props: any) => {
                                     </div>
                                 </div>
                                 <div className="hidden justify-items-end md:flex md:items-center mb-[2px]">
-                                    <Link
-                                        href="/account"
-                                        className="text-textW flex items-center gap-2 justify-center bg-black h-[42px] w-[166px] rounded-[3px] hover:border-b-[4px] hover:border-b-gradientFirst buttonBounce"
-                                    >
-                                        <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
-                                        <p className='font-[400] text-[16px]'>Post Job</p>
-                                    </Link>
+                                    <div className='bg-gradientFirst rounded-[3px]'>
+                                        <Link
+                                            href="/account"
+                                            className="text-textW flex items-center gap-2 justify-center bg-black h-[42px] w-[166px] rounded-[3px] buttonBounce"
+                                        >
+                                            <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
+                                            <p className='font-[400] text-[16px]'>Post Job</p>
+                                        </Link>
+                                    </div>
                                 </div>
                             </>
                         )}

@@ -14,7 +14,7 @@ import { employeeAuth } from '@/components/withAuth';
 import { useGlobalContext } from '@/contextApi/userData';
 import EmployerJobShimmer from '@/components/shimmer/EmpJobShimmer';
 const PostAJob = (props: any) => {
-    const { jobPostTabs, allLoading } = useJobPostContext();
+    const { jobPostTabs, allLoading, allEmployerJobs, setAllLoading, setAllEmployerJobs, setPostingTabs } = useJobPostContext();
     const { userDetail } = useGlobalContext()
     const [compDesc, setCompDesc] = useState('');
     const [openPreview, setOpenPreview] = useState(false);
@@ -34,7 +34,7 @@ const PostAJob = (props: any) => {
             }
         }
     };
-    /* useEffect(() => {
+    useEffect(() => {
         if (!allEmployerJobs) {
             setAllLoading(true)
             fetchAllEmployerJob().then((res: any) => {
@@ -57,7 +57,7 @@ const PostAJob = (props: any) => {
                 console.log(error);
             })
         }
-    }, []) */
+    }, [])
     useEffect(() => {
         getProfile();
     }, [userDetail, jobPostTabs])
@@ -98,10 +98,10 @@ const PostAJob = (props: any) => {
                 <div className={jobPostTabs.chooseJob ? '' : 'hidden'}>
                     <ChooseJob />
                 </div>
-                <div className={jobPostTabs.first == true ? '' : 'hidden'}>
+                <div className={jobPostTabs.first ? '' : 'hidden'}>
                     <FirstForm />
                 </div>
-                <div className={jobPostTabs.second == true ? '' : 'hidden'} >
+                <div className={jobPostTabs.second ? '' : 'hidden'} >
                     <SecondForm />
                 </div>
                 <div className={jobPostTabs.third == true && profileFilled == true ? '' : 'hidden'}>

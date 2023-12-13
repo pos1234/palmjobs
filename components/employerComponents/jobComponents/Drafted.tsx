@@ -1,16 +1,20 @@
 import { deleteDraftedJobs, fetchDraftedJobs, } from '@/backend/employerBackend';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EmployerJobShimmer from '../../shimmer/EmpJobShimmer';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
 import { useJobPostContext } from '@/contextApi/jobPostData';
+import { useRouter } from 'next/router';
 const DraftedJobs = (props: any) => {
+    const router = useRouter()
     const { handleJobSelection, setPostingTabs, jobPostTabs } = useJobPostContext()
     const handleSelection = (id: string) => {
         handleJobSelection(id)
-        props.handleFullEdit()
+/*         props.handleFullEdit()
+ */        typeof window !== 'undefined' && router.push('/users/employer/post')
+
         setPostingTabs({
             ...jobPostTabs,
             chooseJob: false,

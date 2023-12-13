@@ -59,7 +59,9 @@ const GlobalContext = createContext<FirstTabData>({
     setFourthTabData: () => { },
     setAllEmployerJobs: () => { },
     setPostingJobId: () => { },
-    handleJobSelection: (id: string, postingType?: string) => { }
+    setAllLoading: () => { },
+    handleJobSelection: (id: string, postingType?: string) => { },
+    handleDiscard: () => { }
 });
 export const JobPostContextProvider = ({ children }: any) => {
     const [jobPostTabs, setPostingTabs] = useState({
@@ -80,15 +82,6 @@ export const JobPostContextProvider = ({ children }: any) => {
         locationError: '',
         openPositions: 1,
     })
-    type numbers = number | string;
-    interface secondTab {
-        loading: boolean,
-        workType: string,
-        minSalary: numbers,
-        maxSalary: numbers,
-        currency: string,
-        expRequired: string
-    }
     const [secondTabData, setSecondTabData] = useState({
         loading: false,
         workType: 'Full-Time',
@@ -141,6 +134,54 @@ export const JobPostContextProvider = ({ children }: any) => {
             console.log(error);
         })
     }, [])
+    const handleDiscard = () => {
+        setPostingTabs({
+            first: false,
+            second: false,
+            third: false,
+            fourth: false,
+            chooseJob: true
+        })
+        setFirstTabData({
+            loading: false,
+            jobTitle: '',
+            jobTitleError: '',
+            remote: false,
+            hybrid: false,
+            addLocation: true,
+            location: '',
+            locationError: '',
+            openPositions: 1,
+        })
+        setSecondTabData({
+            loading: false,
+            workType: 'Full-Time',
+            minSalary: '',
+            maxSalary: '',
+            currency: 'ETB',
+            expRequired: '0-2 years',
+        })
+        setThirdTabData({
+            loading: false,
+            skillArray: [],
+            skillError: '',
+            jobDesc: '',
+            jobDescError: ''
+        })
+        setFourthTabData({
+            loading: false,
+            emailSent: '',
+            externalLink: '',
+            deadline: `${fifteenthDay}`,
+            palm: true,
+            email: false,
+            emailError: '',
+            link: '',
+            linkError: '',
+            emailNotify: ''
+        })
+        setPostingJobId('')
+    }
     const handleJobSelection = (id: string, postType?: string) => {
         postType && postType == 'duplicate' ? null : setPostingJobId(id)
         const selectedJob = allEmployerJobs && allEmployerJobs.filter((job: any) => job.$id == id)
@@ -211,9 +252,10 @@ export const JobPostContextProvider = ({ children }: any) => {
             fourthTabData, setFourthTabData,
             allEmployerJobs, setAllEmployerJobs,
             jobPostTabs, setPostingTabs,
-            allLoading,
+            allLoading, setAllLoading,
             handleJobSelection,
-            postingJobId, setPostingJobId
+            postingJobId, setPostingJobId,
+            handleDiscard
         }} >
         {children}
     </GlobalContext.Provider >

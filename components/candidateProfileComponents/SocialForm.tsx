@@ -35,8 +35,9 @@ const SocialForm = (props: any) => {
             return false;
         }
     };
-    const isValidPhone = (phone: string) => {
-        return isValidPhoneNumber(phone.toString())
+    const isValidPhone = (phones: string) => {
+        const result = phones && isValidPhoneNumber(phones.toString())
+        return result
     }
 
     const hanleLinkUpdate = (e: React.FormEvent<HTMLElement>) => {
@@ -50,7 +51,7 @@ const SocialForm = (props: any) => {
         setPhoneError('');
         if (name == '') {
             setNameError(true)
-        } else if (phone !== '' && !isValidPhone(phone)) {
+        } else if (phone && !isValidPhone(phone)) {
             setPhoneError('Ivalid phone');
         } else if (linked !== '' && !isValidUrl(linked)) {
             setLinkedError(linkText);
@@ -132,7 +133,7 @@ const SocialForm = (props: any) => {
                             <div className="flex flex-col gap-3">
                                 <p className="font-fhW w-full text-smS leading-shL">Phone</p>
                                 <PhoneInput
-                                    placeholder="Enter phone number"
+                                    defaultCountry="ET" placeholder="Enter phone number"
                                     value={phone}
                                     onChange={setPhone}
                                     className='h-12 px-3 phoneInput bg-white rounded-xl border border-gray-200 focus:border-gradientSecond focus:ring-0 w-full hideIncrease'

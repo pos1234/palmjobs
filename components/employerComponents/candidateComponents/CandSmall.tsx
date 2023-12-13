@@ -4,8 +4,6 @@ import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
 import { ProfilePic } from '@/components/JobImage';
 const CandSmall = (props: any) => {
     const [candidateData, setCandidateData] = useState<any>();
-    const [shortListed, setShortListed] = useState<any>();
-    const [active, seActive] = useState(false);
     const [skill, setSkill] = useState<any>([]);
     const [imageHref, setImageHref] = useState('');
     useEffect(() => {

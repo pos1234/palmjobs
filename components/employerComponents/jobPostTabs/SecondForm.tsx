@@ -7,7 +7,7 @@ import { useJobPostContext } from '@/contextApi/jobPostData';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const expData = ['0-2 years', '3-5 years', '6-8 years', '9-10 years', '10+ years'];
 const SecondForm = (props: any) => {
-    const { secondTabData, setSecondTabData, postingJobId, jobPostTabs, setPostingTabs } = useJobPostContext()
+    const { secondTabData, setSecondTabData, postingJobId, jobPostTabs, setPostingTabs, handleDiscard } = useJobPostContext()
     const handleSecondSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setSecondTabData({
@@ -107,6 +107,9 @@ const SecondForm = (props: any) => {
             <div className="flex pt-10 justify-between gap-5 max-sm:flex-wrap">
                 <div onClick={handleBack} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
                     <ArrowBackIcon sx={{ fontSize: '1rem' }} /> <span className='ml-2'>Back</span>
+                </div>
+                <div onClick={handleDiscard} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
+                    Discard
                 </div>
                 <div className='w-full md:w-60'>
                     <SubmitButton loading={secondTabData.loading} buttonText="Continue" />
