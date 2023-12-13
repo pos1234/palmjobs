@@ -96,28 +96,6 @@ export const searchJobs = async (
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, query);
     return promise;
 };
-/* export const fetchJobs = async (limit: number, offset: number) => {
-    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
-        Query.equal('jobStatus', 'Active'),
-        Query.orderAsc('datePosted'),
-        Query.limit(limit),
-        Query.offset(offset)
-    ]);
-    return promise;
-};
-export const countActiveJobs = async () => {
-    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('jobStatus', 'Active'), Query.limit(1)]);
-    return promise;
-}; */
-/* export const fetchJobs = async () => {
-    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
-        Query.limit(100),
-        Query.offset(0),
-        Query.equal('jobStatus', 'Active'),
-        Query.orderAsc('datePosted')
-    ]);
-    return promise;
-}; */
 export const checkEmailAppliation = (id: string) => {
     const [jobs, setJobs] = useState('');
     const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('$id', id)]);
@@ -329,6 +307,17 @@ export const shortListedCandidate = async (jobId: string, candId: string) => {
                 });
             return null;
         });
+        return promise;
+    }
+};
+export const checkShortListed = async (jobId: string, candId: string) => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [
+            Query.equal('employerId', userAccount.$id),
+            Query.equal('jobId', jobId),
+            Query.equal('candidateId', candId)
+        ]);
         return promise;
     }
 };

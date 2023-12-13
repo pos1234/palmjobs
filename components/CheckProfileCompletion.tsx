@@ -7,7 +7,7 @@ import { useGlobalContext } from '@/contextApi/userData';
 const CheckProfileCompletion = () => {
     const [visible, setVisible] = useState(false)
     const [profilePercent, setProfilePercent] = useState(0);
-    const { userDetail } = useGlobalContext()
+    const { userDetail, userRole } = useGlobalContext()
     useEffect(() => {
 /*         getCandidateDocument().then((res: any) => {
  */            var percent = 0;

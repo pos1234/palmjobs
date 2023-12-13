@@ -11,7 +11,9 @@ import JobListCard from '@/components/job/JobListCard';
 import JobDetail from '@/components/job/JobDetail';
 import SearchBar from '@/components/job/SearchBar';
 import CheckProfileCompletion from '@/components/CheckProfileCompletion';
+import { useGlobalContext } from '@/contextApi/userData';
 const Jobs = () => {
+    const { userRole } = useGlobalContext()
     const router = useRouter();
     const [datePostedHolder, setDatePostedHolder] = useState('');
     const [expLevelHolder, setExpLevelHolder] = useState('');
@@ -234,9 +236,8 @@ const Jobs = () => {
                                                 : 'flex flex-col max-h-[800px] gap-y-3 overflow-auto hideScrollBar h-[800px] md:w-1/2  lg:w-1/3 md:flex xl:w-[458px]'
                                         }
                                     >
-                                        {/* currentData && currentData.length !== 0 && */ data && data.length !== 0 && <CheckProfileCompletion />}
-                                        {/* currentData &&
-                                            currentData */data &&
+                                        {data && data.length !== 0 && userRole && userRole == 'candidate' && <CheckProfileCompletion />}
+                                        {data &&
                                             data.map((items: any, index: number) => {
                                                 return <JobListCard items={items} key={index} jobDetailId={jobDetailId} setEmployerId={setEmployerId} setJobDetailId={setJobDetailId} setOpenJobDetail={setOpenJobDetail} handleJobSelection={handleJobSelection}
                                                 />

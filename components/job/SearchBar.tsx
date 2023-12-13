@@ -26,7 +26,7 @@ const SearchBar = (props: any) => {
                             onChange={(e) => {
                                 props.setAddressHolder(e.currentTarget.value);
                             }}
-                            className="h-full w-full bg-gray-100 px-10 py-3 rounded-r-full border-[1px] border-gray-100 outline-none focus:border-gradientFirst focus:ring-0 focus:outline-none"
+                            className="h-full w-full bg-gray-100 pl-10 py-3 rounded-r-full border-[1px] border-gray-100 outline-none focus:border-gradientFirst focus:ring-0 focus:outline-none"
                             placeholder="Where"
                         />
                     </div>

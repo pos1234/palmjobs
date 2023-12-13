@@ -14,7 +14,6 @@ import Share from '../Share';
 import { SmallLists, SubmitButton } from '../TextInput';
 import { Popover } from '@headlessui/react';
 import { alreadySaved, saveJobs } from '@/backend/candidateBackend';
-import { getAccount, getRole } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/dist/client/router';
 import moment from 'moment';
@@ -230,7 +229,7 @@ const JobListCard = (props: any) => {
                         </p>
                     )}
                     {props.items.jobLocation && (
-                        <p className="text-gray-400 text-[14px] font-[400] flex items-center gap-1">
+                        <p className="text-[#141414B2] text-[14px] font-[400] flex items-center gap-1">
                             <PlaceOutlinedIcon sx={{ fontSize: '1rem' }} />
                             {props.items.jobLocation}
                         </p>
@@ -280,12 +279,12 @@ const JobListCard = (props: any) => {
                     />
                 )}
             </div>
-            <div className="w-full text-[#20262E] text-sm leading-[24px] overflow-hiddenc pr-2">
+            <div className="w-full text-[#20262E] text-[11px] leading-[24px] overflow-hiddenc pr-2">
                 <div className="w-full">
                     {removeHtmlTags(props.items.jobDescription)}....
                 </div>
             </div>
-            {isToday && isToday ? <p className='text-[12px]'>posted today</p> : isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
+            {isToday && isToday ? <p className='text-[12px]'>Posted Today</p> : isWithinWeek ? days == 0 ? <p className='text-[12px]'>Posted Today</p> : <p className='text-[12px]'>Posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>Posted {weeks} weeks ago</p> : <p className='text-[12px]'>Posted {Math.floor(weeks / 4)} month ago</p>}
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.items.$id} />
             <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={'Survey'} text={''} tipText={"Thank you for helping us maintain a professional and safe environment on our job board. If you've found a job listing that violates our terms or seems inappropriate, please provide the information below to assist our review."}>
                 <form onSubmit={handleReportSubmit} className="w-full flex flex-col h-full md:max-lg:items-center">

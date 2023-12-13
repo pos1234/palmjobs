@@ -59,7 +59,6 @@ const Footer = () => {
                             </p>
                         </div>
                         <div className={` flex-col gap-3 max-md:mt-3 ${palm ? 'flex' : 'max-md:hidden md:flex'}`}>
-                            <LinkList link="/faq" text="FAQ" />
                             <LinkList link="/about" text="About" />
                         </div>
                     </div>
@@ -151,9 +150,8 @@ const Footer = () => {
                             </p>
                         </div>
                         <div className="hidden md:flex flex-col gap-3 pt-3 text-lightGrey text-[18px] font-[400] leading-midRL">
-                            <div>
-                                Help center
-                            </div>
+                            <LinkList link="/faq" text="Help Center" />
+
                             <div>
                                 Contact support
                             </div>
@@ -197,10 +195,10 @@ const Footer = () => {
             </div>
             <div className="my-3 flex max-md:flex-wrap gap-x-8 gap-y-3">
                 <div className='flex md:w-2/3 justify-end gap-x-8 gap-y-3'>
-                    <p>© Palm Jobs {year.getFullYear()}</p>
+                    <p>© {year.getFullYear()} Palm Jobs. All rights reserved.</p>
                     <div className='flex'>
                         <Link href='/terms/policy' className='hover:text-gradientFirst hover:underline'>Privacy </Link>
-                        <div className='text-sm flex items-end px-1'> / </div>
+                        <div className='text-sm flex items-end px-1'> | </div>
                         <Link href='/terms/terms' className='hover:text-gradientFirst hover:underline'> Terms</Link>
                     </div>
                 </div>

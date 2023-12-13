@@ -19,7 +19,6 @@ import ApplyToJob from '../candidateProfileComponents/ApplyToJobs';
 import { SmallLists } from '../TextInput';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { fetchCandidateDetail } from '@/backend/employerBackend';
 import moment from 'moment';
 import { useGlobalContext } from '@/contextApi/userData';
 import ConfirmModal from '../ConfirmModal';
@@ -79,7 +78,7 @@ const JobDetail = (props: any) => {
     };
     useEffect(() => {
         checkApplied()
-    }, [userDetail, props])
+    }, [userDetail, props.jobDetails])
     const handleApply = async (jobId: string, employerId: string, jobTitle: string) => {
         setApply(false);
         if (userRole) {
@@ -179,7 +178,7 @@ const JobDetail = (props: any) => {
                                 </p>
                             )}
                             {props.jobDetails.jobLocation && (
-                                <p className="text-gray-400 text-[14px] flex items-center gap-1">
+                                <p className="text-[#141414B2] text-[14px] flex items-center gap-1">
                                     <PlaceOutlinedIcon
                                         sx={{ fontSize: '1rem' }}
                                     />
@@ -329,7 +328,7 @@ const JobDetail = (props: any) => {
                                     </div>
                                     <div
                                         dangerouslySetInnerHTML={{ __html: props.jobDetails.jobDescription }}
-                                        className="text-[14px] text-[#727272] min-h-[180px]"
+                                        className="text-[12px] text-[#727272] min-h-[180px]"
                                     />
 
                                 </div>
@@ -369,7 +368,7 @@ const JobDetail = (props: any) => {
                                 </div>
                                 <div
                                     dangerouslySetInnerHTML={{ __html: props.companyData.description }}
-                                    className="text-[14px] text-lightGrey overflow-y-auto hideScrollBar min-h-96 max-h-96 overflow-y-auto hideScrollBar"
+                                    className="text-[12px] text-lightGrey overflow-y-auto hideScrollBar min-h-96 max-h-96 overflow-y-auto hideScrollBar"
                                 />
                             </div>
                         )}
