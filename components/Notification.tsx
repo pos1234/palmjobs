@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import ConfirmModal from './ConfirmModal';
 import CloseIcon from '@mui/icons-material/Close';
+import { useRouter } from 'next/router';
 const Notification = (props: any) => {
+    const router = useRouter()
     return (
         <ConfirmModal
             isOpen={props.openNotify}
             handleClose={() => {
                 props.setOpenNotify(!props.openNotify);
+
 
             }}
         >
@@ -16,6 +19,8 @@ const Notification = (props: any) => {
                         <button className="self-end" onClick={() => {
                             props.setSetterFunction(false)
                             props.setOpenNotify(!props.openNotify)
+                            typeof window !== 'undefined' && router.reload();
+
                         }}>
                             <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
                         </button>

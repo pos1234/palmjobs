@@ -111,7 +111,7 @@ const sendReset = ({ queryParams }: MyPageProps) => {
                         }
                     />
                     <span onClick={() => setVisible(!visible)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
-                        {visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                        {visible ? <VisibilityIcon sx={{fontSize:'1.2rem'}}/> : <VisibilityOffIcon sx={{fontSize:'1.2rem'}}/>}
                     </span>
                 </div>
                 <p className="col-span-12 float-left font-thW text-smS mt-5 mb-0 leading-shL">Confirm Password</p>

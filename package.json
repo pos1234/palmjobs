@@ -34,6 +34,7 @@
         "react-dom": "^18.2.0",
         "react-drag-drop-files": "^2.3.10",
         "react-markdown": "^8.0.7",
+        "react-phone-number-input": "^3.3.7",
         "react-quill": "^2.0.0",
         "react-responsive-carousel": "^3.2.23",
         "react-toastify": "^9.1.3",

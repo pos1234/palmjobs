@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react'
 import RadioInput from '../RadioInput'
 import { getProfileData, updateEmailNotification } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
+import { SubmitButton } from '../TextInput';
 
 const ChooseEmail = () => {
     const [receive, setReceive] = useState('')
     const [loading, setLoading] = useState(false);
-
-    const loadingIn = '/images/loading.svg';
     useEffect(() => {
         getProfileData().then((res: any) => {
 
@@ -42,27 +41,16 @@ const ChooseEmail = () => {
         }
     }
     return (
-        <div className="pt-5 pb-10 bg-textW grid grid-cols-12 max-sm:px-5 sm:pl-10 xl:pr-28 xl:px-20">
-            <div className="col-span-12  order-1 md:order-2 flex flex-col gap-y-2 md:px-5 lg:px-10 xl:px-20 md:col-span-6 xl:col-span-9">
-                <p className="col-span-12 font-frhW  text-[#0E121D] text-[1.5rem] xl:text-frhS">Choose to receive email notification</p>
+        <div className="pt-5 pb-10 flex max-sm:px-5 sm:pl-10 xl:pr-28 border-y-2 my-5 xl:px-20">
+            <div className="flex flex-col gap-y-2 w-full md:w-2/3">
+                <p className="font-frhW  text-[#0E121D] text-frhS">Choose to receive email notification</p>
                 <form onSubmit={handleRadioUpdate} className='flex flex-col gap-y-5 mt-5'>
                     <RadioInput setFunction={setReceive} checked={receive == 'true' ? 'checked' : ''} radioValue="true" radioName="emailReceive" radioText="I agree to receive email notifications" />
                     <RadioInput setFunction={setReceive} checked={receive == 'false' ? 'checked' : ''} radioValue="false" radioName="emailReceive" radioText="I do not agree to receive email notifications" />
-                    <div className="col-span-12 grid grid-cols-12 justify-items-end pr-2 lg:col-span-10">
-                        {loading && (
-                            <img
-                                src={loadingIn}
-                                className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
-                            />
-                        )}
-                        {!loading && (
-                            <button
-                                type="submit"
-                                className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
-                            >
-                                Update
-                            </button>
-                        )}
+                    <div className="w-full justify-end flex mt-10">
+                        <div className='w-full md:w-60'>
+                            <SubmitButton loading={loading} buttonText={'Update'} />
+                        </div>
                     </div>
                 </form>
             </div>

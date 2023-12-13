@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import Notification from '../Notification';
 import { SubmitButton } from '../TextInput';
 const RegisterComponent = (props: any) => {
-    const loadingIn = '/images/loading.svg';
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [firstNameError, setFirstNameError] = useState('');
@@ -92,7 +91,7 @@ const RegisterComponent = (props: any) => {
     };
     return (
         <>
-            <form onSubmit={handleRegister} className="w-full flex gap-5 flex-wrap text-left md:pr-0 gap-x-5">
+            <form onSubmit={handleRegister} className="w-full flex gap-5 flex-wrap text-left mt-5 md:pr-0 gap-x-5">
                 <div className='w-full gap-5 flex max-sm:flex-col md:flex-col xl:flex-row'>
                     <div className='flex-grow'>
                         <p className="font-thW text-smS mb-2 leading-shL">First name</p>
@@ -103,8 +102,8 @@ const RegisterComponent = (props: any) => {
                             placeholder="Enter First Name"
                             className={
                                 firstNameError
-                                    ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                                    : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
+                                    ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-lg h-12 pl-5 text-addS'
+                                    : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-lg h-12 pl-5 text-addS'
                             }
                         />
                         {firstNameError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{firstNameError}</p>}
@@ -118,8 +117,8 @@ const RegisterComponent = (props: any) => {
                             placeholder="Enter Last Name"
                             className={
                                 lastNameError
-                                    ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                                    : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
+                                    ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-lg h-12 pl-5 text-addS'
+                                    : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-lg h-12 pl-5 text-addS'
                             }
                         />
                         {lastNameError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{lastNameError}</p>}
@@ -134,8 +133,8 @@ const RegisterComponent = (props: any) => {
                         placeholder="Enter your Email"
                         className={
                             emailError
-                                ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                                : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
+                                ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-lg h-12 pl-5 text-addS'
+                                : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-lg h-12 pl-5 text-addS'
                         }
                     />
                     {emailError && <p className=" pt-3 text-[13px] text-red-500">{emailError}</p>}
@@ -151,8 +150,8 @@ const RegisterComponent = (props: any) => {
                                 placeholder="Enter Your Password"
                                 className={
                                     passwordError
-                                        ? 'focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                                        : 'focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
+                                        ? 'focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-lg h-12 pl-5 text-addS'
+                                        : 'focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-lg h-12 pl-5 text-addS'
                                 }
                             />
                             <span onClick={() => setVisible(!visible)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
@@ -169,8 +168,8 @@ const RegisterComponent = (props: any) => {
                             placeholder="Retype password"
                             className={
                                 passwordError
-                                    ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                                    : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
+                                    ? 'col-span-12 focus:outline-0 focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-lg h-12 pl-5 text-addS'
+                                    : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-lg h-12 pl-5 text-addS'
                             }
                         />
                         {passwordError && <p className="pt-3 text-[13px] text-red-500">{passwordError}</p>}

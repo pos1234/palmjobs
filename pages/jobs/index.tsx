@@ -219,13 +219,10 @@ const Jobs = () => {
                                         <option value="Past 24hrs">Past 24hrs</option>
                                         <option value="Past week">Past week</option>
                                         <option value="Past month">Past month</option>
-                                        {/* <option value="Past 24hrs">Past 24hrs</option>
-                                        <option value="Past week">Past week</option>
-                                        <option value="Past month">Past month</option> */}
                                     </select>
                                 </div>
                                 {
-                                    /* currentData && currentData.length == 0 && */ data && data.length == 0 && <div className='w-full items-center h-60 flex justify-center'>
+                                    data && data.length == 0 && <div className='w-full items-center h-60 flex justify-center'>
                                         <p className='text-xl font-[500] w-full text-center leading-[40px] flex justify-center flex-wrap xl:w-[70%]'> Looks like there aren't any matches right now. <br /> Why not try some different keywords or tweak your filters?</p>
                                     </div>
                                 }
@@ -265,65 +262,66 @@ const Jobs = () => {
                                     </div>
 
                                 </div>
-
                             </div>
                         </div>
-                        <div
-                            className={
-                                pageCount && pageCount !== 0 && pageCount > 1
-                                    ? openJobDetail
-                                        ? 'col-span-5 flex justify-center items-center gap-x-3 mt-4 max-md:hidden'
-                                        : 'flex justify-center items-center gap-x-3 mt-4 col-span-12 md:col-span-6 lg:col-span-5'
-                                    : 'hidden'
-                            }
-                        >
-                            <button
-                                id="paginationBackWardButton"
-                                name="paginationBackWardButton"
-                                aria-labelledby="paginationBackWardButton"
+                        <div className='col-span-12 mt-10 flex justify-center lg:ml-5 xl:ml-44 w-full md:w-[458px]'>
+                            <div
                                 className={
-                                    maxPaginate > 5 && pageCount && pageCount !== 0 && pageCount > 5
-                                        ? 'border bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 text-center'
+                                    pageCount && pageCount !== 0 && pageCount > 1
+                                        ? openJobDetail
+                                            ? 'col-span-5 flex justify-center items-center gap-x-3 mt-4 max-md:hidden'
+                                            : 'flex justify-center b items-center gap-x-3 mt-4 col-span-12 md:col-span-6 lg:col-span-5'
                                         : 'hidden'
                                 }
-                                onClick={previousPage}
                             >
-                                <ArrowBackIosIcon sx={{ fontSize: '1rem' }} />
-                            </button>
-                            {[...Array(pageCount)].map((_, index) => (
                                 <button
-                                    id={`${index}`}
-                                    name={`${index}`}
-                                    aria-labelledby={`${index}`}
-                                    key={index}
+                                    id="paginationBackWardButton"
+                                    name="paginationBackWardButton"
+                                    aria-labelledby="paginationBackWardButton"
                                     className={
-                                        index + 1 < maxPaginate && index + 2 > minPaginate
-                                            ? currentPage == index + 1
-                                                ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-md px-3 py-1 mx-1 text-white'
-                                                : 'hover:bg-gray-200 hover:border-gray-200 border border-gray-400 rounded-md px-3 py-1 mx-1'
+                                        maxPaginate > 5 && pageCount && pageCount !== 0 && pageCount > 5
+                                            ? 'border bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 text-center'
                                             : 'hidden'
                                     }
-                                    onClick={() => {
-                                        changePage(index + 1)
-                                        handleFetchPagination(index + 1)
-                                    }}
+                                    onClick={previousPage}
                                 >
-                                    {index + 1}
+                                    <ArrowBackIosIcon sx={{ fontSize: '1rem' }} />
                                 </button>
-                            ))}
-                            <button
-                                aria-labelledby="paginationForwardButton"
-                                id="paginationForwardButton"
-                                name="paginationForwardButton"
-                                className={
-                                    pageCount && pageCount !== 0 && maxPaginate < pageCount
-                                        ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 '
-                                        : 'hidden'
-                                }
-                                onClick={nextPage}
-                            >
-                                <ArrowForwardIosIcon sx={{ fontSize: '1rem' }} />
-                            </button>
+                                {[...Array(pageCount)].map((_, index) => (
+                                    <button
+                                        id={`${index}`}
+                                        name={`${index}`}
+                                        aria-labelledby={`${index}`}
+                                        key={index}
+                                        className={
+                                            index + 1 < maxPaginate && index + 2 > minPaginate
+                                                ? currentPage == index + 1
+                                                    ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond rounded-md px-3 py-1 mx-1 text-white'
+                                                    : 'hover:bg-gray-200 hover:border-gray-200 border border-gray-400 rounded-md px-3 py-1 mx-1'
+                                                : 'hidden'
+                                        }
+                                        onClick={() => {
+                                            changePage(index + 1)
+                                            handleFetchPagination(index + 1)
+                                        }}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                ))}
+                                <button
+                                    aria-labelledby="paginationForwardButton"
+                                    id="paginationForwardButton"
+                                    name="paginationForwardButton"
+                                    className={
+                                        pageCount && pageCount !== 0 && maxPaginate < pageCount
+                                            ? 'bg-gradient-to-r from-gradientFirst to-gradientSecond text-white rounded-md px-3 py-1 '
+                                            : 'hidden'
+                                    }
+                                    onClick={nextPage}
+                                >
+                                    <ArrowForwardIosIcon sx={{ fontSize: '1rem' }} />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { SubmitButton } from '../TextInput';
 const ForgotPassword = (props: any) => {
-    const loadingIn = '/images/loading.svg';
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -36,9 +35,9 @@ const ForgotPassword = (props: any) => {
         }
     };
     return (
-        <form onSubmit={handleReset} className="w-full grid grid-cols-12 gap-y-3 pl-5 pr-3 sm:pr-0 sm:max-md:px-40 md:pl-0 lg:pl-20">
-            <p className="col-span-12 font-frhW text-frhS text-[#0E121D]">Reset your password</p>
-            <p className="col-span-6 text-left font-thW text-smS mt-5 mb-2 leading-shL">Email Address</p>
+        <form onSubmit={handleReset} className="w-full flex flex-col gap-y-3 pt-20 ">
+            <p className="font-frhW text-frhS text-[#0E121D]">Reset your password</p>
+            <p className="text-left font-thW text-smS mt-5 mb-2 leading-shL">Email Address</p>
             <input
                 value={email}
                 onChange={(e) => setEmail(e.currentTarget.value)}
@@ -51,36 +50,21 @@ const ForgotPassword = (props: any) => {
                 }
             />
             {emailError && <p className="col-span-12 pt-3 text-[13px] text-red-500 text-left">{emailError}</p>}
-            <div className="col-span-12 grid grid-cols-12 justify-items-end pr-2 lg:col-span-10">
-                <div className='w-full col-span-12 flex md:justify-end'>
-                    <div className='w-full pt-5'>
-                        <SubmitButton loading={loading} buttonText="Continue" />
-                    </div>
+            <div className='flex items-center gap-3 max-md:flex-wrap mt-10 w-full'>
+                <div className='w-full md:flex-grow order-2 md:order-2'>
+                    <SubmitButton loading={loading} buttonText="Continue" />
                 </div>
-                {/* {loading && (
-                    <img
-                        src={loadingIn}
-                        className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
-                    />
-                )}
-                {!loading && (
+                <div className="w-full md:flex-grow order-2 md:order-1">
                     <button
-                        type="submit"
-                        className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
+                        type="button"
+                        onClick={() => props.setFunction(false)}
+                        className="bg-[#F8F8F8] text-darkBlue h-14 w-full rounded-lg"
                     >
-                        Continue
+                        Return to Login
                     </button>
-                )} */}
+                </div>
             </div>
-            <div className="col-span-12 grid grid-cols-12 justify-items-end pr-2 lg:col-span-10">
-                <button
-                    type="button"
-                    onClick={() => props.setFunction(false)}
-                    className="mt-5 col-span-12 bg-[#F8F8F8] text-darkBlue h-16 w-full rounded-xl"
-                >
-                    Return to Login
-                </button>
-            </div>
+
         </form>
     );
 };

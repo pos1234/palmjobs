@@ -59,7 +59,7 @@ const Login = () => {
                             setUserData(loggedIn)
                             console.log(userData);
 
-                             typeof window !== 'undefined' && router.push('/jobs');
+                            typeof window !== 'undefined' && router.push('/jobs');
                         }
                     }
                 }).catch((error) => {
@@ -109,12 +109,12 @@ const Login = () => {
                     )}
                     {forgotPassword == false && (
                         <div className='flex justify-center w-80'>
-                            <div className="bg-[#FAFAFA] w-full rounded-xl h-16 p-2 flex">
+                            <div className="bg-[#FAFAFA] w-full rounded-lg h-16 p-2 flex">
                                 <button
                                     className={
                                         register == false
-                                            ? 'w-1/2 h-11 bg-gradientFirst text-textW rounded-xl cursor-pointer'
-                                            : 'w-1/2 h-11 rounded-xl cursor-pointer'
+                                            ? 'w-1/2 h-11 bg-gradientFirst text-textW rounded-lg cursor-pointer'
+                                            : 'w-1/2 h-11 rounded-lg cursor-pointer'
                                     }
                                     onClick={() => {
                                         setRegister(false);
@@ -126,8 +126,8 @@ const Login = () => {
                                 <button
                                     className={
                                         register == true
-                                            ? 'w-1/2 h-11 bg-gradientFirst h-full text-textW rounded-xl cursor-pointer'
-                                            : 'w-1/2 h-11 rounded-xl cursor-pointer'
+                                            ? 'w-1/2 h-11 bg-gradientFirst h-full text-textW rounded-lg cursor-pointer'
+                                            : 'w-1/2 h-11 rounded-lg cursor-pointer'
                                     }
                                     onClick={() => setRegister(true)}
                                 >
@@ -141,15 +141,15 @@ const Login = () => {
                             Building bridges, paving pathways. Dive into Palm Jobs.
                         </p>
                     )}
-                    {registerForm && (
-                        <p className="text-left text-midRS font-midRW leading-midRL text-[#5B5B5B] text-left">
+                    {/* {registerForm && (
+                        <p className="text-midRS w-full font-midRW leading-midRL text-[#5B5B5B] text-left">
                             <span className="text-smS inline-block mb-1">You're almost there!</span> <br />
                         </p>
-                    )}
+                    )} */}
                     {register && !registerForm && (
                         <>
 
-                            <div className="bg-skillColor w-full mt-5 grid grid-cols-12 py-3 px-2 gap-x-3 gap-y-5 rounded-lg md:gap-y-0 md:gap-x-5 xl:gap-x-10">
+                            <div className="bg-[#FAFAFA] w-full flex p-2 rounded-lg gap-2 max-sm:flex-wrap sm:h-[8rem]">
                                 <div
                                     onClick={() => {
                                         setGetJob(true);
@@ -157,8 +157,8 @@ const Login = () => {
                                     }}
                                     className={
                                         getJob
-                                            ? 'col-span-12 rounded-lg text-textW bg-gradient-to-r from-gradientFirst rounded-lg to-gradientSecond flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
-                                            : 'col-span-12 text-[#141417] rounded-lg hover:text-textW cursor-pointer hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond bg-textW flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
+                                            ? 'w-full rounded-lg text-textW bg-gradient-to-r from-gradientFirst rounded-lg to-gradientSecond flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:flex-grow sm:flex-col sm:justify-between'
+                                            : 'w-full text-[#141417] rounded-lg hover:text-textW cursor-pointer hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond bg-textW flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:w-flex-grow sm:flex-col sm:justify-between'
                                     }
                                 >
                                     <BusinessCenterOutlinedIcon />
@@ -171,24 +171,24 @@ const Login = () => {
                                     }}
                                     className={
                                         hireTalent
-                                            ? 'col-span-12 rounded-lg text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
-                                            : 'col-span-12 text-[#141417] rounded-lg hover:text-textW cursor-pointer hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond bg-textW flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:col-span-6 sm:flex-col sm:justify-between'
+                                            ? 'w-full rounded-lg text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:flex-grow sm:flex-col sm:justify-between'
+                                            : 'w-full text-[#141417] rounded-lg hover:text-textW cursor-pointer hover:bg-gradient-to-r hover:from-gradientFirst hover:to-gradientSecond bg-textW flex gap-x-3 text-left p-3 h-[5rem] items-left sm:h-[7rem] sm:flex-grow sm:flex-col sm:justify-between'
                                     }
                                 >
                                     <PersonAddAltOutlinedIcon />
                                     <p>Hire talent</p>
                                 </div>
                             </div>
-                            <div className="w-full grid grid-cols-12 justify-items-end pr-2">
+                            <div className="w-full flex justify-end">
                                 {!getJob && !hireTalent && (
-                                    <div className="mt-5 col-start-7 col-end-13 text-textW bg-gradientSecond flex items-center justify-center h-16 w-full rounded-xl">
+                                    <div className="bg-gray-100 text-gray-600 flex items-center justify-center h-16 w-full sm:w-60 rounded-lg">
                                         Continue
                                     </div>
                                 )}
                                 {(getJob || hireTalent) && (
                                     <button
                                         onClick={() => setRegisterForm(true)}
-                                        className="mt-5 col-start-7 col-end-13 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
+                                        className="bg-black text-textW flex items-center justify-center h-16 w-full sm:w-60 rounded-lg"
                                     >
                                         Continue
                                     </button>
@@ -197,7 +197,7 @@ const Login = () => {
                         </>
                     )}
                     {(register == false || registerForm == true) && forgotPassword == false && (
-                        <div className="w-full justify-center flex">
+                        <div className="w-full justify-center flex mt-3">
                             {
                                 registerForm == false && <button type='button' onClick={() => handleGoogleLogin()} className="w-full border-2 px-3 rounded-lg cursor-pointer h-11 text-addS flex items-center">
                                     <img src={google} alt="google" className="w-[1rem] h-[1rem] inline ml-3" /> <p className='flex-grow text-center'> Continue with Google</p>
@@ -225,7 +225,7 @@ const Login = () => {
                                     }
                                     type={visible ? 'text' : 'password'}
                                     placeholder="Enter password"
-                                    className={`h-12 pl-5 bg-white rounded-xl border focus:ring-gradientFirst focus:border-0 w-full ${passwordError ? 'border-red-500' : 'border-gray-200'}`}
+                                    className={`h-12 pl-5 bg-white rounded-lg border focus:ring-gradientFirst focus:border-0 w-full ${passwordError ? 'border-red-500' : 'border-gray-200'}`}
                                 />
                                 <span
                                     onClick={() => setVisible(!visible)}

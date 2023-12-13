@@ -29,7 +29,6 @@ const JobCard = (props: any) => {
     const router = useRouter()
     const { userData } = useGlobalContext()
     const { handleJobSelection, jobPostTabs, setPostingTabs, setAllEmployerJobs } = useJobPostContext()
-    const loadingIn = '/images/loading.svg';
     const [loading, setLoading] = useState(false);
     const [jobStatus, setJobStatus] = useState(props.jobStatus);
     const [openPreview, setOpenPreview] = useState(false);
@@ -46,8 +45,6 @@ const JobCard = (props: any) => {
     const [jobTitleError, setJobTitleError] = useState('');
     const [locationError, setLocationError] = useState('');
     const [openRolesError, setOpenRolesError] = useState('');
-    const [jobTypeError, setJobTypeError] = useState('');
-    const [salaryError, setSalaryError] = useState('');
     const [jobDescError, setJobDescError] = useState('');
     const [openShare, setOpenShare] = useState(false);
     const [noApplicant, setNoApplicant] = useState(0);
@@ -176,7 +173,7 @@ const JobCard = (props: any) => {
                                 items={props.jobType}
                             />
                         )}
-                        {props.datePosted && (
+                        {/*  {props.datePosted && (
                             <SmallLists
                                 icon={<img src='/icons/hourGlassUp.svg' />}
                                 items={new Date(props.datePosted)
@@ -191,7 +188,7 @@ const JobCard = (props: any) => {
                                     .toLocaleDateString('en-GB')
                                     .replace(/\//g, '-')}
                             />
-                        )}
+                        )} */}
                         <div onClick={() => handleApplicants(props.jobId)} className="inline cursor-pointer bg-[#FAFAFA] flex items-center gap-1 text-xs text-gradientFirst rounded-[4px] p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:h-[28px]">
                             <Groups2OutlinedIcon
                                 sx={{ fontSize: '1rem' }}
