@@ -9,11 +9,14 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import { addSocials, getCandidateDocument, getUserDetail } from '@/backend/candidateBackend';
 import { useGlobalContext } from '@/contextApi/userData';
 import { updateUserName } from '@/backend/employerBackend';
+import 'react-phone-number-input/style.css'
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 const SocialForm = (props: any) => {
     const { userData, userDetail } = useGlobalContext()
     const [name, setName] = useState('')
     const [nameError, setNameError] = useState(false)
-    const [phone, setPhone] = useState('')
+    const [phone, setPhone] = useState<any>()
+    const [phoneError, setPhoneError] = useState('')
     const [address, setAddress] = useState('')
     const [linked, setLinked] = useState('')
     const [linkedError, setLinkedError] = useState('')
@@ -32,6 +35,10 @@ const SocialForm = (props: any) => {
             return false;
         }
     };
+    const isValidPhone = (phone: string) => {
+        return isValidPhoneNumber(phone.toString())
+    }
+
     const hanleLinkUpdate = (e: React.FormEvent<HTMLElement>) => {
         setNameError(false)
         const linkText = 'Invalid Url';
@@ -40,8 +47,11 @@ const SocialForm = (props: any) => {
         setLinkedError('');
         setBehanceError('');
         setPortfolioError('');
+        setPhoneError('');
         if (name == '') {
             setNameError(true)
+        } else if (phone !== '' && !isValidPhone(phone)) {
+            setPhoneError('Ivalid phone');
         } else if (linked !== '' && !isValidUrl(linked)) {
             setLinkedError(linkText);
         } else if (githubLink !== '' && !isValidUrl(githubLink)) {
@@ -52,7 +62,6 @@ const SocialForm = (props: any) => {
             setPortfolioError(linkText);
         } else {
             setLoading(true);
-
             addSocials(linked, githubLink, behan, portfolio, phone, address)
                 .then((res) => {
                     updateUserName(name).then((res) => {
@@ -114,28 +123,28 @@ const SocialForm = (props: any) => {
                                     value={name}
                                     setFunction={setName}
                                     class="full"
+
                                 />
                                 {nameError && <p className='text-red-500 text-[13px]'>name cannot be empty</p>}
                             </div>
-                            {/*   <div className="flex flex-col gap-3">
-                                    <p className="w-full font-fhW text-smS leading-shL">Last Name</p>
-                                    <TextInput
-                                        class="full"
-                                        placeHolder="Address"
-                                        value={address}
-                                        setFunction={setAddress}
-                                    />
-                                </div> */}
                         </div>
                         <div className="col-span-12 flex gap-3 h-[100%] grid grid-cols-1 md:grid-cols-2">
                             <div className="flex flex-col gap-3">
                                 <p className="font-fhW w-full text-smS leading-shL">Phone</p>
-                                <input
-                                    type='number'
+                                <PhoneInput
+                                    placeholder="Enter phone number"
+                                    value={phone}
+                                    onChange={setPhone}
+                                    className='h-12 px-3 phoneInput bg-white rounded-xl border border-gray-200 focus:border-gradientSecond focus:ring-0 w-full hideIncrease'
+                                />
+                                {/*   <input
+                                    type='text'
                                     placeholder="Phone"
                                     value={phone}
                                     onChange={(e) => setPhone(e.currentTarget.value)}
                                     className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientSecond focus:ring-0 w-full hideIncrease' />
+                                 */}
+                                {phoneError && <p className='text-red-500 text-[13px]'>{phoneError}</p>}
                             </div>
                             <div className="flex flex-col gap-3">
                                 <p className="w-full font-fhW text-smS leading-shL">Address</p>

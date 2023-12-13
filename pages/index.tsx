@@ -30,9 +30,7 @@ const Home = () => {
                     <div className='w-full flex max-lg:flex-wrap'>
                         <div className='flex-grow flex flex-col gap-3 md:gap-5 justify-center md:w-2/3 md:max-xl:items-center sm:max-lg:items-center'>
                             <p className="font-shW text-shS max-md:justify-center flex items-center text-xl md:text-[46px] my-2">
-                                Connect. Grow.<span className='-mt-6 md:-mt-9'>
-                                    <img src="/images/connectLeaf.svg" alt="leaf" className='h-full max-md:w-10' />
-                                </span><span className="text-gradientFirst">Succeed.</span>
+                                Connect. Grow. <span className="text-gradientFirst pl-1"> Succeed.</span>
                             </p>
                             <p className="max-md:text-center text-[#20262E] font-[600] md:text-[27px]">Find your next job. Easy as a breeze.</p>
                             <div className='pt-5'>
@@ -42,7 +40,7 @@ const Home = () => {
                                 Apply with ease
                                 <Link
                                     href="users/candidate/profile"
-                                    className="font-shW text-gradientFirst underline cursor-pointer max-sm:block ml-2"
+                                    className="font-shW text-gradientFirst hover:underline cursor-pointer max-sm:block ml-2"
                                 >
                                     Upload your Resume
                                 </Link>
@@ -58,10 +56,12 @@ const Home = () => {
                             <p className='font-[600] text-[27px]'>Salary Survey</p>
                             <p className='font-[400]'>Find and compare salary information</p>
                         </div>
-                        <Link href="/salaries" className='bg-black text-textW w-[225px] h-[56px] p-5 cursor-pointer rounded-[3px] flex gap-3 items-center justify-center'>
-                            <img src="/icons/HomeHand.svg" alt="hand" />
-                            <p className='flex items-end'>Explore More</p>
-                        </Link>
+                        <div className='bg-gradientFirst rounded-[3px]'>
+                            <Link href="/salaries" className='bg-black text-textW w-[225px] h-[56px] p-5 cursor-pointer rounded-[3px] flex gap-3 items-center justify-center buttonBounce'>
+                                <img src="/icons/HomeHand.svg" alt="hand" />
+                                <p className='flex items-end'>Explore More</p>
+                            </Link>
+                        </div>
                     </div>
                 </div>
                 <Footer />

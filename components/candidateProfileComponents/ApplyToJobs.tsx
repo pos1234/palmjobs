@@ -23,12 +23,14 @@ import { ProfilePic } from '../JobImage';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import TextInput, { SubmitButton } from '../TextInput';
 import { useGlobalContext } from '@/contextApi/userData';
+import { useRouter } from 'next/router';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const ApplyToJob = (props: any) => {
     const { userDetail, userData } = useGlobalContext()
+    const router = useRouter()
     const pdfIcon = '/images/pdf2.svg';
 /*     const [openApply, setOpenApply] = useState(false);
  */    const [first, setFirst] = useState(true);
@@ -150,6 +152,8 @@ const ApplyToJob = (props: any) => {
  */                    setOpenNotify(true);
                     setFailed(false);
                     setLoadingApply(false);
+
+
                 })
                     .catch((error) => {
                         setOpenNotify(true);
@@ -168,6 +172,7 @@ const ApplyToJob = (props: any) => {
                     setOpenNotify(true);
                     setFailed(false);
                     setLoadingApply(false);
+
 /*                     props.setterFunction(false)
  */                })
                 .catch((error) => {

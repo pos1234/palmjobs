@@ -60,37 +60,37 @@ const SalarySurvey = () => {
         setErrorMessage('');
         if (gender == '') {
             setErrorCode(1);
-            setErrorMessage('Please Choose Gender');
+            setErrorMessage('Please choose gender');
         } else if (ageRange == '') {
             setErrorCode(2);
-            setErrorMessage('Please Select Age Range');
+            setErrorMessage('Please select age range');
         } else if (jobTitle == '') {
             setErrorCode(3);
-            setErrorMessage('Please Add Job Title');
+            setErrorMessage('Please add job title');
         } else if (sector == '') {
             setErrorCode(4);
-            setErrorMessage('Please Select Sector');
+            setErrorMessage('Please select sector');
         } else if (industry == '') {
             setErrorCode(5);
-            setErrorMessage('Please Select Industry');
-        } /* else if (employmentStatus == '') {
+            setErrorMessage('Please select industry');
+        } else if (employmentStatus == '') {
             setErrorCode(6);
-            setErrorMessage('Please Select Employment Status');
-        } */ else if (yearsInCurrentPostion == '') {
+            setErrorMessage('Please select employment status');
+        } else if (yearsInCurrentPostion == '') {
             setErrorCode(7);
-            setErrorMessage('Please Add Years In Current Position');
+            setErrorMessage('Please add years in current position');
         } else if (yearsInProfessionalPosition == '') {
             setErrorCode(8);
-            setErrorMessage('PleaseAdd Years In Professional Position ');
-        } /* else if (location == '') {
+            setErrorMessage('PleaseAdd years in professional position ');
+        } else if (location == '') {
             setErrorCode(9);
-            setErrorMessage('Please Add Location');
-        } */ else if (monthlySalary == '') {
+            setErrorMessage('Please select location');
+        } else if (monthlySalary == '') {
             setErrorCode(10);
-            setErrorMessage('Please Add Monthly Salary ');
+            setErrorMessage('Please add monthly salary ');
         } else if (educationLevel == '') {
             setErrorCode(11);
-            setErrorMessage('Please Select Education Level');
+            setErrorMessage('Please select education level');
         } else if (fieldOfStudy == '') {
             setErrorCode(12);
             setErrorMessage('Please Add Field Of Study');
@@ -138,7 +138,6 @@ const SalarySurvey = () => {
                 setSelectedValues([])
             }).catch((error) => {
                 console.log(error);
-
                 setLoading(false);
                 toast.error('Form Not Submitted')
             })
@@ -172,6 +171,7 @@ const SalarySurvey = () => {
                     <p className='font-[600] text-[18px]'>Age Range</p>
                     <FlexDiv>
                         <select className='pl-5 w-96 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setAgeRange(e.currentTarget.value)}>
+                            <option value="">Select age</option>
                             <option value="18-24">18-24</option>
                             <option value="25-34">25-34</option>
                             <option value="35-44">35-44</option>
@@ -187,12 +187,13 @@ const SalarySurvey = () => {
             <div className='flex flex-col gap-4'>
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Current Job Title</p>
-                    <TextInput setFunction={setJobTitle} value={jobTitle} errorMessage={errorCode == 3 ? errorMessage : ''} placeHolder="add job title" />
+                    <TextInput setFunction={setJobTitle} value={jobTitle} errorMessage={errorCode == 3 ? errorMessage : ''} placeHolder="" />
                 </div>
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Employment Sector</p>
                     <FlexDiv>
                         <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setSector(e.currentTarget.value)}>
+                            <option value="">Select sector</option>
                             <option value="Private">Private</option>
                             <option value="Public">Public</option>
                             <option value="Non-Governmental Organization (NGO)">Non-Governmental Organization (NGO)</option>
@@ -207,6 +208,7 @@ const SalarySurvey = () => {
                     <p className='font-[600] text-[18px]'>Industry</p>
                     <FlexDiv>
                         <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setIndustry(e.currentTarget.value)}>
+                            <option value="">Select industry</option>
                             <option value="Agriculture">Agriculture</option>
                             <option value="Construction">Construction</option>
                             <option value="Education">Education</option>
@@ -229,35 +231,12 @@ const SalarySurvey = () => {
                     <p className='font-[600] text-[18px]'>Employment Status</p>
                     <FlexDiv>
                         <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEmploymentStatus(e.currentTarget.value)}>
+                            <option value="">Select status</option>
                             <option value="Full Time">Full Time</option>
                             <option value="Part-Time">Part-Time</option>
                             <option value="Contract">Contract</option>
                             <option value="Freelance">Freelance</option>
                         </select>
-                        {/* <RadioInput
-                            radioName="employmentStatus"
-                            radioText="Full Time"
-                            radioValue="Full Time"
-                            setFunction={setEmploymentStatus}
-                        />
-                        <RadioInput
-                            radioName="employmentStatus"
-                            radioText="Part-Time"
-                            radioValue="Part-Time"
-                            setFunction={setEmploymentStatus}
-                        />
-                        <RadioInput
-                            radioName="employmentStatus"
-                            radioText="Contract"
-                            radioValue="Contract"
-                            setFunction={setEmploymentStatus}
-                        />
-                        <RadioInput
-                            radioName="employmentStatus"
-                            radioText="Freelance"
-                            radioValue="Freelance"
-                            setFunction={setEmploymentStatus}
-                        /> */}
                         {errorMessage && errorCode == 6 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
                     </FlexDiv>
                 </div>
@@ -283,6 +262,7 @@ const SalarySurvey = () => {
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Location of Employment</p>
                     <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEmploymentStatus(e.currentTarget.value)}>
+                        <option value="">Select location</option>
                         <option value="Addis Ababa">Addis Ababa</option>
                         <option value="Dire Dawa">Dire Dawa</option>
                         <option value="Mekelle">Mekelle</option>
@@ -299,6 +279,7 @@ const SalarySurvey = () => {
                         <option value="Bishoftu">Bishoftu</option>
                     </select>
                 </div>
+                {errorMessage && errorCode == 9 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
             </div>
             <HeadLines text="Salary and Compensation" />
             <div className='gap-4 flex flex-col'>
@@ -314,7 +295,6 @@ const SalarySurvey = () => {
                             <option value="CNY">CNY</option>
                             <option value="Other">Other</option>
                         </select>
-
                     </div>
                     {errorMessage && errorCode == 10 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
                 </div>
@@ -366,6 +346,7 @@ const SalarySurvey = () => {
                     <p className='font-[600] text-[18px]'>Highest Level of Education Completed</p>
                     <FlexDiv>
                         <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEducationLevel(e.currentTarget.value)}>
+                            <option value="">Select educaton</option>
                             <option value="High School">High School</option>
                             <option value="Diploma/Certificate" className='hover:bg-red-500 cursor-pointer'>Diploma/Certificate</option>
                             <option value="Associate's Degree">Associate's Degree</option>
@@ -379,12 +360,13 @@ const SalarySurvey = () => {
                 </div>
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Field of Study</p>
-                    <TextInput setFunction={setFieldOfStudy} errorMessage={errorCode == 12 ? errorMessage : ''} value={fieldOfStudy} placeHolder="add field of study" />
+                    <TextInput setFunction={setFieldOfStudy} errorMessage={errorCode == 12 ? errorMessage : ''} value={fieldOfStudy} placeHolder="" />
+                    {errorMessage && errorCode == 12 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
                 </div>
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Additional Insights <span className='font-[400] text-sm'>(optional)</span> </p>
                     <textarea
-                        placeholder='Any other comments or insights about your role and compensation?'
+                        placeholder=''
                         className='resize-none w-11/12 rounded-xl h-40 focus:ring-gradientFirst focus:border-0' onChange={(e) => setAdditionalInsight(e.currentTarget.value)}>
                     </textarea>
                 </div>
@@ -394,7 +376,7 @@ const SalarySurvey = () => {
                     </div>
                     <input
                         type='email'
-                        placeholder="add your email"
+                        placeholder=""
                         value={emailAddress}
                         onChange={(e) => setEmailAddress(e.currentTarget.value)}
                         className="h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientSecond focus:border-0 w-full md:w-96" />

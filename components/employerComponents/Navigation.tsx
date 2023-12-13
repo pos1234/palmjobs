@@ -19,7 +19,7 @@ const Navigation = ({ active }: Active) => {
     const [openLogout, setOpenLogout] = useState(false)
     return (
         <>
-            <div className={`flex w-full justify-between items-center md:pr-0 md:pl-5 pt-5 ${menu ? 'hidden' : 'md:hidden'} `}>
+            <div className={`flex w-full justify-between overflow-x-hidden items-center md:pr-0 md:pl-5 pt-5 ${menu ? 'hidden' : 'md:hidden'} `}>
                 <Link href="/">
                     <img src='/images/logo.svg' alt="palmjobs logo" className="h-12 md:hidden" />
                 </Link>

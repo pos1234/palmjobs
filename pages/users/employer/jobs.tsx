@@ -16,7 +16,7 @@ import Link from 'next/link';
 import { employeeAuth } from '@/components/withAuth';
 const Jobs = (props: any) => {
     const { allEmployerJobs } = useJobPostContext()
-    const [opened, setOpened] = useState(true);
+    const [opened, setOpened] = useState(false);
     const [draft, setDraft] = useState(false);
     const [closed, setClosed] = useState(false);
     const [sort, setSort] = useState('asc');
@@ -50,12 +50,21 @@ const Jobs = (props: any) => {
         active && active.length > 0 && setNoPosted(true)
         closed && closed.length > 0 && setNoClosed(true)
         active && active.length > 0 && setActiveJobs(active)
+        if (active && active.length > 0 || (drafted && drafted.length == 0) && (closed && closed.length == 0)) {
+            setOpened(true)
+        }
+        if (active && active.length == 0 && drafted && drafted.length > 0) {
+            setDraft(true)
+        }
+        if (active && active.length == 0 && drafted && drafted.length == 0 && closed && closed.length > 0) {
+            setClosed(true)
+        }
     }, [allEmployerJobs]);
     return (
         <>
             <div className="flex max-md:flex-wrap bg-textW">
                 <Navigation active='jobs' />
-                <div className=" pt-5 px-3 pb-10 bg-textW w-full max-xl:flex-grow xl:w-2/3 min-h-screen">
+                <div className=" pt-5 px-3 pb-10 bg-textW w-full max-xl:flex-grow xl:w-2/3 min-h-screen overflow-x-hidden">
                     <div className="relative flex justify-between pt-10 items-center px-2 lg:pl-10">
                         <p className="text-black text-xl md:text-3xl font-[700]">Jobs</p>
                         <Link href="/users/employer/post"

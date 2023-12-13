@@ -7,11 +7,9 @@ import Certificate from '@/components/candidateProfileComponents/Certificate';
 import Project from '@/components/candidateProfileComponents/Project';
 import { candidateAuth } from '@/components/withAuth';
 import CandidateProfileShimmer from '@/components/shimmer/CandidateProfileShimmer';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProfilePicture from '@/components/candidateProfileComponents/ProfilePicture';
 import SocialLinks from '@/components/candidateProfileComponents/SocialLinks';
-import { getUserDetail } from '@/backend/candidateBackend';
 import CoverLetter from '@/components/candidateProfileComponents/CoverLetter';
 import WorkHitory from '@/components/candidateProfileComponents/WorkHistory';
 import Education from '@/components/candidateProfileComponents/Education';
@@ -22,8 +20,7 @@ const Profile = () => {
     const [allLoading, setAllLoading] = useState(false)
     const userData = async () => {
         setAllLoading(true)
-/*         const userInfo = await getUserDetail()
- */        userDetail && setAllLoading(false)
+        userDetail && setAllLoading(false)
     }
     useEffect(() => {
         userData()

@@ -8,6 +8,8 @@ import TextInput, { SubmitButton } from '@/components/TextInput';
 import Link from 'next/link';
 import { useGlobalContext } from '@/contextApi/userData';
 import { RequiredTextLabel } from './jobPostTabs/RequiredTextLabel';
+import 'react-phone-number-input/style.css'
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -22,7 +24,7 @@ const EmployerProfile = (props: any) => {
     const [address, setAddress] = useState('');
     const [noEmployee, setNoEmployee] = useState('');
     const [noEmployeeError, setNoEmployeeError] = useState('');
-    const [phone, setPhone] = useState('');
+    const [phone, setPhone] = useState<any>();
     const [phoneError, setPhoneError] = useState('');
     const [compDescription, setCompDescription] = useState('');
     const [webLink, setWebLink] = useState('');
@@ -41,6 +43,9 @@ const EmployerProfile = (props: any) => {
             userData.name !== null && setUserName(userData.name)
         }
     };
+    const isValidPhone = (phone: string) => {
+        return isValidPhoneNumber(phone.toString())
+    }
     useEffect(() => {
         initialData();
     }, [userDetail]);
@@ -70,8 +75,7 @@ const EmployerProfile = (props: any) => {
             setNoEmployeeError("Please provide number of employer's")
         } else if (phone == '') {
             setPhoneError('Please provide phone number')
-        } else if (!phone.match(regex)) {
-            console.log('valid');
+        } else if (phone !== '' && !isValidPhone(phone)) {
             setPhoneError('Invalid phone number')
         } else {
             setLoading(true);
@@ -137,8 +141,17 @@ const EmployerProfile = (props: any) => {
                 />
                 {noEmployeeError && <p className="text-red-500 text-[13px] mt-2">{noEmployeeError}</p>}
                 <RequiredTextLabel text="Your Phone Number?" />
-                <TextInput placeHolder="+251 912345566" errorMessage={phoneError} value={phone} setFunction={setPhone} />
-                <RequiredTextLabel text="Company Location?" req="nReq" />
+                <PhoneInput
+                    placeholder="Enter phone number"
+                    value={phone}
+                    onChange={setPhone}
+                    className={`phoneInput h-12 pl-5 bg-white rounded-lg border-[1px] focus:ring-gradientFirst focus:border-0 w-full md:w-96 
+                    ${phoneError ? 'border-red-500' : 'border-gray-200'}
+                    `}
+                />
+                {phoneError && <p className="text-red-500 text-[13px] mt-2">{phoneError}</p>}
+                {/*                 <TextInput placeHolder="+251 912345566" errorMessage={phoneError} value={phone} setFunction={setPhone} />
+ */}                <RequiredTextLabel text="Company Location?" req="nReq" />
                 <TextInput placeHolder="" value={address} setFunction={setAddress} />
                 <RequiredTextLabel text="Website Link?" req="nReq" />
                 <TextInput placeHolder="" value={webLink} setFunction={setWebLink} />

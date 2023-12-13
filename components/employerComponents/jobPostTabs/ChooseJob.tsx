@@ -67,9 +67,7 @@ const ChooseJob = (props: any) => {
                   <p>Draft</p>
                 </div>
               }
-
             </div>
-
             <div>
               {selectedRadio == 'duplicate' && (
                 <select

@@ -20,7 +20,7 @@ const Navigation = (props: any) => {
         <div>
             <div className={`flex flex-wrap items-center gap-5 relative md:border-[1px] md:border-t-0 xl:px-40 xl:h-[73px] ${menu ? ' max-md:h-screen md:pt-3' : 'pt-3'}`}>
                 {menu && (
-                    <div className="fixed bg-textW h-screen w-screen overflow-hidden flex flex-col z-40 md:hidden">
+                    <div className="fixed bg-textW overflow-x-hidden h-screen w-screen overflow-hidden flex flex-col z-40 md:hidden">
                         <div onClick={() => setMenu(!menu)} className="flex items-center justify-end pt-4 pr-2 cursor-pointer">
                             <CloseOutlinedIcon className="text-[2rem]" />
                         </div>

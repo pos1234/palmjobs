@@ -20,9 +20,8 @@ import { useRouter } from 'next/dist/client/router';
 import moment from 'moment';
 import { useRef, } from 'react'
 import ConfirmModal from '../ConfirmModal'
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import CloseIcon from '@mui/icons-material/Close';
-import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+import { useGlobalContext } from '@/contextApi/userData';
 interface ConfirmModalProps {
     children: React.ReactNode;
     openModal: boolean,
@@ -62,7 +61,7 @@ const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tip
                             <div className={tip ? 'max-lg:hidden h-full lg:w-1/2 overflow-y-auto lg:max-h-[25rem] thinScrollBar flex' : 'flex w-full h-full lg:w-1/2 overflow-y-auto'}>
                                 {children}
                             </div>
-                            <div className={`bg-gray-100 flex flex-wrap px-5 pt-5 rounded-r-2xl w-full gap-7 lg:flex items-center flex-grow justify-center h-full ${tip ? 'lg:w-1/2' : 'hidden overflow-y-auto lg:w-1/3'}`}>
+                            <div className={`bg-gray-100 flex flex-wrap px-5 pt-5 rounded-lg w-full gap-7 lg:flex items-center flex-grow justify-center h-full ${tip ? 'lg:w-1/2' : 'hidden overflow-y-auto lg:w-1/3'}`}>
                                 <div className='w-full flex flex-wrap self-center items-end h-1/2 font-[600] sm:text-[20px] text-center'>
                                     {tipText}
                                 </div>
@@ -92,11 +91,12 @@ const ReturnName = (props: any) => {
     return <div className="text-[13px] text-darkBlue sm:text-[1rem] md:text-[0.9rem] xl:text-[14px] font-[400]">{companyName}</div> || null;
 };
 const JobListCard = (props: any) => {
+    const { userRole, userData } = useGlobalContext()
     const router = useRouter()
     const [openShare, setOpenShare] = useState(false)
     const [userId, setUserId] = useState('')
-    const [userRole, setUserRole] = useState('')
-    const [openReport, setOpenReport] = useState(false)
+/*     const [userRole, setUserRole] = useState('')
+ */    const [openReport, setOpenReport] = useState(false)
     const [reportCode, setReportCode] = useState(0)
     const [reportLoading, setReportLoading] = useState(false)
     const [reportData, setReportData] = useState({
@@ -113,17 +113,17 @@ const JobListCard = (props: any) => {
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
 
     const getUserData = async () => {
-        const userInfo = await getAccount();
-        if (userInfo !== 'failed') {
-            setUserId(userInfo.$id)
-/*             setUserData(userInfo);
- */            const role = await getRole();
-            setUserRole(role && role.documents[0].userRole);
+/*         const userInfo = await getAccount();
+ */        if (userData && userId == '') {
+            setUserId(userData.$id)
+            /*             setUserData(userInfo);
+            /*  */            /* const role = await getRole();
+                        userRole && setUserRole(userRole); */
         }
     };
     useEffect(() => {
         getUserData();
-    }, []);
+    }, [userData]);
     const handleSaveJob = async (id: string) => {
         if (userRole == 'candidate') {
             const checkSaved = alreadySaved(userId, id);
@@ -283,15 +283,6 @@ const JobListCard = (props: any) => {
             <div className="w-full text-[#20262E] text-sm leading-[24px] overflow-hiddenc pr-2">
                 <div className="w-full">
                     {removeHtmlTags(props.items.jobDescription)}....
-                    {/* <div
-                        className="overflow-ellipsis font-[400] leading-[20px] text-[11px] text-[#20262E]"
-                        style={{
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical'
-                        }}
-                        dangerouslySetInnerHTML={{ __html: props.items.jobDescription }}
-                    /> */}
                 </div>
             </div>
             {isToday && isToday ? <p className='text-[12px]'>posted today</p> : isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
@@ -301,15 +292,15 @@ const JobListCard = (props: any) => {
                     <div className='h-full w-full overflow-y-auto overflow-x-hidden pr-2 thinScrollBar flex flex-col gap-5 md:max-lg:items-center'>
                         <p className='font-[600] text-[24px]'>Reason for Reporting</p>
                         <div className='flex flex-col gap-3'>
-                            <p className={`sm:w-[376px] h-[40px] sm:h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 1 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(1)}>Discriminatory Language</p>
-                            <p className={`sm:w-[376px] h-[40px] sm:h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 2 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(2)}>False Information</p>
-                            <p className={`sm:w-[376px] h-[40px] sm:h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 3 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(3)}>Spam or Fraudulent</p>
+                            <p className={`sm:w-[376px] h-[40px] rounded-lg sm:h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 1 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(1)}>Discriminatory Language</p>
+                            <p className={`sm:w-[376px] h-[40px] rounded-lg sm:h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 2 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(2)}>False Information</p>
+                            <p className={`sm:w-[376px] h-[40px] rounded-lg sm:h-[48px] font-500  flex items-center justify-center cursor-pointer ${reportCode == 3 ? 'bg-gradientFirst text-textW' : 'bg-[#F4F4F4]'}`} onClick={() => setReportCode(3)}>Spam or Fraudulent</p>
                             {reportCode == 4 && <p className='text-red-500 text-[14px]'>Please Select one of the above</p>}
                             <textarea value={reportData.message} onChange={(e) => {
                                 if (e.currentTarget.value.length <= 200) {
                                     setReportData({ ...reportData, message: e.currentTarget.value })
                                 }
-                            }} cols={30} rows={20} className='sm:w-[376px] resize-none h-52 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
+                            }} cols={30} rows={20} className='sm:w-[376px] rounded-lg resize-none h-52 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
                         </div>
                     </div>
                     <div className='w-full flex md:max-lg:justify-center pt-3'>

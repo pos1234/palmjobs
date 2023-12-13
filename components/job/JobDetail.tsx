@@ -53,11 +53,19 @@ const JobDetail = (props: any) => {
         return arrayValue
     }
     const checkApplied = async () => {
-/*         setLoading(true);
- */        if (userData && userDetail) {
+        /*         setLoading(true);
+         */
+        if (!userDetail) {
+            setApplied(false)
+            setAllLoading(false)
+
+        }
+
+        if (userDetail) {
             setAllLoading(true)
             alreadyApplied(userDetail.$id, props.jobDetails.$id).then((applied) => {
                 setAllLoading(false)
+                console.log(applied.total);
 
                 if (applied.total !== 0) {
                     setApplied(true);
@@ -71,7 +79,7 @@ const JobDetail = (props: any) => {
     };
     useEffect(() => {
         checkApplied()
-    }, [userData, userDetail, props.jobDetails.$id])
+    }, [userDetail, props])
     const handleApply = async (jobId: string, employerId: string, jobTitle: string) => {
         setApply(false);
         if (userRole) {
@@ -252,7 +260,7 @@ const JobDetail = (props: any) => {
                                     </div>
                                 }
                                 {
-                                    !allLoading ? !applied && !userData ? <div
+                                    !allLoading ? !applied ? <div className='hover:bg-black rounded-[4px]'><div
                                         onClick={() => {
                                             handleApply(
                                                 props.jobDetails.$id,
@@ -260,9 +268,9 @@ const JobDetail = (props: any) => {
                                                 props.jobDetails.jobTitle
                                             );
                                         }}
-                                        className='bg-gradient-to-r from-[#00A82D] to-[#0CBC8B] text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:border-b-4 hover:border-b-black buttonBounce'                                >
+                                        className='bg-gradient-to-r from-[#00A82D] to-[#0CBC8B] text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:rounded-x-[0px] buttonBounce'                                >
                                         <EnergySavingsLeafIcon sx={{ fontSize: '1.2rem' }} /> <span className='ml-2'> Easy Apply</span>
-                                    </div> : <div
+                                    </div> </div> : <div
                                         className='bg-gray-100 text-gray-00 w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center '          >
                                         <EnergySavingsLeafIcon sx={{ fontSize: '1.2rem' }} /> <span className='ml-2'> Applied</span>
                                     </div> : null
@@ -306,10 +314,10 @@ const JobDetail = (props: any) => {
                                     {props.jobDetails.requiredSkills && parseToArray(props.jobDetails.requiredSkills).map((skill: string, index: number) => {
                                         return <div key={index}>
                                             {userSkill && userSkill.includes(skill.toLocaleLowerCase()) ?
-                                                <div key={index} className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-skillColor text-gradientFirst text-center flex px-7 max-sm:py-7 gap-2 items-center">
+                                                <div key={index} className="min-w-36 w-auto h-8 font-adW rounded-lg text-sm leading-adL bg-skillColor text-gradientFirst text-center flex px-7 max-sm:py-7 gap-2 items-center">
                                                     {skill} <CheckIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} />
                                                 </div> :
-                                                <div className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-gray-100 text-center flex px-7 max-sm:py-7 items-center"
+                                                <div className="min-w-36 w-auto h-8 font-adW rounded-lg text-sm leading-adL bg-gray-100 text-center flex px-7 max-sm:py-7 items-center"
                                                     key={index}>{skill}</div>}
                                         </div>
                                     })}
