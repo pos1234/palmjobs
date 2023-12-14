@@ -131,7 +131,7 @@ const Footer = () => {
                     <div className='flex-grow'>
                         <img src={logo} alt="palmjobs logo" className="h-16" />
                     </div>
-                    <div className='flex-grow flex flex-col justify-between max-md:cursor-pointer'>
+                    <div className='flex-grow flex flex-col gap-2 max-md:cursor-pointer'>
                         <div className='flex justify-between' onClick={() => setPalm(!palm)} >
                             <p className="font-[700] leading-thL text-[20px] leading-dfhL">
                                 Palm Jobs
@@ -238,22 +238,17 @@ const Footer = () => {
                         <div className="hidden md:flex flex-col gap-3 pt-3 text-lightGrey text-[18px] font-[400] leading-midRL">
                             <LinkList link="/faq" text="Help Center" />
 
-                            <div className='hover:text-gradientFirst hover:underline cursor-pointer' onClick={() => setSupport(!support)}>
+                            <div className='text-lightGrey hover:text-gradientFirst hover:underline cursor-pointer' onClick={() => setSupport(!support)}>
                                 Contact support
                             </div>
                         </div>
                         {forGt && (
                             <div className="flex flex-col gap-3 pt-3 text-[18px] font-[400] leading-midRL md:hidden ">
-                                <p>
-                                    Suite 301E | Bethlhem Plaza, Megenagna, <br />
-                                    Addis Ababa, Ethiopia
-                                </p>
-                                <p>
-                                    +251 965636465
-                                </p>
-                                <p>
-                                    careers@palmjobs.et
-                                </p>
+                                <LinkList link="/faq" text="Help Center" />
+
+                                <div className='text-lightGrey hover:text-gradientFirst hover:underline cursor-pointer' onClick={() => setSupport(!support)}>
+                                    Contact support
+                                </div>
                             </div>
                         )}
                     </div>
@@ -274,15 +269,15 @@ const Footer = () => {
                 </div>
             </div>
             <div className="my-3 flex max-md:flex-wrap gap-x-8 gap-y-3">
-                <div className='flex md:w-2/3 justify-end gap-x-8 gap-y-3'>
+                <div className='flex w-full max-md:flex-wrap md:w-2/3 justify-center md:justify-end gap-x-8 gap-y-3'>
                     <p>© {year.getFullYear()} Palm Jobs. All rights reserved.</p>
-                    <div className='flex'>
+                    <div className='flex max-md:w-full max-md:justify-center items-center md:justify-end'>
                         <Link href='/terms/policy' className='hover:text-gradientFirst hover:underline'>Privacy </Link>
                         <div className='text-sm flex items-end px-1'> | </div>
                         <Link href='/terms/terms' className='hover:text-gradientFirst hover:underline'> Terms</Link>
                     </div>
                 </div>
-                <div className='flex md:w-1/2 justify-end pr-3'>
+                <div className='flex w-full md:w-1/2 justify-center items-center md:justify-end pr-3'>
                     <div className='self-end float-right'>
                         made with <span className='text-gradientFirst'>❤</span>  by
                         <Link href='https://yes.et' target='_blank' className='ml-1 hover:text-gradientFirst hover:underline'>YES</Link>
