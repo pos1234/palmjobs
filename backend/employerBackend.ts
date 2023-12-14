@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ID, Query } from 'appwrite';
-import { getRole } from './candidateBackend';
-import { getAccount } from './accountBackend';
+import { getAccount, getRole } from './accountBackend';
 import appwriteConfig from './appwrite';
 const { databases, account, storage } = appwriteConfig();
 const DATABASE_ID = process.env.NEXT_PUBLIC_DATABASE_ID || '';
