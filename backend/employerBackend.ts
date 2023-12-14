@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ID, Query } from 'appwrite';
-import { getRole } from './candidateBackend';
-import { getAccount } from './accountBackend';
+import { getAccount, getRole } from './accountBackend';
 import appwriteConfig from './appwrite';
 const { databases, account, storage } = appwriteConfig();
 const DATABASE_ID = process.env.NEXT_PUBLIC_DATABASE_ID || '';
@@ -72,7 +71,7 @@ export const searchJobs = async (
     expLevel: string,
     postedDate: string
 ) => {
-    const searchWord = searchText ? Query.startsWith('jobTitle', searchText) : null;
+    const searchWord = searchText ? Query.search('jobTitle', searchText) : null;
     const searchAddress = address !== '' ? Query.startsWith('jobLocation', address) : null;
     const jobType = jobTypes ? Query.equal('jobType', jobTypes) : null;
     const exp = expLevel ? Query.equal('expreienceLevel', expLevel) : null;

@@ -1,7 +1,5 @@
-import { getRole } from '@/backend/candidateBackend';
-import { getAccount, signOut } from '@/backend/accountBackend';
+import { getAccount, signOut, getRole } from '@/backend/accountBackend';
 import { useRouter } from 'next/dist/client/router';
-import { useEffect } from 'react';
 export function candidateAuth(WrappedComponent: React.ComponentType<any>) {
     return (props: any) => {
         const router = useRouter();

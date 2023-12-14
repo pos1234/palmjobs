@@ -120,3 +120,8 @@ export const getRole = async () => {
         return usersRole;
     }
 };
+/* export const deleteAccount = async () => {
+    
+    const promise = await account.delete('[IDENTITY_ID]');
+    return promise;
+}; */

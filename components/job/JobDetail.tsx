@@ -11,7 +11,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import StairsOutlinedIcon from '@mui/icons-material/StairsOutlined'
 import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf'
 import { alreadyApplied, alreadySaved, saveJobs, } from '@/backend/candidateBackend'
-import { getAccount, getRole, signOut } from '@/backend/accountBackend';
+import { signOut } from '@/backend/accountBackend';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
@@ -22,27 +22,24 @@ import CloseIcon from '@mui/icons-material/Close';
 import moment from 'moment';
 import { useGlobalContext } from '@/contextApi/userData';
 import ConfirmModal from '../ConfirmModal';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const JobDetail = (props: any) => {
     const { userRole, userDetail, loading, userData } = useGlobalContext()
-    const [savedJobId, setSavedJobId] = useState<any[]>([]);
-    const [savedJobs, setSavedJobs] = useState<any[]>([]);
     const [allLoading, setAllLoading] = useState(loading);
     const [applyEmp, setApplyEmp] = useState(false);
     const [jobTitle, setJobTitle] = useState('');
-/*     const [userData, setUserData] = useState<any>();
- *//*     const [userRole, setUserRole] = useState('');
- */    const [userId, setUserId] = useState('')
     const [apply, setApply] = useState(false);
     const [applyJobId, setApplyJobId] = useState('');
     const [applyEmployerId, setApplyEmployerId] = useState('');
     const [openShare, setOpenShare] = useState(false);
     const [userSkill, setUserSkill] = useState<any>()
-    const [applied, setApplied] = useState(false)
+    const [applied, setApplied] = useState(false);
+    const [saved, setSaved] = useState(false)
     const router = useRouter();
-    const isToday = moment(props.jobDetails.datePosted).isSame(moment());
-    const isWithinWeek = moment(props.jobDetails.datePosted).isAfter(moment().subtract(7, 'days')) && moment(props.jobDetails.datePosted).isBefore(moment());
-    const date = new Date(props.jobDetails.datePosted);
+    const isWithinWeek = moment(props.jobDetails.$createdAt).isAfter(moment().subtract(7, 'days')) && moment(props.jobDetails.datePosted).isBefore(moment());
+    const date = new Date(props.jobDetails.$createdAt);
     const today = new Date();
     const difference = today.getTime() - date.getTime();
     const weeks = Math.floor(difference / (1000 * 60 * 60 * 24 * 7));
@@ -52,32 +49,42 @@ const JobDetail = (props: any) => {
         return arrayValue
     }
     const checkApplied = async () => {
-        /*         setLoading(true);
-         */
         if (!userDetail) {
             setApplied(false)
             setAllLoading(false)
-
         }
-
         if (userDetail) {
             setAllLoading(true)
             alreadyApplied(userDetail.$id, props.jobDetails.$id).then((applied) => {
                 setAllLoading(false)
-                console.log(applied.total);
-
                 if (applied.total !== 0) {
                     setApplied(true);
                 }
                 if (applied.total == 0) {
-/*                     setLoading(false);
- */                    setApplied(false);
+                    setApplied(false);
                 }
             });
         }
     };
+    const checkSaved = () => {
+        if (!userDetail) {
+            setSaved(false)
+        }
+        if (userDetail) {
+            const checkSaved = alreadySaved(userData.$id, props.jobDetails.$id);
+            checkSaved.then((rem: any) => {
+                if (rem.total > 0) {
+                    setSaved(true)
+                }
+                if (rem.total == 0) {
+                    setSaved(false)
+                }
+            });
+        }
+    }
     useEffect(() => {
         checkApplied()
+        checkSaved()
     }, [userDetail, props.jobDetails])
     const handleApply = async (jobId: string, employerId: string, jobTitle: string) => {
         setApply(false);
@@ -93,9 +100,7 @@ const JobDetail = (props: any) => {
         }
         if (!userData && userRole == '') {
             typeof window !== 'undefined' && router.push('/account');
-
         }
-
     }
     const createCandidateAccount = () => {
         signOut()
@@ -108,11 +113,13 @@ const JobDetail = (props: any) => {
     };
     const handleSaveJob = async (id: string) => {
         if (userRole == 'candidate') {
-            const checkSaved = alreadySaved(userId, id);
-            checkSaved.then((rem: any) => {
+            const checkSaveds = alreadySaved(userData.$id, id);
+            checkSaveds.then((rem: any) => {
                 if (rem.total == 0) {
                     toast.success('Successfully Saved Job');
-                    saveJobs(userId, id);
+                    saveJobs(userData.$id, id);
+                    setSaved(true)
+
                 } /* else {
                     toast.error('Job Already saved');
                 } */
@@ -231,7 +238,7 @@ const JobDetail = (props: any) => {
                             {props.jobDetails.datePosted && (
                                 <div className="inline bg-[#FAFAFA] flex items-center gap-1 text-xs text-gradientFirst rounded-[4px] p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:h-[28px]">
                                     <img src='/icons/hourGlassUp.svg' alt='hourGlassUp' />
-                                    <span className='text-[#20262E]'>{isToday && isToday ? <p className='text-[12px]'>posted today</p> : isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
+                                    <span className='text-[#20262E]'>{/* isToday && isToday ? <p className='text-[12px]'>posted today</p> : */ isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
                                     </span>
                                 </div>
                             )}
@@ -278,12 +285,22 @@ const JobDetail = (props: any) => {
 
                             </>
                             )}
-                            <div className='flex items-center cursor-pointer text-gray-500 hover:text-gradientFirst'>
-                                <BookmarkBorderOutlinedIcon
-                                    onClick={() => handleSaveJob(props.jobDetails.$id)}
-                                    sx={{ fontSize: '1.5rem' }}
-                                />
-                            </div>
+                            {!saved && !allLoading &&
+                                <div className='flex items-center cursor-pointer text-gray-500 hover:text-gradientFirst'>
+                                    <BookmarkBorderOutlinedIcon
+                                        onClick={() => handleSaveJob(props.jobDetails.$id)}
+                                        sx={{ fontSize: '1.5rem' }}
+                                    />
+                                </div>
+                            }
+                            {saved && !allLoading &&
+                                <div className='flex items-center text-gradientFirst'>
+                                    <BookmarkIcon
+                                        sx={{ fontSize: '1.5rem' }}
+                                    />
+                                </div>
+                            }
+
                         </div>
                     </div>
                     <div className='flex px-6 flex-col gap-5 pb-4 overflow-hidden h-[100%]'>
@@ -336,39 +353,51 @@ const JobDetail = (props: any) => {
                         }
                         {props.company && props.companyData && (
                             <div className="w-full">
-                                <p className="font-thW text-frhS">Company's Overview</p>
-                                <div className='flex gap-3 flex-wrap justify-between pb-5'>
-                                    <div className='flex flex-col gap-y-5'>
+                                <div className='flex items-center gap-2'>
+                                    <img src="/icons/game-icons_binoculars.svg" alt="camera" className='w-[29px] h-[29px]' />
+                                    <p className="font-[600] leading-[22px">Company Snapshot</p>
+                                </div>
+                                <div className='flex gap-3 flex-wrap gap-5 mt-5 pb-5'>
+                                    <div className='flex flex-col gap-y-2'>
                                         {
-                                            props.companyData.sector && <div className='flex gap-5 '>
-                                                <p className='font-bold text-lightGrey text-md'>Sector</p>
-                                                <p className='text-lightGrey'>{props.companyData.sector}</p>
+                                            props.companyData.sector && <div className='flex gap-5 items-center'>
+                                                <p className='text-[#141414] text-[14px]'>Sector</p>
+                                                <p className='text-[#727272] text-[12px]'>{props.companyData.sector}</p>
                                             </div>
                                         }
                                         {
                                             props.companyData.location && <div className='flex gap-5 '>
-                                                <p className='font-bold text-lightGrey text-md'>location</p>
-                                                <p className='text-lightGrey'>{props.companyData.location}</p>
+                                                <p className='text-[#141414] text-[14px]'>Location</p>
+                                                <p className='text-[#727272] text-[12px]'>{props.companyData.location}</p>
                                             </div>
                                         }
                                     </div>
-                                    <div className='flex flex-col gap-y-5'>
+                                    <div className='flex flex-col gap-y-2'>
                                         {
-                                            props.companyData.noOfEmployee && <div className='flex gap-5 '>
-                                                <p className='font-bold text-lightGrey text-md'>Size</p>
-                                                <p className='text-lightGrey'>{props.companyData.noOfEmployee}</p>
+                                            props.companyData.noOfEmployee && <div className='flex items-center gap-5 '>
+                                                <p className='text-[#141414] text-[14px]'>Size</p>
+                                                <p className='text-[#727272] text-[12px]'>{props.companyData.noOfEmployee}</p>
                                             </div>
                                         }
                                         {
-                                            props.companyData.websiteLink && <div className='flex gap-5 '>
-                                                <p className='font-bold text-lightGrey text-md'>Website</p>
-                                                <a className='text-lightGrey' href={props.companyData.websiteLink} target='_blank'>view <LaunchIcon /></a>
+                                            props.companyData.websiteLink && <div className='flex items-center gap-5 '>
+                                                <p className='text-[#141414] text-[14px]'>Website</p>
+                                                <a className='text-[#727272] text-[12px]' href={props.companyData.websiteLink} target='_blank'>
+                                                    {props.companyData.websiteLink}
+                                                    {/* view <LaunchIcon /> */}</a>
                                             </div>
                                         }</div>
                                 </div>
+                                {
+                                    props.companyData.description &&
+                                    <div className='flex items-center gap-2 mb-3'>
+                                        <img src="/icons/mingcute_leaf-3-fill.svg" alt="camera" className='w-[29px] h-[29px]' />
+                                        <p className="font-[600] leading-[22px">Company Overview</p>
+                                    </div>
+                                }
                                 <div
                                     dangerouslySetInnerHTML={{ __html: props.companyData.description }}
-                                    className="text-[12px] text-lightGrey overflow-y-auto hideScrollBar min-h-96 max-h-96 overflow-y-auto hideScrollBar"
+                                    className="text-[12px] text-[#727272] overflow-y-auto hideScrollBar min-h-96 max-h-96 overflow-y-auto hideScrollBar"
                                 />
                             </div>
                         )}

@@ -9,8 +9,6 @@ const Notification = (props: any) => {
             isOpen={props.openNotify}
             handleClose={() => {
                 props.setOpenNotify(!props.openNotify);
-
-
             }}
         >
             <div className="mx-2 max-sm:h-full max-sm:overflow-y-scroll pb-10 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0 ">
@@ -18,9 +16,8 @@ const Notification = (props: any) => {
                     <div className="flex justify-end w-full pr-7">
                         <button className="self-end" onClick={() => {
                             props.setSetterFunction(false)
-                            props.setOpenNotify(!props.openNotify)
+                            props.setOpenNotify(false)
                             typeof window !== 'undefined' && router.reload();
-
                         }}>
                             <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
                         </button>

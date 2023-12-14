@@ -5,8 +5,8 @@ import Link from 'next/link';
 import ForgotPassword from '@/components/account/ForgotPassword';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { getRole } from '@/backend/candidateBackend';
-import { getAccount, googleRegister, googleSignIn, signIn, signOut } from '@/backend/accountBackend';
+import { } from '@/backend/candidateBackend';
+import { getAccount, googleRegister, googleSignIn, signIn, getRole } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/router';
@@ -53,7 +53,7 @@ const Login = () => {
                     if (res == null) {
                         toast.error('Please Verify Email')
                     } else {
-                        toast.success('Successfully LoggedIn');
+                        toast.success("Welcome back! You're successfully logged in.");
                         const loggedIn = await getAccount();
                         if (loggedIn !== 'failed') {
                             setUserData(loggedIn)
