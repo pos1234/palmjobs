@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -6,6 +6,16 @@ import { getRole } from '@/backend/accountBackend';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import Link from 'next/link';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import ConfirmModal from './ConfirmModal';
+import CloseIcon from '@mui/icons-material/Close';
+import TextInput, { SubmitButton, TextInputRelated } from './TextInput';
+import { RequiredTextLabel } from './employerComponents/jobPostTabs/RequiredTextLabel';
+import { toast } from 'react-toastify';
+import 'react-phone-number-input/style.css'
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+
+const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
+
 const LinkList = (props: any) => {
     return (
         <Link href={props.link || '/'} className="text-[18px] font-[400] leading-midRL text-lightGrey block cursor-pointer hover:text-gradientFirst hover:underline">
@@ -21,6 +31,16 @@ const Footer = () => {
     const [userData, setUserData] = useState<any>();
     const [userRole, setUserRole] = useState('');
     const [palm, setPalm] = useState(false)
+    const [support, setSupport] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
+    const [errorCode, setErrorCode] = useState(0)
+    const [supportData, setSupportData] = useState({
+        fullName: '',
+        email: '',
+        message: '',
+        loading: false
+    })
+    const [phone, setPhone] = useState<any>();
     const openForEmp = () => {
         setForEmp(!forEmp);
     };
@@ -38,6 +58,72 @@ const Footer = () => {
         getUserData();
     }, []);
     const year = new Date()
+    const isValidPhone = (phones: string) => {
+        const result = phones && isValidPhoneNumber(phones.toString())
+        return result
+    }
+    const isValidEmail = (email: string) => {
+        // Check if the email address is valid using a regular expression.
+        var regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+        return regex.test(email)
+    }
+    const handleSupport = (e: React.FormEvent<HTMLElement>) => {
+        e.preventDefault()
+        if (supportData.fullName == '') {
+            setErrorCode(1)
+            setErrorMessage('Please enter name')
+        } else if (supportData.email == '') {
+            setErrorCode(2)
+            setErrorMessage('Please enter email')
+        } else if (supportData.email && !isValidEmail(supportData.email)) {
+            setErrorCode(6)
+            setErrorMessage('Invalid email')
+        } else if (phone == '') {
+            setErrorCode(3)
+            setErrorMessage('Please enter phone')
+        } else if (phone !== '' && !isValidPhone(phone)) {
+            setErrorCode(5)
+            setErrorMessage('Invalid phone')
+        } else if (supportData.message == '') {
+            setErrorCode(4)
+            setErrorMessage('please enter message')
+        } else {
+            setSupportData({
+                ...supportData, loading: true
+            })
+            const formData = {
+                toEmail: process.env.NEXT_PUBLIC_PALM_EMAIL,
+                fromEmail: process.env.NEXT_PUBLIC_PALM_EMAIL,
+                subject: 'Support Me',
+                fullName: supportData.fullName,
+                email: supportData.email,
+                phone: phone,
+                message: supportData.message
+            }
+            try {
+                fetch(`${VERIFY}/api/email/support`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData)
+                }).then((res) => {
+                    setSupportData({
+                        fullName: '',
+                        email: '',
+                        message: '',
+                        loading: false
+                    })
+                    setPhone('')
+                    toast.success('Report Submitted Successfully')
+                    setSupport(false)
+                })
+            } catch (err) {
+                console.log(err);
+            }
+
+        }
+    }
     return (
         <div className='flex flex-col mt-28 max-sm:px-3 '>
             <div className="xl:px-40 border-y-[1px]">
@@ -152,15 +238,9 @@ const Footer = () => {
                         <div className="hidden md:flex flex-col gap-3 pt-3 text-lightGrey text-[18px] font-[400] leading-midRL">
                             <LinkList link="/faq" text="Help Center" />
 
-                            <div>
+                            <div className='hover:text-gradientFirst hover:underline cursor-pointer' onClick={() => setSupport(!support)}>
                                 Contact support
                             </div>
-                            {/* <p>
-                                Suite 301E | Bethlhem Plaza, Megenagna, <br />
-                                Addis Ababa, Ethiopia
-                            </p>
-                            <p>+251 965636465</p>
-                            <p>careers@palmjobs.et</p> */}
                         </div>
                         {forGt && (
                             <div className="flex flex-col gap-3 pt-3 text-[18px] font-[400] leading-midRL md:hidden ">
@@ -209,6 +289,51 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
+            <ConfirmModal isOpen={support} handleClose={() => setSupport(!support)}>
+                <div className="mx-2 bg-textW rounded-2xl flex flex-col pt-10 w-full h-full sm:h-4/5 md:w-2/3 xl:w-1/3 md:mx-0">
+                    <div className="col-span-12 flex justify-end pr-7">
+                        <button onClick={() => setSupport(!support)}>
+                            <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
+                        </button>
+                    </div>
+                    <form onSubmit={handleSupport} className="w-full flex flex-col h-full items-center">
+                        <div className='h-full w-full overflow-y-auto overflow-x-hidden pr-2 thinScrollBar flex flex-col items-center h-4/5'>
+                            <p className='font-[600] text-[24px]'>Help Form</p>
+                            <div className='flex gap-3'>
+                                <div className='flex-grow flex flex-col gap-5'>
+                                    <RequiredTextLabel text='Please enter full name' />
+                                    <TextInputRelated errorMessage={errorCode == 1 && errorMessage} value={supportData.fullName} dataDistruct={supportData} setFunction={setSupportData} change="fullName" />
+                                    <RequiredTextLabel text='Please enter email' />
+                                    <TextInputRelated errorMessage={(errorCode == 2 || errorCode == 6) && errorMessage} value={supportData.email} dataDistruct={supportData} setFunction={setSupportData} change="email" />
+                                    <RequiredTextLabel text='Please enter phone' />
+                                    <PhoneInput
+                                        defaultCountry="ET"
+                                        placeholder="Enter phone number"
+                                        value={phone}
+                                        onChange={setPhone}
+                                        className={`phoneInput h-12 pl-5 bg-white rounded-lg border-[1px] focus:ring-gradientFirst focus:border-0 w-full md:w-96 
+                    ${errorCode == 5 || errorCode == 3 ? 'border-red-500' : 'border-gray-200'}
+                    `}
+                                    />
+                                    {(errorCode == 5 || errorCode == 3) && <p className="text-red-500 text-[13px] mt-2">{errorMessage}</p>}
+                                    <RequiredTextLabel text='Additional message' />
+                                    <textarea value={supportData.message} onChange={(e) => {
+                                        if (e.currentTarget.value.length <= 200) {
+                                            setSupportData({ ...supportData, message: e.currentTarget.value })
+                                        }
+                                    }} cols={30} rows={20} className='sm:w-[376px] rounded-lg resize-none h-52 focus:border-gradientFirst focus:ring-0' placeholder='Additional Message'></textarea>
+                                    {errorCode == 4 && <p className="text-red-500 text-[13px] mt-2">{errorMessage}</p>}
+                                </div>
+                            </div>
+                        </div>
+                        <div className='w-full flex justify-center pt-3'>
+                            <div className='w-80'>
+                                <SubmitButton loading={supportData.loading} buttonText="Submit" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </ConfirmModal>
         </div >
     );
 };

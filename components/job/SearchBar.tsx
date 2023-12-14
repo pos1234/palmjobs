@@ -18,7 +18,7 @@ const SearchBar = (props: any) => {
                             placeholder="What"
                         />
                     </div>
-                    <div className='relative flex items-center max-sm:hidden h-[40px] w-2/6'>
+                    <div className='relative flex items-center max-sm:hidden h-[40px] w-3/6'>
                         <PlaceOutlinedIcon className="text-[1.3rem] text-stone-400 absolute left-3 " />
                         <input
                             name="search location"

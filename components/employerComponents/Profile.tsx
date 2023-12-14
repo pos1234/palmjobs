@@ -43,8 +43,9 @@ const EmployerProfile = (props: any) => {
             userData.name !== null && setUserName(userData.name)
         }
     };
-    const isValidPhone = (phone: string) => {
-        return isValidPhoneNumber(phone.toString())
+    const isValidPhone = (phones: string) => {
+        const result = phones && isValidPhoneNumber(phones.toString())
+        return result
     }
     useEffect(() => {
         initialData();
@@ -62,7 +63,6 @@ const EmployerProfile = (props: any) => {
         setNoEmployeeError("")
         setPhoneError('')
         setPhoneError('')
-        const regex = /^\+251\s9[0-9]{8}$/;
         if (companyName == '') {
             setCompanyNameError('Please provide company name')
         } else if (userName == '') {

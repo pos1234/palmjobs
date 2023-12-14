@@ -72,7 +72,7 @@ export const searchJobs = async (
     expLevel: string,
     postedDate: string
 ) => {
-    const searchWord = searchText ? Query.startsWith('jobTitle', searchText) : null;
+    const searchWord = searchText ? Query.search('jobTitle', searchText) : null;
     const searchAddress = address !== '' ? Query.startsWith('jobLocation', address) : null;
     const jobType = jobTypes ? Query.equal('jobType', jobTypes) : null;
     const exp = expLevel ? Query.equal('expreienceLevel', expLevel) : null;

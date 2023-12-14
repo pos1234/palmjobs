@@ -162,31 +162,19 @@ export const deleteResume = (fileId: string) => {
     const promise = storage.deleteFile(RESUME, fileId);
     return promise;
 };
-export const fetchSavedJobIds = async () => {
-    const userAccount = await getAccount();
-    if (userAccount !== 'failed') {
-        const results = await databases.listDocuments(DATABASE_ID, SAVED_JOBS, [Query.equal('candidateId', userAccount.$id)]);
-        return results;
-    }
+export const fetchSavedJobIds = async (id: string) => {
+    const results = await databases.listDocuments(DATABASE_ID, SAVED_JOBS, [Query.equal('candidateId', id)]);
+    return results;
 };
 export const unSaveJobs = (id: string) => {
     const results = databases.deleteDocument(DATABASE_ID, SAVED_JOBS, id);
     return results;
 };
-export const fetchSavedJobsData = async (ids: string[]) => {
-    const dataPromises = ids.map(async (id) => {
-        try {
-            // Fetch data from Appwrite for the given ID
-            const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, id);
-            return response;
-        } catch (error) {
-            console.error(`Error fetching data for ID ${id}:`, error);
-            return null;
-        }
-    });
-
+export const fetchSavedJobsData = async (id: string) => {
+    // Fetch data from Appwrite for the given ID
+    const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, id);
+    return response;
     // Wait for all promises to resolve and return the data
-    return Promise.all(dataPromises);
 };
 export const getSavedJobId = async (id: string) => {
     const userAccount = await account.get();
@@ -252,17 +240,9 @@ export const saveJobs = (candidateId: string, jobId: string) => {
         jobId: jobId,
         candidateId: candidateId
     });
+    return promise;
 };
 export const alreadySaved = async (id: string, jobId: string) => {
-    try {
-        const results = await databases.listDocuments(DATABASE_ID, SAVED_JOBS, [
-            Query.equal('candidateId', id),
-            Query.equal('jobId', jobId)
-        ]);
-        return results;
-    } catch (error) {
-        console.error('Error fetching documents:', error);
-        return [];
-    }
+    const results = await databases.listDocuments(DATABASE_ID, SAVED_JOBS, [Query.equal('candidateId', id), Query.equal('jobId', jobId)]);
+    return results;
 };
-export { getRole };

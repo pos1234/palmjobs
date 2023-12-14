@@ -11,7 +11,7 @@ const Logout = (props: any) => {
         setLoading(true);
         signOut().then((res) => {
             setLoading(false);
-            toast.success('Successfully Logged Out');
+            toast.success("You've been logged out. See you again soon!");
             typeof window !== 'undefined' && router.push('/');
             typeof window !== 'undefined' && router.reload();
         });

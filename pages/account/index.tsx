@@ -53,7 +53,7 @@ const Login = () => {
                     if (res == null) {
                         toast.error('Please Verify Email')
                     } else {
-                        toast.success('Successfully LoggedIn');
+                        toast.success("Welcome back! You're successfully logged in.");
                         const loggedIn = await getAccount();
                         if (loggedIn !== 'failed') {
                             setUserData(loggedIn)

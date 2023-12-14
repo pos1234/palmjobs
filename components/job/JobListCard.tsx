@@ -103,14 +103,13 @@ const JobListCard = (props: any) => {
         employerId: '',
         message: ''
     })
-    const isToday = moment(props.items.datePosted).isSame(moment());
-    const isWithinWeek = moment(props.items.datePosted).isAfter(moment().subtract(7, 'days')) && moment(props.items.datePosted).isBefore(moment());
-    const date = new Date(props.items.datePosted);
+    const isToday = moment(props.items.$createdAt).isSame(moment());
+    const isWithinWeek = moment(props.items.$createdAt).isAfter(moment().subtract(7, 'days')) && moment(props.items.datePosted).isBefore(moment());
+    const date = new Date(props.items.$createdAt);
     const today = new Date();
     const difference = today.getTime() - date.getTime();
     const weeks = Math.floor(difference / (1000 * 60 * 60 * 24 * 7));
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-
     const getUserData = async () => {
 /*         const userInfo = await getAccount();
  */        if (userData && userId == '') {
@@ -284,7 +283,8 @@ const JobListCard = (props: any) => {
                     {removeHtmlTags(props.items.jobDescription)}....
                 </div>
             </div>
-            {isToday && isToday ? <p className='text-[12px]'>Posted Today</p> : isWithinWeek ? days == 0 ? <p className='text-[12px]'>Posted Today</p> : <p className='text-[12px]'>Posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>Posted {weeks} weeks ago</p> : <p className='text-[12px]'>Posted {Math.floor(weeks / 4)} month ago</p>}
+            {}
+            {/* isToday && isToday ? <p className='text-[12px]'>Posted Today</p> : */ isWithinWeek ? days == 0 ? <p className='text-[12px]'>Posted Today</p> : <p className='text-[12px]'>Posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>Posted {weeks} weeks ago</p> : <p className='text-[12px]'>Posted {Math.floor(weeks / 4)} month ago</p>}
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.items.$id} />
             <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={'Survey'} text={''} tipText={"Thank you for helping us maintain a professional and safe environment on our job board. If you've found a job listing that violates our terms or seems inappropriate, please provide the information below to assist our review."}>
                 <form onSubmit={handleReportSubmit} className="w-full flex flex-col h-full md:max-lg:items-center">
