@@ -10,8 +10,8 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import LaunchIcon from '@mui/icons-material/Launch';
 import StairsOutlinedIcon from '@mui/icons-material/StairsOutlined'
 import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf'
-import { alreadySaved, saveJobs, } from '@/backend/candidateBackend'
-import { getAccount, getRole, signOut } from '@/backend/accountBackend';
+import { alreadyApplied, alreadySaved, saveJobs, } from '@/backend/candidateBackend'
+import { signOut } from '@/backend/accountBackend';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
@@ -19,30 +19,27 @@ import ApplyToJob from '../candidateProfileComponents/ApplyToJobs';
 import { SmallLists } from '../TextInput';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { fetchCandidateDetail } from '@/backend/employerBackend';
 import moment from 'moment';
 import { useGlobalContext } from '@/contextApi/userData';
 import ConfirmModal from '../ConfirmModal';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const JobDetail = (props: any) => {
-    const { userRole } = useGlobalContext()
-    const [savedJobId, setSavedJobId] = useState<any[]>([]);
-    const [savedJobs, setSavedJobs] = useState<any[]>([]);
-    const [allLoading, setAllLoading] = useState(false);
+    const { userRole, userDetail, loading, userData } = useGlobalContext()
+    const [allLoading, setAllLoading] = useState(loading);
     const [applyEmp, setApplyEmp] = useState(false);
     const [jobTitle, setJobTitle] = useState('');
-    const [userData, setUserData] = useState<any>();
-/*     const [userRole, setUserRole] = useState('');
- */    const [userId, setUserId] = useState('')
     const [apply, setApply] = useState(false);
     const [applyJobId, setApplyJobId] = useState('');
     const [applyEmployerId, setApplyEmployerId] = useState('');
     const [openShare, setOpenShare] = useState(false);
     const [userSkill, setUserSkill] = useState<any>()
+    const [applied, setApplied] = useState(false);
+    const [saved, setSaved] = useState(false)
     const router = useRouter();
-    const isToday = moment(props.jobDetails.datePosted).isSame(moment());
-    const isWithinWeek = moment(props.jobDetails.datePosted).isAfter(moment().subtract(7, 'days')) && moment(props.jobDetails.datePosted).isBefore(moment());
-    const date = new Date(props.jobDetails.datePosted);
+    const isWithinWeek = moment(props.jobDetails.$createdAt).isAfter(moment().subtract(7, 'days')) && moment(props.jobDetails.datePosted).isBefore(moment());
+    const date = new Date(props.jobDetails.$createdAt);
     const today = new Date();
     const difference = today.getTime() - date.getTime();
     const weeks = Math.floor(difference / (1000 * 60 * 60 * 24 * 7));
@@ -51,45 +48,59 @@ const JobDetail = (props: any) => {
         const arrayValue = JSON.parse(text)
         return arrayValue
     }
-    const getUserData = async () => {
-        const userInfo = await getAccount();
-        if (userInfo !== 'failed') {
-            setUserId(userInfo.$id)
-            setUserData(userInfo);
-            const role = await getRole();
-            if (role && role.documents[0].userRole == 'candidate') {
-                fetchCandidateDetail(userInfo.$id).then((res) => {
-                    res && res.documents[0] && res.documents[0].skills && setUserSkill(res.documents[0].skills)
-                    const lowercaseSkills = res && res.documents[0] && res.documents[0].skills && res.documents[0].skills.map((skill: string, index: number) => skill.toLowerCase());
-                    setUserSkill(lowercaseSkills)
-                })
-            }
-/*             role && setUserRole(role && role.documents[0].userRole);
- */        }
+    const checkApplied = async () => {
+        if (!userDetail) {
+            setApplied(false)
+            setAllLoading(false)
+        }
+        if (userDetail) {
+            setAllLoading(true)
+            alreadyApplied(userDetail.$id, props.jobDetails.$id).then((applied) => {
+                setAllLoading(false)
+                if (applied.total !== 0) {
+                    setApplied(true);
+                }
+                if (applied.total == 0) {
+                    setApplied(false);
+                }
+            });
+        }
     };
-    /*  useEffect(() => {
-         getUserData();
-     }, []); */
+    const checkSaved = () => {
+        if (!userDetail) {
+            setSaved(false)
+        }
+        if (userDetail) {
+            const checkSaved = alreadySaved(userData.$id, props.jobDetails.$id);
+            checkSaved.then((rem: any) => {
+                if (rem.total > 0) {
+                    setSaved(true)
+                }
+                if (rem.total == 0) {
+                    setSaved(false)
+                }
+            });
+        }
+    }
+    useEffect(() => {
+        checkApplied()
+        checkSaved()
+    }, [userDetail, props.jobDetails])
     const handleApply = async (jobId: string, employerId: string, jobTitle: string) => {
         setApply(false);
         if (userRole) {
             if (userRole == 'candidate') {
-                console.log('candidate');
                 setApply(true);
                 setApplyJobId(jobId);
                 setApplyEmployerId(employerId);
                 setJobTitle(jobTitle);
             } else if (userRole == 'employer') {
                 setApplyEmp(true);
-                console.log('this is the employer');
             }
         }
-        if (userRole == '') {
+        if (!userData && userRole == '') {
             typeof window !== 'undefined' && router.push('/account');
-            console.log('not logged in');
-
         }
-
     }
     const createCandidateAccount = () => {
         signOut()
@@ -102,11 +113,13 @@ const JobDetail = (props: any) => {
     };
     const handleSaveJob = async (id: string) => {
         if (userRole == 'candidate') {
-            const checkSaved = alreadySaved(userId, id);
-            checkSaved.then((rem: any) => {
+            const checkSaveds = alreadySaved(userData.$id, id);
+            checkSaveds.then((rem: any) => {
                 if (rem.total == 0) {
                     toast.success('Successfully Saved Job');
-                    saveJobs(userId, id);
+                    saveJobs(userData.$id, id);
+                    setSaved(true)
+
                 } /* else {
                     toast.error('Job Already saved');
                 } */
@@ -172,7 +185,7 @@ const JobDetail = (props: any) => {
                                 </p>
                             )}
                             {props.jobDetails.jobLocation && (
-                                <p className="text-gray-400 text-[14px] flex items-center gap-1">
+                                <p className="text-[#141414B2] text-[14px] flex items-center gap-1">
                                     <PlaceOutlinedIcon
                                         sx={{ fontSize: '1rem' }}
                                     />
@@ -225,7 +238,7 @@ const JobDetail = (props: any) => {
                             {props.jobDetails.datePosted && (
                                 <div className="inline bg-[#FAFAFA] flex items-center gap-1 text-xs text-gradientFirst rounded-[4px] p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:h-[28px]">
                                     <img src='/icons/hourGlassUp.svg' alt='hourGlassUp' />
-                                    <span className='text-[#20262E]'>{isToday && isToday ? <p className='text-[12px]'>posted today</p> : isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
+                                    <span className='text-[#20262E]'>{/* isToday && isToday ? <p className='text-[12px]'>posted today</p> : */ isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
                                     </span>
                                 </div>
                             )}
@@ -244,25 +257,50 @@ const JobDetail = (props: any) => {
                                     className='bg-gradientFirst text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:border-b-4 hover:border-b-black buttonBounce'                                >
                                     Apply
                                 </div>
-                            ) : (
-                                <div
-                                    onClick={() => {
-                                        handleApply(
-                                            props.jobDetails.$id,
-                                            props.jobDetails.employerId,
-                                            props.jobDetails.jobTitle
-                                        );
-                                    }}
-                                    className='bg-gradient-to-r from-[#00A82D] to-[#0CBC8B] text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:border-b-4 hover:border-b-black buttonBounce'                                >
-                                    <EnergySavingsLeafIcon sx={{ fontSize: '1.2rem' }} /> <span className='ml-2'> Easy Apply</span>
-                                </div>
+                            ) : (<>
+                                {
+                                    allLoading && <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
+                                        <div className="text-neutral-900  text-opacity-70 text-xl font-normal leading-7">
+                                            <div className="bg-gray-300 rounded animate-pulse w-[195px] h-[40px] rounded-[4px]"></div>
+                                        </div>
+                                    </div>
+                                }
+                                {
+                                    !allLoading ? !applied ? <div className='hover:bg-black rounded-[4px]'><div
+                                        onClick={() => {
+                                            handleApply(
+                                                props.jobDetails.$id,
+                                                props.jobDetails.employerId,
+                                                props.jobDetails.jobTitle
+                                            );
+                                        }}
+                                        className='bg-gradient-to-r from-[#00A82D] to-[#0CBC8B] text-textW w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center hover:rounded-x-[0px] buttonBounce'                                >
+                                        <EnergySavingsLeafIcon sx={{ fontSize: '1.2rem' }} /> <span className='ml-2'> Easy Apply</span>
+                                    </div> </div> : <div
+                                        className='bg-gray-100 text-gray-00 w-[195px] h-[40px] cursor-pointer rounded-[4px] flex items-center justify-center '          >
+                                        <EnergySavingsLeafIcon sx={{ fontSize: '1.2rem' }} /> <span className='ml-2'> Applied</span>
+                                    </div> : null
+
+                                }
+
+                            </>
                             )}
-                            <div className='flex items-center cursor-pointer text-gray-500 hover:text-gradientFirst'>
-                                <BookmarkBorderOutlinedIcon
-                                    onClick={() => handleSaveJob(props.jobDetails.$id)}
-                                    sx={{ fontSize: '1.5rem' }}
-                                />
-                            </div>
+                            {!saved && !allLoading &&
+                                <div className='flex items-center cursor-pointer text-gray-500 hover:text-gradientFirst'>
+                                    <BookmarkBorderOutlinedIcon
+                                        onClick={() => handleSaveJob(props.jobDetails.$id)}
+                                        sx={{ fontSize: '1.5rem' }}
+                                    />
+                                </div>
+                            }
+                            {saved && !allLoading &&
+                                <div className='flex items-center text-gradientFirst'>
+                                    <BookmarkIcon
+                                        sx={{ fontSize: '1.5rem' }}
+                                    />
+                                </div>
+                            }
+
                         </div>
                     </div>
                     <div className='flex px-6 flex-col gap-5 pb-4 overflow-hidden h-[100%]'>
@@ -292,10 +330,10 @@ const JobDetail = (props: any) => {
                                     {props.jobDetails.requiredSkills && parseToArray(props.jobDetails.requiredSkills).map((skill: string, index: number) => {
                                         return <div key={index}>
                                             {userSkill && userSkill.includes(skill.toLocaleLowerCase()) ?
-                                                <div key={index} className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-skillColor text-gradientFirst text-center flex px-7 max-sm:py-7 gap-2 items-center">
+                                                <div key={index} className="min-w-36 w-auto h-8 font-adW rounded-lg text-sm leading-adL bg-skillColor text-gradientFirst text-center flex px-7 max-sm:py-7 gap-2 items-center">
                                                     {skill} <CheckIcon sx={{ fontSize: '1.2rem', marginTop: '-0.2rem' }} />
                                                 </div> :
-                                                <div className="min-w-36 w-auto h-8 font-adW text-sm leading-adL bg-gray-100 text-center flex px-7 max-sm:py-7 items-center"
+                                                <div className="min-w-36 w-auto h-8 font-adW rounded-lg text-sm leading-adL bg-gray-100 text-center flex px-7 max-sm:py-7 items-center"
                                                     key={index}>{skill}</div>}
                                         </div>
                                     })}
@@ -307,7 +345,7 @@ const JobDetail = (props: any) => {
                                     </div>
                                     <div
                                         dangerouslySetInnerHTML={{ __html: props.jobDetails.jobDescription }}
-                                        className="text-[14px] text-[#727272] min-h-[180px]"
+                                        className="text-[12px] text-[#727272] min-h-[180px]"
                                     />
 
                                 </div>
@@ -315,39 +353,51 @@ const JobDetail = (props: any) => {
                         }
                         {props.company && props.companyData && (
                             <div className="w-full">
-                                <p className="font-thW text-frhS">Company's Overview</p>
-                                <div className='flex gap-3 flex-wrap justify-between pb-5'>
-                                    <div className='flex flex-col gap-y-5'>
+                                <div className='flex items-center gap-2'>
+                                    <img src="/icons/game-icons_binoculars.svg" alt="camera" className='w-[29px] h-[29px]' />
+                                    <p className="font-[600] leading-[22px">Company Snapshot</p>
+                                </div>
+                                <div className='flex gap-3 flex-wrap gap-5 mt-5 pb-5'>
+                                    <div className='flex flex-col gap-y-2'>
                                         {
-                                            props.companyData.sector && <div className='flex gap-5 '>
-                                                <p className='font-bold text-lightGrey text-md'>Sector</p>
-                                                <p className='text-lightGrey'>{props.companyData.sector}</p>
+                                            props.companyData.sector && <div className='flex gap-5 items-center'>
+                                                <p className='text-[#141414] text-[14px]'>Sector</p>
+                                                <p className='text-[#727272] text-[12px]'>{props.companyData.sector}</p>
                                             </div>
                                         }
                                         {
                                             props.companyData.location && <div className='flex gap-5 '>
-                                                <p className='font-bold text-lightGrey text-md'>location</p>
-                                                <p className='text-lightGrey'>{props.companyData.location}</p>
+                                                <p className='text-[#141414] text-[14px]'>Location</p>
+                                                <p className='text-[#727272] text-[12px]'>{props.companyData.location}</p>
                                             </div>
                                         }
                                     </div>
-                                    <div className='flex flex-col gap-y-5'>
+                                    <div className='flex flex-col gap-y-2'>
                                         {
-                                            props.companyData.noOfEmployee && <div className='flex gap-5 '>
-                                                <p className='font-bold text-lightGrey text-md'>Size</p>
-                                                <p className='text-lightGrey'>{props.companyData.noOfEmployee}</p>
+                                            props.companyData.noOfEmployee && <div className='flex items-center gap-5 '>
+                                                <p className='text-[#141414] text-[14px]'>Size</p>
+                                                <p className='text-[#727272] text-[12px]'>{props.companyData.noOfEmployee}</p>
                                             </div>
                                         }
                                         {
-                                            props.companyData.websiteLink && <div className='flex gap-5 '>
-                                                <p className='font-bold text-lightGrey text-md'>Website</p>
-                                                <a className='text-lightGrey' href={props.companyData.websiteLink} target='_blank'>view <LaunchIcon /></a>
+                                            props.companyData.websiteLink && <div className='flex items-center gap-5 '>
+                                                <p className='text-[#141414] text-[14px]'>Website</p>
+                                                <a className='text-[#727272] text-[12px]' href={props.companyData.websiteLink} target='_blank'>
+                                                    {props.companyData.websiteLink}
+                                                    {/* view <LaunchIcon /> */}</a>
                                             </div>
                                         }</div>
                                 </div>
+                                {
+                                    props.companyData.description &&
+                                    <div className='flex items-center gap-2 mb-3'>
+                                        <img src="/icons/mingcute_leaf-3-fill.svg" alt="camera" className='w-[29px] h-[29px]' />
+                                        <p className="font-[600] leading-[22px">Company Overview</p>
+                                    </div>
+                                }
                                 <div
                                     dangerouslySetInnerHTML={{ __html: props.companyData.description }}
-                                    className="text-[14px] text-lightGrey overflow-y-auto hideScrollBar min-h-96 max-h-96 overflow-y-auto hideScrollBar"
+                                    className="text-[12px] text-[#727272] overflow-y-auto hideScrollBar min-h-96 max-h-96 overflow-y-auto hideScrollBar"
                                 />
                             </div>
                         )}

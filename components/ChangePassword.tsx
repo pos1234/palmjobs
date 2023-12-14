@@ -3,16 +3,16 @@ import React, { useState } from 'react';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { toast } from 'react-toastify';
+import { SubmitButton } from './TextInput';
 const RequiredTextLabel = (props: any) => {
     return (
         <div>
-            <span className="text-neutral-900 text-opacity-70 text-lg font-medium leading-loose md:text-xl">{props.text} </span>
-            <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 text-2xl font-medium leading-loose'}>*</span>
+            <span className="text-neutral-900 text-opacity-70 font-medium leading-loose">{props.text} </span>
+            <span className={props.req == 'nReq' ? 'hidden' : 'text-orange-600 font-medium leading-loose'}>*</span>
         </div>
     );
 };
 const ChangePassword = () => {
-    const loadingIn = '/images/loading.svg';
     const [oldPassword, setOldPassword] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfrimPassword] = useState('');
@@ -53,27 +53,23 @@ const ChangePassword = () => {
         }
     };
     return (
-        <div className="pt-5 pb-10 bg-textW grid grid-cols-12 max-sm:px-5 sm:pl-10 xl:pr-28 xl:px-20">
+        <div className="pt-5 pb-10 flex max-sm:px-5 sm:pl-10 xl:pr-28 my-5 xl:px-20">
             <form
                 onSubmit={handleReset}
-                className="col-span-12  order-1 md:order-2 flex flex-col gap-y-2 md:px-5 lg:px-10 xl:px-20 md:col-span-6 xl:col-span-9"
+                className="flex flex-col gap-y-2 w-full sm:w-2/3"
             >
-                <p className="col-span-12 font-frhW  text-[#0E121D] text-[1.5rem] xl:text-frhS">Change your password</p>
+                <p className="font-frhW  text-[#0E121D] text-[1rem] xl:text-[1.2rem]">Change your password</p>
                 <RequiredTextLabel text="Old Password" />
-                <div className="col-span-12 flex">
+                <div className="flex">
                     <input
                         value={oldPassword}
                         onChange={(e) => setOldPassword(e.currentTarget.value)}
                         type={visibleOld ? 'text' : 'password'}
                         placeholder="Enter password"
-                        className={
-                            oldPasswordError
-                                ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                                : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
-                        }
+                        className={`focus:outline-0 flex border-[1px] w-full rounded-lg h-10 pl-5 text-addS focus:border-0 ${oldPasswordError ? 'border-red-500' : 'focus:ring-gradientSecond'}`}
                     />
                     <span onClick={() => setVisibleOld(!visibleOld)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
-                        {visibleOld ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                        {visibleOld ? <VisibilityIcon sx={{ fontSize: '1.2rem' }} /> : <VisibilityOffIcon sx={{ fontSize: '1.2rem' }} />}
                     </span>
                 </div>
                 {oldPasswordError && <p className="col-span-12 pt-3 text-[13px] text-red-500 text-left">{oldPasswordError}</p>}
@@ -84,14 +80,10 @@ const ChangePassword = () => {
                         onChange={(e) => setPassword(e.currentTarget.value)}
                         type={visible ? 'text' : 'password'}
                         placeholder="Enter password"
-                        className={
-                            passwordError
-                                ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS'
-                                : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS'
-                        }
+                        className={`focus:outline-0 flex border-[1px] w-full rounded-lg h-10 pl-5 text-addS focus:border-0 ${passwordError ? 'border-red-500' : 'focus:ring-gradientSecond'}`}
                     />
                     <span onClick={() => setVisible(!visible)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
-                        {visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                        {visible ? <VisibilityIcon sx={{ fontSize: '1.2rem' }} /> : <VisibilityOffIcon sx={{ fontSize: '1.2rem' }} />}
                     </span>
                 </div>
                 <p className="col-span-12 float-left font-thW text-smS mt-5 mb-0 leading-shL">Confirm Password</p>
@@ -100,28 +92,13 @@ const ChangePassword = () => {
                     onChange={(e) => setConfrimPassword(e.currentTarget.value)}
                     type={visible ? 'text' : 'password'}
                     placeholder="Enter password"
-                    className={
-                        passwordError
-                            ? 'col-span-12 focus:outline-0 flex focus:ring-orange-500 focus:border-0 border-[1px] border-red-500 w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
-                            : 'col-span-12 focus:outline-0 flex focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-xl h-12 pl-5 text-addS sm:col-span-10'
-                    }
+                    className={`focus:outline-0 flex border-[1px] w-full rounded-lg h-10 pl-5 text-addS focus:border-0 ${passwordError ? 'border-red-500' : 'focus:ring-gradientSecond'}`}
                 />
                 {passwordError && <p className="col-span-12 pt-3 text-[13px] text-red-500 text-left">{passwordError}</p>}
-                <div className="col-span-12 grid grid-cols-12 justify-items-end pr-2 lg:col-span-10">
-                    {loading && (
-                        <img
-                            src={loadingIn}
-                            className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
-                        />
-                    )}
-                    {!loading && (
-                        <button
-                            type="submit"
-                            className="mt-5 col-span-12 text-textW bg-gradient-to-r from-gradientFirst to-gradientSecond h-16 w-full rounded-xl"
-                        >
-                            Reset
-                        </button>
-                    )}
+                <div className="w-full flex justify-end mt-10">
+                    <div className='w-full md:w-60'>
+                        <SubmitButton loading={loading} buttonText={'Update'} />
+                    </div>
                 </div>
             </form>
         </div>

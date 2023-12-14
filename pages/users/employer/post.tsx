@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getProfileData } from '@/backend/employerBackend';
+import { fetchAllEmployerJob, getProfileData } from '@/backend/employerBackend';
 import 'react-quill/dist/quill.snow.css';
 import EmployerProfile from '@/components/employerComponents/Profile';
 import FirstForm from '@/components/employerComponents/jobPostTabs/FirstForm';
@@ -12,23 +12,14 @@ import ChooseJob from '@/components/employerComponents/jobPostTabs/ChooseJob';
 import Navigation from '@/components/employerComponents/Navigation';
 import { employeeAuth } from '@/components/withAuth';
 import { useGlobalContext } from '@/contextApi/userData';
+import EmployerJobShimmer from '@/components/shimmer/EmpJobShimmer';
 const PostAJob = (props: any) => {
-    const { jobPostTabs } = useJobPostContext();
+    const { jobPostTabs, allLoading, allEmployerJobs, setAllLoading, setAllEmployerJobs, setPostingTabs } = useJobPostContext();
     const { userDetail } = useGlobalContext()
-    const [compName, setCompName] = useState('');
     const [compDesc, setCompDesc] = useState('');
-    const [company, setCompany] = useState(false);
     const [openPreview, setOpenPreview] = useState(false);
     const [profileFilled, setProfileFilled] = useState(true);
-    const [emailNotify, setEmailNotify] = useState('');
     const [companyData, setCompanyData] = useState<any>()
-    const initialData = () => {
-        const result = getProfileData();
-        result.then((res: any) => {
-            res.documents && res.documents[0] && res.documents[0].description && setCompDesc(res.documents[0].description);
-            res.documents && res.documents[0] && setCompanyData(res.documents[0]);
-        });
-    };
     const getProfile = async () => {
         if (userDetail) {
             if (
@@ -44,6 +35,30 @@ const PostAJob = (props: any) => {
         }
     };
     useEffect(() => {
+        if (!allEmployerJobs) {
+            setAllLoading(true)
+            fetchAllEmployerJob().then((res: any) => {
+                if (res?.total > 0) {
+                    setPostingTabs({
+                        ...jobPostTabs,
+                        chooseJob: true
+                    })
+                }
+                if (res?.total == 0) {
+                    setPostingTabs({
+                        ...jobPostTabs,
+                        first: true
+                    })
+                }
+                setAllLoading(false)
+                setAllEmployerJobs(res?.documents)
+            }).catch((error) => {
+                setAllLoading(false)
+                console.log(error);
+            })
+        }
+    }, [])
+    useEffect(() => {
         getProfile();
     }, [userDetail, jobPostTabs])
 
@@ -51,6 +66,14 @@ const PostAJob = (props: any) => {
         <div className="flex gap-x-3 max-md:flex-wrap bg-textW">
             <Navigation active='post' />
             <div className="pt-5 px-3 pb-10 bg-textW w-full max-xl:flex-grow xl:w-2/3 min-h-screen">
+                {allLoading && (
+                    <div className="flex flex-col gap-y-10 pt-20 h-full">
+                        <EmployerJobShimmer />
+                        <EmployerJobShimmer />
+                        <EmployerJobShimmer />
+                        <EmployerJobShimmer />
+                    </div>
+                )}
                 {jobPostTabs.chooseJob == false && (jobPostTabs.first || jobPostTabs.second || jobPostTabs.third || jobPostTabs.fourth) && <p className="text-neutral-900 text-opacity-70 text-base font-normal leading-10">Job Post Progress</p>}
                 {jobPostTabs.chooseJob == false && (jobPostTabs.first || jobPostTabs.second || jobPostTabs.third || jobPostTabs.fourth) && (
                     <div className="grid grid-cols-12 gap-x-2 mt-1 md:pr-20 lg:pr-40 xl:pr-60">
@@ -75,10 +98,10 @@ const PostAJob = (props: any) => {
                 <div className={jobPostTabs.chooseJob ? '' : 'hidden'}>
                     <ChooseJob />
                 </div>
-                <div className={jobPostTabs.first == true ? '' : 'hidden'}>
+                <div className={jobPostTabs.first ? '' : 'hidden'}>
                     <FirstForm />
                 </div>
-                <div className={jobPostTabs.second == true ? '' : 'hidden'} >
+                <div className={jobPostTabs.second ? '' : 'hidden'} >
                     <SecondForm />
                 </div>
                 <div className={jobPostTabs.third == true && profileFilled == true ? '' : 'hidden'}>

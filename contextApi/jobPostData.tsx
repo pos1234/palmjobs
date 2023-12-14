@@ -59,7 +59,9 @@ const GlobalContext = createContext<FirstTabData>({
     setFourthTabData: () => { },
     setAllEmployerJobs: () => { },
     setPostingJobId: () => { },
-    handleJobSelection: (id: string, postingType?: string) => { }
+    setAllLoading: () => { },
+    handleJobSelection: (id: string, postingType?: string) => { },
+    handleDiscard: () => { }
 });
 export const JobPostContextProvider = ({ children }: any) => {
     const [jobPostTabs, setPostingTabs] = useState({
@@ -80,21 +82,12 @@ export const JobPostContextProvider = ({ children }: any) => {
         locationError: '',
         openPositions: 1,
     })
-    type numbers = number | string;
-    interface secondTab {
-        loading: boolean,
-        workType: string,
-        minSalary: numbers,
-        maxSalary: numbers,
-        currency: string,
-        expRequired: string
-    }
     const [secondTabData, setSecondTabData] = useState({
         loading: false,
         workType: 'Full-Time',
         minSalary: '',
         maxSalary: '',
-        currency: 'etb',
+        currency: 'ETB',
         expRequired: '0-2 years',
     })
     const [thirdTabData, setThirdTabData] = useState({
@@ -141,6 +134,54 @@ export const JobPostContextProvider = ({ children }: any) => {
             console.log(error);
         })
     }, [])
+    const handleDiscard = () => {
+        setPostingTabs({
+            first: false,
+            second: false,
+            third: false,
+            fourth: false,
+            chooseJob: true
+        })
+        setFirstTabData({
+            loading: false,
+            jobTitle: '',
+            jobTitleError: '',
+            remote: false,
+            hybrid: false,
+            addLocation: true,
+            location: '',
+            locationError: '',
+            openPositions: 1,
+        })
+        setSecondTabData({
+            loading: false,
+            workType: 'Full-Time',
+            minSalary: '',
+            maxSalary: '',
+            currency: 'ETB',
+            expRequired: '0-2 years',
+        })
+        setThirdTabData({
+            loading: false,
+            skillArray: [],
+            skillError: '',
+            jobDesc: '',
+            jobDescError: ''
+        })
+        setFourthTabData({
+            loading: false,
+            emailSent: '',
+            externalLink: '',
+            deadline: `${fifteenthDay}`,
+            palm: true,
+            email: false,
+            emailError: '',
+            link: '',
+            linkError: '',
+            emailNotify: ''
+        })
+        setPostingJobId('')
+    }
     const handleJobSelection = (id: string, postType?: string) => {
         postType && postType == 'duplicate' ? null : setPostingJobId(id)
         const selectedJob = allEmployerJobs && allEmployerJobs.filter((job: any) => job.$id == id)
@@ -148,17 +189,18 @@ export const JobPostContextProvider = ({ children }: any) => {
         const remoteLocation = selectedJob[0].jobLocation == "Remote" ? true : false
         const hybridLocation = selectedJob[0].jobLocation == "Hybrid" ? true : false
         const locationAdded = selectedJob[0].jobLocation !== "Remote" && selectedJob[0].jobLocation !== "Hybrid" ? true : false
-        const minSalary = selectedJob[0].minSalary !== null ? selectedJob[0].minSalary : ''
-        const maxSalary = selectedJob[0].maxSalary !== null ? selectedJob[0].maxSalary : ''
-        const currency = selectedJob[0].currency !== null ? selectedJob[0].currency : 'etb'
-        const exp = selectedJob[0].expreienceLevel !== null ? selectedJob[0].expreienceLevel : '0-2 years'
-        const skills = selectedJob[0].requiredSkills !== null ? JSON.parse(selectedJob[0].requiredSkills) : []
-        const desc = selectedJob[0].jobDescription !== null ? selectedJob[0].jobDescription : ''
-        const email = selectedJob[0].emailApplication !== null ? selectedJob[0].emailApplication : ''
-        const link = selectedJob[0].externalLink !== null ? selectedJob[0].externalLink : ''
+        const minSalary = selectedJob[0].minSalary ? selectedJob[0].minSalary : ''
+        const maxSalary = selectedJob[0].maxSalary ? selectedJob[0].maxSalary : ''
+        const currency = selectedJob[0].currency ? selectedJob[0].currency : 'ETB'
+        const exp = selectedJob[0].expreienceLevel ? selectedJob[0].expreienceLevel : '0-2 years'
+        const skills = selectedJob[0].requiredSkills ? JSON.parse(selectedJob[0].requiredSkills) : []
+        const desc = selectedJob[0].jobDescription ? selectedJob[0].jobDescription : ''
+        const email = selectedJob[0].emailApplication ? selectedJob[0].emailApplication : ''
+        const link = selectedJob[0].externalLink ? selectedJob[0].externalLink : ''
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const deadline = selectedJob[0].applicationDeadline !== null ? selectedJob[0].applicationDeadline <= today.toISOString() ? fifteenthDay : selectedJob[0].applicationDeadline : ''
+        const jobType = selectedJob[0].jobType ? selectedJob[0].jobType : 'Full-Time'
         setFirstTabData({
             ...firstTabData,
             loading: false,
@@ -174,7 +216,7 @@ export const JobPostContextProvider = ({ children }: any) => {
         setSecondTabData({
             ...secondTabData,
             loading: false,
-            workType: selectedJob[0].jobType,
+            workType: jobType,
             minSalary: minSalary,
             maxSalary: maxSalary,
             currency: currency,
@@ -210,9 +252,10 @@ export const JobPostContextProvider = ({ children }: any) => {
             fourthTabData, setFourthTabData,
             allEmployerJobs, setAllEmployerJobs,
             jobPostTabs, setPostingTabs,
-            allLoading,
+            allLoading, setAllLoading,
             handleJobSelection,
-            postingJobId, setPostingJobId
+            postingJobId, setPostingJobId,
+            handleDiscard
         }} >
         {children}
     </GlobalContext.Provider >

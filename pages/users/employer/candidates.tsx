@@ -13,80 +13,54 @@ import Shortlisted from '@/components/employerComponents/candidateComponents/Sho
 import Navigation from '@/components/employerComponents/Navigation';
 import Link from 'next/link';
 import { employeeAuth } from '@/components/withAuth';
+import { useJobPostContext } from '@/contextApi/jobPostData';
+import { useRouter } from 'next/router';
 const Candidates = (props: any) => {
+    const router = useRouter()
+    const { allEmployerJobs } = useJobPostContext()
     const [postedJobs, setPostedJobs] = useState<any>();
     const [candidateDetail, setCandidateDetail] = useState<any>();
     const [jobId, setJobId] = useState('');
     const [appliedCan, setAppliedCan] = useState<any>();
-    const [shortListed, setShortListed] = useState<any>();
-    const [jobDetailIndex, setJobDetailIndex] = useState(0);
     const [openCanDetail, setOpenCanDetail] = useState(false);
     const [allCandidates, setAllCandidates] = useState('All Candidates');
-    const [imageUrl, setImageUrl] = useState('');
     const [allLoading, setAllLoading] = useState(false);
-    const [searchName, setSearchName] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<any>([]);
     const [openDrop, setOpenDrop] = useState(false)
-    const [documentId, setdocumetnId] = useState('')
     useEffect(() => {
         if (props.applicantJobId !== '') {
             handleJobSelection(props.applicantJobId)
         }
     }, [props.applicantJobId])
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const inputValue = event.target.value;
-        setSearchTerm(inputValue);
-        const filteredSuggestions = postedJobs && postedJobs.filter((data: any) => data.jobTitle.toLowerCase().includes(inputValue.toLowerCase()));
-        setSuggestions(filteredSuggestions);
-    };
-    const handleJobSelection = async (id: string, title?: string) => {
+    const handleJobSelection = async (id: string) => {
         setOpenDrop(false)
         setJobId(id)
-        console.log(id);
-
-        title && setSearchTerm(title)
-        /* setJobId(id) */
         const applied = await fetchAppliedCandidatesSingleJob(id);
         if (applied && applied.total == 0) {
             setAppliedCan(null)
-/*             setCandidateDetail(null)
- */        }
+        }
         if (applied && applied.total > 0) {
             setAppliedCan(applied.documents);
-        }
-        const shortList = await fetchShortListed(id);
-
-        if (shortList && shortList.total == 0) {
-            setShortListed(null)
-        }
-        if (shortList && shortList.total > 0) {
-            setAppliedCan(shortList.documents);
         }
     };
     const getPosted = async () => {
         setAllLoading(true);
-        const posted = await fetchPostedJobs();
-        if (posted && posted.documents) {
-            posted && setPostedJobs(posted.documents);
-            setSearchTerm(posted.documents[0] && posted.documents[0].jobTitle)
-            posted && setJobId(posted.documents[0] && posted.documents[0].$id);
-            /* 
-                        const applied = await fetchAppliedCandidatesSingleJob(posted.documents[0] && posted.documents[0].$id);
-                        applied && setAppliedCan(applied.documents);
-                        const shortList = await fetchShortListed(posted.documents[0] && posted.documents[0].$id);
-                        shortList && setShortListed(shortList.documents); */
+        if (allEmployerJobs) {
+            const active = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Active');
+            setPostedJobs(active);
+            setSearchTerm(active[0] && active[0].jobTitle)
+            setJobId(active[0] && active[0].$id);
             setAllLoading(false);
+        }
+        if (Object.keys(router.query).length > 0) {
+            const { param1 }: any = router.query;
+            setJobId(param1)
         }
     };
     useEffect(() => {
         getPosted();
-    }, []);
-
-    const handleNav = (text: string) => {
-        props.postJob(text);
-    };
-
+    }, [allEmployerJobs, router.query]);
     return (
         <div className="flex gap-x-3 max-md:flex-wrap bg-textW">
             <Navigation active='candidates' />
@@ -118,16 +92,14 @@ const Candidates = (props: any) => {
                             <div className='flex w-full flex-wrap flex-col gap-4 justify-center relative'>
                                 <div className="candidateSearch w-full h-[80px] mt-5 flex justify-center items-center">
                                     <div className='flex items-center bg-[#F4F4F4] px-3 h-12 rounded-2xl md:rounded-3xl'>
-                                        <div className="hidden text-fadedText h-full md:items-center justify-center md:justify-end md:flex ">
-                                            <SearchIcon sx={{ fontSize: '1.2rem' }} />
-                                        </div>
-                                        <div className="flex-grow">
-                                            <input value={searchTerm}
-                                                onChange={handleInputChange}
-                                                type="text"
-                                                onFocus={() => setOpenDrop(true)}
-                                                className="h-10 w-72 sm:w-96 bg-[#F4F4F4] pl-3 border-none outline-none focus:ring-0 focus:border-none focus:outline-none" />
-                                        </div>
+                                        <select value={jobId} onChange={((e) => handleJobSelection(e.currentTarget.value))} name="" id="" className="h-10 w-72 sm:w-96 bg-[#F4F4F4] pl-3 border-none outline-none focus:ring-0 focus:border-none focus:outline-none"
+                                        >
+                                            {
+                                                postedJobs.map((item: any, index: number) => {
+                                                    return <option key={index} value={item.$id}>{item.jobTitle}</option>
+                                                })
+                                            }
+                                        </select>
                                     </div>
                                 </div>
                                 <div className="px-3 w-full flex justify-center rounded-2xl md:rounded-3xl ">
@@ -139,7 +111,7 @@ const Candidates = (props: any) => {
                                                         <button type='button'
                                                             className="cursor-pointer text-left my-2 w-60 p-2 hover:bg-skillColor"
                                                             key={index}
-                                                            onClick={() => handleJobSelection(item.$id, item.jobTitle)}
+                                                            onClick={() => handleJobSelection(item.$id)}
                                                         >
                                                             {item.jobTitle}
                                                         </button>

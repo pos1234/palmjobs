@@ -13,7 +13,7 @@ const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const ThirdForm = (props: any) => {
-    const { thirdTabData, setThirdTabData, postingJobId, jobPostTabs, setPostingTabs } = useJobPostContext()
+    const { thirdTabData, setThirdTabData, postingJobId, jobPostTabs, setPostingTabs, handleDiscard } = useJobPostContext()
     const [loadingAi, setLoadingAi] = useState(false)
     const handleThirdSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
@@ -136,6 +136,9 @@ const ThirdForm = (props: any) => {
             <div className="flex pt-10 justify-between gap-5 max-sm:flex-wrap">
                 <div onClick={handleBack} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
                     <ArrowBackIcon sx={{ fontSize: '1rem' }} /> <span className='ml-2'>Back</span>
+                </div>
+                <div onClick={handleDiscard} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
+                    Discard
                 </div>
                 <div className='w-full md:w-60'>
                     <SubmitButton loading={thirdTabData.loading} buttonText="Continue" />

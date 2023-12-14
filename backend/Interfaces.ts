@@ -63,6 +63,7 @@ export interface FirstTabData {
     allEmployerJobs: any;
     allLoading: boolean;
     postingJobId: string;
+    setAllLoading: Dispatch<SetStateAction<any>>;
     setPostingTabs: Dispatch<SetStateAction<any>>;
     setPostingJobId: Dispatch<SetStateAction<any>>;
     setAllEmployerJobs: Dispatch<SetStateAction<any>>;
@@ -71,4 +72,5 @@ export interface FirstTabData {
     setThirdTabData: Dispatch<SetStateAction<any>>;
     setFourthTabData: Dispatch<SetStateAction<any>>;
     handleJobSelection: (id: string, jobType?: string) => void;
+    handleDiscard: () => void;
 }

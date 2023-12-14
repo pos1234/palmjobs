@@ -7,7 +7,7 @@ import { useJobPostContext } from '@/contextApi/jobPostData';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const expData = ['0-2 years', '3-5 years', '6-8 years', '9-10 years', '10+ years'];
 const SecondForm = (props: any) => {
-    const { secondTabData, setSecondTabData, postingJobId, jobPostTabs, setPostingTabs } = useJobPostContext()
+    const { secondTabData, setSecondTabData, postingJobId, jobPostTabs, setPostingTabs, handleDiscard } = useJobPostContext()
     const handleSecondSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setSecondTabData({
@@ -75,11 +75,11 @@ const SecondForm = (props: any) => {
                     onChange={(e) => setSecondTabData(e.currentTarget.value)}
                     className="form-select h-12 max-h-[20px] overflow-y-scroll pl-5 bg-white rounded-xl border oveflow-y-auto cursor-pointer border-gray-200 focus:ring-gradientFirst focus:border-0"
                 >
-                    <option value="etb">ETB</option>
-                    <option value="usd">USD </option>
-                    <option value="euro">EURO</option>
-                    <option value="gpb">GBP</option>
-                    <option value="rnp">RMB</option>
+                    <option value="ETB">ETB</option>
+                    <option value="USD">USD </option>
+                    <option value="EURO">EURO</option>
+                    <option value="GBP">GBP</option>
+                    <option value="RMB">RMB</option>
                 </select>
                 <input
                     value={Number(secondTabData.minSalary)}
@@ -107,6 +107,9 @@ const SecondForm = (props: any) => {
             <div className="flex pt-10 justify-between gap-5 max-sm:flex-wrap">
                 <div onClick={handleBack} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
                     <ArrowBackIcon sx={{ fontSize: '1rem' }} /> <span className='ml-2'>Back</span>
+                </div>
+                <div onClick={handleDiscard} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
+                    Discard
                 </div>
                 <div className='w-full md:w-60'>
                     <SubmitButton loading={secondTabData.loading} buttonText="Continue" />

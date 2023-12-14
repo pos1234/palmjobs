@@ -20,9 +20,9 @@ const Navigation = (props: any) => {
         <div>
             <div className={`flex flex-wrap items-center gap-5 relative md:border-[1px] md:border-t-0 xl:px-40 xl:h-[73px] ${menu ? ' max-md:h-screen md:pt-3' : 'pt-3'}`}>
                 {menu && (
-                    <div className="fixed bg-textW h-screen w-screen overflow-hidden flex flex-col z-40 md:hidden">
+                    <div className="fixed bg-textW overflow-x-hidden h-screen w-screen overflow-hidden flex flex-col z-40 md:hidden">
                         <div onClick={() => setMenu(!menu)} className="flex items-center justify-end pt-4 pr-2 cursor-pointer">
-                            <CloseOutlinedIcon className="text-[3rem]" />
+                            <CloseOutlinedIcon className="text-[2rem]" />
                         </div>
                         <div className="flex justify-center">
                             <Link href="/">
@@ -58,7 +58,7 @@ const Navigation = (props: any) => {
                                         <Link href="/account" className="border-b-[1px] pb-2 text-lg">Sign in</Link>
                                         <Link
                                             href="/account"
-                                            className="text-textW flex items-center gap-2 justify-center bg-black h-14 w-full rounded-[3px] hover:border-b-[1px] hover:border-b-gradientFirst buttonBounce"
+                                            className="text-textW flex items-center gap-2 justify-center bg-black h-14 w-full rounded-[3px] hover:border-b-[4px] hover:border-b-gradientFirst buttonBounce"
                                         >
                                             <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
                                             <p className='font-[400] text-[16px]'>Post Job</p>
@@ -150,7 +150,7 @@ const Navigation = (props: any) => {
                     ) : null}
                 </div>
                 <div className='max-md:flex max-md:items-end max-md:flex-grow max-md:justify-end xl:h-full xl:flex'>
-                    <div className="flex items-center justify-end gap-x-10 md:hidden">
+                    <div className="flex items-center justify-end gap-x-10 md:hidden pr-3">
                         {!userData && (
                             <div className="text-fhS leading-fhL font-fhW text-textR">
                                 <Link href="/account">Sign in</Link>
@@ -178,19 +178,28 @@ const Navigation = (props: any) => {
                                     </div>
                                 </div>
                                 <div className="hidden justify-items-end md:flex md:items-center mb-[2px]">
-                                    <Link
-                                        href="/account"
-                                        className="text-textW flex items-center gap-2 justify-center bg-black h-[42px] w-[166px] rounded-[3px] hover:border-b-[1px] hover:border-b-gradientFirst buttonBounce"
-                                    >
-                                        <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
-                                        <p className='font-[400] text-[16px]'>Post Job</p>
-                                    </Link>
+                                    <div className='bg-gradientFirst rounded-[3px]'>
+                                        <Link
+                                            href="/account"
+                                            className="text-textW flex items-center gap-2 justify-center bg-black h-[42px] w-[166px] rounded-[3px] buttonBounce"
+                                        >
+                                            <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
+                                            <p className='font-[400] text-[16px]'>Post Job</p>
+                                        </Link>
+                                    </div>
                                 </div>
                             </>
                         )}
-                        {userData && (
+                        {
+                            loading && <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
+                                <div className="text-neutral-900  text-opacity-70 text-xl font-normal leading-7">
+                                    <div className="h-10 bg-gray-300 rounded-full rounded animate-pulse w-40"></div>
+                                </div>
+                            </div>
+                        }
+                        {userData && userDetail && (
                             <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
-                                <div /* className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 bg-gray-50 rounded-full bg-green-500" */>
+                                <div>
                                     <Popover className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 bg-gray-50 rounded-full h-10">
                                         <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex items-center ">
                                             {userDetail && userDetail.profilePictureId && (

@@ -1,16 +1,15 @@
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import { getEmployerDocument, getProfileData, updateProfile, updateUserName } from '@/backend/employerBackend';
+import { updateProfile, updateUserName } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
 import { EmployerProfilePicture } from '@/components/candidateProfileComponents/ProfilePicture';
-import { getAccount } from '@/backend/accountBackend';
 import TextInput, { SubmitButton } from '@/components/TextInput';
-import Navigation from '@/components/employerComponents/Navigation';
 import Link from 'next/link';
-import { employeeAuth } from '@/components/withAuth';
 import { useGlobalContext } from '@/contextApi/userData';
 import { RequiredTextLabel } from './jobPostTabs/RequiredTextLabel';
+import 'react-phone-number-input/style.css'
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -20,17 +19,18 @@ const EmployerProfile = (props: any) => {
     const [companyNameError, setCompanyNameError] = useState('');
     const [userName, setUserName] = useState('');
     const [userNameError, setUserNameError] = useState('');
-    const [industry, setIndustry] = useState('Agriculture');
+    const [industry, setIndustry] = useState('');
+    const [industryError, setIndustryError] = useState('')
     const [address, setAddress] = useState('');
     const [noEmployee, setNoEmployee] = useState('');
     const [noEmployeeError, setNoEmployeeError] = useState('');
-    const [phone, setPhone] = useState('');
+    const [phone, setPhone] = useState<any>();
     const [phoneError, setPhoneError] = useState('');
     const [compDescription, setCompDescription] = useState('');
     const [webLink, setWebLink] = useState('');
     const [loading, setLoading] = useState(false);
-    const initialData = async () => {
-        if (userDetail) {
+    const initialData = () => {
+        if (userDetail && !companyName) {
             userDetail.companyName !== null && setCompanyName(userDetail.companyName);
             userDetail.sector !== null && setIndustry(userDetail.sector);
             userDetail.location !== null && setAddress(userDetail.location);
@@ -43,9 +43,13 @@ const EmployerProfile = (props: any) => {
             userData.name !== null && setUserName(userData.name)
         }
     };
+    const isValidPhone = (phones: string) => {
+        const result = phones && isValidPhoneNumber(phones.toString())
+        return result
+    }
     useEffect(() => {
         initialData();
-    }, [userData, userDetail]);
+    }, [userDetail]);
     const validateLink = (link: string) => {
         if (link && !link.startsWith('https://')) {
             link = 'https://' + link;
@@ -59,18 +63,19 @@ const EmployerProfile = (props: any) => {
         setNoEmployeeError("")
         setPhoneError('')
         setPhoneError('')
-        const regex = /^\+2519\s[0-9]{8}$/;
         if (companyName == '') {
             setCompanyNameError('Please provide company name')
+        } else if (userName == '') {
+            setUserNameError('Please provide name')
+        } else if (industry == '') {
+            setIndustryError('Please select industry')
         } else if (userName == '') {
             setUserNameError('Please provide name')
         } else if (noEmployee == '') {
             setNoEmployeeError("Please provide number of employer's")
         } else if (phone == '') {
             setPhoneError('Please provide phone number')
-        } else if (!phone.match(regex)) {
-            console.log('valid');
-
+        } else if (phone !== '' && !isValidPhone(phone)) {
             setPhoneError('Invalid phone number')
         } else {
             setLoading(true);
@@ -80,7 +85,6 @@ const EmployerProfile = (props: any) => {
                     updateUserName(userName);
                     setLoading(false);
                     props.setFilled(true);
-                    
                 })
                 .catch((error) => {
                     toast.error('Profile Not Updated');
@@ -95,7 +99,7 @@ const EmployerProfile = (props: any) => {
             <div className="col-span-12 pt-5 space-y-3 mb-3">
                 <EmployerProfilePicture />
                 <RequiredTextLabel text="Your Company Name?" />
-                <TextInput placeHolder="company name" errorMessage={companyNameError} value={companyName} setFunction={setCompanyName} />
+                <TextInput placeHolder="" errorMessage={companyNameError} value={companyName} setFunction={setCompanyName} />
                 <RequiredTextLabel text="Your Name?" />
                 <TextInput placeHolder="your name" errorMessage={userNameError} value={userName} setFunction={setUserName} />
                 <RequiredTextLabel text="Your Company's Industry?" />
@@ -106,6 +110,7 @@ const EmployerProfile = (props: any) => {
                         setIndustry(e.currentTarget.value);
                     }}
                 >
+                    <option value="">Select an Industry</option>
                     <option value="Agriculture">Agriculture</option>
                     <option value="Construction">Construction</option>
                     <option value="Education">Education</option>
@@ -121,25 +126,50 @@ const EmployerProfile = (props: any) => {
                     <option value="Transportation & Logisitics">Transportation & Logisitics</option>
                     <option value="Wholesale Trade">Wholesale Trade</option>
                     <option value="Creative & Media">Creative & Media</option>
-                    <option value="Automative">Automative</option>
+                    <option value="Automative">Automotive</option>
                     <option value="Pharmaceuticals">Pharmaceuticals</option>
                     <option value="Telecommunications">Telecommunications</option>
                     <option value="Food & Beverage">Food & Beverage</option>
                 </select>
-                <RequiredTextLabel text="Your Company's number of employee?" />
-                <input
+                {industryError && <p className="text-red-500 text-[13px] mt-2">{industryError}</p>}
+                <RequiredTextLabel text="Number of Employees in Your Company?" />
+                <select
+                    className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientFirst focus:ring-0 cursor-pointer w-full md:w-96"
+                    value={noEmployee}
+                    onChange={(e) => {
+                        setNoEmployee(e.currentTarget.value);
+                    }}
+                >
+                    <option value="">Select number of employees</option>
+                    <option value="1 to 10 Employees">1 to 10 Employees</option>
+                    <option value="11 to 50 Employees">11 to 50 Employees</option>
+                    <option value="51 to 200 Employees">51 to 200 Employees</option>
+                    <option value="201 to 500 Employees">201 to 500 Employees</option>
+                    <option value="501 to 1,000 Employees">501 to 1,000 Employees</option>
+                    <option value="1,000+ Employees">1,000+ Employees</option>
+                </select>
+                {/* <input
                     type="number"
                     className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientFirst focus:ring-0 hideIncrease w-full md:w-96"
                     value={parseInt(noEmployee, 10)}
                     onChange={(e) => setNoEmployee(e.currentTarget.value.toString())}
-                />
+                /> */}
                 {noEmployeeError && <p className="text-red-500 text-[13px] mt-2">{noEmployeeError}</p>}
                 <RequiredTextLabel text="Your Phone Number?" />
-                <TextInput placeHolder="+251 912345566" errorMessage={phoneError} value={phone} setFunction={setPhone} />
+                <PhoneInput
+                    defaultCountry="ET"
+                    placeholder="Enter phone number"
+                    value={phone}
+                    onChange={setPhone}
+                    className={`phoneInput h-12 pl-5 bg-white rounded-lg border-[1px] focus:ring-gradientFirst focus:border-0 w-full md:w-96 
+                    ${phoneError ? 'border-red-500' : 'border-gray-200'}
+                    `}
+                />
+                {phoneError && <p className="text-red-500 text-[13px] mt-2">{phoneError}</p>}
                 <RequiredTextLabel text="Company Location?" req="nReq" />
-                <TextInput placeHolder="address" value={address} setFunction={setAddress} />
+                <TextInput placeHolder="" value={address} setFunction={setAddress} />
                 <RequiredTextLabel text="Website Link?" req="nReq" />
-                <TextInput placeHolder="web Link" value={webLink} setFunction={setWebLink} />
+                <TextInput placeHolder="" value={webLink} setFunction={setWebLink} />
             </div>
             <RequiredTextLabel text="Company Description?" req="nReq" />
             <div className="pb-20 mr-2 mt-5 xl:mr-64">

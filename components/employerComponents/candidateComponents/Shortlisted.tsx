@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CandSmall from './CandSmall';
 import CandidateDetail from './CandidateDetail';
 import { fetchCandidateDetail, fetchShortListed } from '@/backend/employerBackend';
+import JobsShimmer from '@/components/shimmer/JobsShimmer';
 const Shortlisted = (props: any) => {
     const [openCanDetail, setOpenCanDetail] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
@@ -10,8 +11,11 @@ const Shortlisted = (props: any) => {
     const [documentId, setdocumentId] = useState('');
     const [allLoading, setAllLoading] = useState(false)
     const [shortListed, setShortListed] = useState<any>()
+    const [loading, setLoading] = useState(false)
     const getPosted = async () => {
+        setLoading(true)
         fetchShortListed(props.jobId).then((res: any) => {
+            setLoading(false)
             setShortListed(res.documents)
             if (res.total > 0) {
                 fetchCandidateDetail(res.documents[0].candidateId).then((res: any) => {
@@ -35,6 +39,9 @@ const Shortlisted = (props: any) => {
                         : 'hidden'
                 }
             >
+                {
+                    loading && <JobsShimmer />
+                }
                 {shortListed && shortListed.length == 0 && <p className='text-lightGrey pt-10'>Candidates shortlisted will show up here</p>}
                 {shortListed && shortListed.map((item: any, index: number) => {
                     return (

@@ -23,12 +23,14 @@ import { ProfilePic } from '../JobImage';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import TextInput, { SubmitButton } from '../TextInput';
 import { useGlobalContext } from '@/contextApi/userData';
+import { useRouter } from 'next/router';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const ApplyToJob = (props: any) => {
     const { userDetail, userData } = useGlobalContext()
+    const router = useRouter()
     const pdfIcon = '/images/pdf2.svg';
 /*     const [openApply, setOpenApply] = useState(false);
  */    const [first, setFirst] = useState(true);
@@ -110,7 +112,7 @@ const ApplyToJob = (props: any) => {
     const checkApplied = async () => {
         setLoading(true);
         if (userDetail) {
-            alreadyApplied(userDetail.Id, props.jobId).then((applied) => {
+            alreadyApplied(userDetail.$id, props.jobId).then((applied) => {
                 const resume = userDetail.resumeId != null && getResumeName(userDetail.resumeId);
                 resume &&
                     resume.then((res: any) => {
@@ -128,11 +130,6 @@ const ApplyToJob = (props: any) => {
             });
         }
     };
-    useEffect(() => {
-        getData();
-        getCanInfo();
-        checkApplied();
-    }, [userDetail]);
     const fileTypes = ['pdf', 'doc', 'docx'];
     const updateTheCv = (files: any) => {
         setFileName(files.name);
@@ -150,33 +147,34 @@ const ApplyToJob = (props: any) => {
         setLoadingApply(true);
         if (replaceResume) {
             uploadResume(replaceResume).then((res) => {
-                applyToJobs(userData.Id, props.jobId, props.employerId, newEmail, phone, cover, res.$id)
-                    .then((res) => {
-                        props.setterFunction(false);
-                        setOpenNotify(true);
-                        setFailed(false);
-                        setLoadingApply(false);
-                    })
+                applyToJobs(userDetail.$id, props.jobId, props.employerId, newEmail, phone, cover, res.$id).then((res) => {
+/*                     props.setterFunction(false);
+ */                    setOpenNotify(true);
+                    setFailed(false);
+                    setLoadingApply(false);
+
+
+                })
                     .catch((error) => {
                         setOpenNotify(true);
-                        setFailed(true);
-                        setLoadingApply(false);
+/*                         setFailed(true);
+ */                         setLoadingApply(false);
                         console.log(error);
                         toast.error(error)
                     });
             });
         } else {
-            applyToJobs(userData.Id, props.jobId, props.employerId, newEmail, phone, cover, currentResumeId)
+            applyToJobs(userDetail.$id, props.jobId, props.employerId, newEmail, phone, cover, currentResumeId)
                 .then((res) => {
                     getAccount().then((res: any) => {
-                        res && SendJobAppliedEmail(res.email, props.jobTitle, /* res.name, */ props.companyName);
+                        res && SendJobAppliedEmail(res.email, props.jobTitle, props.companyName);
                     });
-                    props.setterFunction(false);
                     setOpenNotify(true);
                     setFailed(false);
                     setLoadingApply(false);
-                    props.setterFunction(false)
-                })
+
+/*                     props.setterFunction(false)
+ */                })
                 .catch((error) => {
                     setOpenNotify(true);
                     setFailed(true);
@@ -187,14 +185,20 @@ const ApplyToJob = (props: any) => {
                 });
         }
     };
+    useEffect(() => {
+        getData();
+        getCanInfo();
+        checkApplied();
+    }, []);
     return (
         <>
-            {!failed && (
+            {!failed && openNotify && (
                 <Notification
                     openNotify={openNotify}
                     setOpenNotify={setOpenNotify}
+                    setSetterFunction={props.setterFunction}
                     successText="success"
-                    successWord="Successfully Applied"
+                    successWord="Success! Your application has been submitted."
                 />
             )}
             {failed && (
@@ -249,8 +253,8 @@ const ApplyToJob = (props: any) => {
                         >
                             <div className="col-span-12 grid grid-cols-12 ">
                                 <div className="col-span-12 grid grid-cols-12 mb-5">
-                                    <p className="font-thW text-frhS flex gap-2 items-center leading-shL text-modalTitle col-span-10 md:col-span-11">
-                                        <img src="/icons/suitCase.svg" className='w-5 h-5' alt="" />
+                                    <p className="font-thW text-[30px] flex gap-2 items-center leading-shL text-modalTitle col-span-10 md:col-span-11">
+                                        <img src="/icons/suitCase.svg" className='w-10 h-10' alt="applyImage" />
                                         Apply
                                     </p>
                                 </div>

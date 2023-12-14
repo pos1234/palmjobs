@@ -12,7 +12,6 @@ interface UserData {
     userData: any | null;
     setUserData: Dispatch<SetStateAction<any>>;
 }
-
 const GlobalContext = createContext<UserData>({
     loading: false,
     userRole: '',
@@ -29,20 +28,22 @@ export const GlobalContextProvider = ({ children }: any) => {
     const getUserData = async () => {
         const userInfo = await getAccount();
         if (userInfo !== 'failed') {
-            setLoading(false);
-            setUserData(userInfo);
+            !userData && setUserData(userInfo);
             const role = await getRole();
             role && setUserRole(role.documents[0].userRole);
             if (role && role.documents[0].userRole == 'candidate') {
                 const candidate = await getCandidateDocument();
                 if (candidate) {
                     setUserDetail(candidate.documents[0]);
+                    setLoading(false);
                 }
             }
             if (role && role.documents[0].userRole == 'employer') {
                 const employer = await getProfileData();
                 if (employer) {
                     setUserDetail(employer.documents[0]);
+                    setLoading(false);
+
                 }
             }
         }
@@ -52,7 +53,7 @@ export const GlobalContextProvider = ({ children }: any) => {
     };
     useEffect(() => {
         getUserData();
-    }, []); /* there was a userData for useEffect here */
+    }, [userData]); /* there was a userData for useEffect here */
     return < GlobalContext.Provider value={{ userDetail, setUserDetail, loading, userData, setUserData, userRole }} >{children}</GlobalContext.Provider >
 }
 export const useGlobalContext = () => useContext(GlobalContext)

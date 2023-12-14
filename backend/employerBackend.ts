@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { ID, Query, Storage } from 'appwrite';
+import { ID, Query } from 'appwrite';
 import { getRole } from './candidateBackend';
 import { getAccount } from './accountBackend';
 import appwriteConfig from './appwrite';
-const { databases, account } = appwriteConfig();
+const { databases, account, storage } = appwriteConfig();
 const DATABASE_ID = process.env.NEXT_PUBLIC_DATABASE_ID || '';
 const POSTED_JOBS = process.env.NEXT_PUBLIC_POSTED_JOBS || '';
 const APPLIED_JOBS = process.env.NEXT_PUBLIC_APPLIED_JOBS || '';
@@ -11,6 +11,24 @@ const CANDIDATE_DATA = process.env.NEXT_PUBLIC_CANDIDATE_DATA || '';
 const COMPANY_DATA = process.env.NEXT_PUBLIC_COMPANY_DATA || '';
 const SHORT_LISTED = process.env.NEXT_PUBLIC_SHORT_LISTED || '';
 const SURVEY = process.env.NEXT_PUBLIC_SURVEY || '';
+const IMAGE = process.env.NEXT_PUBLIC_IMAGE || '';
+const updateDocuments = async (datas: any) => {
+    const data: any = await getEmployerDocument();
+    const fileId = data && data.documents[0].$id;
+    const promise = databases.updateDocument(DATABASE_ID, COMPANY_DATA, fileId, datas);
+    return promise;
+};
+export const deleteEmployerProfilePicture = async (fileId: string) => {
+    const promise = await storage.deleteFile(IMAGE, fileId);
+    updateEmployerProfileId('');
+    return promise;
+};
+export const updateEmployerProfileId = (fileId: string) => {
+    const datas = {
+        profilePictureId: fileId
+    };
+    return updateDocuments(datas);
+};
 const updatePostedJobs = async (fileId: string, datas: any) => {
     const promise = databases.updateDocument(DATABASE_ID, POSTED_JOBS, fileId, datas);
     return promise;
@@ -54,12 +72,11 @@ export const searchJobs = async (
     expLevel: string,
     postedDate: string
 ) => {
-    const searchWord = searchText ? Query.startsWith('jobTitle', searchText) : null;
+    const searchWord = searchText ? Query.search('jobTitle', searchText) : null;
     const searchAddress = address !== '' ? Query.startsWith('jobLocation', address) : null;
     const jobType = jobTypes ? Query.equal('jobType', jobTypes) : null;
     const exp = expLevel ? Query.equal('expreienceLevel', expLevel) : null;
-    const today = new Date();
-    const posted = jobTypes ? Query.between('datePosted', postedDate, today.toString()) : null;
+    const posted = postedDate ? Query.greaterThanEqual('$createdAt', postedDate) : null;
     const query = [Query.equal('jobStatus', 'Active'), Query.orderDesc('$createdAt'), Query.limit(limit), Query.offset(offset)];
     if (searchWord) {
         query.push(searchWord);
@@ -73,34 +90,12 @@ export const searchJobs = async (
     if (exp) {
         query.push(exp);
     }
-    /* if (posted) {
+    if (posted) {
         query.push(posted);
-    } */
+    }
     const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, query);
     return promise;
 };
-/* export const fetchJobs = async (limit: number, offset: number) => {
-    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
-        Query.equal('jobStatus', 'Active'),
-        Query.orderAsc('datePosted'),
-        Query.limit(limit),
-        Query.offset(offset)
-    ]);
-    return promise;
-};
-export const countActiveJobs = async () => {
-    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('jobStatus', 'Active'), Query.limit(1)]);
-    return promise;
-}; */
-/* export const fetchJobs = async () => {
-    const promise = await databases.listDocuments(DATABASE_ID, POSTED_JOBS, [
-        Query.limit(100),
-        Query.offset(0),
-        Query.equal('jobStatus', 'Active'),
-        Query.orderAsc('datePosted')
-    ]);
-    return promise;
-}; */
 export const checkEmailAppliation = (id: string) => {
     const [jobs, setJobs] = useState('');
     const promise = databases.listDocuments(DATABASE_ID, POSTED_JOBS, [Query.equal('$id', id)]);
@@ -108,7 +103,6 @@ export const checkEmailAppliation = (id: string) => {
     promise.then((res: any) => {
         setJobs(res.documents[0].emailApplication);
     });
-
     return jobs;
 };
 
@@ -178,13 +172,16 @@ export const postThirdTab = async (jobDes: string, skills: string, id: string) =
 };
 export const postFourthTab = async (id: string, deadline: string, education?: string, email?: string, link?: string) => {
     const stat = 'Active';
+    const deadDate = new Date(deadline);
+    const dead = deadDate.toISOString();
+    const today = new Date();
     const datas = {
-        applicationDeadline: deadline,
+        applicationDeadline: dead,
         educationLevel: education,
         emailApplication: email,
         externalLink: link,
         jobStatus: stat,
-        datePosted: Date().toString()
+        datePosted: today.toISOString()
     };
     const promise = updatePostedJobs(id, datas);
     return promise;
@@ -310,6 +307,17 @@ export const shortListedCandidate = async (jobId: string, candId: string) => {
                 });
             return null;
         });
+        return promise;
+    }
+};
+export const checkShortListed = async (jobId: string, candId: string) => {
+    const userAccount = await getAccount();
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, SHORT_LISTED, [
+            Query.equal('employerId', userAccount.$id),
+            Query.equal('jobId', jobId),
+            Query.equal('candidateId', candId)
+        ]);
         return promise;
     }
 };

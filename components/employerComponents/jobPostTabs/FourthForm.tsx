@@ -1,6 +1,6 @@
 import { SendJobPostedEmail } from '@/components/SendEmail';
 import { getAccount } from '@/backend/accountBackend';
-import { postFourthTab } from '@/backend/employerBackend';
+import { fetchAllEmployerJob, postFourthTab } from '@/backend/employerBackend';
 import { useRouter } from 'next/router';
 import React from 'react'
 import { toast } from 'react-toastify';
@@ -14,9 +14,12 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useJobPostContext } from '@/contextApi/jobPostData';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const FourthForm = (props: any) => {
-    const { firstTabData, fourthTabData, setFourthTabData, postingJobId, jobPostTabs, setPostingTabs } = useJobPostContext()
+    const { firstTabData, fourthTabData, setFourthTabData, postingJobId, jobPostTabs, setPostingTabs, setAllEmployerJobs, handleDiscard } = useJobPostContext()
     const router = useRouter();
     const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const minDate = tomorrow.toISOString().split('T')[0];
     const todaysDate = new Date();
     const maxDate = new Date();
     maxDate.setMonth(today.getMonth() + 1);
@@ -45,6 +48,11 @@ const FourthForm = (props: any) => {
                     setFourthTabData({
                         ...fourthTabData, loading: false
                     })
+                    fetchAllEmployerJob().then((res: any) => {
+                        setAllEmployerJobs(res?.documents)
+                    }).catch((error) => {
+                        console.log(error);
+                    })
                     toast.success('Job posted successfully');
                     getAccount().then((result: any) => {
                         result &&
@@ -68,6 +76,7 @@ const FourthForm = (props: any) => {
             third: true
         })
     }
+
     return (
         <form onSubmit={handleFourthSubmit} className='col-span-12 pt-5  space-y-3'>
             <div className="text-neutral-900 text-xl font-semibold leading-10">Set application Preference</div>
@@ -140,10 +149,10 @@ const FourthForm = (props: any) => {
                 <input
                     value={fourthTabData.deadline}
                     type="date"
-                    min={todaysDate.toISOString().split('T')[0]}
+                    min={minDate}
                     max={maxDate.toISOString().split('T')[0]}
                     onChange={(e) => setFourthTabData({ ...fourthTabData, deadline: e.currentTarget.value })}
-                    className="rounded-xl  border-stone-300 py-3 cursor-pointer focus:border-orange-500 focus:ring-0 w-full px-20 md:px-28 md:w-96"
+                    className="rounded-xl  border-stone-300 py-3 cursor-pointer focus:border-gradientFirst focus:ring-0 w-full px-20 md:px-28 md:w-96"
                 />
             </div>
             <div className="flex pt-10 max-md:flex-col max-md:gap-y-8 gap-y-5 flex-wrap justify-between">
@@ -157,6 +166,9 @@ const FourthForm = (props: any) => {
                 <div className="w-full flex pt-10 justify-between gap-5 max-sm:flex-wrap">
                     <div onClick={handleBack} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
                         <ArrowBackIcon sx={{ fontSize: '1rem' }} /> <span className='ml-2'>Back</span>
+                    </div>
+                    <div onClick={handleDiscard} className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-[#FAFAFA] h-14'>
+                        Discard
                     </div>
                     <div className='w-full md:w-60'>
                         <SubmitButton loading={fourthTabData.loading} buttonText="Continue" />

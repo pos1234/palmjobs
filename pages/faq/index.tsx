@@ -28,7 +28,7 @@ const FAQ = () => {
             <div className='flex max-sm:flex-col px-5 xl:px-40 md:mt-20 py-5'>
                 <div className='sm:w-1/2 flex justify-center py-10'>
                     <p className='font-bold text-2xl'>
-                        Your questions,answered
+                        Your questions, answered.
                     </p>
                 </div>
                 <div className='sm:w-1/2 flex flex-col gap-7'>

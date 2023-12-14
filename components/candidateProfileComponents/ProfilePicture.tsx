@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { toast } from 'react-toastify';
 import { getAccount } from '@/backend/accountBackend';
-import { getEmployerDocument } from '@/backend/employerBackend';
+import { deleteEmployerProfilePicture, getEmployerDocument, updateEmployerProfileId } from '@/backend/employerBackend';
 
 const ProfilePicture = () => {
     const loadingIn = '/images/loading.svg';
@@ -146,8 +146,11 @@ export const EmployerProfilePicture = () => {
                     return false;
                 }
                 setProfileError(' ');
-                functionName(uploadedFile && uploadedFile[0]).then(() => {
+                functionName(uploadedFile && uploadedFile[0]).then((res: any) => {
                     setProfileLoading(false);
+                    setProfileId(res.$id)
+                    updateEmployerProfileId(res.$id)
+                    toast.success('Image Upload Successful')
                 });
             });
             return filteredFiles;
@@ -156,7 +159,7 @@ export const EmployerProfilePicture = () => {
     const updatePic = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setProfileLoading(true);
-        deleteProfilePicture(profileId).then((res) => {
+        deleteEmployerProfilePicture(profileId).then((res) => {
             imageUploadChecker(uploadProfilePictures, e.currentTarget.files);
 
         })
@@ -185,7 +188,7 @@ export const EmployerProfilePicture = () => {
                             <ProfilePic id={profileId} className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer" />
                             <DeleteIcon
                                 onClick={() => {
-                                    deleteProfilePicture(profileId)
+                                    deleteEmployerProfilePicture(profileId)
                                     setProfileId('')
                                 }}
                                 sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
@@ -212,8 +215,8 @@ export const EmployerProfilePicture = () => {
                     {!profileLoading && (
                         <>
                             <p className="w-28 h-28 col-span-2 rounded-3xl cursor-pointer bg-gradient-to-r from-gradientFirst to-gradientSecond text-textW flex text-center justify-center text-[5rem] font-frhW">
-                                {/*                                 {companyName}
- */}                            </p>
+                                {firstLetter}
+                            </p>
                             <div className="uploadProfile">
                                 <label htmlFor="photo-upload" className="custom-file-upload">
                                     <div className="img-wrap img-upload">

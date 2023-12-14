@@ -14,13 +14,13 @@ import { useJobPostContext } from '@/contextApi/jobPostData';
 import Navigation from '@/components/employerComponents/Navigation';
 import Link from 'next/link';
 import { employeeAuth } from '@/components/withAuth';
+import { fetchAllEmployerJob } from '@/backend/employerBackend';
 const Jobs = (props: any) => {
-    const { allEmployerJobs } = useJobPostContext()
-    const [opened, setOpened] = useState(true);
+    const { allEmployerJobs, setAllEmployerJobs, allLoading, setAllLoading, setPostingTabs, jobPostTabs } = useJobPostContext()
+    const [opened, setOpened] = useState(false);
     const [draft, setDraft] = useState(false);
     const [closed, setClosed] = useState(false);
     const [sort, setSort] = useState('asc');
-    const [allLoading, setAllLoading] = useState(false);
     const [noDraft, setNoDraft] = useState(false);
     const [noPosted, setNoPosted] = useState(false);
     const [noClosed, setNoClosed] = useState(false);
@@ -43,6 +43,30 @@ const Jobs = (props: any) => {
         }
     };
     useEffect(() => {
+        if (!allEmployerJobs) {
+            setAllLoading(true)
+            fetchAllEmployerJob().then((res: any) => {
+                if (res?.total > 0) {
+                    setPostingTabs({
+                        ...jobPostTabs,
+                        chooseJob: true
+                    })
+                }
+                if (res?.total == 0) {
+                    setPostingTabs({
+                        ...jobPostTabs,
+                        first: true
+                    })
+                }
+                setAllLoading(false)
+                setAllEmployerJobs(res?.documents)
+            }).catch((error) => {
+                setAllLoading(false)
+                console.log(error);
+            })
+        }
+    }, [])
+    useEffect(() => {
         const drafted = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Draft');
         const active = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Active');
         const closed = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Close');
@@ -50,12 +74,27 @@ const Jobs = (props: any) => {
         active && active.length > 0 && setNoPosted(true)
         closed && closed.length > 0 && setNoClosed(true)
         active && active.length > 0 && setActiveJobs(active)
+        if (active && active.length > 0 || (drafted && drafted.length == 0) && (closed && closed.length == 0)) {
+            setOpened(true)
+            setDraft(false)
+            setClosed(false)
+        }
+        if (active && active.length == 0 && drafted && drafted.length > 0) {
+            setDraft(true)
+            setOpened(false)
+            setClosed(false)
+        }
+        if (active && active.length == 0 && drafted && drafted.length == 0 && closed && closed.length > 0) {
+            setClosed(true)
+            setOpened(false)
+            setDraft(false)
+        }
     }, [allEmployerJobs]);
     return (
         <>
             <div className="flex max-md:flex-wrap bg-textW">
                 <Navigation active='jobs' />
-                <div className=" pt-5 px-3 pb-10 bg-textW w-full max-xl:flex-grow xl:w-2/3 min-h-screen">
+                <div className=" pt-5 px-3 pb-10 bg-textW w-full max-xl:flex-grow xl:w-2/3 min-h-screen overflow-x-hidden">
                     <div className="relative flex justify-between pt-10 items-center px-2 lg:pl-10">
                         <p className="text-black text-xl md:text-3xl font-[700]">Jobs</p>
                         <Link href="/users/employer/post"

@@ -11,6 +11,16 @@ body {
 * {
     -webkit-tap-highlight-color: transparent;
 }
+.phoneInput input {
+    border: 0;
+    outline: none;
+}
+.phoneInput input:focus,
+.phoneInput input:active {
+    border: 0;
+    outline: none;
+    box-shadow: none;
+}
 /* .aos-init[data-aos][data-aos].aos-animate {
     transform: unset;
 } */

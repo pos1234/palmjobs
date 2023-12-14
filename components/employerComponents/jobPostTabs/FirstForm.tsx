@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { RequiredTextLabel } from './RequiredTextLabel';
-import TextInput, { SubmitButton, TextInputRelated } from '@/components/TextInput';
+import { SubmitButton, TextInputRelated } from '@/components/TextInput';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import EditLocationAltOutlinedIcon from '@mui/icons-material/EditLocationAltOutlined';
@@ -41,11 +41,6 @@ const FirstForm = (props: any) => {
                             first: false,
                             second: true
                         })
-                        /*  props.setFourth(false);
-                         props.setThird(false);
-                         props.setSecond(true);
-                         props.setFirst(false);
-                         props.setChooseJob(false); */
                     })
                     .catch((error) => {
                         setFirstTabData({
@@ -70,11 +65,6 @@ const FirstForm = (props: any) => {
                             first: false,
                             second: true
                         })
-                        /*   props.setFourth(false);
-                          props.setThird(false);
-                          props.setSecond(true);
-                          props.setFirst(false);
-                          props.setChooseJob(false); */
                     })
                     .catch((error) => {
                         setFirstTabData({
@@ -166,7 +156,7 @@ const FirstForm = (props: any) => {
                 </div>
             </div>
             <RequiredTextLabel text="Which option best describe this job's location?" />
-            <div className="flex bg-forBack  p-2 gap-x-5 w-full lg:w-1/2">
+            <div className="flex p-2 gap-x-5 w-full lg:w-1/2">
                 <div
                     onClick={() => handleLocationTab('1')}
                     className={`flex flex-col justify-between rounded-md w-36 pl-3 py-2 h-20 ${firstTabData.addLocation ? 'bg-gradientFirst text-textW' : 'border-[1px] hover:bg-gradientFirst cursor-pointer rounded-md hover:border-b-4 hover:border-b-black buttonBounce hover:text-textW'}`}
