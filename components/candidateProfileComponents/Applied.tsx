@@ -32,7 +32,6 @@ const Applied = (props: any) => {
     const profile = '/images/profile.svg';
     const [appliedJobId, setAppliedJobId] = useState<any[]>([]);
     const [appliedJobs, setAppliedJobs] = useState<any[]>([]);
-    const [appliedJobData, setAppliedData] = useState<any[]>([]);
     const [allLoading, setAllLoading] = useState(false);
     const appliedJobsId = async () => {
         setAllLoading(true);
@@ -55,7 +54,7 @@ const Applied = (props: any) => {
     };
     useEffect(() => {
         appliedJobsId();
-    }, [appliedJobs, appliedJobId]);
+    }, []);
     return (
         <>
             {!allLoading && appliedJobs.length == 0 && props.view && (
@@ -129,24 +128,6 @@ const Applied = (props: any) => {
                                                     : datas.minSalary + '-' + datas.maxSalary}
                                         />
                                     )}
-                                  {/*   {datas.datePosted && (
-                                        <SmallLists
-                                            icon={<img src='/icons/hourGlassUp.svg'
-                                            />}
-                                            items={new Date(datas.datePosted)
-                                                .toLocaleDateString('en-GB')
-                                                .replace(/\//g, '-')}
-                                        />
-                                    )}
-                                    {datas.datePosted && (
-                                        <SmallLists
-                                            icon={<img src='/icons/hourGlassDown.svg'
-                                            />}
-                                            items={new Date(datas.datePosted)
-                                                .toLocaleDateString('en-GB')
-                                                .replace(/\//g, '-')}
-                                        />
-                                    )} */}
                                 </ul>
                             </div>
                         </div>

@@ -3,7 +3,6 @@ import ConfirmModal from './ConfirmModal'
 import { signOut } from '@/backend/accountBackend';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
-
 const Logout = (props: any) => {
     const [loading, setLoading] = useState(false)
     const router = useRouter();
@@ -13,7 +12,10 @@ const Logout = (props: any) => {
             setLoading(false);
             toast.success("You've been logged out. See you again soon!");
             typeof window !== 'undefined' && router.push('/');
-            typeof window !== 'undefined' && router.reload();
+            setTimeout(() => reload(), 1000);
+            const reload = () => {
+                typeof window !== 'undefined' && router.reload();
+            }
         });
     };
     return (

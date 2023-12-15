@@ -15,14 +15,18 @@ const Notification = (props: any) => {
                 <div className="col-span-12 flex flex-col">
                     <div className="flex justify-end w-full pr-7">
                         <button className="self-end" onClick={() => {
-                            props.setSetterFunction(false)
-                            props.setOpenNotify(false)
+/*                             props.setSetterFunction(false)
+ */                            props.setOpenNotify(false)
                             typeof window !== 'undefined' && router.reload();
                         }}>
                             <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
                         </button>
                     </div>
                     <div className="flex justify-center gap-y-5 items-center w-full flex-col">
+
+                        {props.successText == 'failed' && (
+                            <p className="text-[1.2rem] text-center font-[500]">{props.successWord}</p>
+                        )}
                         {props.successText == 'success' && (
                             <>
                                 <img src='/images/success.png' alt='success image' className="w-60 h-60" />

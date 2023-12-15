@@ -10,10 +10,11 @@ import Notification from '../Notification';
 import {
     alreadyApplied,
     applyToJobs,
-    getCandidateDocument,
     getResumeName,
     uploadResume,
     downLoadResume,
+    alreadySaved,
+    unSaveJobs,
 } from '@/backend/candidateBackend';
 import { getAccount } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
@@ -23,30 +24,27 @@ import { ProfilePic } from '../JobImage';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import TextInput, { SubmitButton } from '../TextInput';
 import { useGlobalContext } from '@/contextApi/userData';
-import { useRouter } from 'next/router';
+import 'react-phone-number-input/style.css'
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const ApplyToJob = (props: any) => {
     const { userDetail, userData } = useGlobalContext()
-    const router = useRouter()
     const pdfIcon = '/images/pdf2.svg';
-/*     const [openApply, setOpenApply] = useState(false);
- */    const [first, setFirst] = useState(true);
+    const [first, setFirst] = useState(true);
     const [second, setSecond] = useState(false);
     const [third, setThird] = useState(false);
     const [fourth, setFourth] = useState(false);
-/*     const [userData, setUserData] = useState<any>();
- */    const [cover, setCover] = useState('');
+    const [cover, setCover] = useState('');
     const [loading, setLoading] = useState(false);
     const [appliedJob, setAppliedJob] = useState(false);
-    const [currentResume, setCurrentResume] = useState<any>();
     const [replaceResume, setReplaceResume] = useState<any>();
     const [currentResumeId, setCurrentResumeId] = useState('');
     const [newEmail, setNewEmail] = useState('');
     const [newName, setNewName] = useState('');
-    const [phone, setPhone] = useState('');
+    const [phone, setPhone] = useState<any>();
     const [linked, setLinked] = useState('');
     const [fileName, setFileName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -88,16 +86,13 @@ const ApplyToJob = (props: any) => {
         }
     };
     const getData = async () => {
-/*         const res: any = await getAccount();
- */        if (userData) {
+        if (userData) {
             setNewName(userData.name);
             setNewEmail(userData.email);
         }
     };
     const getCanInfo = async () => {
-/*         const { documents }: any = await getCandidateDocument();
- */        if (userDetail) {
-            /* setUserData(userDetail); */
+        if (userDetail) {
             setPhone(userDetail.phoneNumber);
             setLinked(userDetail.linkedIn);
             setCover(userDetail.coverLetter);
@@ -113,6 +108,7 @@ const ApplyToJob = (props: any) => {
         setLoading(true);
         if (userDetail) {
             alreadyApplied(userDetail.$id, props.jobId).then((applied) => {
+                setLoading(false);
                 const resume = userDetail.resumeId != null && getResumeName(userDetail.resumeId);
                 resume &&
                     resume.then((res: any) => {
@@ -120,13 +116,13 @@ const ApplyToJob = (props: any) => {
                         setCurrentResumeId(res.$id);
                     });
                 if (applied.total !== 0) {
-                    setLoading(false);
                     setAppliedJob(true);
                 }
                 if (applied.total == 0) {
                     setLoading(false);
                     setAppliedJob(false);
                 }
+
             });
         }
     };
@@ -148,17 +144,26 @@ const ApplyToJob = (props: any) => {
         if (replaceResume) {
             uploadResume(replaceResume).then((res) => {
                 applyToJobs(userDetail.$id, props.jobId, props.employerId, newEmail, phone, cover, res.$id).then((res) => {
-/*                     props.setterFunction(false);
- */                    setOpenNotify(true);
+                    setOpenNotify(true);
                     setFailed(false);
                     setLoadingApply(false);
-
-
+                    const checkSaved = alreadySaved(userData.$id, props.jobId);
+                    checkSaved.then((rem: any) => {
+                        if (rem.total > 0) {
+                            unSaveJobs(rem.documents[0].$id).then((rem) => {
+                                if (props.refetch) {
+                                    props.refetch
+                                }
+                            }).catch((error) => {
+                                toast.error('Failed to Unsaved Job');
+                                console.log(error);
+                            });
+                        }
+                    });
                 })
                     .catch((error) => {
                         setOpenNotify(true);
-/*                         setFailed(true);
- */                         setLoadingApply(false);
+                        setLoadingApply(false);
                         console.log(error);
                         toast.error(error)
                     });
@@ -172,9 +177,20 @@ const ApplyToJob = (props: any) => {
                     setOpenNotify(true);
                     setFailed(false);
                     setLoadingApply(false);
-
-/*                     props.setterFunction(false)
- */                })
+                    const checkSaved = alreadySaved(userData.$id, props.jobId);
+                    checkSaved.then((rem: any) => {
+                        if (rem.total > 0) {
+                            unSaveJobs(rem.documents[0].$id).then((rem) => {
+                                if (props.refetch) {
+                                    props.refetch
+                                }
+                            }).catch((error) => {
+                                toast.error('Failed to Unsaved Job');
+                                console.log(error);
+                            });
+                        }
+                    });
+                })
                 .catch((error) => {
                     setOpenNotify(true);
                     setFailed(true);
@@ -189,15 +205,15 @@ const ApplyToJob = (props: any) => {
         getData();
         getCanInfo();
         checkApplied();
-    }, []);
+    }, [userDetail]);
     return (
         <>
-            {!failed && openNotify && (
+            {!failed && (
                 <Notification
                     openNotify={openNotify}
                     setOpenNotify={setOpenNotify}
-                    setSetterFunction={props.setterFunction}
-                    successText="success"
+/*                     setSetterFunction={props.setterFunction}
+ */                    successText="success"
                     successWord="Success! Your application has been submitted."
                 />
             )}
@@ -283,7 +299,7 @@ const ApplyToJob = (props: any) => {
                                     ></div>
                                 </div>
                                 {fourth && (
-                                    <div className="col-span-12 flex flex-col gap-2 pt-5 mb-5 ">
+                                    <div className="col-span-12 flex flex-col overflow-x-hidden gap-2 pt-5 mb-5 ">
                                         <p className="col-span-12 text-black text-lg font-semibold leading-10">Review your application</p>
                                         <p className="col-span-12 text-neutral-400 text-sm font-light">
                                             The employer will also receive a copy of your profile
@@ -360,13 +376,13 @@ const ApplyToJob = (props: any) => {
                                     </div>
                                 )}
                                 {
-                                    third && <div className='col-span-12 pt-5 mb-5 md:mb-10 lg:mb-5'>
+                                    third && <div className='col-span-12 pt-5 mb-5 overflow-x-hidden overflow-y-auto thinScrollBar max-md:h-96 h-80 md:mb-10 lg:mb-5'>
                                         <p className="col-span-12 text-black text-lg font-semibold leading-10">Cover Letter</p>
                                         <p className="text-neutral-400 text-sm font-light mb-5">
                                             Write a cover letter describing your skill and education.
                                         </p>
                                         <ReactQuill
-                                            className="h-28 text-addS"
+                                            className="h-40 text-addS"
                                             value={cover}
                                             onChange={(e) => setCover(e)}
                                             placeholder="Add Description"
@@ -374,7 +390,7 @@ const ApplyToJob = (props: any) => {
                                     </div>
                                 }
                                 {second && (
-                                    <div className="col-span-12 pt-5 grid grid-cols-12">
+                                    <div className="col-span-12 pt-5 grid grid-cols-12 overflow-x-hidden">
                                         <p className="col-span-12 text-black text-md font-semibold leading-10">Resume</p>
                                         <div className=" col-span-12">
                                             <FileUploader
@@ -447,13 +463,19 @@ const ApplyToJob = (props: any) => {
                                         <TextInput setFunction={setNewEmail} value={newEmail} placeholder="JohnDoe@gmail.com"
                                             class="h-12 pl-5 text-addS" />
                                         <p className="font-fhW text-smS mt-5 mb-2 leading-shL">Mobile phone number</p>
-                                        <input
+                                        <PhoneInput
+                                            defaultCountry="ET" placeholder="Enter phone number"
+                                            value={phone}
+                                            onChange={setPhone}
+                                            className="border-[1px] phoneInput border-gray-200 focus:ring-0 focus:border-gradientFirst w-full rounded-xl h-12 pl-5 text-addS hideIncrease"
+                                        />
+                                        {/* <input
                                             value={phone}
                                             onChange={(e) => setPhone(e.currentTarget.value)}
-                                            type="number"
+                                            type="text"
                                             placeholder="+251 911 2424 23"
                                             className="border-[1px] border-gray-200 focus:ring-0 focus:border-gradientFirst w-full rounded-xl h-12 pl-5 text-addS hideIncrease"
-                                        />
+                                        /> */}
                                     </div>
                                 )}
                             </div>

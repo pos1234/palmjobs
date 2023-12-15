@@ -52,7 +52,7 @@ const SaveCard = ({ view, datas, RefetchSaved }: SaveType) => {
                 console.log(error);
             });
     };
-    useEffect(() => {
+    const fetch = () => {
         fetchSavedJobsData(datas.jobId)
             .then((res: any) => {
                 setSavedJob(res);
@@ -60,6 +60,9 @@ const SaveCard = ({ view, datas, RefetchSaved }: SaveType) => {
             .catch((error) => {
                 console.error(error);
             });
+    }
+    useEffect(() => {
+        fetch()
     }, [datas])
     return <div className={view ? 'cursor-pointer max-h-[18rem] bg-textW flex items-between flex-wrap justify-between py-3 px-4 rounded-3xl border-2 rounded-xl xl:px-7 xl:py-7 ' : 'hidden'}>
         <div>
@@ -143,9 +146,8 @@ const SaveCard = ({ view, datas, RefetchSaved }: SaveType) => {
             </div>
         </div>
         {savedJob && <Share openShare={openShare} setOpenShare={setOpenShare} link={savedJob.$id} />}
-        {apply && savedJob && (
-            <ApplyToJob jobId={jobId} employerId={employerId} setterFunction={setApply} jobTitle={jobTitle} companyName={companyName} />
-        )}
+
+        <ApplyToJob refetch={fetch} jobId={jobId} employerId={employerId} openApply={apply} setterFunction={setApply} jobTitle={jobTitle} companyName={companyName} />
     </div>
 }
 const SavedJobs = (props: any) => {

@@ -285,7 +285,7 @@ const JobDetail = (props: any) => {
 
                             </>
                             )}
-                            {!saved && !allLoading &&
+                            {!saved && !allLoading && !applied &&
                                 <div className='flex items-center cursor-pointer text-gray-500 hover:text-gradientFirst'>
                                     <BookmarkBorderOutlinedIcon
                                         onClick={() => handleSaveJob(props.jobDetails.$id)}
@@ -293,7 +293,7 @@ const JobDetail = (props: any) => {
                                     />
                                 </div>
                             }
-                            {saved && !allLoading &&
+                            {saved && !allLoading && !applied &&
                                 <div className='flex items-center text-gradientFirst'>
                                     <BookmarkIcon
                                         sx={{ fontSize: '1.5rem' }}
