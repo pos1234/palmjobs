@@ -13,7 +13,7 @@ import { RequiredTextLabel } from './employerComponents/jobPostTabs/RequiredText
 import { toast } from 'react-toastify';
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
-
+import FavoriteIcon from '@mui/icons-material/Favorite';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 
 const LinkList = (props: any) => {
@@ -129,7 +129,9 @@ const Footer = () => {
             <div className="xl:px-40 border-y-[1px]">
                 <div className="flex flex-wrap pt-16 py-10 gap-y-7 md:gap-y-14 max-md:flex-col justify-between">
                     <div className='flex-grow'>
-                        <img src={logo} alt="palmjobs logo" className="h-16" />
+                        <Link href={"/"}>
+                            <img src={logo} alt="palmjobs logo" className="h-16" />
+                        </Link>
                     </div>
                     <div className='flex-grow flex flex-col gap-2 max-md:cursor-pointer'>
                         <div className='flex justify-between' onClick={() => setPalm(!palm)} >
@@ -278,7 +280,7 @@ const Footer = () => {
                 </div>
                 <div className='flex w-full md:w-1/2 justify-center items-center md:justify-end pr-3'>
                     <div className='self-end float-right'>
-                        made with <span className='text-gradientFirst'>&#10084;</span>  by
+                        made with <span className='text-gradientFirst'><FavoriteIcon sx={{ fontSize: '1.2rem' }} /></span>  by
                         <Link href='https://yes.et' target='_blank' className='ml-1 hover:text-gradientFirst hover:underline'>YES</Link>
                     </div>
                 </div>
