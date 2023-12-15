@@ -163,7 +163,7 @@ export const deleteResume = (fileId: string) => {
     return promise;
 };
 export const fetchSavedJobIds = async (id: string) => {
-    const results = await databases.listDocuments(DATABASE_ID, SAVED_JOBS, [Query.equal('candidateId', id)]);
+    const results = await databases.listDocuments(DATABASE_ID, SAVED_JOBS, [Query.orderDesc('$createdAt'), Query.equal('candidateId', id)]);
     return results;
 };
 export const unSaveJobs = (id: string) => {
@@ -178,7 +178,7 @@ export const fetchSavedJobsData = async (id: string) => {
 };
 export const getSavedJobId = async (id: string) => {
     const userAccount = await account.get();
-    const results = databases.listDocuments(DATABASE_ID, SAVED_JOBS, [Query.equal('jobId', id)]);
+    const results = databases.listDocuments(DATABASE_ID, SAVED_JOBS, [Query.orderDesc('$createdAt'), Query.equal('jobId', id)]);
     return results;
 };
 export const fetchAppliedJobIds = async () => {
@@ -201,7 +201,7 @@ export const fetchAppliedJobsData = async (ids: string) => {
 };
 export const getAppliedJobId = async (id: string) => {
     try {
-        const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.equal('jobId', id)]);
+        const results = databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [Query.orderDesc('$createdAt'), Query.equal('jobId', id)]);
         return results;
     } catch (e) {
         console.log(e);

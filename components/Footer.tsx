@@ -237,7 +237,6 @@ const Footer = () => {
                         </div>
                         <div className="hidden md:flex flex-col gap-3 pt-3 text-lightGrey text-[18px] font-[400] leading-midRL">
                             <LinkList link="/faq" text="Help Center" />
-
                             <div className='text-lightGrey hover:text-gradientFirst hover:underline cursor-pointer' onClick={() => setSupport(!support)}>
                                 Contact support
                             </div>
@@ -279,20 +278,20 @@ const Footer = () => {
                 </div>
                 <div className='flex w-full md:w-1/2 justify-center items-center md:justify-end pr-3'>
                     <div className='self-end float-right'>
-                        made with <span className='text-gradientFirst'>❤</span>  by
+                        made with <span className='text-gradientFirst'>&#10084;</span>  by
                         <Link href='https://yes.et' target='_blank' className='ml-1 hover:text-gradientFirst hover:underline'>YES</Link>
                     </div>
                 </div>
             </div>
             <ConfirmModal isOpen={support} handleClose={() => setSupport(!support)}>
-                <div className="mx-2 bg-textW rounded-2xl flex flex-col pt-10 w-full h-full sm:h-4/5 md:w-2/3 xl:w-1/3 md:mx-0">
+                <div className="mx-2 bg-textW rounded-2xl flex flex-col pt-10 w-full h-[90%] md:w-2/3 xl:w-1/3 md:mx-0">
                     <div className="col-span-12 flex justify-end pr-7">
                         <button onClick={() => setSupport(!support)}>
                             <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
                         </button>
                     </div>
                     <form onSubmit={handleSupport} className="w-full flex flex-col h-full items-center">
-                        <div className='h-full w-full overflow-y-auto overflow-x-hidden pr-2 thinScrollBar flex flex-col items-center h-4/5'>
+                        <div className='h-full w-full overflow-y-auto overflow-x-hidden pr-2 thinScrollBar flex flex-col items-center h-[78%] sm:h-[80%] pb-5'>
                             <p className='font-[600] text-[24px]'>Help Form</p>
                             <div className='flex gap-3'>
                                 <div className='flex-grow flex flex-col gap-5'>

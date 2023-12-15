@@ -55,7 +55,7 @@ const Navigation = (props: any) => {
                                 </Link>
                                 {!loading && !userData && (
                                     <>
-                                        <Link href="/account" className="border-b-[1px] pb-2 text-lg">Sign in</Link>
+                                        <Link href="/account" className="border-b-[1px] pb-2 text-lg">Sign In</Link>
                                         <Link
                                             href="/account"
                                             className="text-textW flex items-center gap-2 justify-center bg-black h-14 w-full rounded-[3px] hover:border-b-[4px] hover:border-b-gradientFirst buttonBounce"
@@ -67,7 +67,7 @@ const Navigation = (props: any) => {
                                 )}
                                 {userRole == 'candidate' ? (
                                     <Link href="/users/candidate" className="border-b-[1px] text-lg pb-2 col-span-3 lg:col-span-3 xl:col-span-3 cursor-poniter">
-                                        my jobs
+                                        My Jobs
                                     </Link>
                                 ) : userRole == 'employer' ? (
                                     <>
@@ -141,7 +141,7 @@ const Navigation = (props: any) => {
                     </Link>
                     {userRole == 'candidate' ? (
                         <Link href="/users/candidate" className="border-b-[3px] border-b-textW font-[600] h-full flex items-center hover:border-b-gradientFirst">
-                            My jobs
+                            My Jobs
                         </Link>
                     ) : userRole == 'employer' ? (
                         <Link href="/users/employer/jobs" className="border-b-[3px] border-b-textW font-[600] h-full flex items-center hover:border-b-gradientFirst">
@@ -153,7 +153,7 @@ const Navigation = (props: any) => {
                     <div className="flex items-center justify-end gap-x-10 md:hidden pr-3">
                         {!userData && (
                             <div className="text-fhS leading-fhL font-fhW text-textR">
-                                <Link href="/account">Sign in</Link>
+                                <Link href="/account">Sign In</Link>
                             </div>
                         )}
                         <div

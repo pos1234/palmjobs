@@ -7,9 +7,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import {
-    PinterestShareButton,
     FacebookShareButton,
-    PinterestIcon,
     TwitterShareButton,
     LinkedinShareButton,
     TelegramShareButton
@@ -52,19 +50,27 @@ const Share = (props: any) => {
                             <ContentPasteIcon />
                         </div>
                     </div>
-                    <div className="flex mt-5 gap-x-5 text-[#618c61]">
-                        <TelegramShareButton url={`${VERIFY}jobs/${props.link}`}>
-                            <TelegramIcon className="hover:text-gradientFirst" />
-                        </TelegramShareButton>
-                        <FacebookShareButton url={`${VERIFY}jobs/${props.link}`}>
-                            <FacebookIcon className="hover:text-gradientFirst" />
-                        </FacebookShareButton>
-                        <TwitterShareButton url={`${VERIFY}jobs/${props.link}`}>
-                            <TwitterIcon className="hover:text-gradientFirst" />
-                        </TwitterShareButton>
-                        <LinkedinShareButton url={`${VERIFY}jobs/${props.link}`} title="Social share">
-                            <LinkedInIcon className="hover:text-gradientFirst" />
-                        </LinkedinShareButton>
+                    <div className="flex mt-5 gap-x-5">
+                        <div className='border-[1px] rounded-full h-10 w-10 flex items-center justify-center border-black hover:border-gradientFirst'>
+                            <TelegramShareButton url={`${VERIFY}jobs/${props.link}`}>
+                                <TelegramIcon />
+                            </TelegramShareButton>
+                        </div>
+                        <div className='border-[1px] rounded-full h-10 w-10 flex items-center justify-center border-black hover:border-gradientFirst'>
+                            <FacebookShareButton url={`${VERIFY}jobs/${props.link}`}>
+                                <p className='font-bold text-2xl flex justify-center items-center'>f</p>
+                            </FacebookShareButton>
+                        </div>
+                        <div className='border-[1px] rounded-full h-10 w-10 flex items-center justify-center border-black hover:border-gradientFirst'>
+                            <TwitterShareButton url={`${VERIFY}jobs/${props.link}`}>
+                                <img src="/icons/TwitterX.svg" alt="twitterIcon" className='w-7' />
+                            </TwitterShareButton>
+                        </div>
+                        <div className='border-[1px] rounded-full h-10 w-10 flex items-center justify-center border-black hover:border-gradientFirst'>
+                            <LinkedinShareButton url={`${VERIFY}jobs/${props.link}`} title="Social share">
+                                <LinkedInIcon />
+                            </LinkedinShareButton>
+                        </div>
                     </div>
                 </div>
             </div>

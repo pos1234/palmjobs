@@ -19,7 +19,7 @@ const Navigation = ({ active }: Active) => {
     const [openLogout, setOpenLogout] = useState(false)
     return (
         <>
-            <div className={`flex w-full justify-between overflow-x-hidden items-center md:pr-0 md:pl-5 pt-5 ${menu ? 'hidden' : 'md:hidden'} `}>
+            <div className={`flex w-full justify-between max-sm:pr-3 overflow-x-hidden items-center md:pr-0 md:pl-5 pt-5 ${menu ? 'hidden' : 'md:hidden'} `}>
                 <Link href="/">
                     <img src='/images/logo.svg' alt="palmjobs logo" className="h-12 md:hidden" />
                 </Link>
@@ -29,7 +29,6 @@ const Navigation = ({ active }: Active) => {
                     }}
                     className={`${styles['hamburger-menu']} ${menu ? 'hidden' : ' md:hidden'}`}
                 >
-                    <div className={styles['bar']}></div>
                     <div className={styles['bar']}></div>
                     <div className={styles['bar']}></div>
                 </div>
@@ -50,7 +49,7 @@ const Navigation = ({ active }: Active) => {
                             onClick={() => setMenu(!menu)}
                             className="absolute top-0 right-0 flex items-center md:hidden justify-end pb-4 pr-2 cursor-pointer"
                         >
-                            <CloseOutlinedIcon className="text-[3rem]" />
+                            <CloseOutlinedIcon className="text-[2rem]" />
                         </div>
                         <div className="flex flex-col items-center gap-y-3 mb-5 md:hidden">
                             {userDetail && userDetail.profilePictureId && (
