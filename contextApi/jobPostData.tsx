@@ -1,5 +1,6 @@
 import { FirstTabData } from '@/backend/Interfaces';
 import { fetchAllEmployerJob } from '@/backend/employerBackend';
+import localforage from 'localforage';
 import { createContext, useContext, useState, useEffect } from 'react'
 const today = new Date();
 const fifteenthDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 14);
@@ -113,26 +114,33 @@ export const JobPostContextProvider = ({ children }: any) => {
     const [allEmployerJobs, setAllEmployerJobs] = useState<any>()
     const [allLoading, setAllLoading] = useState(false)
     useEffect(() => {
-        setAllLoading(true)
-        fetchAllEmployerJob().then((res: any) => {
-            if (res?.total > 0) {
-                setPostingTabs({
-                    ...jobPostTabs,
-                    chooseJob: true
+        localforage.getItem('userRole').then((value: any) => {
+            console.log('Value retrieved:', value);
+            if (value == 'employer') {
+                setAllLoading(true)
+                fetchAllEmployerJob().then((res: any) => {
+                    if (res?.total > 0) {
+                        setPostingTabs({
+                            ...jobPostTabs,
+                            chooseJob: true
+                        })
+                    }
+                    if (res?.total == 0) {
+                        setPostingTabs({
+                            ...jobPostTabs,
+                            first: true
+                        })
+                    }
+                    setAllLoading(false)
+                    setAllEmployerJobs(res?.documents)
+                }).catch((error) => {
+                    setAllLoading(false)
+                    console.log(error);
                 })
             }
-            if (res?.total == 0) {
-                setPostingTabs({
-                    ...jobPostTabs,
-                    first: true
-                })
-            }
-            setAllLoading(false)
-            setAllEmployerJobs(res?.documents)
-        }).catch((error) => {
-            setAllLoading(false)
-            console.log(error);
-        })
+
+        });
+
     }, [])
     const handleDiscard = () => {
         setPostingTabs({

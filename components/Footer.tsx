@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import localforage from 'localforage';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 
 const LinkList = (props: any) => {
@@ -50,9 +51,21 @@ const Footer = () => {
     const openForGt = () => {
         setForGt(!forGt);
     };
-    const getUserData = async () => {
+    const useRole = async () => {
         const role = await getRole();
         role && setUserRole(role.documents[0].userRole);
+    }
+    const getUserData = () => {
+        localforage.getItem('userRole').then((value: any) => {
+            console.log('Value retrieved:', value);
+            if (value) {
+                setUserRole(value)
+            }
+            if (!value) {
+                useRole()
+            }
+        });
+
     };
     useEffect(() => {
         getUserData();
