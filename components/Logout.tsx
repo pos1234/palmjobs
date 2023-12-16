@@ -3,12 +3,15 @@ import ConfirmModal from './ConfirmModal'
 import { signOut } from '@/backend/accountBackend';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
+import localforage from "localforage";
+
 const Logout = (props: any) => {
     const [loading, setLoading] = useState(false)
     const router = useRouter();
     const handleLogout = () => {
         setLoading(true);
         signOut().then((res) => {
+            localforage.clear();
             setLoading(false);
             toast.success("You've been logged out. See you again soon!");
             typeof window !== 'undefined' && router.push('/');

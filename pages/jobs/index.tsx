@@ -12,22 +12,22 @@ import JobDetail from '@/components/job/JobDetail';
 import SearchBar from '@/components/job/SearchBar';
 import CheckProfileCompletion from '@/components/CheckProfileCompletion';
 import { useGlobalContext } from '@/contextApi/userData';
-const Jobs = () => {
+const Jobs = ({ documents }: any) => {
     const { userRole } = useGlobalContext()
     const router = useRouter();
     const [datePostedHolder, setDatePostedHolder] = useState('');
     const [expLevelHolder, setExpLevelHolder] = useState('');
     const [jobTypeHolder, setJobTypeHolder] = useState('');
-    const [jobDetailId, setJobDetailId] = useState<string>(/* documents[0].$id */);
+    const [jobDetailId, setJobDetailId] = useState<string>();
     const [openJobDetail, setOpenJobDetail] = useState(false);
-    const [jobDetails, setJobDetails] = useState<any>(/* documents[0] */);
+    const [jobDetails, setJobDetails] = useState<any>();
     const [company, setCompany] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [address, setAddress] = useState('');
     const [addressHolder, setAddressHolder] = useState('');
     const [searchWord, setSearchWord] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [data, setData] = useState<any>();
+    const [data, setData] = useState<any>(documents);
     const [maxPaginate, setMaxPaginate] = useState(5);
     const [minPaginate, setMinPaginate] = useState(1);
     const [companyData, setCompanyData] = useState<any>();
@@ -160,12 +160,10 @@ const Jobs = () => {
         setMaxPaginate(maxPaginate + 1);
         setMinPaginate(minPaginate + 1);
     };
-
     const handleJobSelection = (jobId: string) => {
         const selected = data && data.filter((item: any) => item.$id == jobId)
         selected && setJobDetails(selected[0])
     }
-
     return (
         <>
             <div>
@@ -340,17 +338,15 @@ const Jobs = () => {
                 )}
                 <Footer />
             </div >
-
         </>
     );
 };
 export default Jobs;
-
-
-/* export async function getStaticProps() {
-    const promise = fetchJobs()
+export async function getStaticProps() {
+    const promise = searchJobs(8, 0, '', '', '', '', '')
 
     const { documents } = await promise;
+    console.log(documents);
 
     return {
         props: {
@@ -358,4 +354,4 @@ export default Jobs;
         },
         revalidate: 60
     };
-} */
+} 

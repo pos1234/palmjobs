@@ -1,10 +1,15 @@
 import Footer from '@/components/Footer';
 import Navigation from '@/components/Navigation';
-import { useState } from 'react';
+import { useState, lazy } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import SearchBar from '@/components/job/SearchBar';
+
+
+/* const Navigation = lazy(() => import('@/components/Navigation'));
+ *//* const Footer = lazy(() => import('@/components/Footer'));
+const SearchBar = lazy(() => import('@/components/job/SearchBar')); */
 const Home = () => {
     const router = useRouter();
     const [searchText, setSearchText] = useState('');
@@ -50,7 +55,6 @@ const Home = () => {
                             <img src="/images/man-working-from-home-2194237-0.svg" alt="employees" />
                         </div>
                     </div>
-
                     <div className='w-full homeSurvey px-10 mt-10 flex sm:h-[129px] items-center justify-between flex-wrap max-sm:pb-5'>
                         <div className='flex flex-col'>
                             <p className='font-[600] text-[27px]'>Salary Survey</p>
