@@ -1,15 +1,19 @@
 import Footer from '@/components/Footer';
 import Navigation from '@/components/Navigation';
-import { useState, lazy } from 'react';
+import SearchBar from '@/components/job/SearchBar';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import SearchBar from '@/components/job/SearchBar';
-
-
-/* const Navigation = lazy(() => import('@/components/Navigation'));
- *//* const Footer = lazy(() => import('@/components/Footer'));
-const SearchBar = lazy(() => import('@/components/job/SearchBar')); */
+/* const Navigation = dynamic(() => import('@/components/Navigation'), {
+    ssr: false
+});
+const Footer = dynamic(() => import('@/components/Footer'), {
+    ssr: false
+});
+const SearchBar = dynamic(() => import('@/components/job/SearchBar'), {
+    ssr: false
+}); */
 const Home = () => {
     const router = useRouter();
     const [searchText, setSearchText] = useState('');

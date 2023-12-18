@@ -2,7 +2,7 @@ import Footer from '@/components/Footer';
 import Navigation from '@/components/Navigation';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getCompanyData, searchJobs, } from '@/backend/employerBackend'
 import 'react-toastify/dist/ReactToastify.css';

@@ -6,7 +6,7 @@ import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { toast } from 'react-toastify';
 import { getAccount } from '@/backend/accountBackend';
 import { deleteEmployerProfilePicture, getEmployerDocument, updateEmployerProfileId } from '@/backend/employerBackend';
-
+import localforage from 'localforage';
 const ProfilePicture = () => {
     const loadingIn = '/images/loading.svg';
     const [profileLoading, setProfileLoading] = useState(false);
@@ -15,16 +15,40 @@ const ProfilePicture = () => {
     const [file, setFile] = useState<any>();
     const [firstLetter, setFirstLetter] = useState('')
     const getProfilePic = async () => {
-        const promise = await getCandidateDocument()
+        localforage.getItem('userDetail').then((value: any) => {
+            setProfileId(value.profilePictureId)
+        })
+   /*      const promise = await getCandidateDocument()
         promise && promise.documents[0] && promise.documents[0].profilePictureId && setProfileId(promise.documents[0].profilePictureId)
-    }
+    */ }
     useEffect(() => {
         getProfilePic()
-        getAccount().then((res: any) => {
-            res && res.name && setFirstLetter(res.name.charAt(0))
+        localforage.getItem('userData').then((value: any) => {
+            setFirstLetter(value.name.charAt(0))
         })
+        /* getAccount().then((res: any) => {
+            res && res.name && setFirstLetter(res.name.charAt(0))
+        }) */
     }, [])
+    const updateLocal = (value: any) => {
 
+        localforage.getItem('userDetail')
+            .then((existingData: any) => {
+                // Modify the existing data
+                const updatedData = {
+                    // Update the specific properties you want to change
+                    ...existingData,
+                    profilePictureId: value,
+                };
+                // Set the updated data back to the same key
+                return localforage.setItem('userDetail', updatedData);
+            })
+            .then(() => {
+            })
+            .catch((err) => {
+                console.error(`Error updating item: ${err}`);
+            });
+    }
     const imageUploadChecker = (functionName: any, uploadedFile: any) => {
         if (uploadedFile) {
             const fileList = Array.from(uploadedFile);
@@ -46,6 +70,7 @@ const ProfilePicture = () => {
                     setProfileLoading(false);
                     setProfileId(res.$id)
                     updateProfileId(res.$id)
+                    updateLocal(res.$id)
                     toast.success('Image Upload Successful')
                 });
             });
@@ -55,13 +80,17 @@ const ProfilePicture = () => {
         e.preventDefault();
         deleteProfilePicture(profileId).then((res) => {
             imageUploadChecker(uploadProfilePictures, e.currentTarget.files);
-
         })
     };
     const uploadPic = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         imageUploadChecker(uploadProfilePictures, e.currentTarget.files);
     };
+    const handleDelete = () => {
+        deleteProfilePicture(profileId).then((res) => {
+            updateLocal('')
+        })
+    }
     return (
         <div className="relative flex flex-col justify-center">
             <div className="profilePictureContainer w-28 h-28 rounded-full border-8 border-textW cursor-pointer">
@@ -72,7 +101,7 @@ const ProfilePicture = () => {
                                 {profileId && <ProfilePic id={profileId} className="w-40 h-40 col-span-2 rounded-3xl cursor-pointer" />}
                                 <DeleteIcon
                                     onClick={() => {
-                                        deleteProfilePicture(profileId)
+                                        handleDelete
                                         setProfileId('')
                                     }}
                                     sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}

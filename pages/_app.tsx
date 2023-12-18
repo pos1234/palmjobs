@@ -1,5 +1,4 @@
-/* import { UserProvider } from '@/lib/context';
- */ import { GlobalContextProvider } from '@/contextApi/userData';
+import { GlobalContextProvider } from '@/contextApi/userData';
 import { JobPostContextProvider } from '@/contextApi/jobPostData'
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
@@ -20,8 +19,6 @@ export default function App({ Component, pageProps }: AppProps) {
                 pauseOnHover
                 theme="light"
                 toastStyle={{
-                    /* height: '60px',
-                    width: '250px', */ // default width for desktop
                     padding: '5%',
                     borderRadius: '15px'
                 }}

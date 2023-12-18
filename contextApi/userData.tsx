@@ -25,90 +25,101 @@ export const GlobalContextProvider = ({ children }: any) => {
     const [loading, setLoading] = useState(true)
     const [userRole, setUserRole] = useState('')
     const [userDetail, setUserDetail] = useState<any>()
+    const haveAccount = () => {
+        getAccount().then((userInfo: any) => {
+            userInfo && console.log(userInfo);
+            setLoading(false)
+            if (userInfo !== "failed") {
+                setUserData(userInfo)
+                localforage.setItem('userData', userInfo).then(() => {
+                    setLoading(false)
+                });
+            }
+        }).catch((error) => {
+            setLoading(false)
+            console.log(error);
+        })
+    }
     const userDatas = async () => {
-        const userInfo = await getAccount();
-        userInfo !== "failed" && setUserData(userInfo)
-        userInfo !== "failed" && localforage.setItem('userData', userInfo).then(() => {
+        localforage.getItem('userData').then((value) => {
+            if (value) {
+                setLoading(false)
+                setUserData(value)
+                console.log(value);
+
+            }
+            if (!value) {
+                haveAccount()
+            }
         });
     }
-    const useAccount = async () => {
-        localforage.getItem('userData').then((value: any) => {
-            if (!value) {
-                userDatas()
-            }
-            if (value) {
-                setUserData(value)
-            }
-        })
+    const haveRole = async () => {
         localforage.getItem('userRole').then((value: any) => {
             if (!value) {
                 useRole()
             }
             if (value) {
-                localforage.getItem('userDetail').then((value) => {
-                    setUserDetail(value)
-                });
+                setUserRole(value)
             }
-            setLoading(false)
-            setUserRole(value)
         });
-    };
+    }
     const useRole = async () => {
-        const role = await getRole();
+/*         if (userData) {
+ */            const role = await getRole();
         role && setUserRole(role.documents[0].userRole);
         role && localforage.setItem('userRole', role.documents[0].userRole).then(() => {
-            console.log('Item has been set');
         });
-        if (role && role.documents[0].userRole == 'candidate') {
+        /*  if (role && role.documents[0].userRole == 'candidate') {
+             useCandidateDocument()
+         }
+         if (role && role.documents[0].userRole == 'employer') {
+             useEmployerDocument()
+         } */
+        /*         }
+         */
+    };
+    /*  const haveDetail = async () => {
+         localforage.getItem('userDetail').then((value) => {
+             if (value) {
+                 setUserDetail(value)
+                 setLoading(false)
+             }
+             if (!value) {
+                 getDetails()
+             }
+         });
+     } */
+    /* const getDetails = async () => {
+        if (userRole == 'candidate') {
             useCandidateDocument()
         }
-        if (role && role.documents[0].userRole == 'employer') {
+        if (userRole == 'employer') {
             useEmployerDocument()
         }
-    };
-    const useCandidateDocument = async () => {
-        const candidate = await getCandidateDocument();
-        candidate && setUserDetail(candidate.documents[0]);
-        candidate && localforage.setItem('userDetail', candidate.documents[0]).then(() => {
-            console.log('item been set');
-        });
-        candidate && setLoading(false)
-    };
-    const useEmployerDocument = async () => {
-        const employer = await getProfileData();
-        employer && setUserDetail(employer.documents[0]);
-        employer && localforage.setItem('userDetail', employer.documents[0]).then(() => {
-            console.log('item been set');
-        });
-        employer && setLoading(false)
-    }
+    } */
+    /* 
+        const useCandidateDocument = async () => {
+            const candidate = await getCandidateDocument();
+            candidate && setUserDetail(candidate.documents[0]);
+            candidate && localforage.setItem('userDetail', candidate.documents[0]).then(() => {
+            });
+            candidate && setLoading(false)
+        };
+        const useEmployerDocument = async () => {
+            const employer = await getProfileData();
+            employer && setUserDetail(employer.documents[0]);
+            employer && localforage.setItem('userDetail', employer.documents[0]).then(() => {
+            });
+            employer && setLoading(false)
+        } */
+    const useAccount = async () => {
+        userDatas()
+        haveRole()
+/*         haveDetail()
+ */    };
     useEffect(() => {
         useAccount()
     }, [])
     return < GlobalContext.Provider value={{ userDetail, setUserDetail, loading, userData, setUserData, userRole }} >{children}</GlobalContext.Provider >
 }
 export const useGlobalContext = () => useContext(GlobalContext)
-/* const userInfo = await getAccount();
-        if (userInfo !== 'failed') {
-            !userData && setUserData(userInfo);
-            const role = await getRole();
-            role && setUserRole(role.documents[0].userRole);
-            if (role && role.documents[0].userRole == 'candidate') {
-                const candidate = await getCandidateDocument();
-                if (candidate) {
-                    setUserDetail(candidate.documents[0]);
-                    setLoading(false);
-                }
-            }
-            if (role && role.documents[0].userRole == 'employer') {
-                const employer = await getProfileData();
-                if (employer) {
-                    setUserDetail(employer.documents[0]);
-                    setLoading(false);
-
-                }
-            }
-        }
-        if (userInfo == 'failed') {
-            setLoading(false);
-        } */

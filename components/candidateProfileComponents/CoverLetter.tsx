@@ -6,9 +6,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import FormModal from './FormModal';
 import { SubmitButton } from '../TextInput';
 import { useGlobalContext } from '@/contextApi/userData';
+import localforage from 'localforage';
 
-const CoverLetter = () => {
-    const { userDetail } = useGlobalContext()
+const CoverLetter = (props: any) => {
+    /*     const { userDetail } = useGlobalContext()
+     */
+    const [userDetail, setUserDetail] = useState(props.userDetail)
     const [coverLetter, setCoverLetter] = useState('');
     const [openCover, setOpenCover] = useState(false);
     const [loadings, setLoadings] = useState(false)
@@ -16,6 +19,26 @@ const CoverLetter = () => {
     const userData = async () => {
 /*         const userInfo = await getUserDetail()
  */        userDetail && userDetail.coverLetter && setCoverLetter(userDetail.coverLetter)
+    }
+    const updateLocal = (value: any) => {
+
+        localforage.getItem('userDetail')
+            .then((existingData: any) => {
+                // Modify the existing data
+                const updatedData = {
+                    // Update the specific properties you want to change
+                    ...existingData,
+                    coverLetter: value,
+                };
+
+                // Set the updated data back to the same key
+                return localforage.setItem('userDetail', updatedData);
+            })
+            .then(() => {
+            })
+            .catch((err) => {
+                console.error(`Error updating item: ${err}`);
+            });
     }
     const handleCoverLetter = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault()
@@ -25,12 +48,12 @@ const CoverLetter = () => {
                 toast.success('Updated Successfully')
                 setLoadings(false);
                 setOpenCover(false)
+                updateLocal(coverLetter)
             }).catch((erorr) => {
                 setLoadings(false);
                 toast.error(`Not Updated ${erorr}`)
             })
         }
-
     }
     const removeHtmlTags = (html: string) => {
         const regex = /(<([^>]+)>)/gi;

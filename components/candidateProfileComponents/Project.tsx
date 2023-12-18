@@ -15,12 +15,14 @@ import { ProfilePic } from '../JobImage';
 import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
 import { useGlobalContext } from '@/contextApi/userData';
+import localforage from 'localforage';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
-const Project = () => {
-    const { userDetail } = useGlobalContext()
-    const [openProject, setOpenProject] = useState(false);
+const Project = (props: any) => {
+    const [userDetail, setUserDetail] = useState(props.userDetail)
+/*     const { userDetail } = useGlobalContext()
+ */    const [openProject, setOpenProject] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [projectIndex, setProjectIndex] = useState(Number);
     const [projectEdit, setProjectEdit] = useState<boolean>(false);
@@ -37,6 +39,26 @@ const Project = () => {
         url: '',
         thumbnailId: ''
     });
+    const updateLocal = (value: any) => {
+
+        localforage.getItem('userDetail')
+            .then((existingData: any) => {
+                // Modify the existing data
+                const converted = JSON.stringify(value)
+                const updatedData = {
+                    // Update the specific properties you want to change
+                    ...existingData,
+                    projects: converted,
+                };
+                // Set the updated data back to the same key
+                return localforage.setItem('userDetail', updatedData);
+            })
+            .then(() => {
+            })
+            .catch((err) => {
+                console.error(`Error updating item: ${err}`);
+            });
+    }
     const handleProjectImage = (files: any) => {
         setProjectFile(files);
         setFileName(files.name);
@@ -71,6 +93,7 @@ const Project = () => {
                             thumbnailId: ''
                         });
                         setProjectFile(null);
+                        updateLocal(project)
                     })
                     .catch((error: any) => {
                         console.log(error);
@@ -93,6 +116,7 @@ const Project = () => {
                             url: '',
                             thumbnailId: ''
                         });
+                        updateLocal(project)
                     })
                     .catch((error) => {
                         console.log(error);
@@ -123,6 +147,7 @@ const Project = () => {
                         url: '',
                         thumbnailId: ''
                     });
+                    updateLocal(projectsArray)
                 })
 
                 .catch((error) => {
@@ -136,6 +161,7 @@ const Project = () => {
             .then((res) => {
                 setProjectsArray([]);
                 toast.success('Successfully Removed Project');
+                updateLocal(projectsArray)
             })
             .catch((error) => {
                 toast.error(`Project Not Removed ${error}`);
@@ -148,13 +174,13 @@ const Project = () => {
     const userData = async () => {
 /*         const userInfo = await getUserDetail()
  */        if (userDetail) {
-            const projects = convertToArray(userDetail.projects) || [];
-            setProjectsArray(projects || '');
+            const projects = JSON.parse(userDetail.projects);
+            setProjectsArray(projects || []);
         }
     }
     useEffect(() => {
         userData()
-    }, [userDetail])
+    }, [])
     const handleEditClick = () => {
         if (projectsArray.length !== 0) {
             setProjectEdit(true)
@@ -248,7 +274,7 @@ const Project = () => {
                                             setProjectData({ ...projectData, projectName: e.currentTarget.value })
                                         }
                                         placeholder="Project Name"
-                                        className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                        className={`border-[1px] focus:ring-0 focus:border-gradientSecond w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
                                     />
                                     {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
                                 </div>
@@ -261,7 +287,7 @@ const Project = () => {
                                             setProjectData({ ...projectData, url: e.currentTarget.value })
                                         }
                                         placeholder="Project Link"
-                                        className="focus:ring-gradientSecond focus:border-0 border-2 w-full border-gray-200 rounded-xl h-12 pl-5 text-addS"
+                                        className="border-[1px] focus:ring-0 focus:border-gradientSecond w-full border-gray-200 rounded-xl h-12 pl-5 text-addS"
                                     />
                                 </div>
                                 {
