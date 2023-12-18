@@ -14,6 +14,8 @@ import RegisterComponent from '@/components/account/Register';
 import Slider from '@/components/Slider';
 import { SubmitButton, TextInputRelated } from '@/components/TextInput';
 import { useGlobalContext } from '@/contextApi/userData';
+import localforage from "localforage";
+
 const Login = () => {
     const router = useRouter();
     const logo = '/images/logo.svg';
@@ -57,8 +59,8 @@ const Login = () => {
                         const loggedIn = await getAccount();
                         if (loggedIn !== 'failed') {
                             setUserData(loggedIn)
-                            console.log(userData);
-
+                            localforage.setItem('userData', loggedIn).then(() => {
+                            });
                             typeof window !== 'undefined' && router.push('/jobs');
                         }
                     }

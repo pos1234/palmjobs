@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
 import { getResumeName } from '@/backend/candidateBackend';
 import { FileUploader } from 'react-drag-drop-files';
-import { deleteResume, getUserDetail, updateResumeId, uploadResume } from '@/backend/candidateBackend';
+import { deleteResume, updateResumeId, uploadResume } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
 import { useGlobalContext } from '@/contextApi/userData';
 const FileUploadForm = (props: any) => {
-    const { userDetail } = useGlobalContext()
+    /*     const { userDetail } = useGlobalContext()
+     */
+    const [userData, setUserData] = useState<any>()
+    const [userDetail, setUserDetail] = useState<any>(props.userDetail)
     const pdfIcon = '/images/pdfIcon.svg';
     const [resumeId, setResumeId] = useState('');
     const [fileName, setFileName] = useState('');
@@ -69,7 +72,6 @@ const FileUploadForm = (props: any) => {
                     .then((rem) => {
                         toast.success('Replaced Successfully');
                         setLoading(false)
-
                     })
                     .catch((error) => {
                         toast.error('Resume Not Replaced');
@@ -82,12 +84,12 @@ const FileUploadForm = (props: any) => {
                 setLoading(false)
             });
     };
-    const userData = async () => {
+    const userDatas = async () => {
 /*         const userInfo = await getUserDetail()
  */        userDetail && setResumeId(userDetail.resumeId || '');
     }
     useEffect(() => {
-        userData()
+        userDatas()
     }, [userDetail])
     return (
         <>

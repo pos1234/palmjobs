@@ -11,8 +11,12 @@ import { useGlobalContext } from '@/contextApi/userData';
 import { updateUserName } from '@/backend/employerBackend';
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import localforage from 'localforage';
 const SocialForm = (props: any) => {
-    const { userData, userDetail } = useGlobalContext()
+    /*     const { userData, userDetail } = useGlobalContext()
+     */
+    const [userData, setUserData] = useState<any>()
+    const [userDetail, setUserDetail] = useState<any>(props.userDetail)
     const [name, setName] = useState('')
     const [nameError, setNameError] = useState(false)
     const [phone, setPhone] = useState<any>()
@@ -39,7 +43,31 @@ const SocialForm = (props: any) => {
         const result = phones && isValidPhoneNumber(phones.toString())
         return result
     }
+    const updateLocal = (linkedValue: any, githubLinkValue: any, behanValue: any, portfolioValue: any, phoneValue: any, addressValue: any) => {
 
+        localforage.getItem('userDetail')
+            .then((existingData: any) => {
+                // Modify the existing data
+                const updatedData = {
+                    // Update the specific properties you want to change
+                    ...existingData,
+                    linkedIn: linkedValue,
+                    github: githubLinkValue,
+                    behance: behanValue,
+                    protfolio: portfolioValue,
+                    phoneNumber: phoneValue,
+                    address: addressValue
+                };
+
+                // Set the updated data back to the same key
+                return localforage.setItem('userDetail', updatedData);
+            })
+            .then(() => {
+            })
+            .catch((err) => {
+                console.error(`Error updating item: ${err}`);
+            });
+    }
     const hanleLinkUpdate = (e: React.FormEvent<HTMLElement>) => {
         setNameError(false)
         const linkText = 'Invalid Url';
@@ -69,6 +97,7 @@ const SocialForm = (props: any) => {
                         setLoading(false);
                         toast.success('Saved Successfully');
                         props.setOpenProfile(!props.openProfile)
+                        updateLocal(linked, githubLink, behan, portfolio, phone, address)
                     }).catch((error) => {
                         console.log(error);
                         toast.error('Not Saved Successfully');
@@ -92,15 +121,14 @@ const SocialForm = (props: any) => {
             userDetail.address && setAddress(userDetail.address)
             userDetail.phoneNumber && setPhone(userDetail.phoneNumber)
         }
-        if (userData) {
-            setName(userData.name)
-        }
-
+        localforage.getItem('userData').then((value: any) => {
+            setUserData(value)
+            setName(value.name)
+        })
     }
     useEffect(() => {
         userDatas()
     }, [])
-
     return (
         <ConfirmModal isOpen={props.openProfile} handleClose={() => props.setOpenProfile(false)}>
             <div className="mx-2 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 pb-14 md:pt-8 md:pl-14 md:w-2/3 lg:w-1/2 md:mx-0">

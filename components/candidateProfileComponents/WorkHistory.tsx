@@ -10,11 +10,14 @@ import { toast } from 'react-toastify';
 import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
 import { useGlobalContext } from '@/contextApi/userData';
+import localforage from 'localforage';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
-const WorkHitory = () => {
-    const { userDetail } = useGlobalContext()
+const WorkHitory = (props: any) => {
+    /*     const { userDetail } = useGlobalContext()
+     */
+    const [userDetail, setUserDetail] = useState(props.userDetail)
     const [openWork, setOpenWork] = useState(false);
     const [displayWorkHistory, setDisplayWorkHistory] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
@@ -36,6 +39,25 @@ const WorkHitory = () => {
     const convertToString = (str: any) => {
         return JSON.stringify(str);
     };
+    const updateLocal = (value: any) => {
+        localforage.getItem('userDetail')
+            .then((existingData: any) => {
+                // Modify the existing data
+                const converted = JSON.stringify(value)
+                const updatedData = {
+                    // Update the specific properties you want to change
+                    ...existingData,
+                    workHistory: converted,
+                };
+                // Set the updated data back to the same key
+                return localforage.setItem('userDetail', updatedData);
+            })
+            .then(() => {
+            })
+            .catch((err) => {
+                console.error(`Error updating item: ${err}`);
+            });
+    }
     const editWorkHistory = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         if (workHistoryData.title == '') {
@@ -65,6 +87,7 @@ const WorkHitory = () => {
                         endDate: '',
                         jobDescription: ''
                     });
+                    updateLocal(workHistoryArray)
                     toast.success('Work Hitory Saved Successfully');
                 })
                 .catch((error) => {
@@ -104,6 +127,7 @@ const WorkHitory = () => {
                     endDate: '',
                     jobDescription: ''
                 });
+                updateLocal(updatedWrokHitoryArray)
                 toast.success('Work Hitory Added Successfully');
                 const work = JSON.parse(res.workHistory);
                 setWorkHistoryArray(work);
@@ -121,10 +145,7 @@ const WorkHitory = () => {
     const deleteWorkHistory = (index: number) => {
         workHistoryArray.splice(index, 1);
         updateWorkHistory(convertToString(workHistoryArray)); setWorkEdit(false);
-    };
-    const convertToArray = (str: any) => {
-        if (str != '') return JSON.parse(str);
-        else return '';
+        updateLocal(workHistoryArray)
     };
     const editWork = (index: number) => {
         setWorkEdit(true);
@@ -135,16 +156,20 @@ const WorkHitory = () => {
         setIsChecked(event.target.checked);
     };
     const userData = async () => {
-/*         const userInfo = await getUserDetail()
- */        if (userDetail) {
-            const workhistory = convertToArray(userDetail.workHistory) || [];
-            setWorkHistoryArray(workhistory || '');
+        /*         const userInfo = await getUserDetail()
+         */        /* if (userDetail) {
+const workhistory = convertToArray(userDetail.workHistory) || [];
+setWorkHistoryArray(workhistory || '');
+} */
+        if (userDetail) {
+            const result = JSON.parse(userDetail.workHistory)
+            userDetail && setWorkHistoryArray(result || []);
         }
 
     }
     useEffect(() => {
         userData()
-    }, [userDetail])
+    }, [])
     useEffect(() => {
         if (openWork == false) {
             setDisplayWorkHistory(false);
@@ -255,7 +280,7 @@ const WorkHitory = () => {
                                                 }
                                             }}
                                             placeholder="Add Title"
-                                            className={`focus:ring-gradientSecond focus:border-0 border-2 rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                            className={`focus:border-gradientSecond border-[1px] focus:border-[1px] focus:ring-0 rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
                                         />
                                         {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
                                     </div>
@@ -268,7 +293,7 @@ const WorkHitory = () => {
                                                 setWorkHistoryData({ ...workHistoryData, companyName: e.currentTarget.value })
                                             }
                                             placeholder="Add Company Name"
-                                            className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
+                                            className={`focus:border-gradientSecond border-[1px] focus:border-[1px] focus:ring-0 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
                                         />
                                         {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
                                     </div>
@@ -287,7 +312,7 @@ const WorkHitory = () => {
                                             value={workHistoryData.startDate}
                                             type="date"
                                             onChange={(e) => setWorkHistoryData({ ...workHistoryData, startDate: e.currentTarget.value })}
-                                            className={`focus:ring-gradientSecond focus:border-0 pr-3 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                            className={`focus:border-gradientSecond border-[1px] focus:border-[1px] focus:ring-0 pr-3 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
                                         />
                                         {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}
                                     </div>
@@ -303,7 +328,7 @@ const WorkHitory = () => {
                                                         ? setWorkHistoryData({ ...workHistoryData, endDate: 'present' })
                                                         : setWorkHistoryData({ ...workHistoryData, endDate: e.currentTarget.value })
                                                 }
-                                                className="focus:ring-gradientSecond focus:border-0 pr-3 border-[1px] w-full rounded-xl h-12 pl-5 text-addS"
+                                                className="focus:border-gradientSecond border-[1px] focus:border-[1px] focus:ring-0 pr-3 border-[1px] w-full rounded-xl h-12 pl-5 text-addS"
                                             />
                                         </div>
                                     )}

@@ -8,6 +8,7 @@ import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
 import CloseIcon from '@mui/icons-material/Close';
 import { useGlobalContext } from '@/contextApi/userData';
+import localforage from 'localforage';
 
 const CertificateDetails = (props: any) => {
     return (
@@ -29,8 +30,8 @@ const CertificateDetails = (props: any) => {
         </div>
     );
 };
-const Certificate = () => {
-    const { userDetail } = useGlobalContext()
+const Certificate = (props: any) => {
+    const [userDetail, setUserDetail] = useState<any>(props.userDetail)
     const [openCertificate, setOpenCertificate] = useState(false);
     const [editOneCertificate, setEditOneCertificate] = useState(false);
     const [displayCertificate, setDisplayCertificate] = useState(false);
@@ -57,6 +58,26 @@ const Certificate = () => {
         setCertificateIndex(index);
         setCertificateData(certificateArray[index]);
     };
+    const updateLocal = (value: any) => {
+
+        localforage.getItem('userDetail')
+            .then((existingData: any) => {
+                // Modify the existing data
+                const converted = JSON.stringify(value)
+                const updatedData = {
+                    // Update the specific properties you want to change
+                    ...existingData,
+                    certificates: converted,
+                };
+                // Set the updated data back to the same key
+                return localforage.setItem('userDetail', updatedData);
+            })
+            .then(() => {
+            })
+            .catch((err) => {
+                console.error(`Error updating item: ${err}`);
+            });
+    }
     const addCertificate = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setErrorMessage('');
@@ -75,17 +96,19 @@ const Certificate = () => {
             const updatedCertificateArray = [...certificateArray, certificateData];
             updateCertificates(convertToString(updatedCertificateArray)).then((res: any) => {
                 setLoadings(false);
+                updateLocal(updatedCertificateArray)
+                toast.success('Successfully Added Certificate');
+                setErrorMessage('')
                 setCertificateData({
                     name: '',
                     issuedBy: '',
                     year: ''
-                });
+                })
                 setOpenCertificate(false)
-                toast.success('Successfully Added Certificate');
-                const certificate = JSON.parse(res.certificates);
-                setCertificateArray(certificate);
+                setCertificateArray(updatedCertificateArray);
+                /* const certificate = JSON.parse(res.certificates);
+                setCertificateArray(certificate); */
                 setErrorCode(0);
-                setErrorMessage('')
 
             }).catch((error: any) => {
                 toast.error(`Certificate Not Added ${error}`);
@@ -94,7 +117,6 @@ const Certificate = () => {
                 setErrorMessage('')
             });
         }
-
     };
     const editCertificate = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
@@ -117,14 +139,14 @@ const Certificate = () => {
                     setOpenCertificate(false)
                     setEditOneCertificate(false)
                     setErrorCode(0);
-
                     setErrorMessage('')
-                    toast.success('Certificate Saved Successfully');
+                    toast.error('Certificate Saved Successfully');
                     setCertificateData({
                         name: '',
                         issuedBy: '',
                         year: ''
                     })
+                    updateLocal(certificateArray)
                 })
                 .catch((error) => {
                     console.log(error);
@@ -140,6 +162,7 @@ const Certificate = () => {
         const result = updateCertificates(convertToString(certificateArray));
         result
             .then((res) => {
+                updateLocal(certificateArray)
                 toast.success('Successfully Deleted Certificate');
             })
             .catch((error) => {
@@ -148,18 +171,14 @@ const Certificate = () => {
             });
     };
     const userData = async () => {
-        /*         const userInfo = await getUserDetail()
-         */
-
         if (userDetail) {
-            const certificate = convertToArray(userDetail && userDetail.certificates) || [];
-            setCertificateArray(certificate || '');
+            const result = JSON.parse(userDetail.certificates)
+            setCertificateArray(result || []);
         }
-
     }
     useEffect(() => {
         userData()
-    }, [userDetail])
+    }, [])
     useEffect(() => {
         if (openCertificate == false) {
             setEditOneCertificate(false);
@@ -268,7 +287,7 @@ const Certificate = () => {
                                         setCertificateData({ ...certificateData, name: e.currentTarget.value })
                                     }
                                     placeholder="Add Certificate Name"
-                                    className={`h-12 pl-5 bg-textW rounded-xl border focus:ring-gradientSecond focus:border-0 w-full lg:w-96 ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                    className={`h-12 pl-5 bg-textW rounded-xl focus:border-gradientSecond border-[1px] focus:border-[1px] focus:ring-0 w-full lg:w-96 ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
                                 />
                                 {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
                             </div>
@@ -281,7 +300,7 @@ const Certificate = () => {
                                         setCertificateData({ ...certificateData, issuedBy: e.currentTarget.value })
                                     }
                                     placeholder="Certificate Issued By"
-                                    className={`h-12 pl-5 bg-white rounded-xl border  focus:ring-gradientSecond focus:border-0 w-full lg:w-96 ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
+                                    className={`h-12 pl-5 bg-white rounded-xl border-[1px] focus:ring-0 focus:border-gradientSecond w-full lg:w-96 ${errorCode == 2 ? 'border-orange-500' : 'border-gray-200'}`}
                                 />
                                 {errorCode == 2 && <p className='text-orange-500'>{errorMessage}</p>}
                             </div>
@@ -296,7 +315,7 @@ const Certificate = () => {
                                             setCertificateData({ ...certificateData, year: selectedDate });
                                     }}
                                     placeholder="Year Issued"
-                                    className={`h-12 pl-5 bg-white rounded-xl border  focus:ring-gradientSecond focus:border-0 w-full lg:w-96 appearNone ${errorCode == 3 ? 'border-orange-500' : 'border-gray-200'}`}
+                                    className={`h-12 pl-5 bg-white rounded-xl border-[1px] focus:ring-0 focus:border-gradientSecond w-full lg:w-96 appearNone ${errorCode == 3 ? 'border-orange-500' : 'border-gray-200'}`}
                                     max={new Date().toISOString().split('T')[0]}
                                 />
                                 {errorCode == 3 && <p className='text-orange-500'>{errorMessage}</p>}

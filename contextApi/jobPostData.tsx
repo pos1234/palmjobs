@@ -115,7 +115,6 @@ export const JobPostContextProvider = ({ children }: any) => {
     const [allLoading, setAllLoading] = useState(false)
     useEffect(() => {
         localforage.getItem('userRole').then((value: any) => {
-            console.log('Value retrieved:', value);
             if (value == 'employer') {
                 setAllLoading(true)
                 fetchAllEmployerJob().then((res: any) => {
@@ -140,7 +139,6 @@ export const JobPostContextProvider = ({ children }: any) => {
             }
 
         });
-
     }, [])
     const handleDiscard = () => {
         setPostingTabs({

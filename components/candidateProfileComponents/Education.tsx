@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import EditIcon from '@mui/icons-material/Edit';
 import { toast } from 'react-toastify';
-import { getUserDetail, updateEducation } from '@/backend/candidateBackend';
+import { updateEducation } from '@/backend/candidateBackend';
 import FormModal from './FormModal';
 import CloseIcon from '@mui/icons-material/Close';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
-import { useGlobalContext } from '@/contextApi/userData';
-const Education = () => {
-    const { userDetail } = useGlobalContext()
+import localforage from 'localforage';
+const Education = (props: any) => {
+    /*     const { userDetail } = useGlobalContext()
+     */
+    const [userDetail, setUserDetail] = useState(props.userDetail)
     const [openEducation, setOpenEducation] = useState(false);
     const [displayEducation, setDisplayEducation] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
@@ -30,6 +31,25 @@ const Education = () => {
     const convertToString = (str: any) => {
         return JSON.stringify(str);
     };
+    const updateLocal = (value: any) => {
+        localforage.getItem('userDetail')
+            .then((existingData: any) => {
+                // Modify the existing data
+                const converted = JSON.stringify(value)
+                const updatedData = {
+                    // Update the specific properties you want to change
+                    ...existingData,
+                    educations: converted,
+                };
+                // Set the updated data back to the same key
+                return localforage.setItem('userDetail', updatedData);
+            })
+            .then(() => {
+            })
+            .catch((err) => {
+                console.error(`Error updating item: ${err}`);
+            });
+    }
     const indexEducation = (index: number) => {
         setEditEducation(true);
         setEducationIndex(index);
@@ -69,6 +89,7 @@ const Education = () => {
                         university: '',
                         yearIssued: ''
                     });
+                    updateLocal(updatedEducationArray)
                 })
                 .catch((error) => {
                     console.log(error);
@@ -110,6 +131,7 @@ const Education = () => {
                         yearIssued: ''
                     });
                     toast.success('Education Saved Successfully');
+                    updateLocal(educationArray)
                 })
                 .catch((error) => {
                     console.log(error);
@@ -125,27 +147,27 @@ const Education = () => {
         updateEducation(convertToString(educationArray))
             .then((res) => {
                 toast.success('Successfully Removed Education');
+                updateLocal(educationArray)
             })
             .catch((error) => {
                 toast.error('Education Not Removed');
             });
         setEditEducation(false);
     };
-    const convertToArray = (str: any) => {
-        if (str != '') return JSON.parse(str);
-        else return '';
-    };
     const userData = async () => {
-/*         const userInfo = await getUserDetail()
- */        if (userDetail) {
-            const education = convertToArray(userDetail.educations) || [];
-            setEducationArray(education || '');
+        /*         const userInfo = await getUserDetail()
+         */        /* if (userDetail) {
+const education = convertToArray(userDetail.educations) || [];
+setEducationArray(education || '');
+} */
+        if (userDetail) {
+            const result = JSON.parse(userDetail.educations)
+            userDetail && setEducationArray(result || []);
         }
-
     }
     useEffect(() => {
         userData()
-    }, [userDetail])
+    }, [])
     useEffect(() => {
         if (openEducation == false) {
             setEditEducation(false);
@@ -299,7 +321,7 @@ const Education = () => {
                                                 setEducation({ ...education, fieldStudy: e.currentTarget.value })
                                             }
                                             placeholder="Enter Field of Study/Major"
-                                            className={`focus:ring-gradientSecond focus:border-0 border-2 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
+                                            className={`focus:ring-gradientSecond border-[1px] focus:border-0 w-full rounded-xl h-12 pl-5 text-addS ${errorCode == 1 ? 'border-orange-500' : 'border-gray-200'}`}
                                         />
                                         {errorCode == 1 && <p className='text-orange-500'>{errorMessage}</p>}
                                     </div>

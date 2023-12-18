@@ -57,7 +57,6 @@ const Footer = () => {
     }
     const getUserData = () => {
         localforage.getItem('userRole').then((value: any) => {
-            console.log('Value retrieved:', value);
             if (value) {
                 setUserRole(value)
             }

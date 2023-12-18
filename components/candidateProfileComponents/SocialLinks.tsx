@@ -5,20 +5,20 @@ import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import EditIcon from '@mui/icons-material/Edit';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { addPhoneAddress } from '@/backend/candidateBackend';
-import { toast } from 'react-toastify';
 import SocialForm from './SocialForm';
-import { useGlobalContext } from '@/contextApi/userData';
+import localforage from 'localforage';
 const SocialLinks = (props: any) => {
-    const { userDetail, userData } = useGlobalContext()
-    const [locate, setLocate] = useState('')
+    const [userData, setUserData] = useState<any>()
+    const [userDetail, setUserDetail] = useState<any>(props.userDetail)
+/*     const { userDetail, userData } = useGlobalContext()
+ */    const [locate, setLocate] = useState('')
     const [call, setCall] = useState('');
     const [linked, setLinked] = useState('');
     const [githubLink, setGithubLink] = useState('');
     const [behan, setBehan] = useState('');
     const [portfolio, setPortfolio] = useState('')
     const [openSocial, setOpenSocial] = useState(false)
-    const userDatas = async () => {
+    const userDatas = () => {
         if (userDetail) {
             userDetail.linkedIn && setLinked(userDetail.linkedIn)
             userDetail.github && setGithubLink(userDetail.github)
@@ -27,11 +27,13 @@ const SocialLinks = (props: any) => {
             userDetail.address && setLocate(userDetail.address)
             userDetail.phoneNumber && setCall(userDetail.phoneNumber)
         }
-
+        localforage.getItem('userData').then((value: any) => {
+            setUserData(value)
+        })
     }
     useEffect(() => {
         userDatas()
-    }, [userDetail])
+    }, [])
     return (
         <>
             <div className="font-midRW text-midRS justify-center leading-midRL text-lightGrey flex flex-col gap-y-4 mt-2">
@@ -69,7 +71,7 @@ const SocialLinks = (props: any) => {
 
                 </div>
             </div>
-            <SocialForm openProfile={openSocial} setOpenProfile={setOpenSocial} />
+            <SocialForm userDetail={userDetail} openProfile={openSocial} setOpenProfile={setOpenSocial} />
 
         </>
     )

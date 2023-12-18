@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy } from 'react';
 import Footer from '@/components/Footer';
 import Navigation from '@/components/Navigation';
-import UploadResume from '@/components/candidateProfileComponents/uploadResume';
 import Skills from '@/components/candidateProfileComponents/Skills';
 import Certificate from '@/components/candidateProfileComponents/Certificate';
 import Project from '@/components/candidateProfileComponents/Project';
@@ -13,18 +12,60 @@ import SocialLinks from '@/components/candidateProfileComponents/SocialLinks';
 import CoverLetter from '@/components/candidateProfileComponents/CoverLetter';
 import WorkHitory from '@/components/candidateProfileComponents/WorkHistory';
 import Education from '@/components/candidateProfileComponents/Education';
-import { useGlobalContext } from '@/contextApi/userData';
+import localforage from 'localforage';
+import { getCandidateDocument } from '@/backend/candidateBackend';
+import { getRole } from '@/backend/accountBackend';
+import dynamic from 'next/dynamic';
+const UploadResume = dynamic(() => import('@/components/candidateProfileComponents/uploadResume'));
 const Profile = () => {
-    const { userDetail } = useGlobalContext()
-    const [about, setAbout] = useState(true);
+/*     const { userDetail } = useGlobalContext()
+ */    const [about, setAbout] = useState(true);
     const [allLoading, setAllLoading] = useState(false)
+    const [userDetail, setUserDetail] = useState<any>()
     const userData = async () => {
+        localforage.getItem('userDetail').then((value) => {
+            if (value) {
+                const result = JSON.stringify(value)
+                /*                 console.log(result);
+                 */
+                setUserDetail(value)
+                setAllLoading(false)
+            }
+            if (!value) {
+                getDetails()
+            }
+        });
         setAllLoading(true)
         userDetail && setAllLoading(false)
     }
+    const getDetails = async () => {
+        localforage.getItem('userRole').then((value: any) => {
+            if (!value) {
+                useRole()
+            }
+            if (value == 'candidate') {
+                useCandidateDocument()
+            }
+        });
+    }
+    const useRole = async () => {
+        const role = await getRole();
+        role && localforage.setItem('userRole', role.documents[0].userRole).then(() => {
+        });
+        if (role && role.documents[0].userRole == 'candidate') {
+            useCandidateDocument()
+        }
+    };
+    const useCandidateDocument = async () => {
+        const candidate = await getCandidateDocument();
+        candidate && setUserDetail(candidate.documents[0]);
+        candidate && localforage.setItem('userDetail', candidate.documents[0]).then(() => {
+        });
+        candidate && setAllLoading(false)
+    };
     useEffect(() => {
         userData()
-    }, [userDetail])
+    }, [])
     return (
         <div >
             <Navigation />
@@ -34,7 +75,7 @@ const Profile = () => {
                     <div className="w-full flex flex-wrap gap-10">
                         <div className="w-full flex gap-10 max-md:flex-col mt-10 py-5 bg-red-500 profilePattern max-md:pl-5 md:pl-10">
                             <ProfilePicture />
-                            <SocialLinks />
+                            <SocialLinks userDetail={userDetail} />
                         </div>
                         <div className="flex w-full gap-5">
                             <p
@@ -60,14 +101,14 @@ const Profile = () => {
                         </div>
                     </div>
                     <div className={about ? 'w-full flex gap-4 mt-5 flex-wrap' : 'hidden'}>
-                        <CoverLetter />
-                        <Certificate />
-                        <WorkHitory />
-                        <Education />
-                        <Project />
-                        <Skills />
+                        <CoverLetter userDetail={userDetail} />
+                        <Certificate userDetail={userDetail} />
+                        <WorkHitory userDetail={userDetail} />
+                        <Education userDetail={userDetail} />
+                        <Project userDetail={userDetail} />
+                        <Skills userDetail={userDetail} />
                     </div>
-                    <UploadResume view={about} />
+                    <UploadResume view={about} userDetail={userDetail} />
                 </div>
             )}
             <Footer />

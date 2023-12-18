@@ -8,9 +8,9 @@ const TextInput = (props: any) => {
                 onChange={(e) => props.setFunction(e.currentTarget.value)}
                 className={
                     props.errorMessage
-                        ? ` ${'h-12 pl-5 bg-white rounded-lg border border-red-500 focus:ring-gradientFirst focus:border-0 w-full '} ${!props.class && 'md:w-96'
+                        ? ` ${'h-12 pl-5 bg-white rounded-lg border-0 border-red-500 focus:ring-orange-500 focus:border-0 w-full '} ${!props.class && 'md:w-96'
                         }`
-                        : ` ${'h-12 pl-5 bg-white rounded-lg border border-gray-200 focus:border-gradientSecond focus:ring-0 w-full'} ${!props.class && 'md:w-96'
+                        : ` ${'h-12 pl-5 bg-white rounded-lg focus:ring-0 border-[1px] border-gray-200 focus:border-gradientSecond w-full'} ${!props.class && 'md:w-96'
                         }`
                 }
             />

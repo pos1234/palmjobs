@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import styles from '@/styles/navigation.module.css';
 import Link from 'next/link';
 import { Popover } from '@headlessui/react';
@@ -197,7 +197,7 @@ const Navigation = (props: any) => {
                                 </div>
                             </div>
                         }
-                        {userData && userDetail && (
+                        {!loading && userData && /* userDetail && */ (
                             <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
                                 <div>
                                     <Popover className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 bg-gray-50 rounded-full h-10">

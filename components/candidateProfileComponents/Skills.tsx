@@ -6,17 +6,39 @@ import EditIcon from '@mui/icons-material/Edit';
 import skillsData from '@/backend/skillData';
 import { getUserDetail, updateSkills } from '@/backend/candidateBackend';
 import { useGlobalContext } from '@/contextApi/userData';
+import localforage from 'localforage';
 interface Data {
     word: string;
 }
-const Skills = () => {
-    const { userDetail } = useGlobalContext()
+const Skills = (props: any) => {
+    /*     const { userDetail } = useGlobalContext()
+     */
+    const [userDetail, setUserDetail] = useState(props.userDetail)
     const [array, setArray] = useState<string[]>([]);
     const [inputSkill, setInputSkill] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<Data[]>([]);
     const items: Data[] = skillsData;
     const skillsMaxCharacters = 7;
+    const updateLocal = (value: any) => {
+        localforage.getItem('userDetail')
+            .then((existingData: any) => {
+                // Modify the existing data
+
+                const updatedData = {
+                    // Update the specific properties you want to change
+                    ...existingData,
+                    skills: value,
+                };
+                // Set the updated data back to the same key
+                return localforage.setItem('userDetail', updatedData);
+            })
+            .then(() => {
+            })
+            .catch((err) => {
+                console.error(`Error updating item: ${err}`);
+            });
+    }
     const clickMe = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setInputSkill(false);
@@ -37,12 +59,17 @@ const Skills = () => {
     };
     const addSuggestedSkill = async (suggesteSkill: string) => {
         array.push(suggesteSkill);
-        await updateSkills(array);
+        updateSkills(array).then((res) => {
+            updateLocal(array)
+
+        })
     };
     const deleteSkill = (index: number) => {
         const newArray = array.filter((item, i) => i !== index);
         setArray(newArray);
-        updateSkills(newArray);
+        updateSkills(newArray).then((res) => {
+            updateLocal(newArray)
+        })
     };
     const userData = async () => {
 /*         const userInfo = await getUserDetail()
@@ -50,7 +77,7 @@ const Skills = () => {
     }
     useEffect(() => {
         userData()
-    }, [userDetail])
+    }, [])
     return (
         <div className="w-full rounded-xl p-6 border-2 flex flex-col">
             <p className="font-fhW text-fhS leading-fhL">
