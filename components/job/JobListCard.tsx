@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import JobImage from '../JobImage';
-import { getCompanyData } from '@/backend/employerBackend';
+import { jobImages } from '../JobImage';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
@@ -17,78 +16,10 @@ import { alreadySaved, saveJobs } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/dist/client/router';
 import moment from 'moment';
-import { useRef, } from 'react'
-import ConfirmModal from '../ConfirmModal'
-import CloseIcon from '@mui/icons-material/Close';
 import { useGlobalContext } from '@/contextApi/userData';
-interface ConfirmModalProps {
-    children: React.ReactNode;
-    openModal: boolean,
-    setOpenModal: (openModal: boolean) => void;
-    addText: string,
-    icon?: any,
-    text: string,
-    tipText: string
-}
-const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tipText }: ConfirmModalProps) => {
-    const leaf = '/images/modalTipLeaf.svg'
-    const [tip, setTip] = useState(false)
-    const parentRef = useRef<HTMLDivElement>(null);
-    const handleParentClick = () => {
-        console.log('Parent div clicked');
-        setOpenModal(false)
-    };
-    const handleChildClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        event.stopPropagation();
-    };
-    return (
-        <ConfirmModal isOpen={openModal} handleClose={() => {
-            setOpenModal(!openModal);
-        }}
-        >
-            <div ref={parentRef} onClick={handleParentClick} className='w-screen h-screen flex items-center justify-center px-3 py-3 sm:py-10 sm:px-7 md:p-10 lg:px-20 xl:px-52 xl:py-16'>
-                <div onClick={handleChildClick} className='bg-textW w-full h-full rounded-2xl p-5 sm:px-10'>
-                    <div className='flex flex-col h-full'>
-                        <div className='w-full flex justify-end cursor-pointer hover:text-gradientFirst' onClick={() => setOpenModal(false)}>
-                            <CloseIcon />
-                        </div>
-                        <div className='flex w-full gap-5'>
-                            <p onClick={() => setTip(false)} className={tip ? 'cursor-pointer border-b-2 border-b-textW hover:border-b-gradientFirst md:border-0 lg:hidden' : 'border-b-2 border-b-gradientFirst md:border-0 lg:hidden'}>{addText}</p>
-                            <p onClick={() => setTip(true)} className={tip ? 'border-b-2 border-b-gradientFirst lg:hidden' : 'cursor-pointer border-b-2 border-b-textW hover:border-b-gradientFirst lg:hidden'}>Tips</p>
-                        </div>
-                        <div className='w-full flex h-full'>
-                            <div className={tip ? 'max-lg:hidden h-full lg:w-1/2 overflow-y-auto lg:max-h-[25rem] thinScrollBar flex' : 'flex w-full h-full lg:w-1/2 overflow-y-auto'}>
-                                {children}
-                            </div>
-                            <div className={`bg-gray-100 flex flex-wrap px-5 pt-5 rounded-lg w-full gap-7 lg:flex items-center flex-grow justify-center h-full ${tip ? 'lg:w-1/2' : 'hidden overflow-y-auto lg:w-1/3'}`}>
-                                <div className='w-full flex flex-wrap self-center items-end h-1/2 font-[600] sm:text-[20px] text-center'>
-                                    {tipText}
-                                </div>
-                                <div className='w-full flex items-end self-end justify-end '>
-                                    <img src='/images/salaryTipPattern.svg' className='w-full sm:h-40 self-end' />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </ConfirmModal >
-    )
-}
+import FormModal from './FormModal';
+import Image from 'next/image';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
-const ReturnName = (props: any) => {
-    const [companyName, setCompanyName] = useState('');
-    const documents = getCompanyData(props.id);
-    documents.then(async (res) => {
-        if (res.documents && res.documents[0] && res.documents[0].description) {
-            setCompanyName(res.documents[0].companyName);
-        } else {
-            setCompanyName('');
-        }
-    });
-    return <div className="text-[13px] text-darkBlue sm:text-[1rem] md:text-[0.9rem] xl:text-[14px] font-[400]">{companyName}</div> || null;
-};
 const JobListCard = (props: any) => {
     const { userRole, userData } = useGlobalContext()
     const router = useRouter()
@@ -103,7 +34,6 @@ const JobListCard = (props: any) => {
         employerId: '',
         message: ''
     })
-    const isToday = moment(props.items.$createdAt).isSame(moment());
     const isWithinWeek = moment(props.items.$createdAt).isAfter(moment().subtract(7, 'days')) && moment(props.items.datePosted).isBefore(moment());
     const date = new Date(props.items.$createdAt);
     const today = new Date();
@@ -111,12 +41,8 @@ const JobListCard = (props: any) => {
     const weeks = Math.floor(difference / (1000 * 60 * 60 * 24 * 7));
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
     const getUserData = async () => {
-/*         const userInfo = await getAccount();
- */        if (userData && userId == '') {
+        if (userData && userId == '') {
             setUserId(userData.$id)
-            /*             setUserData(userInfo);
-            /*  */            /* const role = await getRole();
-                        userRole && setUserRole(userRole); */
         }
     };
     useEffect(() => {
@@ -185,6 +111,7 @@ const JobListCard = (props: any) => {
         // Return the text without HTML tags.
         return result.split(" ").slice(0, 15).join(" ");
     }
+    const { imageUrl, companyName } = jobImages(props.items.employerId)
     return (
         <div
             onClick={() => {
@@ -192,14 +119,18 @@ const JobListCard = (props: any) => {
                 props.setJobDetailId(props.items.$id);
                 props.setOpenJobDetail(true);
                 props.handleJobSelection(props.items.$id)
+                props.setCompLogo(imageUrl)
+                props.setCompanyName(companyName)
             }}
             key={props.index}
             className={`cursor-pointer bg-textW w-full h-[300px] max-h-[350px] sm:max-h-[234px] sm:h-[234px] xl:w-[458px] xl:max-w-[458px] flex flex-col gap-2 rounded-[12px] border-[1px]  px-5 py-4 ${props.items.$id == props.jobDetailId ? 'border-gradientFirst' : 'border-[#DEDEDE] hover:border-gradientFirst'} `}
         >
             <div className='flex justify-between flex-wrap gap-1'>
                 <div className='flex items-center gap-3'>
-                    <JobImage id={props.items.employerId} className=" rounded-[60px] h-[33px] w-[33px]" />
-                    <ReturnName id={props.items.employerId} />
+                    {imageUrl && <Image width={100} height={100} src={imageUrl} alt="" className=" rounded-[60px] h-[33px] w-[33px]" />}
+                    {companyName && <div className="text-[13px] text-darkBlue sm:text-[1rem] md:text-[0.9rem] xl:text-[14px] font-[400]">
+                        {companyName}
+                    </div>}
                 </div>
                 {
                     !openShare && !openReport &&
@@ -283,8 +214,8 @@ const JobListCard = (props: any) => {
                     {removeHtmlTags(props.items.jobDescription)}....
                 </div>
             </div>
-            {}
-            {/* isToday && isToday ? <p className='text-[12px]'>Posted Today</p> : */ isWithinWeek ? days == 0 ? <p className='text-[12px]'>Posted Today</p> : <p className='text-[12px]'>Posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>Posted {weeks} weeks ago</p> : <p className='text-[12px]'>Posted {Math.floor(weeks / 4)} month ago</p>}
+            { }
+            {isWithinWeek ? days == 0 ? <p className='text-[12px]'>Posted Today</p> : <p className='text-[12px]'>Posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>Posted {weeks} weeks ago</p> : <p className='text-[12px]'>Posted {Math.floor(weeks / 4)} month ago</p>}
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.items.$id} />
             <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={'Survey'} text={''} tipText={"Thank you for helping us maintain a professional and safe environment on our job board. If you've found a job listing that violates our terms or seems inappropriate, please provide the information below to assist our review."}>
                 <form onSubmit={handleReportSubmit} className="w-full flex flex-col h-full md:max-lg:items-center">
