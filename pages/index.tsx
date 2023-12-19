@@ -5,15 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-/* const Navigation = dynamic(() => import('@/components/Navigation'), {
-    ssr: false
-});
-const Footer = dynamic(() => import('@/components/Footer'), {
-    ssr: false
-});
-const SearchBar = dynamic(() => import('@/components/job/SearchBar'), {
-    ssr: false
-}); */
+import Image from 'next/image';
 const Home = () => {
     const router = useRouter();
     const [searchText, setSearchText] = useState('');
@@ -56,7 +48,7 @@ const Home = () => {
                             </p>
                         </div>
                         <div className='flex md:w-1/3 flex-grow max-lg:w-full justify-center sm:max-lg:items-center'>
-                            <img src="/images/man-working-from-home-2194237-0.svg" alt="employees" />
+                            <img src="https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images/man-working-from-home-2194237-0.svg" alt="employees" />
                         </div>
                     </div>
                     <div className='w-full homeSurvey px-10 mt-10 flex sm:h-[129px] items-center justify-between flex-wrap max-sm:pb-5'>
@@ -66,7 +58,7 @@ const Home = () => {
                         </div>
                         <div className='bg-gradientFirst rounded-[3px]'>
                             <Link href="/salaries" className='bg-black text-textW w-[225px] h-[56px] p-5 cursor-pointer rounded-[3px] flex gap-3 items-center justify-center buttonBounce'>
-                                <img src="/icons/HomeHand.svg" alt="hand" />
+                                <img src="https://raw.githubusercontent.com/pos1234/palmjobs/main/public/icons/HomeHand.svg" alt="hand" />
                                 <p className='flex items-end'>Explore More</p>
                             </Link>
                         </div>

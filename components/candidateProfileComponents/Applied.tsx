@@ -1,7 +1,5 @@
-import { fetchAppliedJobsData, fetchAppliedJobIds, getCompanyData } from '@/backend/candidateBackend';
+import { fetchAppliedJobsData, fetchAppliedJobIds } from '@/backend/candidateBackend';
 import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import { useEffect, useState } from 'react';
 import JobImage from '../JobImage';
 import Link from 'next/link';
@@ -9,14 +7,11 @@ import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
 import EuroIcon from '@mui/icons-material/Euro';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
-import HourglassTopIcon from '@mui/icons-material/HourglassTop';
-import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import ShareIcon from '@mui/icons-material/Share';
 import { SmallLists } from '../TextInput';
-
-const ReturnName = (props: any) => {
+import ReturnName from './SavedComponent/ReturnName';
+import AppliedCard from './AppliedComponent/AppliedCard';
+import localforage from 'localforage';
+/* const ReturnName = (props: any) => {
     const [companyName, setCompanyName] = useState('');
     const documents = getCompanyData(props.id);
     documents.then(async (res) => {
@@ -27,38 +22,46 @@ const ReturnName = (props: any) => {
         }
     });
     return <div className="text-[13px] text-darkBlue sm:text-[1.5rem] md:text-[0.9rem] xl:text-[0.9rem]">{companyName}</div> || null;
-};
+}; */
 const Applied = (props: any) => {
-    const profile = '/images/profile.svg';
+    const [userData, setUserData] = useState<any>()
     const [appliedJobId, setAppliedJobId] = useState<any[]>([]);
-    const [appliedJobs, setAppliedJobs] = useState<any[]>([]);
     const [allLoading, setAllLoading] = useState(false);
-    const appliedJobsId = async () => {
+    const appliedJobsId = () => {
         setAllLoading(true);
-        const res = await fetchAppliedJobIds();
-        res && res.total == 0 && setAllLoading(false);
-        if (res) {
-            for (let i = 0; i < res.documents.length; i++) {
-                if (appliedJobId.indexOf(res.documents[i].jobId) === -1) {
-                    appliedJobId.push(res.documents[i].jobId);
-                    if (res.documents[i].jobId) {
-                        const responseData = await fetchAppliedJobsData(res.documents[i].jobId);
-                        if (responseData) {
-                            appliedJobs.push(responseData);
-                            setAllLoading(false);
-                        }
-                    }
-                }
-            }
-        }
+        userData && fetchAppliedJobIds(userData.$id).then((res) => {
+            setAllLoading(false);
+            setAppliedJobId(res.documents)
+            localforage.setItem('appliedJobIds', res.documents).then((res) => {
+            })
+        })
     };
+    const fetchApplied = () => {
+        localforage.getItem('appliedJobIds').then((value: any) => {
+            if (value) {
+                setAllLoading(false);
+                setAppliedJobId(value)
+            }
+            if (!value) {
+                appliedJobsId();
+            }
+        })
+    }
     useEffect(() => {
-        appliedJobsId();
+
+        localforage.getItem('userData').then((value: any) => {
+            if (value) {
+                fetchApplied()
+                setUserData(value)
+                appliedJobsId();
+
+            }
+        })
     }, []);
     return (
         <>
-            {!allLoading && appliedJobs.length == 0 && props.view && (
-                <div className="col-span-12 text-center flex flex-col items-center gap-y-8">
+            {!allLoading && appliedJobId.length == 0 && props.view && (
+                <div className="col-span-12 text-center py-5 px-2 flex flex-col items-center gap-y-8">
                     <p>No applied jobs under your palm tree yet. Browse the listings to find your next opportunity.</p>
                     <Link
                         href="/jobs"
@@ -68,72 +71,46 @@ const Applied = (props: any) => {
                     </Link>
                 </div>
             )}
-            {appliedJobs &&
-                appliedJobs.map((datas: any, index) => {
-                    return (<div key={datas.$id} className={props.view ? 'cursor-pointer max-h-[18rem] bg-textW flex items-between flex-wrap justify-between py-3 px-4 rounded-3xl border-2 rounded-xl xl:px-7 xl:py-7 ' : 'hidden'}>
-                        <div>
-                            <div className='w-full flex justify-between flex-wrap gap-2'>
-                                <div className='flex items-center gap-3'>
-                                    <JobImage id={datas.employerId} className=" rounded-full h-12 w-12" />
-                                    <ReturnName id={datas.employerId} />
-                                </div>
-                                <div className="w-full flex flex-col justify-center">
-                                    {datas.jobTitle && (
-                                        <Link href={`/jobs/${datas.$id}`} target="_blank" className="font-bold underline text-[1rem] sm:font-fhW sm:text-[2rem] md:text-[1.2rem] xl:text-[1.5rem]">
-                                            {datas.jobTitle}
-                                        </Link>
-                                    )}
-                                    {datas.jobLocation && (
-                                        <p className="text-fadedText max-sm:text-[14px] flex items-center gap-2">
-                                            <PinDropOutlinedIcon sx={{ fontSize: '1.2rem' }} />
-                                            {datas.jobLocation}
-                                        </p>
-                                    )}
-                                </div>
+            {appliedJobId &&
+                !allLoading && appliedJobId.length !== 0 &&
+                appliedJobId.map((datas: any, index: number) => {
+                    return (<div key={index}>
+                        <AppliedCard RefetchSaved={appliedJobsId} datas={datas} view={props.view} />
+                    </div>
+                    );
+                })}
+            {allLoading && (
+                <div className="col-span-12 flex flex-col gap-3 gap-y-10 p-3">
+                    <div className="flex gap-x-5">
+                        <div className="w-24 h-24 rounded-2xl bg-gray-300 rounded animate-pulse col-span-12"></div>
+                        <div className="flex flex-col gap-2 justify-center w-full">
+                            <div className="text-neutral-900 text-xl font-medium leading-7 md:w-2/3">
+                                <div className="h-4 bg-gray-300 rounded animate-pulse"></div>
                             </div>
-                            <div className="w-full mt-4">
-                                <ul className="text-[10px] flex gap-y-2 gap-x-1 col-span-12  md:text-[11px] md:gap-x-1 md:mt-1 md:text-[0.55rem] lg:text-[0.8rem] lg:gap-x-3 xl:text-[0.6rem] xl:gap-x-1 flex-wrap">
-                                    {datas.jobType &&
-                                        <SmallLists icon={<img src='/icons/suitCase.svg' />}
-                                            items={datas.jobType} />
-                                    }
-                                    {(datas.minSalary || datas.maxSalary) && (
-                                        <SmallLists icon={datas.currency == 'euro' ? (
-                                            <EuroIcon
-                                                sx={{ fontSize: '1rem' }}
-                                                className="-mt-0.5 mr-1"
-                                            />
-                                        ) : datas.currency == 'usd' ? (
-                                            <AttachMoneyOutlined
-                                                sx={{ fontSize: '1rem' }}
-                                                className="-mt-0.5 mr-1"
-                                            />
-                                        ) : datas.currency == 'gpb' ? (
-                                            <CurrencyPoundIcon
-                                                sx={{ fontSize: '1rem' }}
-                                                className="-mt-0.5 mr-1"
-                                            />
-                                        ) : datas.currency == 'rnp' ? (
-                                            <CurrencyRupeeIcon
-                                                sx={{ fontSize: '1rem' }}
-                                                className="-mt-0.5 mr-1"
-                                            />
-                                        ) : (
-                                            <span className="text-[7px] mr-1">ETB</span>
-                                        )}
-                                            items={!datas.minSalary && datas.maxSalary
-                                                ? datas.maxSalary
-                                                : datas.minSalary && !datas.maxSalary
-                                                    ? datas.minSalary
-                                                    : datas.minSalary + '-' + datas.maxSalary}
-                                        />
-                                    )}
-                                </ul>
+                            <div className="text-stone-300 text-lg font-normal leading-relaxed w-2/3 md:w-1/2">
+                                <div className="h-4 bg-gray-300 rounded animate-pulse"></div>
+                            </div>
+                            <div className="text-neutral-900 text-opacity-70 text-xl font-normal leading-7 w-1/2">
+                                <div className="h-4 bg-gray-300 rounded animate-pulse md:w-1/2"></div>
                             </div>
                         </div>
-
-                    </div>);
-                })}
+                    </div>
+                    <div className="flex gap-x-5">
+                        <div className="w-24 h-24 rounded-2xl bg-gray-300 rounded animate-pulse col-span-12"></div>
+                        <div className="flex flex-col gap-2 justify-center w-full">
+                            <div className="text-neutral-900 text-xl font-medium leading-7 md:w-2/3">
+                                <div className="h-4 bg-gray-300 rounded animate-pulse"></div>
+                            </div>
+                            <div className="text-stone-300 text-lg font-normal leading-relaxed w-2/3 md:w-1/2">
+                                <div className="h-4 bg-gray-300 rounded animate-pulse"></div>
+                            </div>
+                            <div className="text-neutral-900 text-opacity-70 text-xl font-normal leading-7 w-1/2">
+                                <div className="h-4 bg-gray-300 rounded animate-pulse md:w-1/2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };

@@ -13,8 +13,8 @@ const SecondForm = (props: any) => {
         setSecondTabData({
             ...secondTabData, loading: true
         })
-        const minSal = secondTabData.minSalary !== null ? secondTabData.minSalary.toString() : ''
-        const maxSal = secondTabData.maxSalary !== null ? secondTabData.maxSalary.toString() : ''
+        const minSal = secondTabData.minSalary ? secondTabData.minSalary.toString() : ''
+        const maxSal = secondTabData.maxSalary ? secondTabData.maxSalary.toString() : ''
         postSecondTab(secondTabData.workType, secondTabData.expRequired, minSal, maxSal, secondTabData.currency, postingJobId)
             .then((res: any) => {
                 setSecondTabData({

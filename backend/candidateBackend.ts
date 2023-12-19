@@ -181,15 +181,13 @@ export const getSavedJobId = async (id: string) => {
     const results = databases.listDocuments(DATABASE_ID, SAVED_JOBS, [Query.orderDesc('$createdAt'), Query.equal('jobId', id)]);
     return results;
 };
-export const fetchAppliedJobIds = async () => {
-    const userAccount = await getAccount();
-    if (userAccount !== 'failed') {
-        const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [
-            Query.equal('candidateId', userAccount.$id),
-            Query.equal('candidateDelete', false)
-        ]);
-        return results;
-    }
+export const fetchAppliedJobIds = async (id: string) => {
+    const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [
+        Query.orderDesc('$createdAt'),
+        Query.equal('candidateId', id),
+        Query.equal('candidateDelete', false)
+    ]);
+    return results;
 };
 export const getCompanyData = (id: string) => {
     const promise = databases.listDocuments(DATABASE_ID, COMPANY_DATA, [Query.equal('employerId', id)]);

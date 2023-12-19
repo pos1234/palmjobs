@@ -6,15 +6,18 @@ import { toast } from 'react-toastify';
 import { EmployerProfilePicture } from '@/components/candidateProfileComponents/ProfilePicture';
 import TextInput, { SubmitButton } from '@/components/TextInput';
 import Link from 'next/link';
-import { useGlobalContext } from '@/contextApi/userData';
 import { RequiredTextLabel } from './jobPostTabs/RequiredTextLabel';
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import localforage from 'localforage';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const EmployerProfile = (props: any) => {
-    const { userData, userDetail } = useGlobalContext()
+    /*     const { userData, userDetail } = useGlobalContext()
+     */
+    const [userData, setUserData] = useState<any>()
+    const [userDetail, setUserDetail] = useState<any>()
     const [companyName, setCompanyName] = useState('');
     const [companyNameError, setCompanyNameError] = useState('');
     const [userName, setUserName] = useState('');
@@ -30,7 +33,7 @@ const EmployerProfile = (props: any) => {
     const [webLink, setWebLink] = useState('');
     const [loading, setLoading] = useState(false);
     const initialData = () => {
-        if (userDetail && !companyName) {
+        if (userDetail) {
             userDetail.companyName !== null && setCompanyName(userDetail.companyName);
             userDetail.sector !== null && setIndustry(userDetail.sector);
             userDetail.location !== null && setAddress(userDetail.location);
@@ -39,17 +42,48 @@ const EmployerProfile = (props: any) => {
             userDetail.websiteLink !== null && setWebLink(userDetail.websiteLink);
             userDetail.description !== null && setCompDescription(userDetail.description);
         }
-        if (userData) {
-            userData.name !== null && setUserName(userData.name)
-        }
+
     };
     const isValidPhone = (phones: string) => {
         const result = phones && isValidPhoneNumber(phones.toString())
         return result
     }
+    const userDetails = () => {
+        localforage.getItem('userData').then((value: any) => {
+            if (value) {
+                value.name && setUserName(value.name)
+                setUserData(value)
+                setLoading(false)
+            }
+            /*  if (!value) {
+                 getDetails()
+             } */
+        });
+
+    }
+    const userDatas = () => {
+        localforage.getItem('userDetail').then((value: any) => {
+            if (value) {
+                setUserDetail(value)
+                setLoading(false)
+                setCompanyName(value.companyName)
+                setIndustry(value.sector);
+                setAddress(value.location);
+                setNoEmployee(value.noOfEmployee);
+                setPhone(value.phoneNumber);
+                setWebLink(value.websiteLink);
+                setCompDescription(value.description);
+                /* initialData() */
+            }
+            /*  if (!value) {
+                 getDetails()
+             } */
+        });
+    }
     useEffect(() => {
-        initialData();
-    }, [userDetail]);
+        userDetails();
+        userDatas()
+    }, []);
     const validateLink = (link: string) => {
         if (link && !link.startsWith('https://')) {
             link = 'https://' + link;
@@ -82,7 +116,28 @@ const EmployerProfile = (props: any) => {
             updateProfile(companyName, industry, address, noEmployee, phone, validateLink(webLink), compDescription)
                 .then(() => {
                     toast.success('Successfully Updated Profile');
-                    updateUserName(userName);
+                    updateUserName(userName).then((res) => {
+                        localforage.getItem('userData').then((value: any) => {
+
+                            const updatedData = {
+                                ...value, name: userName
+                            }
+                            return localforage.setItem('userData', updatedData)
+                        })
+                    })
+                    localforage.getItem('userDetail').then((value: any) => {
+                        const updatedData = {
+                            ...value,
+                            companyName: companyName,
+                            sector: industry,
+                            location: address,
+                            noOfEmployee: noEmployee,
+                            phoneNumber: phone,
+                            websiteLink: webLink,
+                            description: compDescription
+                        }
+                        return localforage.setItem('userDetail', updatedData)
+                    })
                     setLoading(false);
                     props.setFilled(true);
                 })

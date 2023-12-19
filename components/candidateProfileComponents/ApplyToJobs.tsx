@@ -31,7 +31,10 @@ const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const ApplyToJob = (props: any) => {
-    const { userDetail, userData } = useGlobalContext()
+    /*     const { userDetail, userData } = useGlobalContext()
+     */
+    const [userDetail, setUserDetail] = useState<any>()
+    const [userData, setUserData] = useState<any>()
     const pdfIcon = '/images/pdf2.svg';
     const [first, setFirst] = useState(true);
     const [second, setSecond] = useState(false);
@@ -86,6 +89,7 @@ const ApplyToJob = (props: any) => {
         }
     };
     const getData = async () => {
+        
         if (userData) {
             setNewName(userData.name);
             setNewEmail(userData.email);
