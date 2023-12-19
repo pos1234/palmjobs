@@ -2,7 +2,7 @@
 import { createContext, useContext, Dispatch, useState, SetStateAction, useEffect } from "react";
 import { getAccount, getRole } from "../backend/accountBackend";
 import { getCandidateDocument } from "../backend/candidateBackend";
-import { getProfileData } from "../backend/employerBackend";
+import { getEmployerDocument, getProfileData } from "../backend/employerBackend";
 import localforage from "localforage";
 interface UserData {
     loading: boolean,
@@ -46,7 +46,6 @@ export const GlobalContextProvider = ({ children }: any) => {
                 setLoading(false)
                 setUserData(value)
                 console.log(value);
-
             }
             if (!value) {
                 haveAccount()
@@ -64,62 +63,54 @@ export const GlobalContextProvider = ({ children }: any) => {
         });
     }
     const useRole = async () => {
-/*         if (userData) {
- */            const role = await getRole();
+        const role = await getRole();
         role && setUserRole(role.documents[0].userRole);
         role && localforage.setItem('userRole', role.documents[0].userRole).then(() => {
         });
-        /*  if (role && role.documents[0].userRole == 'candidate') {
-             useCandidateDocument()
-         }
-         if (role && role.documents[0].userRole == 'employer') {
-             useEmployerDocument()
-         } */
-        /*         }
-         */
+
     };
-    /*  const haveDetail = async () => {
-         localforage.getItem('userDetail').then((value) => {
-             if (value) {
-                 setUserDetail(value)
-                 setLoading(false)
-             }
-             if (!value) {
-                 getDetails()
-             }
-         });
-     } */
-    /* const getDetails = async () => {
-        if (userRole == 'candidate') {
-            useCandidateDocument()
-        }
-        if (userRole == 'employer') {
-            useEmployerDocument()
-        }
-    } */
-    /* 
-        const useCandidateDocument = async () => {
-            const candidate = await getCandidateDocument();
-            candidate && setUserDetail(candidate.documents[0]);
-            candidate && localforage.setItem('userDetail', candidate.documents[0]).then(() => {
-            });
-            candidate && setLoading(false)
-        };
-        const useEmployerDocument = async () => {
-            const employer = await getProfileData();
-            employer && setUserDetail(employer.documents[0]);
-            employer && localforage.setItem('userDetail', employer.documents[0]).then(() => {
-            });
-            employer && setLoading(false)
-        } */
+
     const useAccount = async () => {
         userDatas()
         haveRole()
 /*         haveDetail()
  */    };
+
+
+    const userDetails = async () => {
+        localforage.getItem('userDetail').then((value) => {
+            if (value) {
+                setUserDetail(value)
+                setLoading(false)
+            }
+            if (!value) {
+                getDetails()
+            }
+        });
+        setLoading(true)
+        userDetail && setLoading(false)
+    }
+    const getDetails = async () => {
+        localforage.getItem('userRole').then((value: any) => {
+            if (value == 'employer') {
+                useEmployerDocument()
+            }
+        });
+    }
+    const useEmployerDocument = async () => {
+        const employer = await getEmployerDocument();
+        employer && setUserDetail(employer.documents[0]);
+        employer && localforage.setItem('userDetail', employer.documents[0]).then(() => {
+        });
+        employer && setLoading(false)
+    };
     useEffect(() => {
+        if (userRole == 'employer') {
+            userDetails()
+        }
         useAccount()
     }, [])
+
     return < GlobalContext.Provider value={{ userDetail, setUserDetail, loading, userData, setUserData, userRole }} >{children}</GlobalContext.Provider >
 }
 export const useGlobalContext = () => useContext(GlobalContext)

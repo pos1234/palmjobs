@@ -34,8 +34,9 @@ body {
     background-position-y: 20%;
 }
 .homeSurvey {
-    background: url('../public/images/HomeSurvey.svg') no-repeat;
-    background-size: cover;
+    background: url('https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images//HomeSurvey.svg') no-repeat;
+/*     background: url('../public/images/HomeSurvey.svg') no-repeat;
+ */    background-size: cover;
     background-position-y: 20%;
 }
 ::-webkit-scrollbar {

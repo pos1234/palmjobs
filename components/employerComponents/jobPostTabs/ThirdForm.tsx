@@ -13,7 +13,7 @@ const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const ThirdForm = (props: any) => {
-    const { thirdTabData, setThirdTabData, postingJobId, jobPostTabs, setPostingTabs, handleDiscard } = useJobPostContext()
+    const { firstTabData, secondTabData, thirdTabData, setThirdTabData, postingJobId, jobPostTabs, setPostingTabs, handleDiscard } = useJobPostContext()
     const [loadingAi, setLoadingAi] = useState(false)
     const handleThirdSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
@@ -54,19 +54,19 @@ const ThirdForm = (props: any) => {
                 });
         }
     };
-    const generateJobDescription = async ({ jobTitle, skills, yearsOfExperience }: Record<'jobTitle' | 'skills' | 'yearsOfExperience', string>) => {
+    const generateJobDescription = async (/* { jobTitle, skills, yearsOfExperience }: Record<'jobTitle' | 'skills' | 'yearsOfExperience', string> */) => {
         console.log('Generating job description...', `${window.location.hostname}/api/oai/jobDescription`);
         try {
             if (typeof window === 'undefined') return;
             const url = new URL(`${window.location.origin}/api/oai/jobDescription`);
-            if (jobTitle) {
-                url.searchParams.append('j', jobTitle);
+            if (firstTabData.jobTitle) {
+                url.searchParams.append('j', firstTabData.jobTitle);
             }
-            if (skills) {
-                url.searchParams.append('s', skills);
-            }
-            if (yearsOfExperience) {
-                url.searchParams.append('y', yearsOfExperience);
+            /* if (skills) {
+                url.searchParams.append('s', secondTabData.skills);
+            } */
+            if (secondTabData.expRequired) {
+                url.searchParams.append('y', secondTabData.expRequired);
             }
 
             const res: { content: string } = await fetch(url.toString()).then((res) => res.json());
@@ -104,7 +104,7 @@ const ThirdForm = (props: any) => {
                 </div>
                 <div className='w-full flex justify-between'>
                     <p className='font-[600] text-[14px]'>Generate the job description and required skills with AI</p>
-                    <button onClick={handleAIJobDescription} disabled={loadingAi ? true : false} type="button"
+                    <button onClick={generateJobDescription} disabled={loadingAi ? true : false} type="button"
                         className={`w-60 cursor-pointer bg-black text-textW gap-2 h-10 flex items-center justify-center rounded-lg
                     ${loadingAi ? '' : 'hover:bg-gradient-to-r hover:from-[#00A82D] hover:to-[#0CBC8B] hover:border-b-4 hover:border-b-black buttonBounce'}`}>
                         {loadingAi && <svg aria-hidden="true" role="status" className="inline w-4 h-4 mr-3 text-gradientFirst animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '@/styles/navigation.module.css';
 import Link from 'next/link';
 import { Popover } from '@headlessui/react';
@@ -10,12 +10,16 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { ProfilePic } from './JobImage';
 import Logout from './Logout';
 import { useGlobalContext } from '@/contextApi/userData';
-
+import localforage from 'localforage';
+import { getEmployerDocument } from '@/backend/employerBackend';
 const Navigation = (props: any) => {
     const { loading, userDetail, userData, userRole } = useGlobalContext()
-    const logo = '/images/logo.svg';
-    const [menu, setMenu] = useState(false);
+    const logo = 'https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images/logo.svg';
+/*     const logo = '/images/logo.svg';
+ */    const [menu, setMenu] = useState(false);
     const [openLogout, setOpenLogout] = useState(false);
+    const [allLoading, setAllLoading] = useState(false)
+    
     return (
         <div>
             <div className={`flex flex-wrap items-center gap-5 relative md:border-[1px] md:border-t-0 xl:px-40 xl:h-[73px] ${menu ? ' max-md:h-screen md:pt-3' : 'pt-3'}`}>
@@ -130,7 +134,6 @@ const Navigation = (props: any) => {
                         <img src={logo} alt="Image description" className="w-[100px] h-[40px] sm:w-[160px] sm:h-[60px]" />
                     </Link>
                 </div>
-
                 <div className="hidden flex-grow items-center lg:text-bigS lg:font-bigW lg:leading-bigL lg:text-textR md:flex md:items-center md:gap-x-7 xl:ml-10 xl:gap-x-10">
                     <Link href="/jobs" className="border-b-[3px] h-full border-b-textW font-[600] flex items-center hover:border-b-gradientFirst">
                         Find a Job
@@ -197,7 +200,7 @@ const Navigation = (props: any) => {
                                 </div>
                             </div>
                         }
-                        {!loading && userData && /* userDetail && */ (
+                        {!loading && userData && (
                             <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
                                 <div>
                                     <Popover className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 bg-gray-50 rounded-full h-10">
