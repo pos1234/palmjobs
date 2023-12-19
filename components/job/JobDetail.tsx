@@ -23,7 +23,7 @@ import moment from 'moment';
 import { useGlobalContext } from '@/contextApi/userData';
 import ConfirmModal from '../ConfirmModal';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-
+import Image from 'next/image';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const JobDetail = (props: any) => {
     const { userRole, userDetail, loading, userData } = useGlobalContext()
@@ -129,7 +129,6 @@ const JobDetail = (props: any) => {
             typeof window !== 'undefined' && router.push('/account');
         }
     };
-    const links = <a href={VERIFY}>Abebe</a>
     const handleEmailApply = (email: string) => {
         const subject = `Application for ${jobTitle} Position`;
         const body = `Dear ${props.companName} Team.\n\n
@@ -140,7 +139,7 @@ const JobDetail = (props: any) => {
         Thank you for considering my application. I look forward to the possiblity of working together.
         \n
         Best regards,\n
-        yonas abebe\n
+        ${userData.name} \n
         +251 91234567
         \n\n\n\n
         <p>Delivered by <a href=${VERIFY}>Palm Jobs</a>, where opportunities grow.</p>
@@ -168,11 +167,13 @@ const JobDetail = (props: any) => {
                 <div className="flex flex-col gap-y-5 h-[800px] pt-7 rounded-t-xl ">
                     <div className='px-6 border-b-[1px] border-[#DEDEDE] flex flex-col gap-y-3 pb-5'>
                         <div className='flex items-center gap-3'>
-                            <JobImage
+                            {props.compLogo && <Image width={100} height={100} src={props.compLogo} alt="logo" className="rounded-full h-8 w-8" />}
+                            {/* <JobImage
                                 id={props.jobDetails.employerId}
                                 className="rounded-full h-8 w-8"
-                            />
-                            {props.companyName && (
+                            /> */}
+                            {/*                             <ReturnName id={props.jobDetails.employerId} />
+ */}                            {props.companyName && (
                                 <p className="text-[12px] text-darkBlue sm:text-fhS xl:text-[14px]">
                                     {props.companyName}
                                 </p>

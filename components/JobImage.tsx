@@ -26,6 +26,35 @@ const jobImage = (props: any) => {
     return <>{imageUrl !== '' ? <Image width={100} height={100}
         src={imageUrl} className={props.className} alt="Profiles" /> : null}</>;
 };
+export const jobImages = (id: string) => {
+    const [imageUrl, setImageUrl] = useState('');
+    const [companyName, setCompanyName] = useState('');
+
+    const getEmployerPictureId = async () => {
+        setImageUrl('');
+        const res = await getEmployerPicture(id);
+        if (res.documents && res.documents[0] && res.documents[0].companyName) {
+            setCompanyName(res.documents[0].companyName);
+        } else {
+            setCompanyName('');
+        }
+        if (res.documents && res.documents[0] && res.documents[0].profilePictureId) {
+            getProfilePictures(res.documents[0].profilePictureId).then((response) => {
+                setImageUrl(response.href)
+                if (!response.href) {
+                    setImageUrl('');
+                }
+            })
+        }
+        if (res.documents && res.documents[0] && !res.documents[0].profilePictureId) {
+            setImageUrl('');
+        }
+    };
+    useEffect(() => {
+        getEmployerPictureId();
+    }, [id]);
+    return { imageUrl, companyName };
+};
 
 export default jobImage;
 export const ProfilePic = (props: any) => {

@@ -38,7 +38,7 @@ const Jobs = ({ documents }: any) => {
     const [localValue, setLocalValue] = useState('')
     const [pageCount, setPageCount] = useState<number>()
     const [datePosted, setDatePosted] = useState('')
-    useEffect(() => {
+    /* useEffect(() => {
         const documents = getCompanyData(employerId);
         documents.then(async (res) => {
             if (res.documents && res.documents[0]) {
@@ -48,7 +48,7 @@ const Jobs = ({ documents }: any) => {
                 setCompanyName('');
             }
         });
-    }, [employerId]);
+    }, [employerId]); */
     const handleForYou = () => {
         if (forYou == false) {
             setAllLoading(true)
@@ -164,6 +164,8 @@ const Jobs = ({ documents }: any) => {
         const selected = data && data.filter((item: any) => item.$id == jobId)
         selected && setJobDetails(selected[0])
     }
+
+    const [compLogo, setCompLogo] = useState('')
     return (
         <>
             <div>
@@ -171,8 +173,7 @@ const Jobs = ({ documents }: any) => {
                 {allLoading && <div className='mt-8 md:mt-28 px-3 xl:px-40'> <JobsShimmer /></div>}
                 {!allLoading && (
                     <div className="grid grid-cols-12 sm:gap-x-10 mt-5">
-                        {/*                         <div className="col-span-12 grid grid-cols-12 gap-x-2 xl:gap-x-5">
- */}                            <div className="col-span-12 flex flex-wrap relative xl:justify-center gap-x-2 gap-y-4">
+                        <div className="col-span-12 flex flex-wrap relative xl:justify-center gap-x-2 gap-y-4">
                             <div className={!openJobDetail ? 'xl:px-40 border-b-[1px] w-full flex flex-wrap gap-x-2 gap-y-4 mb-5' : 'max-md:hidden xl:px-40 border-b-[1px] w-full flex flex-wrap gap-x-2 gap-y-4 mb-5'}>
                                 <div className={openJobDetail ? 'max-md:hidden w-full' : 'w-full'}>
                                     <SearchBar searchWord={searchWord}
@@ -238,7 +239,7 @@ const Jobs = ({ documents }: any) => {
                                         {data && data.length !== 0 && userRole && userRole == 'candidate' && <CheckProfileCompletion />}
                                         {data &&
                                             data.map((items: any, index: number) => {
-                                                return <JobListCard items={items} key={index} jobDetailId={jobDetailId} setEmployerId={setEmployerId} setJobDetailId={setJobDetailId} setOpenJobDetail={setOpenJobDetail} handleJobSelection={handleJobSelection}
+                                                return <JobListCard setCompanyName={setCompanyName} setCompLogo={setCompLogo} items={items} key={index} jobDetailId={jobDetailId} setEmployerId={setEmployerId} setJobDetailId={setJobDetailId} setOpenJobDetail={setOpenJobDetail} handleJobSelection={handleJobSelection}
                                                 />
                                             })}
                                     </div>
@@ -249,7 +250,8 @@ const Jobs = ({ documents }: any) => {
                                                 : 'grid grid-cols-12 gap-x-5 max-md:hidden md:w-1/2 lg:w-3/5 xl:w-[654px] h-[800px]'
                                         }
                                     >
-                                        {jobDetails && data.length !== 0 && /* currentData.length !== 0 && */ <JobDetail
+                                        {jobDetails && data.length !== 0 && <JobDetail
+                                            compLogo={compLogo}
                                             jobDetails={jobDetails}
                                             companyName={companyName}
                                             company={company}
@@ -257,6 +259,7 @@ const Jobs = ({ documents }: any) => {
                                             companyData={companyData}
                                             openJobDetail={openJobDetail}
                                             setOpenJobDetail={setOpenJobDetail}
+
                                         />}
 
                                     </div>
@@ -331,8 +334,7 @@ const Jobs = ({ documents }: any) => {
                                     </div>
                                 </div>
                             </div>
-                            {/*                             </div>
- */}                        </div>
+                        </div>
 
                     </div>
                 )}
@@ -352,6 +354,6 @@ export async function getStaticProps() {
         props: {
             documents
         },
-        revalidate: 60
+        revalidate: 600
     };
 } 
