@@ -2,39 +2,28 @@ import { fetchAppliedJobIds } from '@/backend/candidateBackend';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import AppliedCard from './AppliedComponent/AppliedCard';
-if (typeof window !== 'undefined') {
-    import('localforage').then((localforage) => {
-    });
-}
-/* import localforage from 'localforage';
- *//* const ReturnName = (props: any) => {
-const [companyName, setCompanyName] = useState('');
-const documents = getCompanyData(props.id);
-documents.then(async (res) => {
- if (res.documents && res.documents[0] && res.documents[0].description) {
-     setCompanyName(res.documents[0].companyName);
- } else {
-     setCompanyName('');
- }
-});
-return <div className="text-[13px] text-darkBlue sm:text-[1.5rem] md:text-[0.9rem] xl:text-[0.9rem]">{companyName}</div> || null;
-}; */
 const Applied = (props: any) => {
     const [userData, setUserData] = useState<any>()
     const [appliedJobId, setAppliedJobId] = useState<any[]>([]);
     const [allLoading, setAllLoading] = useState(false);
     const appliedJobsId = () => {
-        setAllLoading(true);
-        userData && fetchAppliedJobIds(userData.$id).then((res) => {
-            setAllLoading(false);
-            setAppliedJobId(res.documents)
-            if (typeof window !== 'undefined') {
-                import('localforage').then((localforage) => {
-                    localforage.setItem('appliedJobIds', res.documents).then((res) => {
-                    })
-                });
-            }
-        })
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userData').then((value: any) => {
+                    if (value) {
+                        setAllLoading(true);
+                        fetchAppliedJobIds(value.$id).then((res) => {
+                            res && setAllLoading(false);
+                            res && setAppliedJobId(res.documents)
+                            localforage.setItem('appliedJobIds', res.documents)
+                        }).catch((error) => {
+                            console.log(error);
+                            setAllLoading(false)
+                        })
+                    }
+                })
+            });
+        }
     };
     const fetchApplied = () => {
         if (typeof window !== 'undefined') {
@@ -52,14 +41,12 @@ const Applied = (props: any) => {
         }
     }
     useEffect(() => {
+        fetchApplied()
         if (typeof window !== 'undefined') {
             import('localforage').then((localforage) => {
                 localforage.getItem('userData').then((value: any) => {
                     if (value) {
-                        fetchApplied()
                         setUserData(value)
-                        appliedJobsId();
-
                     }
                 })
             });

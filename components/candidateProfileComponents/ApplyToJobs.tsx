@@ -15,6 +15,7 @@ import {
     downLoadResume,
     alreadySaved,
     unSaveJobs,
+    getCandidateDocument,
 } from '@/backend/candidateBackend';
 import { getAccount } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
@@ -29,8 +30,6 @@ const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const ApplyToJob = (props: any) => {
-    /*     const { userDetail, userData } = useGlobalContext()
-     */
     const [userDetail, setUserDetail] = useState<any>()
     const [userData, setUserData] = useState<any>()
     const pdfIcon = '/images/pdf2.svg';
@@ -87,44 +86,128 @@ const ApplyToJob = (props: any) => {
         }
     };
     const getData = async () => {
-        
-        if (userData) {
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userData').then((value: any) => {
+                    if (value) {
+                        setUserData(value)
+                        setNewName(value.name);
+                        setNewEmail(value.email);
+                    }
+                })
+            });
+        }
+        /* if (userData) {
             setNewName(userData.name);
             setNewEmail(userData.email);
-        }
+        } */
     };
     const getCanInfo = async () => {
-        if (userDetail) {
-            setPhone(userDetail.phoneNumber);
-            setLinked(userDetail.linkedIn);
-            setCover(userDetail.coverLetter);
-            if (userDetail.skills == null || userDetail.skills && userDetail.skills.length == 0) {
-                setSkillLength(0)
-            }
-            if (userDetail.educations == null || userDetail.educations && JSON.parse(userDetail.educations).length == 0) {
-                setEducationLength(0)
-            }
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail').then((value: any) => {
+                    if (value) {
+                        setUserDetail(value)
+                        setPhone(value.phoneNumber);
+                        setLinked(value.linkedIn);
+                        setCover(value.coverLetter);
+                        if (value.skills == null || value.skills && value.skills.length == 0) {
+                            setSkillLength(0)
+                        }
+                        if (value.educations == null || value.educations && JSON.parse(value.educations).length == 0) {
+                            setEducationLength(0)
+                        }
+                    }
+                    if (!value) {
+                        getCandidateDocument().then((res: any) => {
+                            res && setUserDetail(res.documents[0]);
+                            res && setPhone(res.documents[0].phoneNumber);
+                            res && setLinked(res.documents[0].linkedIn);
+                            res && setCover(res.documents[0].coverLetter);
+                            if (res && res.documents[0].skills == null || res.documents[0].skills && res.documents[0].skills.length == 0) {
+                                setSkillLength(0)
+                            }
+                            if (res && res.documents[0].educations == null || res.documents[0].educations && JSON.parse(res.documents[0].educations).length == 0) {
+                                setEducationLength(0)
+                            }
+                            import('localforage').then((localforage) => {
+                                res && localforage.setItem('userDetail', res.documents[0]).then(() => {
+                                });
+                            });
+                        })
+                    }
+                })
+            });
         }
+        /*  if (userDetail) {
+             setPhone(userDetail.phoneNumber);
+             setLinked(userDetail.linkedIn);
+             setCover(userDetail.coverLetter);
+             if (userDetail.skills == null || userDetail.skills && userDetail.skills.length == 0) {
+                 setSkillLength(0)
+             }
+             if (userDetail.educations == null || userDetail.educations && JSON.parse(userDetail.educations).length == 0) {
+                 setEducationLength(0)
+             }
+         } */
     };
     const checkApplied = async () => {
-        setLoading(true);
-        if (userDetail) {
-            alreadyApplied(userDetail.$id, props.jobId).then((applied) => {
-                setLoading(false);
-                const resume = userDetail.resumeId != null && getResumeName(userDetail.resumeId);
-                resume &&
-                    resume.then((res: any) => {
-                        setFileName(res.name);
-                        setCurrentResumeId(res.$id);
-                    });
-                if (applied.total !== 0) {
-                    setAppliedJob(true);
-                }
-                if (applied.total == 0) {
-                    setLoading(false);
-                    setAppliedJob(false);
-                }
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail').then((value: any) => {
+                    if (value) {
+                        setLoading(true);
+                        alreadyApplied(value.$id, props.jobId).then((applied) => {
+                            setLoading(false);
+                            const resume = value.resumeId != null && getResumeName(value.resumeId).then((res: any) => {
+                                setFileName(res.name);
+                                setCurrentResumeId(res.$id);
+                            });
+                            if (applied.total !== 0) {
+                                setAppliedJob(true);
+                            }
+                            if (applied.total == 0) {
+                                setLoading(false);
+                                setAppliedJob(false);
+                            }
 
+                        });
+                    }
+                    if (!value) {
+                        setLoading(true);
+                        getCandidateDocument().then((res: any) => {
+                            res && alreadyApplied(res.documents[0].$id, props.jobId).then((applied) => {
+                                setLoading(false);
+                                if (applied.total !== 0) {
+                                    setAppliedJob(true);
+                                }
+                                if (applied.total == 0) {
+                                    setLoading(false);
+                                    setAppliedJob(false);
+                                }
+                            });
+                            res && res.documents && res.documents[0].resumeId && getResumeName(res.documents[0].resumeId).then((res: any) => {
+                                res && setFileName(res.name);
+                                res && setCurrentResumeId(res.$id);
+                            });
+                            res && setUserDetail(res.documents[0]);
+                            res && setPhone(res.documents[0].phoneNumber);
+                            res && setLinked(res.documents[0].linkedIn);
+                            res && setCover(res.documents[0].coverLetter);
+                            if (res && res.documents[0].skills == null || res.documents[0].skills && res.documents[0].skills.length == 0) {
+                                setSkillLength(0)
+                            }
+                            if (res && res.documents[0].educations == null || res.documents[0].educations && JSON.parse(res.documents[0].educations).length == 0) {
+                                setEducationLength(0)
+                            }
+                            import('localforage').then((localforage) => {
+                                res && localforage.setItem('userDetail', res.documents[0]).then(() => {
+                                });
+                            });
+                        })
+
+                    }
+                })
             });
         }
     };
@@ -199,7 +282,6 @@ const ApplyToJob = (props: any) => {
                     setLoadingApply(false);
                     console.log(error);
                     toast.error(error)
-
                 });
         }
     };
@@ -207,7 +289,7 @@ const ApplyToJob = (props: any) => {
         getData();
         getCanInfo();
         checkApplied();
-    }, [userDetail]);
+    }, [props]);
     return (
         <>
             {!failed && (
