@@ -12,7 +12,6 @@ import SocialLinks from '@/components/candidateProfileComponents/SocialLinks';
 import CoverLetter from '@/components/candidateProfileComponents/CoverLetter';
 import WorkHitory from '@/components/candidateProfileComponents/WorkHistory';
 import Education from '@/components/candidateProfileComponents/Education';
-import localforage from 'localforage';
 import { getCandidateDocument } from '@/backend/candidateBackend';
 import { getRole } from '@/backend/accountBackend';
 import dynamic from 'next/dynamic';
@@ -23,35 +22,50 @@ const Profile = () => {
     const [allLoading, setAllLoading] = useState(false)
     const [userDetail, setUserDetail] = useState<any>()
     const userData = async () => {
-        localforage.getItem('userDetail').then((value) => {
-            if (value) {
-                const result = JSON.stringify(value)
-                /*                 console.log(result);
-                 */
-                setUserDetail(value)
-                setAllLoading(false)
-            }
-            if (!value) {
-                getDetails()
-            }
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                // Your client-side code here using localforage
+                localforage.getItem('userDetail').then((value) => {
+                    if (value) {
+                        const result = JSON.stringify(value)
+                        /*                 console.log(result);
+                         */
+                        setUserDetail(value)
+                        setAllLoading(false)
+                    }
+                    if (!value) {
+                        getDetails()
+                    }
+                });
+            });
+        }
         setAllLoading(true)
         userDetail && setAllLoading(false)
     }
     const getDetails = async () => {
-        localforage.getItem('userRole').then((value: any) => {
-            if (!value) {
-                useRole()
-            }
-            if (value == 'candidate') {
-                useCandidateDocument()
-            }
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                // Your client-side code here using localforage
+                localforage.getItem('userRole').then((value: any) => {
+                    if (!value) {
+                        useRole()
+                    }
+                    if (value == 'candidate') {
+                        useCandidateDocument()
+                    }
+                });
+            });
+        }
     }
     const useRole = async () => {
         const role = await getRole();
-        role && localforage.setItem('userRole', role.documents[0].userRole).then(() => {
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                // Your client-side code here using localforage
+                role && localforage.setItem('userRole', role.documents[0].userRole).then(() => {
+                });
+            });
+        }
         if (role && role.documents[0].userRole == 'candidate') {
             useCandidateDocument()
         }
@@ -59,8 +73,13 @@ const Profile = () => {
     const useCandidateDocument = async () => {
         const candidate = await getCandidateDocument();
         candidate && setUserDetail(candidate.documents[0]);
-        candidate && localforage.setItem('userDetail', candidate.documents[0]).then(() => {
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                // Your client-side code here using localforage
+                candidate && localforage.setItem('userDetail', candidate.documents[0]).then(() => {
+                });
+            });
+        }
         candidate && setAllLoading(false)
     };
     useEffect(() => {

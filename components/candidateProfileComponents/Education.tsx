@@ -8,7 +8,6 @@ import { updateEducation } from '@/backend/candidateBackend';
 import FormModal from './FormModal';
 import CloseIcon from '@mui/icons-material/Close';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
-import localforage from 'localforage';
 const Education = (props: any) => {
     /*     const { userDetail } = useGlobalContext()
      */
@@ -32,23 +31,27 @@ const Education = (props: any) => {
         return JSON.stringify(str);
     };
     const updateLocal = (value: any) => {
-        localforage.getItem('userDetail')
-            .then((existingData: any) => {
-                // Modify the existing data
-                const converted = JSON.stringify(value)
-                const updatedData = {
-                    // Update the specific properties you want to change
-                    ...existingData,
-                    educations: converted,
-                };
-                // Set the updated data back to the same key
-                return localforage.setItem('userDetail', updatedData);
-            })
-            .then(() => {
-            })
-            .catch((err) => {
-                console.error(`Error updating item: ${err}`);
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail')
+                    .then((existingData: any) => {
+                        // Modify the existing data
+                        const converted = JSON.stringify(value)
+                        const updatedData = {
+                            // Update the specific properties you want to change
+                            ...existingData,
+                            educations: converted,
+                        };
+                        // Set the updated data back to the same key
+                        return localforage.setItem('userDetail', updatedData);
+                    })
+                    .then(() => {
+                    })
+                    .catch((err) => {
+                        console.error(`Error updating item: ${err}`);
+                    });
             });
+        }
     }
     const indexEducation = (index: number) => {
         setEditEducation(true);

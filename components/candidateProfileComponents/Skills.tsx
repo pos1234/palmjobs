@@ -2,11 +2,8 @@ import { useEffect, useState } from 'react';
 import LocalFireDepartmentOutlinedIcon from '@mui/icons-material/LocalFireDepartmentOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import skillsData from '@/backend/skillData';
-import { getUserDetail, updateSkills } from '@/backend/candidateBackend';
-import { useGlobalContext } from '@/contextApi/userData';
-import localforage from 'localforage';
+import { updateSkills } from '@/backend/candidateBackend';
 interface Data {
     word: string;
 }
@@ -21,23 +18,27 @@ const Skills = (props: any) => {
     const items: Data[] = skillsData;
     const skillsMaxCharacters = 7;
     const updateLocal = (value: any) => {
-        localforage.getItem('userDetail')
-            .then((existingData: any) => {
-                // Modify the existing data
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail')
+                    .then((existingData: any) => {
+                        // Modify the existing data
 
-                const updatedData = {
-                    // Update the specific properties you want to change
-                    ...existingData,
-                    skills: value,
-                };
-                // Set the updated data back to the same key
-                return localforage.setItem('userDetail', updatedData);
-            })
-            .then(() => {
-            })
-            .catch((err) => {
-                console.error(`Error updating item: ${err}`);
+                        const updatedData = {
+                            // Update the specific properties you want to change
+                            ...existingData,
+                            skills: value,
+                        };
+                        // Set the updated data back to the same key
+                        return localforage.setItem('userDetail', updatedData);
+                    })
+                    .then(() => {
+                    })
+                    .catch((err) => {
+                        console.error(`Error updating item: ${err}`);
+                    });
             });
+        }
     }
     const clickMe = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();

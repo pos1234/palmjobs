@@ -4,13 +4,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
-import { getUserDetail, updateWorkHistory } from '@/backend/candidateBackend';
+import { updateWorkHistory } from '@/backend/candidateBackend';
 import ElementWithIcon from './CertificateEducationComponent/ElementWithIcon'
 import { toast } from 'react-toastify';
 import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
-import { useGlobalContext } from '@/contextApi/userData';
-import localforage from 'localforage';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -40,23 +38,27 @@ const WorkHitory = (props: any) => {
         return JSON.stringify(str);
     };
     const updateLocal = (value: any) => {
-        localforage.getItem('userDetail')
-            .then((existingData: any) => {
-                // Modify the existing data
-                const converted = JSON.stringify(value)
-                const updatedData = {
-                    // Update the specific properties you want to change
-                    ...existingData,
-                    workHistory: converted,
-                };
-                // Set the updated data back to the same key
-                return localforage.setItem('userDetail', updatedData);
-            })
-            .then(() => {
-            })
-            .catch((err) => {
-                console.error(`Error updating item: ${err}`);
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail')
+                    .then((existingData: any) => {
+                        // Modify the existing data
+                        const converted = JSON.stringify(value)
+                        const updatedData = {
+                            // Update the specific properties you want to change
+                            ...existingData,
+                            workHistory: converted,
+                        };
+                        // Set the updated data back to the same key
+                        return localforage.setItem('userDetail', updatedData);
+                    })
+                    .then(() => {
+                    })
+                    .catch((err) => {
+                        console.error(`Error updating item: ${err}`);
+                    });
             });
+        }
     }
     const editWorkHistory = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();

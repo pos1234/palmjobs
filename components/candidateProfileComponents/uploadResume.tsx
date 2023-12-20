@@ -4,7 +4,6 @@ import { getResumeName } from '@/backend/candidateBackend';
 import { FileUploader } from 'react-drag-drop-files';
 import { deleteResume, updateResumeId, uploadResume } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
-import { useGlobalContext } from '@/contextApi/userData';
 const FileUploadForm = (props: any) => {
     /*     const { userDetail } = useGlobalContext()
      */

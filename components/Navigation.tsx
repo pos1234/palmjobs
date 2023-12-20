@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from '@/styles/navigation.module.css';
 import Link from 'next/link';
 import { Popover } from '@headlessui/react';
@@ -10,8 +10,6 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { ProfilePic } from './JobImage';
 import Logout from './Logout';
 import { useGlobalContext } from '@/contextApi/userData';
-import localforage from 'localforage';
-import { getEmployerDocument } from '@/backend/employerBackend';
 const Navigation = (props: any) => {
     const { loading, userDetail, userData, userRole } = useGlobalContext()
     const logo = 'https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images/logo.svg';

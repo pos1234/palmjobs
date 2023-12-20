@@ -1,9 +1,7 @@
 'use client';
 import { createContext, useContext, Dispatch, useState, SetStateAction, useEffect } from "react";
 import { getAccount, getRole } from "../backend/accountBackend";
-import { getCandidateDocument } from "../backend/candidateBackend";
-import { getEmployerDocument, getProfileData } from "../backend/employerBackend";
-import localforage from "localforage";
+import { getEmployerDocument } from "../backend/employerBackend";
 interface UserData {
     loading: boolean,
     userRole: string,
@@ -31,9 +29,13 @@ export const GlobalContextProvider = ({ children }: any) => {
             setLoading(false)
             if (userInfo !== "failed") {
                 setUserData(userInfo)
-                localforage.setItem('userData', userInfo).then(() => {
-                    setLoading(false)
-                });
+                if (typeof window !== 'undefined') {
+                    import('localforage').then((localforage) => {
+                        localforage.setItem('userData', userInfo).then(() => {
+                            setLoading(false)
+                        });
+                    });
+                }
             }
         }).catch((error) => {
             setLoading(false)
@@ -41,32 +43,44 @@ export const GlobalContextProvider = ({ children }: any) => {
         })
     }
     const userDatas = async () => {
-        localforage.getItem('userData').then((value) => {
-            if (value) {
-                setLoading(false)
-                setUserData(value)
-                console.log(value);
-            }
-            if (!value) {
-                haveAccount()
-            }
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userData').then((value) => {
+                    if (value) {
+                        setLoading(false)
+                        setUserData(value)
+                        console.log(value);
+                    }
+                    if (!value) {
+                        haveAccount()
+                    }
+                });
+            });
+        }
     }
     const haveRole = async () => {
-        localforage.getItem('userRole').then((value: any) => {
-            if (!value) {
-                useRole()
-            }
-            if (value) {
-                setUserRole(value)
-            }
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userRole').then((value: any) => {
+                    if (!value) {
+                        useRole()
+                    }
+                    if (value) {
+                        setUserRole(value)
+                    }
+                });
+            });
+        }
     }
     const useRole = async () => {
         const role = await getRole();
         role && setUserRole(role.documents[0].userRole);
-        role && localforage.setItem('userRole', role.documents[0].userRole).then(() => {
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                role && localforage.setItem('userRole', role.documents[0].userRole).then(() => {
+                });
+            });
+        }
 
     };
 
@@ -78,30 +92,42 @@ export const GlobalContextProvider = ({ children }: any) => {
 
 
     const userDetails = async () => {
-        localforage.getItem('userDetail').then((value) => {
-            if (value) {
-                setUserDetail(value)
-                setLoading(false)
-            }
-            if (!value) {
-                getDetails()
-            }
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail').then((value) => {
+                    if (value) {
+                        setUserDetail(value)
+                        setLoading(false)
+                    }
+                    if (!value) {
+                        getDetails()
+                    }
+                });
+            });
+        }
         setLoading(true)
         userDetail && setLoading(false)
     }
     const getDetails = async () => {
-        localforage.getItem('userRole').then((value: any) => {
-            if (value == 'employer') {
-                useEmployerDocument()
-            }
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userRole').then((value: any) => {
+                    if (value == 'employer') {
+                        useEmployerDocument()
+                    }
+                });
+            });
+        }
     }
     const useEmployerDocument = async () => {
         const employer = await getEmployerDocument();
         employer && setUserDetail(employer.documents[0]);
-        employer && localforage.setItem('userDetail', employer.documents[0]).then(() => {
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                employer && localforage.setItem('userDetail', employer.documents[0]).then(() => {
+                });
+            });
+        }
         employer && setLoading(false)
     };
     useEffect(() => {

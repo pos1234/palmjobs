@@ -5,7 +5,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import Image from 'next/image';
 const Home = () => {
     const router = useRouter();
     const [searchText, setSearchText] = useState('');

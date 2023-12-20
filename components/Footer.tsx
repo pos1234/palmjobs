@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import TwitterIcon from '@mui/icons-material/Twitter';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { getRole } from '@/backend/accountBackend';
@@ -8,13 +7,12 @@ import Link from 'next/link';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import ConfirmModal from './ConfirmModal';
 import CloseIcon from '@mui/icons-material/Close';
-import TextInput, { SubmitButton, TextInputRelated } from './TextInput';
+import { SubmitButton, TextInputRelated } from './TextInput';
 import { RequiredTextLabel } from './employerComponents/jobPostTabs/RequiredTextLabel';
 import { toast } from 'react-toastify';
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import localforage from 'localforage';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 
 const LinkList = (props: any) => {
@@ -57,14 +55,18 @@ const Footer = () => {
         role && setUserRole(role.documents[0].userRole);
     }
     const getUserData = () => {
-        localforage.getItem('userRole').then((value: any) => {
-            if (value) {
-                setUserRole(value)
-            }
-            if (!value) {
-                useRole()
-            }
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userRole').then((value: any) => {
+                    if (value) {
+                        setUserRole(value)
+                    }
+                    if (!value) {
+                        useRole()
+                    }
+                });
+            });
+        }
 
     };
     useEffect(() => {
