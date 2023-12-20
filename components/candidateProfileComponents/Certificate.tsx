@@ -3,13 +3,10 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditIcon from '@mui/icons-material/Edit';
 import { toast } from 'react-toastify';
-import { getUserDetail, updateCertificates } from '@/backend/candidateBackend';
+import { updateCertificates } from '@/backend/candidateBackend';
 import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
 import CloseIcon from '@mui/icons-material/Close';
-import { useGlobalContext } from '@/contextApi/userData';
-import localforage from 'localforage';
-
 const CertificateDetails = (props: any) => {
     return (
         <div
@@ -49,34 +46,33 @@ const Certificate = (props: any) => {
     const convertToString = (str: any) => {
         return JSON.stringify(str);
     };
-    const convertToArray = (str: any) => {
-        if (str != '') return JSON.parse(str);
-        else return '';
-    };
     const maximumCertificates = 2;
     const indexCertificate = (index: number) => {
         setCertificateIndex(index);
         setCertificateData(certificateArray[index]);
     };
     const updateLocal = (value: any) => {
-
-        localforage.getItem('userDetail')
-            .then((existingData: any) => {
-                // Modify the existing data
-                const converted = JSON.stringify(value)
-                const updatedData = {
-                    // Update the specific properties you want to change
-                    ...existingData,
-                    certificates: converted,
-                };
-                // Set the updated data back to the same key
-                return localforage.setItem('userDetail', updatedData);
-            })
-            .then(() => {
-            })
-            .catch((err) => {
-                console.error(`Error updating item: ${err}`);
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail')
+                    .then((existingData: any) => {
+                        // Modify the existing data
+                        const converted = JSON.stringify(value)
+                        const updatedData = {
+                            // Update the specific properties you want to change
+                            ...existingData,
+                            certificates: converted,
+                        };
+                        // Set the updated data back to the same key
+                        return localforage.setItem('userDetail', updatedData);
+                    })
+                    .then(() => {
+                    })
+                    .catch((err) => {
+                        console.error(`Error updating item: ${err}`);
+                    });
             });
+        }
     }
     const addCertificate = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();

@@ -1,27 +1,23 @@
-import { fetchAppliedJobsData, fetchAppliedJobIds } from '@/backend/candidateBackend';
-import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
+import { fetchAppliedJobIds } from '@/backend/candidateBackend';
 import { useEffect, useState } from 'react';
-import JobImage from '../JobImage';
 import Link from 'next/link';
-import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
-import EuroIcon from '@mui/icons-material/Euro';
-import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import { SmallLists } from '../TextInput';
-import ReturnName from './SavedComponent/ReturnName';
 import AppliedCard from './AppliedComponent/AppliedCard';
-import localforage from 'localforage';
-/* const ReturnName = (props: any) => {
-    const [companyName, setCompanyName] = useState('');
-    const documents = getCompanyData(props.id);
-    documents.then(async (res) => {
-        if (res.documents && res.documents[0] && res.documents[0].description) {
-            setCompanyName(res.documents[0].companyName);
-        } else {
-            setCompanyName('');
-        }
+if (typeof window !== 'undefined') {
+    import('localforage').then((localforage) => {
     });
-    return <div className="text-[13px] text-darkBlue sm:text-[1.5rem] md:text-[0.9rem] xl:text-[0.9rem]">{companyName}</div> || null;
+}
+/* import localforage from 'localforage';
+ *//* const ReturnName = (props: any) => {
+const [companyName, setCompanyName] = useState('');
+const documents = getCompanyData(props.id);
+documents.then(async (res) => {
+ if (res.documents && res.documents[0] && res.documents[0].description) {
+     setCompanyName(res.documents[0].companyName);
+ } else {
+     setCompanyName('');
+ }
+});
+return <div className="text-[13px] text-darkBlue sm:text-[1.5rem] md:text-[0.9rem] xl:text-[0.9rem]">{companyName}</div> || null;
 }; */
 const Applied = (props: any) => {
     const [userData, setUserData] = useState<any>()
@@ -32,31 +28,42 @@ const Applied = (props: any) => {
         userData && fetchAppliedJobIds(userData.$id).then((res) => {
             setAllLoading(false);
             setAppliedJobId(res.documents)
-            localforage.setItem('appliedJobIds', res.documents).then((res) => {
-            })
+            if (typeof window !== 'undefined') {
+                import('localforage').then((localforage) => {
+                    localforage.setItem('appliedJobIds', res.documents).then((res) => {
+                    })
+                });
+            }
         })
     };
     const fetchApplied = () => {
-        localforage.getItem('appliedJobIds').then((value: any) => {
-            if (value) {
-                setAllLoading(false);
-                setAppliedJobId(value)
-            }
-            if (!value) {
-                appliedJobsId();
-            }
-        })
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('appliedJobIds').then((value: any) => {
+                    if (value) {
+                        setAllLoading(false);
+                        setAppliedJobId(value)
+                    }
+                    if (!value) {
+                        appliedJobsId();
+                    }
+                })
+            });
+        }
     }
     useEffect(() => {
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userData').then((value: any) => {
+                    if (value) {
+                        fetchApplied()
+                        setUserData(value)
+                        appliedJobsId();
 
-        localforage.getItem('userData').then((value: any) => {
-            if (value) {
-                fetchApplied()
-                setUserData(value)
-                appliedJobsId();
-
-            }
-        })
+                    }
+                })
+            });
+        }
     }, []);
     return (
         <>

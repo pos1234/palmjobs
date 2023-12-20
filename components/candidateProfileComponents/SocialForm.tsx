@@ -6,12 +6,10 @@ import { toast } from 'react-toastify';
 import LanguageIcon from '@mui/icons-material/Language';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { addSocials, getCandidateDocument, getUserDetail } from '@/backend/candidateBackend';
-import { useGlobalContext } from '@/contextApi/userData';
+import { addSocials} from '@/backend/candidateBackend';
 import { updateUserName } from '@/backend/employerBackend';
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
-import localforage from 'localforage';
 const SocialForm = (props: any) => {
     /*     const { userData, userDetail } = useGlobalContext()
      */
@@ -44,29 +42,32 @@ const SocialForm = (props: any) => {
         return result
     }
     const updateLocal = (linkedValue: any, githubLinkValue: any, behanValue: any, portfolioValue: any, phoneValue: any, addressValue: any) => {
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail')
+                    .then((existingData: any) => {
+                        // Modify the existing data
+                        const updatedData = {
+                            // Update the specific properties you want to change
+                            ...existingData,
+                            linkedIn: linkedValue,
+                            github: githubLinkValue,
+                            behance: behanValue,
+                            protfolio: portfolioValue,
+                            phoneNumber: phoneValue,
+                            address: addressValue
+                        };
 
-        localforage.getItem('userDetail')
-            .then((existingData: any) => {
-                // Modify the existing data
-                const updatedData = {
-                    // Update the specific properties you want to change
-                    ...existingData,
-                    linkedIn: linkedValue,
-                    github: githubLinkValue,
-                    behance: behanValue,
-                    protfolio: portfolioValue,
-                    phoneNumber: phoneValue,
-                    address: addressValue
-                };
-
-                // Set the updated data back to the same key
-                return localforage.setItem('userDetail', updatedData);
-            })
-            .then(() => {
-            })
-            .catch((err) => {
-                console.error(`Error updating item: ${err}`);
+                        // Set the updated data back to the same key
+                        return localforage.setItem('userDetail', updatedData);
+                    })
+                    .then(() => {
+                    })
+                    .catch((err) => {
+                        console.error(`Error updating item: ${err}`);
+                    });
             });
+        }
     }
     const hanleLinkUpdate = (e: React.FormEvent<HTMLElement>) => {
         setNameError(false)
@@ -121,10 +122,14 @@ const SocialForm = (props: any) => {
             userDetail.address && setAddress(userDetail.address)
             userDetail.phoneNumber && setPhone(userDetail.phoneNumber)
         }
-        localforage.getItem('userData').then((value: any) => {
-            setUserData(value)
-            setName(value.name)
-        })
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userData').then((value: any) => {
+                    setUserData(value)
+                    setName(value.name)
+                })
+            });
+        }
     }
     useEffect(() => {
         userDatas()

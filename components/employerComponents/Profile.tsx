@@ -9,7 +9,6 @@ import Link from 'next/link';
 import { RequiredTextLabel } from './jobPostTabs/RequiredTextLabel';
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
-import localforage from 'localforage';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -49,36 +48,45 @@ const EmployerProfile = (props: any) => {
         return result
     }
     const userDetails = () => {
-        localforage.getItem('userData').then((value: any) => {
-            if (value) {
-                value.name && setUserName(value.name)
-                setUserData(value)
-                setLoading(false)
-            }
-            /*  if (!value) {
-                 getDetails()
-             } */
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userData').then((value: any) => {
+                    if (value) {
+                        value.name && setUserName(value.name)
+                        setUserData(value)
+                        setLoading(false)
+                    }
+                    /*  if (!value) {
+                         getDetails()
+                     } */
+                });
+            });
+        }
 
     }
     const userDatas = () => {
-        localforage.getItem('userDetail').then((value: any) => {
-            if (value) {
-                setUserDetail(value)
-                setLoading(false)
-                setCompanyName(value.companyName)
-                setIndustry(value.sector);
-                setAddress(value.location);
-                setNoEmployee(value.noOfEmployee);
-                setPhone(value.phoneNumber);
-                setWebLink(value.websiteLink);
-                setCompDescription(value.description);
-                /* initialData() */
-            }
-            /*  if (!value) {
-                 getDetails()
-             } */
-        });
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                // Your client-side code here using localforage
+                localforage.getItem('userDetail').then((value: any) => {
+                    if (value) {
+                        setUserDetail(value)
+                        setLoading(false)
+                        setCompanyName(value.companyName)
+                        setIndustry(value.sector);
+                        setAddress(value.location);
+                        setNoEmployee(value.noOfEmployee);
+                        setPhone(value.phoneNumber);
+                        setWebLink(value.websiteLink);
+                        setCompDescription(value.description);
+                        /* initialData() */
+                    }
+                    /*  if (!value) {
+                         getDetails()
+                     } */
+                });
+            });
+        }
     }
     useEffect(() => {
         userDetails();
@@ -117,27 +125,37 @@ const EmployerProfile = (props: any) => {
                 .then(() => {
                     toast.success('Successfully Updated Profile');
                     updateUserName(userName).then((res) => {
-                        localforage.getItem('userData').then((value: any) => {
+                        if (typeof window !== 'undefined') {
+                            import('localforage').then((localforage) => {
+                                // Your client-side code here using localforage
+                                localforage.getItem('userData').then((value: any) => {
 
-                            const updatedData = {
-                                ...value, name: userName
-                            }
-                            return localforage.setItem('userData', updatedData)
-                        })
-                    })
-                    localforage.getItem('userDetail').then((value: any) => {
-                        const updatedData = {
-                            ...value,
-                            companyName: companyName,
-                            sector: industry,
-                            location: address,
-                            noOfEmployee: noEmployee,
-                            phoneNumber: phone,
-                            websiteLink: webLink,
-                            description: compDescription
+                                    const updatedData = {
+                                        ...value, name: userName
+                                    }
+                                    return localforage.setItem('userData', updatedData)
+                                })
+                            });
                         }
-                        return localforage.setItem('userDetail', updatedData)
                     })
+                    if (typeof window !== 'undefined') {
+                        import('localforage').then((localforage) => {
+                            // Your client-side code here using localforage
+                            localforage.getItem('userDetail').then((value: any) => {
+                                const updatedData = {
+                                    ...value,
+                                    companyName: companyName,
+                                    sector: industry,
+                                    location: address,
+                                    noOfEmployee: noEmployee,
+                                    phoneNumber: phone,
+                                    websiteLink: webLink,
+                                    description: compDescription
+                                }
+                                return localforage.setItem('userDetail', updatedData)
+                            })
+                        });
+                    }
                     setLoading(false);
                     props.setFilled(true);
                 })

@@ -6,7 +6,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import SocialForm from './SocialForm';
-import localforage from 'localforage';
 const SocialLinks = (props: any) => {
     const [userData, setUserData] = useState<any>()
     const [userDetail, setUserDetail] = useState<any>(props.userDetail)
@@ -27,9 +26,13 @@ const SocialLinks = (props: any) => {
             userDetail.address && setLocate(userDetail.address)
             userDetail.phoneNumber && setCall(userDetail.phoneNumber)
         }
-        localforage.getItem('userData').then((value: any) => {
-            setUserData(value)
-        })
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userData').then((value: any) => {
+                    setUserData(value)
+                })
+            });
+        }
     }
     useEffect(() => {
         userDatas()

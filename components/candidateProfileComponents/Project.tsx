@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import ConfirmModal from '../ConfirmModal';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,13 +7,11 @@ import InsertLinkOutlinedIcon from '@mui/icons-material/InsertLinkOutlined';
 import dynamic from 'next/dynamic';
 import { FileUploader } from 'react-drag-drop-files';
 import 'react-quill/dist/quill.snow.css';
-import { deletePictures, getUserDetail, updateProjects, uploadProfilePictures } from '@/backend/candidateBackend';
+import { updateProjects, uploadProfilePictures } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
 import { ProfilePic } from '../JobImage';
 import FormModal from './FormModal';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
-import { useGlobalContext } from '@/contextApi/userData';
-import localforage from 'localforage';
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
@@ -40,24 +36,27 @@ const Project = (props: any) => {
         thumbnailId: ''
     });
     const updateLocal = (value: any) => {
-
-        localforage.getItem('userDetail')
-            .then((existingData: any) => {
-                // Modify the existing data
-                const converted = JSON.stringify(value)
-                const updatedData = {
-                    // Update the specific properties you want to change
-                    ...existingData,
-                    projects: converted,
-                };
-                // Set the updated data back to the same key
-                return localforage.setItem('userDetail', updatedData);
-            })
-            .then(() => {
-            })
-            .catch((err) => {
-                console.error(`Error updating item: ${err}`);
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail')
+                    .then((existingData: any) => {
+                        // Modify the existing data
+                        const converted = JSON.stringify(value)
+                        const updatedData = {
+                            // Update the specific properties you want to change
+                            ...existingData,
+                            projects: converted,
+                        };
+                        // Set the updated data back to the same key
+                        return localforage.setItem('userDetail', updatedData);
+                    })
+                    .then(() => {
+                    })
+                    .catch((err) => {
+                        console.error(`Error updating item: ${err}`);
+                    });
             });
+        }
     }
     const handleProjectImage = (files: any) => {
         setProjectFile(files);
@@ -166,10 +165,6 @@ const Project = (props: any) => {
             .catch((error) => {
                 toast.error(`Project Not Removed ${error}`);
             });
-    };
-    const convertToArray = (str: any) => {
-        if (str != '') return JSON.parse(str);
-        else return '';
     };
     const userData = async () => {
 /*         const userInfo = await getUserDetail()

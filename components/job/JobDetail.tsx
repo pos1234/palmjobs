@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Share from '../Share'
-import JobImage from '../JobImage';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import EuroIcon from '@mui/icons-material/Euro';

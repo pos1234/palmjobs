@@ -6,7 +6,6 @@ import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { toast } from 'react-toastify';
 import { getAccount } from '@/backend/accountBackend';
 import { deleteEmployerProfilePicture, getEmployerDocument, updateEmployerProfileId } from '@/backend/employerBackend';
-import localforage from 'localforage';
 const ProfilePicture = () => {
     const loadingIn = '/images/loading.svg';
     const [profileLoading, setProfileLoading] = useState(false);
@@ -15,39 +14,50 @@ const ProfilePicture = () => {
     const [file, setFile] = useState<any>();
     const [firstLetter, setFirstLetter] = useState('')
     const getProfilePic = async () => {
-        localforage.getItem('userDetail').then((value: any) => {
-            setProfileId(value.profilePictureId)
-        })
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail').then((value: any) => {
+                    setProfileId(value.profilePictureId)
+                })
+            });
+        }
    /*      const promise = await getCandidateDocument()
         promise && promise.documents[0] && promise.documents[0].profilePictureId && setProfileId(promise.documents[0].profilePictureId)
     */ }
     useEffect(() => {
         getProfilePic()
-        localforage.getItem('userData').then((value: any) => {
-            setFirstLetter(value.name.charAt(0))
-        })
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userData').then((value: any) => {
+                    setFirstLetter(value.name.charAt(0))
+                })
+            });
+        }
         /* getAccount().then((res: any) => {
             res && res.name && setFirstLetter(res.name.charAt(0))
         }) */
     }, [])
     const updateLocal = (value: any) => {
-
-        localforage.getItem('userDetail')
-            .then((existingData: any) => {
-                // Modify the existing data
-                const updatedData = {
-                    // Update the specific properties you want to change
-                    ...existingData,
-                    profilePictureId: value,
-                };
-                // Set the updated data back to the same key
-                return localforage.setItem('userDetail', updatedData);
-            })
-            .then(() => {
-            })
-            .catch((err) => {
-                console.error(`Error updating item: ${err}`);
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail')
+                    .then((existingData: any) => {
+                        // Modify the existing data
+                        const updatedData = {
+                            // Update the specific properties you want to change
+                            ...existingData,
+                            profilePictureId: value,
+                        };
+                        // Set the updated data back to the same key
+                        return localforage.setItem('userDetail', updatedData);
+                    })
+                    .then(() => {
+                    })
+                    .catch((err) => {
+                        console.error(`Error updating item: ${err}`);
+                    });
             });
+        }
     }
     const imageUploadChecker = (functionName: any, uploadedFile: any) => {
         if (uploadedFile) {

@@ -1,7 +1,6 @@
 import { fetchSavedJobIds } from '@/backend/candidateBackend';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import localforage from 'localforage';
 import SaveCard from './SavedComponent/SaveCard';
 const SavedJobs = (props: any) => {
     /*     const { userData } = useGlobalContext()
@@ -14,31 +13,43 @@ const SavedJobs = (props: any) => {
         userData && fetchSavedJobIds(userData.$id).then((res: any) => {
             setAllLoading(false);
             res && setSavedJobs(res.documents)
-            localforage.setItem('savedJobIds', res.documents).then((res) => {
-            })
+            if (typeof window !== 'undefined') {
+                import('localforage').then((localforage) => {
+                    localforage.setItem('savedJobIds', res.documents).then((res) => {
+                    })
+                });
+            }
         }).catch((error) => {
             setAllLoading(false)
             console.log(error);
         })
     }
     const fetchSaved = () => {
-        localforage.getItem('savedJobIds').then((value) => {
-            if (value) {
-                setAllLoading(false);
-                setSavedJobs(value)
-            }
-            if (!value) {
-                fetchSaveds()
-            }
-        })
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('savedJobIds').then((value) => {
+                    if (value) {
+                        setAllLoading(false);
+                        setSavedJobs(value)
+                    }
+                    if (!value) {
+                        fetchSaveds()
+                    }
+                })
+            });
+        }
     }
     useEffect(() => {
         fetchSaved()
-        localforage.getItem('userData').then((value: any) => {
-            if (value) {
-                setUserData(value)
-            }
-        })
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userData').then((value: any) => {
+                    if (value) {
+                        setUserData(value)
+                    }
+                })
+            });
+        }
     }, []);
     return (
         <>

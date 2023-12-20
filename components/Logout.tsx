@@ -3,7 +3,6 @@ import ConfirmModal from './ConfirmModal'
 import { signOut } from '@/backend/accountBackend';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
-import localforage from "localforage";
 
 const Logout = (props: any) => {
     const [loading, setLoading] = useState(false)
@@ -11,18 +10,23 @@ const Logout = (props: any) => {
     const handleLogout = () => {
         setLoading(true);
         signOut().then((res) => {
-            localforage.clear().then((res) => {
-                setLoading(false);
-                toast.success("You've been logged out. See you again soon!");
-                typeof window !== 'undefined' &&
-                    router.push('/').then(() => {
-                        // The reload function is executed after the redirection is completed
-                        reload()
-                    });
-                const reload = () => {
-                    typeof window !== 'undefined' && router.reload();
-                }
-            })
+            if (typeof window !== 'undefined') {
+                import('localforage').then((localforage) => {
+                    // Your client-side code here using localforage
+                    localforage.clear().then((res) => {
+                        setLoading(false);
+                        toast.success("You've been logged out. See you again soon!");
+                        typeof window !== 'undefined' &&
+                            router.push('/').then(() => {
+                                // The reload function is executed after the redirection is completed
+                                reload()
+                            });
+                        const reload = () => {
+                            typeof window !== 'undefined' && router.reload();
+                        }
+                    })
+                });
+            }
 
         });
     };

@@ -23,10 +23,8 @@ import Link from 'next/link';
 import { ProfilePic } from '../JobImage';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import TextInput, { SubmitButton } from '../TextInput';
-import { useGlobalContext } from '@/contextApi/userData';
 import 'react-phone-number-input/style.css'
-import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
-const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
+import PhoneInput from "react-phone-number-input";
 const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
