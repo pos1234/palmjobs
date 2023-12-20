@@ -6,14 +6,13 @@ export default async function jobDescription(req: NextApiRequest, res: NextApiRe
     const jobTitle = req.query.j;
     const skills = req.query.s;
     const yearsOfExperience = req.query.y;
-
     // Check if the request is coming from the correct domain
-    if (!process?.env?.APP_BASE_DOMAIN || !req?.headers?.host?.endsWith(process?.env?.APP_BASE_DOMAIN)) {
+    /*  if (!process?.env?.APP_BASE_DOMAIN || !req?.headers?.host?.endsWith(process?.env?.APP_BASE_DOMAIN)) {
         res.status(400).json({ error: 'Invalid domain' });
         return;
-    }
+    } */
 
-    if (!jobTitle || typeof jobTitle !== 'string' || !skills || typeof skills !== 'string') {
+    if (!jobTitle || typeof jobTitle !== 'string' /* || !skills || typeof skills !== 'string' */) {
         res.status(400).json({ error: 'Missing job title or skills' });
         return;
     }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchAllEmployerJob, getProfileData } from '@/backend/employerBackend';
+import { fetchAllEmployerJob } from '@/backend/employerBackend';
 import 'react-quill/dist/quill.snow.css';
 import EmployerProfile from '@/components/employerComponents/Profile';
 import FirstForm from '@/components/employerComponents/jobPostTabs/FirstForm';
@@ -65,7 +65,7 @@ const PostAJob = (props: any) => {
     return (
         <div className="flex gap-x-3 max-md:flex-wrap bg-textW">
             <Navigation active='post' />
-            <div className="pt-5 px-3 pb-10 bg-textW w-full max-xl:flex-grow xl:w-2/3 min-h-screen">
+            <div className="pt-5 pl-5 px-3 pb-10 bg-textW w-full max-xl:flex-grow xl:w-2/3 min-h-screen">
                 {allLoading && (
                     <div className="flex flex-col gap-y-10 pt-20 h-full">
                         <EmployerJobShimmer />

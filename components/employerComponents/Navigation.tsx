@@ -63,8 +63,8 @@ const Navigation = ({ active }: Active) => {
                         </div>
                         <Link href='/users/employer/post' className={
                             active == 'post'
-                                ? 'flex items-center pl-16 text-gradientFirst py-3 gap-x-3 cursor-pointer w-full'
-                                : 'flex items-center pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
+                                ? 'flex items-center md:pl-10 lg:pl-16 text-gradientFirst py-3 gap-x-3 cursor-pointer w-full'
+                                : 'flex items-center md:pl-10 lg:pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
                         }>
                             <AddIcon sx={{ fontSize: '1.2rem' }} className={
                                 active == 'post'
@@ -75,32 +75,32 @@ const Navigation = ({ active }: Active) => {
                         </Link>
                         <Link href='/users/employer/jobs' className={
                             active == 'jobs'
-                                ? 'flex items-center pl-16 text-gradientFirst py-3 gap-x-3 cursor-pointer w-full'
-                                : 'flex items-center pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
+                                ? 'flex items-center md:pl-10 lg:pl-16 text-gradientFirst py-3 gap-x-3 cursor-pointer w-full'
+                                : 'flex items-center md:pl-10 lg:pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
                         }>
                             <BusinessCenterIcon sx={{ fontSize: '1.5rem' }} />
                             <p className='text-lg'>Jobs</p>
                         </Link>
                         <Link href='/users/employer/candidates' className={
                             active == 'candidates'
-                                ? 'flex items-center pl-16 text-gradientFirst py-3 gap-x-3 cursor-pointer w-full'
-                                : 'flex items-center pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
+                                ? 'flex items-center md:pl-10 lg:pl-16 text-gradientFirst py-3 gap-x-3 cursor-pointer w-full'
+                                : 'flex items-center md:pl-10 lg:pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
                         }>
                             <PeopleIcon sx={{ fontSize: '1.5rem' }} />
                             <p className='text-lg'>Candidates</p>
                         </Link>
                         <Link href='/users/employer/profile' className={
                             active == 'profile'
-                                ? 'flex items-center pl-16 text-gradientFirst py-3 gap-x-3 cursor-pointer w-full'
-                                : 'flex items-center pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
+                                ? 'flex items-center md:pl-10 lg:pl-16 text-gradientFirst py-3 gap-x-3 cursor-pointer w-full'
+                                : 'flex items-center md:pl-10 lg:pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
                         }>
                             <SettingsSuggestIcon sx={{ fontSize: '1.5rem' }} />
                             <p className='text-lg'>Profile</p>
                         </Link>
                         <Link href='/users/employer/privacy' className={
                             active == 'privacy'
-                                ? 'flex items-center pl-16 text-gradientFirst py-3 gap-x-3 cursor-pointer w-full'
-                                : 'flex items-center pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
+                                ? 'flex items-center md:pl-10 lg:pl-16 text-gradientFirst py-3 gap-x-3 cursor-pointer w-full'
+                                : 'flex items-center md:pl-10 lg:pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer'
                         }>
                             <ShieldIcon sx={{ fontSize: '1.5rem' }} />
                             <p className='text-lg'>Privacy</p>
@@ -110,60 +110,13 @@ const Navigation = ({ active }: Active) => {
                                 setOpenLogout(!openLogout);
                                 setMenu(false);
                             }}
-                            className="flex items-center pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer"
+                            className="flex items-center md:pl-10 lg:pl-16 group py-3 gap-x-3 text-stone-400 w-full hover:text-gradientFirst cursor-pointer"
                         >
                             <div className=" rounded-md border-0">
                                 <LogoutIcon sx={{ fontSize: '1.5rem' }} />
                             </div>
                             <p className="text-lg font-medium leading-loose">Logout</p>
                         </div>
-                        {/*  <MenuItems
-                            icons={<AssessmentIcon sx={{ fontSize: '1.2rem' }} />
-                            }
-                            text='Analytics'
-                            navText='dashboard'
-                            active={dashboard}
-                            handleNavigation={handleNavigation}
-                            handleMenu={setMenu}
-                        /> */}
-                        {/* <MenuItems
-                        icons={<BusinessCenterIcon sx={{ fontSize: '1.5rem' }} />
-                        }
-                        text='Jobs'
-                        navText='jobs'
-                        active={jobs}
-                        handleNavigation={handleNavigation}
-                        handleMenu={setMenu}
-
-                    /> 
-                    <MenuItems
-                        icons={<PeopleIcon sx={{ fontSize: '1.5rem' }} />
-                        }
-                        text='Applicants'
-                        navText='candidates'
-                        active={candidates}
-                        handleNavigation={handleNavigation}
-                        handleMenu={setMenu}
-                    />
-                    <MenuItems
-                        icons={<SettingsSuggestIcon sx={{ fontSize: '1.5rem' }} />
-                        }
-                        text='Profile'
-                        navText='profileSetting'
-                        active={profileSetting}
-                        handleNavigation={handleNavigation}
-                        handleMenu={setMenu}
-                    />
-                    <MenuItems
-                        icons={<ShieldIcon sx={{ fontSize: '1.5rem' }} />
-                        }
-                        text='privacy'
-                        navText='privacy'
-                        active={privacy}
-                        handleNavigation={handleNavigation}
-                        handleMenu={setMenu}
-                    />*/}
-
                     </div>
                 </div>
             </div >
