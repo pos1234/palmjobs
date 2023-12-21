@@ -54,7 +54,7 @@ const ThirdForm = (props: any) => {
                 });
         }
     };
-    const generateJobDescription = async (/* { jobTitle, skills, yearsOfExperience }: Record<'jobTitle' | 'skills' | 'yearsOfExperience', string> */) => {
+    const generateJobDescription = async ({ jobTitle, /* skills, */ yearsOfExperience }: Record<'jobTitle' | /* 'skills' | */ 'yearsOfExperience', string>) => {
         console.log('Generating job description...', `${window.location.hostname}/api/oai/jobDescription`);
         try {
             if (typeof window === 'undefined') return;
@@ -80,14 +80,14 @@ const ThirdForm = (props: any) => {
         }
     };
     const handleAIJobDescription = () => {
-        /* setLoadingAi(true)
-        props.postingJobId && fetchSinglePostedJobs(props.postingJobId).then((res: any) => {
-            const { jobTitle, requiredSkills, yearsOfExperience } = res && res.documents && res.documents[0];
-            generateJobDescription({ jobTitle: jobTitle, skills: requiredSkills, yearsOfExperience: yearsOfExperience }).then((res) => {
-                console.log(res);
-    
-            })
-        }) */
+        setLoadingAi(true)
+        generateJobDescription({ jobTitle: firstTabData.jobTitle, /* skills: requiredSkills, */ yearsOfExperience: secondTabData.expRequired }).then((res) => {
+            setLoadingAi(false)
+        }).catch((error) => {
+            console.log(error);
+            setLoadingAi(false)
+        })
+
     }
     const handleBack = () => {
         setPostingTabs({
@@ -104,7 +104,7 @@ const ThirdForm = (props: any) => {
                 </div>
                 <div className='w-full flex justify-between'>
                     <p className='font-[600] text-[14px]'>Generate the job description and required skills with AI</p>
-                    <button onClick={generateJobDescription} disabled={loadingAi ? true : false} type="button"
+                    <button onClick={handleAIJobDescription} disabled={loadingAi ? true : false} type="button"
                         className={`w-60 cursor-pointer bg-black text-textW gap-2 h-10 flex items-center justify-center rounded-lg
                     ${loadingAi ? '' : 'hover:bg-gradient-to-r hover:from-[#00A82D] hover:to-[#0CBC8B] hover:border-b-4 hover:border-b-black buttonBounce'}`}>
                         {loadingAi && <svg aria-hidden="true" role="status" className="inline w-4 h-4 mr-3 text-gradientFirst animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

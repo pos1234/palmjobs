@@ -230,6 +230,13 @@ const ApplyToJob = (props: any) => {
             uploadResume(replaceResume).then((res) => {
                 applyToJobs(userDetail.$id, props.jobId, props.employerId, newEmail, phone, cover, res.$id).then((res) => {
                     setOpenNotify(true);
+                    if (typeof window !== 'undefined') {
+                        import('localforage').then((localforage) => {
+                            localforage.removeItem('appliedJobIds')
+                                .then(() => console.log(`Item with key has been reset in localForage`))
+                                .catch(error => console.error(`Error resetting item with key':`, error));
+                        });
+                    }
                     setFailed(false);
                     setLoadingApply(false);
                     const checkSaved = alreadySaved(userData.$id, props.jobId);
