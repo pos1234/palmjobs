@@ -4,7 +4,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getCompanyData, searchJobs, } from '@/backend/employerBackend'
+import { searchJobs, } from '@/backend/employerBackend'
 import 'react-toastify/dist/ReactToastify.css';
 import JobsShimmer from '@/components/shimmer/JobsShimmer';
 import JobListCard from '@/components/job/JobListCard';
@@ -38,17 +38,6 @@ const Jobs = ({ documents }: any) => {
     const [localValue, setLocalValue] = useState('')
     const [pageCount, setPageCount] = useState<number>()
     const [datePosted, setDatePosted] = useState('')
-    /* useEffect(() => {
-        const documents = getCompanyData(employerId);
-        documents.then(async (res) => {
-            if (res.documents && res.documents[0]) {
-                setCompanyData(res.documents[0]);
-                setCompanyName(res.documents[0].companyName);
-            } else {
-                setCompanyName('');
-            }
-        });
-    }, [employerId]); */
     const handleForYou = () => {
         if (forYou == false) {
             setAllLoading(true)
@@ -261,7 +250,6 @@ const Jobs = ({ documents }: any) => {
                                             setOpenJobDetail={setOpenJobDetail}
 
                                         />}
-
                                     </div>
                                 </div>
                                 <div className="w-full flex justify-center gap-5 max-md:p-3 pb-0 rounded-x-2xl">

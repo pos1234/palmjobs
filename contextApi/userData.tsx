@@ -49,7 +49,6 @@ export const GlobalContextProvider = ({ children }: any) => {
                     if (value) {
                         setLoading(false)
                         setUserData(value)
-                        console.log(value);
                     }
                     if (!value) {
                         haveAccount()
@@ -120,20 +119,28 @@ export const GlobalContextProvider = ({ children }: any) => {
         }
     }
     const useEmployerDocument = async () => {
-        const employer = await getEmployerDocument();
-        employer && setUserDetail(employer.documents[0]);
-        if (typeof window !== 'undefined') {
-            import('localforage').then((localforage) => {
-                employer && localforage.setItem('userDetail', employer.documents[0]).then(() => {
+        getEmployerDocument().then((res) => {
+            res && setUserDetail(res.documents[0]);
+            if (typeof window !== 'undefined') {
+                import('localforage').then((localforage) => {
+                    res && localforage.setItem('userDetail', res.documents[0]).then(() => {
+                    });
                 });
-            });
-        }
-        employer && setLoading(false)
+            }
+            res && setLoading(false)
+        })
     };
     useEffect(() => {
-        if (userRole == 'employer') {
-            userDetails()
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userRole').then((value: any) => {
+                    if (value == 'employer') {
+                        userDetails()
+                    }
+                });
+            })
         }
+
         useAccount()
     }, [])
 
