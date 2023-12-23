@@ -3,6 +3,7 @@ import TextInput, { SubmitButton } from './TextInput';
 import RadioInput from './RadioInput';
 import { createSalarySurvey } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
+import { SendSurveyEmail } from './SendEmail';
 const FlexDiv = ({ children }: { children: ReactNode }) => {
     return <div className='flex flex-wrap gap-x-5'>
         {children}
@@ -55,6 +56,10 @@ const SalarySurvey = () => {
             setSelectedValues([...selectedValues, value]);
         }
     };
+    function validateEmail(email: string): boolean {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
     const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
         setErrorMessage('');
@@ -94,6 +99,9 @@ const SalarySurvey = () => {
         } else if (fieldOfStudy == '') {
             setErrorCode(12);
             setErrorMessage('Please Add Field Of Study');
+        } else if (emailAddress !== '' && !validateEmail(emailAddress)) {
+            setErrorCode(13);
+            setErrorMessage('Invalid email address');
         } else {
             setLoading(true)
             createSalarySurvey(
@@ -136,6 +144,10 @@ const SalarySurvey = () => {
                 setErrorCode(0);
                 setErrorMessage('');
                 setSelectedValues([])
+                if (validateEmail(emailAddress)) {
+                    SendSurveyEmail(emailAddress)
+                }
+
             }).catch((error) => {
                 console.log(error);
                 setLoading(false);
@@ -375,13 +387,13 @@ const SalarySurvey = () => {
                         <p className='text-[12px] w-96 text-gray-400'>Interested in the final salary report? Provide your email to get it upon release - its's optional! We respect your privacy: your email is just for the report and won't be shared or used for marketing.</p>
                     </div>
                     <input
-                        type='email'
+                        type='text'
                         placeholder=""
                         value={emailAddress}
                         onChange={(e) => setEmailAddress(e.currentTarget.value)}
                         className="h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientSecond focus:border-0 w-full md:w-96" />
-                    {/*                     <TextInput setFunction={setEmailAddress} value={emailAddress} placeHolder="add your email" />
- */}                </div>
+                </div>
+                {errorCode == 13 && errorMessage && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
             </div>
             <div className='flex justify-between items-center w-full gap-5 max-md:flex-col xl:pr-14 pb-24'>
                 <button type='reset' className='w-full sm:w-[247px] h-[56px] rounded-[12px] bg-[#F4F4F4]' >Clear</button>

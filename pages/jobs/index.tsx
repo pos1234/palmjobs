@@ -189,7 +189,16 @@ const Jobs = ({ documents }: any) => {
                                 </div>
                             </div>
 
-                            <Filter openFilter={openFilter} setOpenfilter={setOpenfilter} />
+                            <Filter openFilter={openFilter}
+                                setOpenfilter={setOpenfilter}
+                                jobType={jobTypeHolder}
+                                expLevel={expLevelHolder}
+                                datePosted={datePostedHolder}
+                                setJobType={setJobTypeHolder}
+                                setExpLevel={setExpLevelHolder}
+                                setDatePosted={setDatePostedHolder}
+                                handleDate={handleDatePosted}
+                            />
                             <div className={!openJobDetail ? 'w-full flex flex-wrap gap-3 xl:w-[1112px] max-sm:hidden mb-3' : 'max-md:hidden w-full flex gap-3 xl:w-[1112px] mb-3'}>
                                 <select value={jobTypeHolder} onChange={(e) => setJobTypeHolder(e.currentTarget.value)} name="jobType" id="jobType" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
                                     <option value="">Job Type</option>

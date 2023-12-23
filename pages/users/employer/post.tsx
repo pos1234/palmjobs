@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchAllEmployerJob } from '@/backend/employerBackend';
+import { fetchAllEmployerJob, getEmployerDocument } from '@/backend/employerBackend';
 import 'react-quill/dist/quill.snow.css';
 import EmployerProfile from '@/components/employerComponents/Profile';
 import FirstForm from '@/components/employerComponents/jobPostTabs/FirstForm';
@@ -15,11 +15,12 @@ import { useGlobalContext } from '@/contextApi/userData';
 import EmployerJobShimmer from '@/components/shimmer/EmpJobShimmer';
 const PostAJob = (props: any) => {
     const { jobPostTabs, allLoading, allEmployerJobs, setAllLoading, setAllEmployerJobs, setPostingTabs } = useJobPostContext();
-    const { userDetail } = useGlobalContext()
     const [compDesc, setCompDesc] = useState('');
     const [openPreview, setOpenPreview] = useState(false);
     const [profileFilled, setProfileFilled] = useState(true);
     const [companyData, setCompanyData] = useState<any>()
+    const [userDetail, setUserDetail] = useState<any>()
+    const [loading, setLoading] = useState(false)
     const getProfile = async () => {
         if (userDetail) {
             if (
@@ -59,9 +60,85 @@ const PostAJob = (props: any) => {
         }
     }, [])
     useEffect(() => {
-        getProfile();
-    }, [userDetail, jobPostTabs])
+        if (!userDetail) {
+            if (typeof window !== 'undefined') {
+                import('localforage').then((localforage) => {
+                    localforage.getItem('userDetail').then((value: any) => {
+                        if (value) {
+                            setUserDetail(value)
+                        }
+                        if (!value) {
+                            useEmployerDocument
+                        }
+                    });
+                })
+            }
+        }
+        if (userDetail) {
+            getProfile();
+        }
+        if (userDetail) {
+            if (
+                userDetail.location == null ||
+                userDetail.phoneNumber == null ||
+                userDetail.description == null ||
+                userDetail.companyName == null
+            ) {
+                if (jobPostTabs.third == true) {
+                    setProfileFilled(false);
+                    console.log(profileFilled);
 
+                }
+            }
+        }
+
+    }, [userDetail])
+    useEffect(() => {
+        if (userDetail) {
+            if (
+                userDetail.location == null ||
+                userDetail.phoneNumber == null ||
+                userDetail.description == null ||
+                userDetail.companyName == null
+            ) {
+                if (jobPostTabs.third == true) {
+                    setProfileFilled(false);
+                    console.log(profileFilled);
+
+                }
+            }
+        }
+    }, [jobPostTabs])
+
+    const useEmployerDocument = async () => {
+        setLoading(true)
+        getEmployerDocument().then((res) => {
+            res && setUserDetail(res.documents[0]);
+            if (res) {
+                if (
+                    !res.documents[0].location ||
+                    !res.documents[0].phoneNumber ||
+                    !res.documents[0].description ||
+                    !res.documents[0].companyName
+                ) {
+                    console.log(res.documents[0].location);
+
+                    if (jobPostTabs.third == true) {
+                        setProfileFilled(false);
+                        setLoading(false)
+
+                    }
+                }
+            }
+            if (typeof window !== 'undefined') {
+                import('localforage').then((localforage) => {
+                    res && localforage.setItem('userDetail', res.documents[0]).then(() => {
+                        setLoading(false)
+                    });
+                });
+            }
+        })
+    };
     return (
         <div className="flex gap-x-3 max-md:flex-wrap bg-textW">
             <Navigation active='post' />
@@ -104,13 +181,15 @@ const PostAJob = (props: any) => {
                 <div className={jobPostTabs.second ? '' : 'hidden'} >
                     <SecondForm />
                 </div>
+
                 <div className={jobPostTabs.third == true && profileFilled == true ? '' : 'hidden'}>
                     <ThirdForm />
                 </div>
+
                 <div className={jobPostTabs.fourth == true ? '' : 'hidden'}>
                     <FourthForm setOpenPreview={setOpenPreview} />
                 </div>
-                {!profileFilled && <EmployerProfile setFilled={setProfileFilled} />}
+                {!profileFilled && !loading && <EmployerProfile setFilled={setProfileFilled} />}
                 <PreviewJob openModal={openPreview} setOpenModal={setOpenPreview} companyData={companyData}
                 />
             </div>

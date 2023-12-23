@@ -5,6 +5,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { toast } from 'react-toastify';
 import Notification from '../Notification';
 import { SubmitButton } from '../TextInput';
+
 const RegisterComponent = (props: any) => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -22,6 +23,32 @@ const RegisterComponent = (props: any) => {
         firstName: props.name,
         lastName: ''
     });
+    const getPasswordStrength = () => {
+        const password = register.password;
+
+        // Check for minimum length (at least 8 characters)
+        const hasMinLength = password.length >= 8;
+
+        // Regular expressions to check for other criteria
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasDigit = /\d/.test(password);
+        const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password);
+
+        // Calculate a numeric value based on the criteria
+        const strengthValue =
+            (hasMinLength ? 1 : 0) +
+            (hasUppercase ? 1 : 0) +
+            (hasLowercase ? 1 : 0) +
+            (hasDigit ? 1 : 0) +
+            (hasSpecialChar ? 1 : 0);
+
+        // Normalize the value to a range between 0 and 1
+        const normalizedStrength = strengthValue / 5; // Now divided by 5 as we added one more criteria
+
+        return normalizedStrength;
+    };
+
     function validateEmail(email: string): boolean {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -33,20 +60,22 @@ const RegisterComponent = (props: any) => {
         setFirstNameError('');
         setLastNameError('');
         if (register.firstName == '') {
-            setFirstNameError('please provide First Name');
+            setFirstNameError('Please provide First Name');
         } else if (register.lastName == '') {
-            setLastNameError('please provide Last Name');
+            setLastNameError('Please provide Last Name');
         } else if (register.email == '') {
-            setEmailError('please provide email');
+            setEmailError('Please provide email');
         } else if (register.password == '') {
-            setPasswordError('please provide password');
+            setPasswordError('Please provide password');
         } else if (retypedPassword == '') {
-            setPasswordError('please Confirm password');
+            setPasswordError('Please Confirm password');
         } else if (register.password !== retypedPassword) {
-            setPasswordError("password doesn't match");
-        } else if (register.password.length < 8) {
-            setPasswordError('password must be more than 8 charachters');
-        } else if (!checked) {
+            setPasswordError("Password doesn't match");
+        } else if (getPasswordStrength() !== 1) {
+/*             setPasswordError('Password must be more than 8 charachters');
+ */        } /* else if (register.password.length < 8) {
+            setPasswordError('Password must be more than 8 charachters');
+        } */ else if (!checked) {
             setCheckError('Please Agree to Terms and Condition');
         } else {
             if (validateEmail(register.email)) {
@@ -89,6 +118,33 @@ const RegisterComponent = (props: any) => {
             }
         }
     };
+    const getColorClass = (score: number/* , isTyping: boolean */) => {
+        if (score <= 0.2) {
+            return "red-500";
+        } else if (score <= 0.4) {
+            return "yellow-500";
+        } else if (score <= 0.8) {
+            return "green-300";
+        } else if (score == 1) {
+            return "green-500";
+        } else {
+            return "bg-green-500";
+        }
+    };
+    const getColorText = (score: number/* , isTyping: boolean */) => {
+        if (score <= 0.2) {
+            return "Weak";
+        } else if (score <= 0.4) {
+            return "Fair";
+        } else if (score <= 0.8) {
+            return "Medium";
+        } else if (score == 1) {
+            return "Strong";
+        } else {
+            return "bg-green-500";
+        }
+    };
+
     return (
         <>
             <form onSubmit={handleRegister} className="w-full flex gap-5 flex-wrap text-left mt-5 md:pr-0 gap-x-5">
@@ -172,9 +228,23 @@ const RegisterComponent = (props: any) => {
                                     : 'col-span-12 focus:outline-0 focus:ring-gradientSecond focus:border-0 border-[1px] w-full rounded-lg h-12 pl-5 text-addS'
                             }
                         />
-                        {passwordError && <p className="pt-3 text-[13px] text-red-500">{passwordError}</p>}
                     </div>
                 </div>
+                <div className='w-full'>
+                    <div className='bg-gray-100 w-full'>
+                        <div style={{ width: `${getPasswordStrength() * 100}%` }}
+                            className={`flex h-2 rounded-[3px] flex-col whitespace-nowrap transition-all duration-500 ease-in-out bg-${getColorClass(
+                                getPasswordStrength())}`}
+                        ></div>
+                    </div>
+                    <div>
+                        <div className={`flex w-full justify-end mt-3 text-${getColorClass(
+                            getPasswordStrength())}`}>
+                            {getColorText(getPasswordStrength())}</div >
+                    </div>
+                </div>
+
+                {passwordError && <p className="text-[13px] w-full text-red-500">{passwordError}</p>}
                 <div className="w-full">
                     <input
                         onChange={(e) => setChecked(e.currentTarget.checked)}

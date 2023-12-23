@@ -2,6 +2,7 @@
 import { createContext, useContext, Dispatch, useState, SetStateAction, useEffect } from "react";
 import { getAccount, getRole } from "../backend/accountBackend";
 import { getEmployerDocument } from "../backend/employerBackend";
+import { getCandidateDocument } from "@/backend/candidateBackend";
 interface UserData {
     loading: boolean,
     userRole: string,
@@ -24,9 +25,10 @@ export const GlobalContextProvider = ({ children }: any) => {
     const [userRole, setUserRole] = useState('')
     const [userDetail, setUserDetail] = useState<any>()
     const haveAccount = () => {
+        setLoading(true)
+
         getAccount().then((userInfo: any) => {
-            userInfo && console.log(userInfo);
-            setLoading(false)
+            userInfo && setLoading(false)
             if (userInfo !== "failed") {
                 setUserData(userInfo)
                 if (typeof window !== 'undefined') {
@@ -36,6 +38,9 @@ export const GlobalContextProvider = ({ children }: any) => {
                         });
                     });
                 }
+            }
+            if (userInfo == "failed") {
+                setLoading(false)
             }
         }).catch((error) => {
             setLoading(false)
@@ -72,24 +77,19 @@ export const GlobalContextProvider = ({ children }: any) => {
         }
     }
     const useRole = async () => {
-        const role = await getRole();
-        role && setUserRole(role.documents[0].userRole);
-        if (typeof window !== 'undefined') {
-            import('localforage').then((localforage) => {
-                role && localforage.setItem('userRole', role.documents[0].userRole).then(() => {
+        getRole().then((role: any) => {
+            role && setUserRole(role.documents[0].userRole);
+            if (typeof window !== 'undefined') {
+                import('localforage').then((localforage) => {
+                    role && localforage.setItem('userRole', role.documents[0].userRole).then(() => {
+                    });
                 });
-            });
-        }
+            }
+        }).catch((error) => {
+            setLoading(false)
+        })
 
     };
-
-    const useAccount = async () => {
-        userDatas()
-        haveRole()
-/*         haveDetail()
- */    };
-
-
     const userDetails = async () => {
         if (typeof window !== 'undefined') {
             import('localforage').then((localforage) => {
@@ -104,8 +104,6 @@ export const GlobalContextProvider = ({ children }: any) => {
                 });
             });
         }
-        setLoading(true)
-        userDetail && setLoading(false)
     }
     const getDetails = async () => {
         if (typeof window !== 'undefined') {
@@ -114,9 +112,27 @@ export const GlobalContextProvider = ({ children }: any) => {
                     if (value == 'employer') {
                         useEmployerDocument()
                     }
+                    if (value == 'candidate') {
+                        useCandidateDocument()
+                    }
                 });
             });
         }
+        if (userRole == 'employer') {
+            useEmployerDocument()
+        }
+        if (userRole == 'candidate') {
+            useCandidateDocument()
+        }
+        /* if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userRole').then((value: any) => {
+                    if (value == 'employer') {
+                        useEmployerDocument()
+                    }
+                });
+            });
+        } */
     }
     const useEmployerDocument = async () => {
         getEmployerDocument().then((res) => {
@@ -124,26 +140,56 @@ export const GlobalContextProvider = ({ children }: any) => {
             if (typeof window !== 'undefined') {
                 import('localforage').then((localforage) => {
                     res && localforage.setItem('userDetail', res.documents[0]).then(() => {
+                        setLoading(false)
                     });
                 });
             }
-            res && setLoading(false)
+        }).catch((error) => {
+            setLoading(false)
         })
     };
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            import('localforage').then((localforage) => {
-                localforage.getItem('userRole').then((value: any) => {
-                    if (value == 'employer') {
-                        userDetails()
-                    }
+    const useCandidateDocument = async () => {
+        getCandidateDocument().then((res) => {
+            res && setUserDetail(res.documents[0]);
+            if (typeof window !== 'undefined') {
+                import('localforage').then((localforage) => {
+                    res && localforage.setItem('userDetail', res.documents[0]).then(() => {
+                        setLoading(false)
+                    });
                 });
-            })
-        }
-        
+            }
+        }).catch((error) => {
+            setLoading(false)
+        })
+    };
+    /* useEffect(() => {
+          if (typeof window !== 'undefined') {
+             import('localforage').then((localforage) => {
+                 localforage.getItem('userRole').then((value: any) => {
+                     if (value == 'employer') {
+                     }
+                 });
+             })
+         }
+         userDetails()
+ 
+         useAccount()
+     }, []) */
+    const useAccount = async () => {
+        userDatas()
+        haveRole()
+    };
+    useEffect(() => {
         useAccount()
+        userDetails()
     }, [])
+    useEffect(() => {
+        if (userData && !userRole) {
+            useRole()
+            userDetails()
 
+        }
+    }, [userData, userRole])
     return < GlobalContext.Provider value={{ userDetail, setUserDetail, loading, userData, setUserData, userRole }} >{children}</GlobalContext.Provider >
 }
 export const useGlobalContext = () => useContext(GlobalContext)

@@ -36,6 +36,7 @@ const JobDetail = (props: any) => {
     const [userSkill, setUserSkill] = useState<any>()
     const [applied, setApplied] = useState(false);
     const [saved, setSaved] = useState(false)
+    const [saveLoading, setSaveLoading] = useState(false)
     const router = useRouter();
     const isWithinWeek = moment(props.jobDetails.$createdAt).isAfter(moment().subtract(7, 'days')) && moment(props.jobDetails.datePosted).isBefore(moment());
     const date = new Date(props.jobDetails.$createdAt);
@@ -56,8 +57,8 @@ const JobDetail = (props: any) => {
             setAllLoading(true)
             alreadyApplied(userData.$id, props.jobDetails.$id).then((applied) => {
                 setAllLoading(false)
-                console.log(userData.$id);
-                
+                console.log(applied);
+
                 if (applied.total !== 0) {
                     setApplied(true);
                 }
@@ -117,9 +118,12 @@ const JobDetail = (props: any) => {
             const checkSaveds = alreadySaved(userData.$id, id);
             checkSaveds.then((rem: any) => {
                 if (rem.total == 0) {
-                    toast.success('Successfully Saved Job');
-                    saveJobs(userData.$id, id);
-                    setSaved(true)
+                    setSaveLoading(true)
+                    saveJobs(userData.$id, id).then((res) => {
+                        toast.success('Successfully Saved Job');
+                        setSaved(true)
+                        setSaveLoading(false)
+                    })
 
                 } /* else {
                     toast.error('Job Already saved');
@@ -289,10 +293,13 @@ const JobDetail = (props: any) => {
                             )}
                             {!saved && !allLoading && !applied &&
                                 <div className='flex items-center cursor-pointer text-gray-500 hover:text-gradientFirst'>
-                                    <BookmarkBorderOutlinedIcon
-                                        onClick={() => handleSaveJob(props.jobDetails.$id)}
-                                        sx={{ fontSize: '1.5rem' }}
-                                    />
+                                    {
+                                        !saveLoading && <BookmarkBorderOutlinedIcon
+                                            onClick={() => handleSaveJob(props.jobDetails.$id)}
+                                            sx={{ fontSize: '1.5rem' }}
+                                        />
+                                    }
+                                    {saveLoading && <img src="/images/loading.svg" alt="loadingImage" className='w-10' />}
                                 </div>
                             }
                             {saved && !allLoading && !applied &&

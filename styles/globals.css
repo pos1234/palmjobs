@@ -35,8 +35,9 @@ body {
 }
 .homeSurvey {
     background: url('https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images//HomeSurvey.svg') no-repeat;
-/*     background: url('../public/images/HomeSurvey.svg') no-repeat;
- */    background-size: cover;
+    /*     background: url('../public/images/HomeSurvey.svg') no-repeat;
+ */
+    background-size: cover;
     background-position-y: 20%;
 }
 ::-webkit-scrollbar {
@@ -193,4 +194,13 @@ body {
     height: 50%;
     overflow: hidden;
     transition: all 0.5s;
+}
+@media screen and (max-width: 768px) {
+    .homeSurvey {
+        background: url('https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images/candidateSearch.svg') no-repeat;
+        /*     background: url('../public/images/HomeSurvey.svg') no-repeat;
+     */
+        background-size: cover;
+        background-position-x: 100%;
+    }
 }

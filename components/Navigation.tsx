@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '@/styles/navigation.module.css';
 import Link from 'next/link';
 import { Popover } from '@headlessui/react';
@@ -13,11 +13,10 @@ import { useGlobalContext } from '@/contextApi/userData';
 const Navigation = (props: any) => {
     const { loading, userDetail, userData, userRole } = useGlobalContext()
     const logo = 'https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images/logo.svg';
-/*     const logo = '/images/logo.svg';
- */    const [menu, setMenu] = useState(false);
+    /*     const logo = '/images/logo.svg';
+     */
+    const [menu, setMenu] = useState(false);
     const [openLogout, setOpenLogout] = useState(false);
-    const [allLoading, setAllLoading] = useState(false)
-
     return (
         <div>
             <div className={`flex flex-wrap items-center gap-5 relative md:border-[1px] md:border-t-0 xl:px-40 xl:h-[73px] ${menu ? ' max-md:h-screen md:pt-3' : 'pt-3'}`}>
@@ -171,7 +170,7 @@ const Navigation = (props: any) => {
                         </div>
                     </div>
                     <div className="flex pt-2 gap-10">
-                        {!userData && !loading && (
+                        {(!userData || userData == 'failed') && !loading && (
                             <>
                                 <div className="max-md:hidden flex items-center">
                                     <div className="font-[500] text-[16px] text-[#0E121D] ">
@@ -198,7 +197,7 @@ const Navigation = (props: any) => {
                                 </div>
                             </div>
                         }
-                        {!loading && userData && (
+                        {!loading && userData && userData !== 'failed' && (
                             <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
                                 <div>
                                     <Popover className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 bg-gray-50 rounded-full h-10">
@@ -211,17 +210,17 @@ const Navigation = (props: any) => {
                                             )}
                                             {userData && (
                                                 <div className="flex text-left ml-3 justify-center items-center ">
-                                                    {userRole == 'candidate' ? <p className="text-[14px] font-[600]">{userData.name}</p> : null}
+                                                    <p className="text-[14px] font-[600]">{userData.name}</p>
+                                                    {/*  {userRole == 'candidate' ? <p className="text-[14px] font-[600]">{userData.name}</p> : null}
                                                     {userRole == 'employer' ? (
                                                         <>
-                                                            {userDetail && (
+                                                            {userData && (
                                                                 <p className="text-[14px] font-[600]">
-                                                                    {!userDetail.companyName && <span>{userData.name}</span>}
-                                                                    {userDetail.companyName && userDetail.companyName}
+                                                                    <span>{userData.name}</span>
                                                                 </p>
                                                             )}
                                                         </>
-                                                    ) : null}
+                                                    ) : null} */}
 
                                                 </div>
                                             )}
