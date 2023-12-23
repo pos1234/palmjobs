@@ -12,6 +12,7 @@ import JobDetail from '@/components/job/JobDetail';
 import SearchBar from '@/components/job/SearchBar';
 import CheckProfileCompletion from '@/components/CheckProfileCompletion';
 import { useGlobalContext } from '@/contextApi/userData';
+import Filter from '@/components/job/Filter';
 const Jobs = ({ documents }: any) => {
     const { userRole } = useGlobalContext()
     const router = useRouter();
@@ -38,6 +39,7 @@ const Jobs = ({ documents }: any) => {
     const [localValue, setLocalValue] = useState('')
     const [pageCount, setPageCount] = useState<number>()
     const [datePosted, setDatePosted] = useState('')
+    const [openFilter, setOpenfilter] = useState(false)
     const handleForYou = () => {
         if (forYou == false) {
             setAllLoading(true)
@@ -172,7 +174,10 @@ const Jobs = ({ documents }: any) => {
                                         setTheSearchTerm={setTheSearchTerm}
                                     />
                                 </div>
-                                <div className='w-full justify-center flex gap-5 mt-2 items-center font-[500]'>
+                                <div className='w-full justify-center flex gap-5 mt-2 items-center font-[500] relative'>
+                                    <div onClick={() => setOpenfilter(true)} className={`pb-2 cursor-pointer flex sm:hidden absolute left-0 ml-5`}>
+                                        <img src="/icons/filter_icon_183755.svg" alt="icon-image" />
+                                    </div>
                                     <div onClick={handleForYou} className={`pb-2 cursor-pointer flex items-center gap-2 border-b-[3px] ${forYou ? 'border-b-gradientFirst' : ' border-textW hover:border-b-gradientFirst'}`}>
                                         <img src="/icons/forYouApple.svg" alt="forYouApple" />
                                         <p>For You</p>
@@ -183,7 +188,9 @@ const Jobs = ({ documents }: any) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className={!openJobDetail ? 'w-full flex flex-wrap gap-3 xl:w-[1112px] mb-3' : 'max-md:hidden w-full flex gap-3 xl:w-[1112px] mb-3'}>
+
+                            <Filter openFilter={openFilter} setOpenfilter={setOpenfilter} />
+                            <div className={!openJobDetail ? 'w-full flex flex-wrap gap-3 xl:w-[1112px] max-sm:hidden mb-3' : 'max-md:hidden w-full flex gap-3 xl:w-[1112px] mb-3'}>
                                 <select value={jobTypeHolder} onChange={(e) => setJobTypeHolder(e.currentTarget.value)} name="jobType" id="jobType" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
                                     <option value="">Job Type</option>
                                     <option value="Internship">Internship</option>
@@ -228,7 +235,7 @@ const Jobs = ({ documents }: any) => {
                                         {data && data.length !== 0 && userRole && userRole == 'candidate' && <CheckProfileCompletion />}
                                         {data &&
                                             data.map((items: any, index: number) => {
-                                                return <JobListCard setCompanyName={setCompanyName} setCompLogo={setCompLogo} items={items} key={index} jobDetailId={jobDetailId} setEmployerId={setEmployerId} setJobDetailId={setJobDetailId} setOpenJobDetail={setOpenJobDetail} handleJobSelection={handleJobSelection}
+                                                return <JobListCard setCompany={setCompany} setCompanyName={setCompanyName} setCompLogo={setCompLogo} items={items} key={index} jobDetailId={jobDetailId} setEmployerId={setEmployerId} setJobDetailId={setJobDetailId} setOpenJobDetail={setOpenJobDetail} handleJobSelection={handleJobSelection}
                                                 />
                                             })}
                                     </div>

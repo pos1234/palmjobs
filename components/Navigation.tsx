@@ -17,7 +17,7 @@ const Navigation = (props: any) => {
  */    const [menu, setMenu] = useState(false);
     const [openLogout, setOpenLogout] = useState(false);
     const [allLoading, setAllLoading] = useState(false)
-    
+
     return (
         <div>
             <div className={`flex flex-wrap items-center gap-5 relative md:border-[1px] md:border-t-0 xl:px-40 xl:h-[73px] ${menu ? ' max-md:h-screen md:pt-3' : 'pt-3'}`}>
@@ -216,6 +216,7 @@ const Navigation = (props: any) => {
                                                         <>
                                                             {userDetail && (
                                                                 <p className="text-[14px] font-[600]">
+                                                                    {!userDetail.companyName && <span>{userData.name}</span>}
                                                                     {userDetail.companyName && userDetail.companyName}
                                                                 </p>
                                                             )}

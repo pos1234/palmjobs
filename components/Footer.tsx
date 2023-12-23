@@ -255,7 +255,7 @@ const Footer = () => {
                         <div className="hidden md:flex flex-col gap-3 pt-3 text-lightGrey text-[18px] font-[400] leading-midRL">
                             <LinkList link="/faq" text="Help Center" />
                             <div className='text-lightGrey hover:text-gradientFirst hover:underline cursor-pointer' onClick={() => setSupport(!support)}>
-                                Contact support
+                                Contact Support
                             </div>
                         </div>
                         {forGt && (
