@@ -140,7 +140,7 @@ export const GlobalContextProvider = ({ children }: any) => {
                 });
             })
         }
-
+        
         useAccount()
     }, [])
 

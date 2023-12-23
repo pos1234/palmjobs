@@ -48,14 +48,16 @@ const JobDetail = (props: any) => {
         return arrayValue
     }
     const checkApplied = async () => {
-        if (!userDetail) {
+        if (!userData) {
             setApplied(false)
             setAllLoading(false)
         }
-        if (userDetail) {
+        if (userData) {
             setAllLoading(true)
-            alreadyApplied(userDetail.$id, props.jobDetails.$id).then((applied) => {
+            alreadyApplied(userData.$id, props.jobDetails.$id).then((applied) => {
                 setAllLoading(false)
+                console.log(userData.$id);
+                
                 if (applied.total !== 0) {
                     setApplied(true);
                 }
@@ -66,10 +68,10 @@ const JobDetail = (props: any) => {
         }
     };
     const checkSaved = () => {
-        if (!userDetail) {
+        if (!userData) {
             setSaved(false)
         }
-        if (userDetail) {
+        if (userData) {
             const checkSaved = alreadySaved(userData.$id, props.jobDetails.$id);
             checkSaved.then((rem: any) => {
                 if (rem.total > 0) {
@@ -84,7 +86,7 @@ const JobDetail = (props: any) => {
     useEffect(() => {
         checkApplied()
         checkSaved()
-    }, [userDetail, props.jobDetails])
+    }, [props])
     const handleApply = async (jobId: string, employerId: string, jobTitle: string) => {
         setApply(false);
         if (userRole) {
