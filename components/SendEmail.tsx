@@ -117,3 +117,22 @@ export const SendJobAppliedEmail = (userEmail: string, jobTitle: string,/*  user
     console.log(err);
   }
 };
+export const SendSurveyEmail = (userEmail: string) => {
+  const formData = {
+    userEmail
+  }
+  try {
+    fetch(`${process.env.NEXT_PUBLIC_VERIFY}/api/email/survey`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData)
+    }).then((res: any) => {
+      console.log('sent');
+
+    })
+  } catch (err) {
+    console.log(err);
+  }
+};

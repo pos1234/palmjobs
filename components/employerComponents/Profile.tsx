@@ -245,7 +245,7 @@ const EmployerProfile = (props: any) => {
                 <TextInput placeHolder="" value={webLink} setFunction={setWebLink} />
             </div>
             <RequiredTextLabel text="Company Description?" req="nReq" />
-            <div className="pb-20 mr-2 mt-5 xl:mr-64">
+            <div className="pb-20 mr-2 mt-5">
                 <ReactQuill
                     className="h-60 text-addS"
                     value={compDescription}

@@ -10,6 +10,7 @@ import ReportIcon from '@mui/icons-material/Report';
 import EnergySavingsLeafIcon from '@mui/icons-material/EnergySavingsLeaf'
 import ShareIcon from '@mui/icons-material/Share';
 import Share from '../Share';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { SmallLists, SubmitButton } from '../TextInput';
 import { Popover } from '@headlessui/react';
 import { alreadySaved, saveJobs } from '@/backend/candidateBackend';
@@ -29,6 +30,7 @@ const JobListCard = (props: any) => {
  */    const [openReport, setOpenReport] = useState(false)
     const [reportCode, setReportCode] = useState(0)
     const [reportLoading, setReportLoading] = useState(false)
+    const [saved, setSaved] = useState(false)
     const [reportData, setReportData] = useState({
         jobId: '',
         employerId: '',
@@ -45,6 +47,26 @@ const JobListCard = (props: any) => {
             setUserId(userData.$id)
         }
     };
+    const checkSaved = () => {
+        if (!userData) {
+            setSaved(false)
+        }
+        if (userData) {
+            const checkSaved = alreadySaved(userData.$id, props.items.$id);
+            checkSaved.then((rem: any) => {
+                if (rem.total > 0) {
+                    setSaved(true)
+                }
+                if (rem.total == 0) {
+                    setSaved(false)
+                }
+            });
+        }
+    }
+    useEffect(() => {
+        checkSaved()
+    }, [props])
+
     useEffect(() => {
         getUserData();
     }, [userData]);
@@ -142,7 +164,14 @@ const JobListCard = (props: any) => {
                             </Popover.Button>
                             <Popover.Panel className="absolute  text-[13px] right-0 border-2 rounded-md flex flex-col bg-textW shadow z-10 w-[8rem]">
                                 <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => setOpenShare(true)}><ShareIcon sx={{ fontSize: '1.2rem' }} />Share</p>
-                                <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => handleSaveJob(props.items.$id)}><img src="/icons/save.svg" alt="saveImage" className='w-4 h-4' /> Save</p>
+
+                                {
+                                    !saved && <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => handleSaveJob(props.items.$id)}><img src="/icons/save.svg" alt="saveImage" className='w-4 h-4' /> Save</p>
+                                }
+                                {saved && <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => handleSaveJob(props.items.$id)}><BookmarkIcon
+                                    sx={{ fontSize: '1.3rem', color: 'gray' }}
+                                /> Saved</p>
+                                }
                                 <p className='flex gap-2 p-2 hover:bg-[#F4F4F4]' onClick={() => {
                                     setOpenReport(true)
                                     setReportData({ ...reportData, jobId: props.items.$id })
@@ -216,7 +245,11 @@ const JobListCard = (props: any) => {
                 </div>
             </div>
             { }
-            {isWithinWeek ? days == 0 ? <p className='text-[12px]'>Posted Today</p> : <p className='text-[12px]'>Posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>Posted {weeks} weeks ago</p> : <p className='text-[12px]'>Posted {Math.floor(weeks / 4)} month ago</p>}
+            {isWithinWeek ? days == 0
+                ? <p className='text-[12px]'>Posted Today</p> : days == 1 ? <p className='text-[12px]'>Posted {days} day ago</p> : <p className='text-[12px]'>Posted {days} days ago</p>
+                : weeks <= 3 ? weeks == 1 ? <p className='text-[12px]'>Posted {weeks} week ago</p> : <p className='text-[12px]'>Posted {weeks} weeks ago</p>
+                    : <p className='text-[12px]'>Posted {Math.floor(weeks / 4)} month ago</p>
+            }
             <Share openShare={openShare} setOpenShare={setOpenShare} link={props.items.$id} />
             <FormModal openModal={openReport} setOpenModal={setOpenReport} addText={'Survey'} text={''} tipText={"Thank you for helping us maintain a professional and safe environment on our job board. If you've found a job listing that violates our terms or seems inappropriate, please provide the information below to assist our review."}>
                 <form onSubmit={handleReportSubmit} className="w-full flex flex-col h-full md:max-lg:items-center">

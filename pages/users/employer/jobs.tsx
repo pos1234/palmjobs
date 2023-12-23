@@ -14,7 +14,7 @@ import { useJobPostContext } from '@/contextApi/jobPostData';
 import Navigation from '@/components/employerComponents/Navigation';
 import Link from 'next/link';
 import { employeeAuth } from '@/components/withAuth';
-import { fetchAllEmployerJob } from '@/backend/employerBackend';
+import { fetchAllEmployerJob, getEmployerDocument } from '@/backend/employerBackend';
 const Jobs = (props: any) => {
     const { allEmployerJobs, setAllEmployerJobs, allLoading, setAllLoading, setPostingTabs, jobPostTabs } = useJobPostContext()
     const [opened, setOpened] = useState(false);
@@ -90,6 +90,7 @@ const Jobs = (props: any) => {
             setDraft(false)
         }
     }, [allEmployerJobs]);
+
     return (
         <>
             <div className="flex max-md:flex-wrap bg-textW">
