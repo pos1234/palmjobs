@@ -266,6 +266,13 @@ const ApplyToJob = (props: any) => {
                     getAccount().then((res: any) => {
                         res && SendJobAppliedEmail(res.email, props.jobTitle, props.companyName);
                     });
+                    if (typeof window !== 'undefined') {
+                        import('localforage').then((localforage) => {
+                            localforage.removeItem('appliedJobIds')
+                                .then(() => console.log(`Item with key has been reset in localForage`))
+                                .catch(error => console.error(`Error resetting item with key':`, error));
+                        });
+                    }
                     setOpenNotify(true);
                     setFailed(false);
                     setLoadingApply(false);

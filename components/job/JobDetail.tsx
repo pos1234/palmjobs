@@ -120,6 +120,12 @@ const JobDetail = (props: any) => {
                 if (rem.total == 0) {
                     setSaveLoading(true)
                     saveJobs(userData.$id, id).then((res) => {
+                        if (typeof window !== 'undefined') {
+                            import('localforage').then((localforage) => {
+                                localforage.removeItem('savedJobIds').then((value: any) => {
+                                })
+                            });
+                        }
                         toast.success('Successfully Saved Job');
                         setSaved(true)
                         setSaveLoading(false)
