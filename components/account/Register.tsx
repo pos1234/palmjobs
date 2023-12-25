@@ -121,14 +121,14 @@ const RegisterComponent = (props: any) => {
     const getColorClass = (score: number/* , isTyping: boolean */) => {
         if (score <= 0.2) {
             return "red-500";
-        } else if (score <= 0.4) {
+        } else if (score <= 0.6) {
             return "yellow-500";
-        } else if (score <= 0.8) {
+        } else if (score >= 0.8 && score < 1) {
             return "green-300";
         } else if (score == 1) {
             return "green-500";
         } else {
-            return "bg-green-500";
+            return "green-500";
         }
     };
     const getColorText = (score: number/* , isTyping: boolean */) => {
@@ -141,10 +141,9 @@ const RegisterComponent = (props: any) => {
         } else if (score == 1) {
             return "Strong";
         } else {
-            return "bg-green-500";
+            return "Weak";
         }
     };
-
     return (
         <>
             <form onSubmit={handleRegister} className="w-full flex gap-5 flex-wrap text-left mt-5 md:pr-0 gap-x-5">
@@ -234,12 +233,12 @@ const RegisterComponent = (props: any) => {
                     <div className='bg-gray-100 w-full'>
                         <div style={{ width: `${getPasswordStrength() * 100}%` }}
                             className={`flex h-2 rounded-[3px] flex-col whitespace-nowrap transition-all duration-500 ease-in-out bg-${getColorClass(
-                                getPasswordStrength())}`}
+                                getPasswordStrength()).toString()}`}
                         ></div>
                     </div>
                     <div>
                         <div className={`flex w-full justify-end mt-3 text-${getColorClass(
-                            getPasswordStrength())}`}>
+                            getPasswordStrength()).toString()}`}>
                             {getColorText(getPasswordStrength())}</div >
                     </div>
                 </div>
