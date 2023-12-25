@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import LanguageIcon from '@mui/icons-material/Language';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { addSocials} from '@/backend/candidateBackend';
+import { addSocials } from '@/backend/candidateBackend';
 import { updateUserName } from '@/backend/employerBackend';
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
@@ -136,10 +136,10 @@ const SocialForm = (props: any) => {
     }, [])
     return (
         <ConfirmModal isOpen={props.openProfile} handleClose={() => props.setOpenProfile(false)}>
-            <div className="mx-2 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 pb-14 md:pt-8 md:pl-14 md:w-2/3 lg:w-1/2 md:mx-0">
+            <div className="mx-2 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-6 pb-14 md:pt-4 md:pl-14 md:w-2/3 lg:w-1/2 md:mx-0">
                 <form onSubmit={hanleLinkUpdate} className="col-span-12 max-sm:pl-1 order-1 flex flex-wrap grid-cols-12 pr-4">
-                    <div className='w-full flex justify-between'>
-                        <p className="font-[600] text-2xl leading-shL pb-5 ">Bio</p>
+                    <div className='w-full flex justify-between pb-5'>
+                        <p className="font-[600] text-2xl leading-shL  ">Bio</p>
                         <button onClick={() => props.setOpenProfile(false)}>
                             <CloseIcon
                                 sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}

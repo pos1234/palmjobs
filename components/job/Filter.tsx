@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 const Filter = (props: any) => {
     return (
         <ConfirmModal isOpen={props.openFilter} handleClose={() => props.setOpenfilter(!props.openFilter)}>
-            <div className="mx-2 pb-10 pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-10 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
+            <div className="mx-2 pb-10 pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-5 md:pl-8 md:w-2/3 lg:w-1/2 md:mx-0">
                 <div className="col-span-12 grid grid-cols-12">
                     <div className="col-span-12 grid grid-cols-12">
                         <p className="font-thW text-frhS leading-shL text-modalTitle col-span-10 md:col-span-11">

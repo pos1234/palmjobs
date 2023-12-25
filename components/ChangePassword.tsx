@@ -12,7 +12,7 @@ const RequiredTextLabel = (props: any) => {
         </div>
     );
 };
-const ChangePassword = () => {
+const ChangePassword = (props: any) => {
     const [oldPassword, setOldPassword] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfrimPassword] = useState('');
@@ -53,7 +53,7 @@ const ChangePassword = () => {
         }
     };
     return (
-        <div className="pt-5 pb-10 flex max-sm:px-5 sm:pl-10 xl:pr-28 my-5 xl:px-20">
+        <div className={props.class}>
             <form
                 onSubmit={handleReset}
                 className="flex flex-col gap-y-2 w-full sm:w-2/3"
