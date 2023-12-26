@@ -5,16 +5,49 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 const Home = () => {
     const router = useRouter();
     const [searchText, setSearchText] = useState('');
     const [address, setAddress] = useState('');
+    const [openDetail, setOpenDetail] = useState(false)
     const handleSearch = () => {
         typeof window !== 'undefined' && router.push({
             pathname: '/jobs',
             query: { param1: searchText, param2: address }
         });
     };
+    const jobTitles = [
+        'Maintenance Technician',
+        'Administrative Assistant',
+        'Outside Sales Representative',
+        'Warehouse Package Handler',
+        'Warehouse Worker',
+        'Senior Software Engineer',
+        'Associate Attorney',
+        'Account Manager',
+        'Dental Assistant',
+        'Licensed Vocational Nurse',
+        'Therapist',
+        'Dentist',
+    ];
+    const jobData = [
+        { location: 'New York', jobType: 'Remote Jobs' },
+        { location: 'New York', jobType: 'Work From Home Jobs' },
+        { location: 'New York', jobType: 'Part Time Jobs' },
+        { location: 'Phoenix', jobType: 'Remote Jobs' },
+        { location: 'Phoenix', jobType: 'Work From Home Jobs' },
+        { location: 'Phoenix', jobType: 'Part Time Jobs' },
+        { location: 'Houston', jobType: 'Remote Jobs' },
+        { location: 'Houston', jobType: 'Work From Home Jobs' },
+        { location: 'Houston', jobType: 'Part Time Jobs' },
+        { location: 'San Antonio', jobType: 'Remote Jobs' },
+        { location: 'San Antonio', jobType: 'Work From Home Jobs' },
+        { location: 'San Antonio', jobType: 'Part Time Jobs' },
+        { location: 'Atlanta', jobType: 'Remote Jobs' },
+        { location: 'Atlanta', jobType: 'Work From Home Jobs' },
+        { location: 'Atlanta', jobType: 'Part Time Jobs' },
+    ];
     return (
         <>
             <Head>
@@ -49,6 +82,45 @@ const Home = () => {
                         <div className='flex md:w-1/3 flex-grow max-lg:w-full justify-center sm:max-lg:items-center'>
                             <img src="https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images/man-working-from-home-2194237-0.svg" alt="employees" />
                         </div>
+                    </div>
+                    <div className='flex  w-full border-y-2 py-10 flex-col gap-10'>
+                        <div className='text-[20px] flex justify-center leading-[22px] font-[400] w-full'>See what's trending on <span onClick={() => setOpenDetail(!openDetail)} className='text-gradientFirst font-[600] cursor-pointer pl-1'> Palm Jobs <KeyboardArrowDownIcon sx={{ fontSize: '1.5rem' }} /></span></div>
+                        {
+                            openDetail &&
+                            <div className='flex w-full justify-around max-md:flex-col max-md:gap-5'>
+                                <div className='flex flex-col items-center'>
+                                    <p className='font-[600] text-[18px] text-[#0E121D] w-full flex max-md:justify-center'>Trending Jobs</p>
+                                    <div className='list-disc text-gradientFirst underline mt-5 flex flex-col gap-3 w-full flex max-md:items-center'>
+                                        {jobTitles.map((title, index) => (
+                                            <Link key={index} href={`/jobs?param1=${encodeURIComponent(title)}&param2=`}>
+                                                {title}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className='flex flex-col items-center'>
+                                    <p className='font-[600] text-[18px] text-[#0E121D] w-full flex max-md:justify-center'>Trending Job Searches</p>
+                                    <div className='list-disc text-gradientFirst underline mt-5 flex flex-col gap-3 w-full flex max-md:items-center'>
+                                        {jobData.map((job, index) => (
+                                            <div key={index}>
+                                                <Link href={`/jobs?param1=${encodeURIComponent(job.location)}&param2=${encodeURIComponent(job.jobType)}`}>
+                                                    {`${job.jobType} in ${job.location}`}
+                                                </Link>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className='flex flex-col items-center'>
+                                    <p className='font-[600] text-[18px] text-[#0E121D] w-full flex max-md:justify-center'>Browse Jobs by Company</p>
+                                    <div className='list-disc text-gradientFirst underline mt-5 flex flex-col gap-3 w-full flex max-md:items-center'>
+                                        {jobTitles.map((title, index) => (
+                                            <Link key={index} href={`/jobs?param1=${encodeURIComponent(title)}&param2=`}>
+                                                {title}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>}
                     </div>
                     <div className='w-full homeSurvey px-10 mt-10 flex sm:h-[129px] items-center justify-between flex-wrap max-sm:pb-5'>
                         <div className='flex flex-col'>
