@@ -6,6 +6,56 @@ import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import { toast } from 'react-toastify';
 import { getAccount } from '@/backend/accountBackend';
 import { deleteEmployerProfilePicture, getEmployerDocument, updateEmployerProfileId } from '@/backend/employerBackend';
+import Link from 'next/link';
+export const ProfileLinker = () => {
+    const [profileId, setProfileId] = useState('')
+    const [profileError, setProfileError] = useState('');
+    const [name, setName] = useState<any>();
+    const [firstLetter, setFirstLetter] = useState('')
+    const getProfilePic = async () => {
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userDetail').then((value: any) => {
+                    setProfileId(value.profilePictureId)
+                })
+            });
+        }
+   /*      const promise = await getCandidateDocument()
+        promise && promise.documents[0] && promise.documents[0].profilePictureId && setProfileId(promise.documents[0].profilePictureId)
+    */ }
+    useEffect(() => {
+        getProfilePic()
+        if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userData').then((value: any) => {
+                    setFirstLetter(value.name.charAt(0))
+                    setName(value.name)
+                })
+            });
+        }
+        /* getAccount().then((res: any) => {
+            res && res.name && setFirstLetter(res.name.charAt(0))
+        }) */
+    }, [])
+
+    return (
+        <div className="relative flex justify-center flex-wrap">
+            <div className="profilePictureContainer w-28 h-28 rounded-full border-8 border-textW">
+                {profileId ? (
+                    <Link href="/users/candidate/profile">
+                        <ProfilePic id={profileId} className="w-40 h-40 col-span-2 rounded-3xl cursor-pointer" />
+                    </Link>) : (
+                    <Link href="/users/candidate/profile" className="cursor-pointer h-full w-full bg-gradientFirst text-textW flex justify-center items-center text-[3rem] font-frhW">
+                        {firstLetter.toLocaleUpperCase()}
+                    </Link>
+                )}
+            </div>
+            <Link href="/users/candidate/profile" className='font-[500] text-xl flex items-center sm:pl-10'>
+                {name}
+            </Link>
+        </div>
+    )
+}
 const ProfilePicture = () => {
     const loadingIn = '/images/loading.svg';
     const [profileLoading, setProfileLoading] = useState(false);

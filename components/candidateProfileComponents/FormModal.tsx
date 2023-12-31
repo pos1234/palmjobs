@@ -29,16 +29,23 @@ const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tip
         }}
         >
             <div ref={parentRef} onClick={handleParentClick} className='w-screen h-screen flex items-center justify-center px-3 py-10 sm:px-7 sm:py-20 md:p-10 lg:px-20 xl:px-52 xl:py-16'>
-                <div onClick={handleChildClick} className='bg-textW w-full h-full rounded-2xl p-5 sm:p-10'>
-                    <div className='flex flex-wrap gap-6'>
+                <div onClick={handleChildClick} className='bg-textW w-full h-full rounded-2xl p-3'>
+                    <div className='w-full flex justify-end'>
+                        <div className='cursor-pointer hover:text-gradientFirst' onClick={() => setOpenModal(false)}>
+                            <CloseIcon
+                                sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
+                                className="w-8 h-8 p-2 "
+                            />
+                        </div>
+
+                    </div>
+                    <div className='flex flex-wrap gap-6 pt-0 p-6 sm:p-10 sm:pt-0'>
                         <div className='w-full flex justify-between'>
                             <div className='flex gap-4'>
                                 <span className='text-gradientFirst'>{icon}</span>
                                 <p className='font-[600] text-xl'>{text}</p>
                             </div>
-                            <div className='cursor-pointer hover:text-gradientFirst' onClick={() => setOpenModal(false)}>
-                                <CloseIcon />
-                            </div>
+
                         </div>
                         <div className='flex w-full gap-5'>
                             <p onClick={() => setTip(false)} className={tip ? 'cursor-pointer border-b-2 border-b-textW hover:border-b-gradientFirst md:border-0' : 'border-b-2 border-b-gradientFirst md:border-0'}>{addText}</p>

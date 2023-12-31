@@ -82,23 +82,47 @@ const SecondForm = (props: any) => {
                     <option value="RMB">RMB</option>
                 </select>
                 <input
-                    value={Number(secondTabData.minSalary)}
-                    type="number"
-                    onChange={(e) => {
+/*                     value={Number(secondTabData.minSalary)}
+ */                    type="number"
+                    /* onChange={(e) => {
                         setSecondTabData({
                             ...secondTabData, minSalary: e.currentTarget.value.toString()
                         });
+                    }} */
+                    value={secondTabData.minSalary?.toString() == "" ? '' : secondTabData.minSalary?.toString()}
+                    onChange={(e) => {
+                        if (e.currentTarget.value == '-' || e.currentTarget.value.startsWith('-') || e.currentTarget.value.includes('-')) {
+                            setSecondTabData({
+                                ...secondTabData, minSalary: ''
+                            })
+                        } else if (e.currentTarget.value.length <= 7) {
+                            setSecondTabData({
+                                ...secondTabData, minSalary: e.currentTarget.value
+                            })
+                        }
                     }}
                     placeholder="Minimum"
                     className="pl-5 w-40 rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 hideIncrease"
                 />
                 <input
-                    value={Number(secondTabData.maxSalary)}
-                    type="number"
-                    onChange={(e) => {
+/*                     value={Number(secondTabData.maxSalary)}
+ */                    type="number"
+                    /* onChange={(e) => {
                         setSecondTabData({
                             ...secondTabData, maxSalary: e.currentTarget.value.toString()
                         });
+                    }} */
+                    value={secondTabData.maxSalary?.toString() == "" ? '' : secondTabData.maxSalary?.toString()}
+                    onChange={(e) => {
+                        if (e.currentTarget.value == '-' || e.currentTarget.value.startsWith('-') || e.currentTarget.value.includes('-')) {
+                            setSecondTabData({
+                                ...secondTabData, maxSalary: ''
+                            })
+                        } else if (e.currentTarget.value.length <= 7) {
+                            setSecondTabData({
+                                ...secondTabData, maxSalary: e.currentTarget.value
+                            })
+                        }
                     }}
                     placeholder="Maximum"
                     className="pl-5 w-40 rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 hideIncrease"

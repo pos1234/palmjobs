@@ -5,7 +5,6 @@ import Link from 'next/link';
 import ForgotPassword from '@/components/account/ForgotPassword';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { } from '@/backend/candidateBackend';
 import { getAccount, googleRegister, googleSignIn, signIn, getRole } from '@/backend/accountBackend';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -29,6 +28,8 @@ const Login = () => {
     const [visible, setVisible] = useState(false);
     const [getJob, setGetJob] = useState(false);
     const [hireTalent, setHireTalent] = useState(false);
+    const [checked, setChecked] = useState(false);
+    const [checkError, setCheckError] = useState('');
     const [login, setLogin] = useState({
         email: '',
         password: ''
@@ -103,51 +104,51 @@ const Login = () => {
                         </div>
                     </div>
                 </div>
-                <div className="w-full md:w-1/2 order-1 md:order-2 flex justify-center flex-wrap px-5 sm:px-20 gap-2 md:px-10 lg:px-24 xl:px-32 pt-16">
-                    {forgotPassword == false && (
-                        <p className="font-shW w-full text-center text-shS md:text-dshS">
+                <div className="w-full md:w-1/2 order-1 md:order-2 flex justify-center flex-wrap px-5 sm:px-20 md:px-10 lg:px-24 xl:px-32 pt-16">
+                    <div className='flex flex-col gap-5'>
+                        <div className="font-shW w-full text-center text-shS md:text-dshS h-10">
                             Connect. Grow. <span className="text-gradientFirst">Succeed.</span>
-                        </p>
-                    )}
-                    {forgotPassword == false && (
-                        <div className='flex justify-center w-80'>
-                            <div className="bg-[#FAFAFA] w-full rounded-lg h-16 p-2 flex">
-                                <button
-                                    className={
-                                        register == false
-                                            ? 'w-1/2 h-11 bg-gradientFirst text-textW rounded-lg cursor-pointer'
-                                            : 'w-1/2 h-11 rounded-lg cursor-pointer'
-                                    }
-                                    onClick={() => {
-                                        setRegister(false);
-                                        setRegisterForm(false);
-                                    }}
-                                >
-                                    Login
-                                </button>
-                                <button
-                                    className={
-                                        register == true
-                                            ? 'w-1/2 h-11 bg-gradientFirst h-full text-textW rounded-lg cursor-pointer'
-                                            : 'w-1/2 h-11 rounded-lg cursor-pointer'
-                                    }
-                                    onClick={() => setRegister(true)}
-                                >
-                                    Register
-                                </button>
-                            </div>
                         </div>
-                    )}
+                        {forgotPassword == false && (
+                            <div className='flex justify-center w-full overflow-hidden h-fit'>
+                                <div className="bg-[#FAFAFA] w-full rounded-lg h-16 p-2 flex">
+                                    <button
+                                        className={
+                                            register == false
+                                                ? 'w-1/2 bg-gradientFirst text-textW rounded-lg cursor-pointer'
+                                                : 'w-1/2 rounded-lg cursor-pointer'
+                                        }
+                                        onClick={() => {
+                                            setRegister(false);
+                                            setRegisterForm(false);
+                                        }}
+                                    >
+                                        Login
+                                    </button>
+                                    <button
+                                        className={
+                                            register == true
+                                                ? 'w-1/2 bg-gradientFirst text-textW rounded-lg cursor-pointer'
+                                                : 'w-1/2 rounded-lg cursor-pointer'
+                                        }
+                                        onClick={() => setRegister(true)}
+                                    >
+                                        Register
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                     {!register && forgotPassword == false && (
                         <p className="lg:text-midRS flex justify-center text-center my-3 font-midRW leading-midRL text-[#5B5B5B]">
                             Building bridges, paving pathways. Dive into Palm Jobs.
                         </p>
                     )}
-                    {/* {registerForm && (
-                        <p className="text-midRS w-full font-midRW leading-midRL text-[#5B5B5B] text-left">
-                            <span className="text-smS inline-block mb-1">You're almost there!</span> <br />
+                    {register && !registerForm && (
+                        <p className="lg:text-midRS flex justify-center text-center my-3 font-midRW leading-midRL text-[#5B5B5B]">
+                            Please choose one of these to continue.
                         </p>
-                    )} */}
+                    )}
                     {register && !registerForm && (
                         <>
 
@@ -181,6 +182,15 @@ const Login = () => {
                                     <p>Hire talent</p>
                                 </div>
                             </div>
+                            <div className="w-full">
+                                <input
+                                    onChange={(e) => setChecked(e.currentTarget.checked)}
+                                    type="checkbox"
+                                    className="text-addS h-4 rounded-sm focus:ring-gradientSecond focus:bg-gradientFirst checked:bg-gradientFirst active:bg-gradientFirst"
+                                />
+                                <span className="font-addW text-addS leading-addL pl-2">To continue please accept our Terms and Conditions. Thanks!</span>
+                                {checkError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{checkError}</p>}
+                            </div>
                             <div className="w-full flex justify-end">
                                 {!getJob && !hireTalent && (
                                     <div className="bg-gray-100 text-gray-600 flex items-center justify-center h-16 w-full sm:w-60 rounded-lg">
@@ -189,7 +199,15 @@ const Login = () => {
                                 )}
                                 {(getJob || hireTalent) && (
                                     <button
-                                        onClick={() => setRegisterForm(true)}
+                                        onClick={() => {
+                                            if (!checked) {
+                                                setCheckError('Please Agree to Terms and Condition');
+                                            }
+                                            if (checked) {
+                                                setCheckError('');
+                                                setRegisterForm(true)
+                                            }
+                                        }}
                                         className="bg-black text-textW flex items-center justify-center h-16 w-full sm:w-60 rounded-lg"
                                     >
                                         Continue
@@ -252,18 +270,6 @@ const Login = () => {
                                 </span>
                             </div>
                         </form>
-                    )}
-                    {register && (
-                        <div className="w-full flex gap-x-3 mt-2 px-2 sm:px-0 max-lg:mb-8">
-                            <div className="bg-gradientFirst inline h-2 w-full rounded-2xl"></div>
-                            <div
-                                className={
-                                    registerForm == true
-                                        ? 'bg-gradientFirst inline h-2 w-full rounded-2xl'
-                                        : 'bg-fadedText inline h-2 w-full rounded-2xl'
-                                }
-                            ></div>
-                        </div>
                     )}
                     {forgotPassword && <ForgotPassword setFunction={setForgotPassword} />}
                 </div>

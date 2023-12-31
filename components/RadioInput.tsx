@@ -9,7 +9,7 @@ const RadioInput = (props: any) => {
                 name={props.radioName}
                 className="form-radio text-gradientFirst ring-green-500 cursor-pointer"
             />
-            <span className="text-neutral-900 text-opacity-40 text-lg font-medium ">{props.radioText}</span>
+            <span className="text-neutral-900 text-opacity-70 text-lg font-medium ">{props.radioText}</span>
         </div>
     );
 };

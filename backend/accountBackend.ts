@@ -1,5 +1,6 @@
 import { ID, Query } from 'appwrite';
 import appwriteConfig from './appwrite';
+
 const ENDPOINT = process.env.NEXT_PUBLIC_ENDPOINT || '';
 const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID || '';
 const DATABASE_ID = process.env.NEXT_PUBLIC_DATABASE_ID || '';
@@ -7,16 +8,18 @@ const USER_ROLE = process.env.NEXT_PUBLIC_USER_ROLE || '';
 const CANDIDATE_DATA = process.env.NEXT_PUBLIC_CANDIDATE_DATA || '';
 const COMPANY_DATA = process.env.NEXT_PUBLIC_COMPANY_DATA || '';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
+
 const { client, databases, account } = appwriteConfig();
 client
     .setEndpoint(ENDPOINT) // Your API Endpoint
     .setProject(PROJECT_ID);
 
-export const googleSignIn = () => {
-    account.createOAuth2Session('google', `${VERIFY}/jobs`, `${VERIFY}/account/`);
+export const googleSignIn = async () => {
+    account.createOAuth2Session('google', `${VERIFY}/account/check`, `${VERIFY}/account/`);
 };
+// Handle the code exchange on the server side
 export const googleRegister = async (userRole: string) => {
-    account.createOAuth2Session('google', `${VERIFY}/jobs`, `${VERIFY}/account/`);
+    account.createOAuth2Session('google', `${VERIFY}/account/check`, `${VERIFY}/account/`);
     await new Promise<void>((resolve) => {
         const checkAccount = async () => {
             const userAccount = await getAccount();
@@ -100,7 +103,7 @@ export const signIn = async (email: string, password: string) => {
 
 export const signOut = async () => {
     try {
-        const promises = await account.deleteSession('current');
+        await account.deleteSession('current');
     } catch (e) {
         console.log(e);
     }

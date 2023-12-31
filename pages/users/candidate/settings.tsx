@@ -8,7 +8,7 @@ const Settings = () => {
         <div className="px-3 lg:px-16 overflow-hidden">
             <Navigation />
             <div className="flex justify-center pt-10">
-                <ChangePassword />
+                <ChangePassword class="pt-5 pb-10 flex w-full sm:w-1/2"/>
             </div>
         </div>
     );

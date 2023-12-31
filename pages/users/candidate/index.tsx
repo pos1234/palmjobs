@@ -3,6 +3,7 @@ import Navigation from '@/components/Navigation';
 import { useState } from 'react';
 import SavedJobs from '@/components/candidateProfileComponents/Saved';
 import dynamic from 'next/dynamic';
+import ProfilePicture, { ProfileLinker } from '@/components/candidateProfileComponents/ProfilePicture';
 const Applied = dynamic(() => import('@/components/candidateProfileComponents/Applied'))
 /* import Applied from 
  */const CandidateJobs = () => {
@@ -12,6 +13,11 @@ const Applied = dynamic(() => import('@/components/candidateProfileComponents/Ap
         <div className="">
             <Navigation />
             <div className="px-3 mt-10 flex flex-col px-3 xl:px-40">
+                <div className="w-full flex gap-10 max-md:flex-col mt-10 py-5 profilePattern max-md:pl-5 md:pl-10">
+                    <div className="relative flex flex-col justify-center">
+                        <ProfileLinker />
+                    </div>
+                </div>
                 <div className="mt-8 flex gap-y-3 gap-x-12 pl-10">
                     <div
                         className={

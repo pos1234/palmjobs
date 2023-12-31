@@ -184,8 +184,9 @@ export const getSavedJobId = async (id: string) => {
 export const fetchAppliedJobIds = async (id: string) => {
     const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [
         Query.orderDesc('$createdAt'),
-        Query.equal('candidateId', id),
-        Query.equal('candidateDelete', false)
+        Query.equal('candidateId', id)
+        /*         Query.equal('candidateDelete', false)
+         */
     ]);
     return results;
 };

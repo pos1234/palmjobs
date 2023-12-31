@@ -14,7 +14,7 @@ const CandSmall = (props: any) => {
             const imageLink = res.documents[0] && res.documents[0].skills && res.documents[0].profilePictureId !== null
             imageLink ? setImageHref(res.documents[0].profilePictureId) : setImageHref('')
             setSkill(res.documents[0] && res.documents[0].skills && parsed);
-        });
+        });      
     }, []);
     return (
         <div
