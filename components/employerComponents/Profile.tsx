@@ -170,7 +170,19 @@ const EmployerProfile = (props: any) => {
     return (
         <form className="pt-5 pl-10 xl:pl-5 px-3 pb-10 bg-textW w-full max-xl:flex-grow xl:w-2/3 min-h-screen" onSubmit={handleProfile}>
             <div className="col-span-12 pt-5 space-y-3 mb-3">
-                <EmployerProfilePicture />
+                <div className='flex justify-between flex-wrap gap-5'>
+                    <div className='order-2 sm:order-1'>
+                        <EmployerProfilePicture />
+                    </div>
+                    {
+
+                        !props.post &&
+                        <Link href="/users/employer/post"
+                            className='w-full cursor-pointer order-1 sm:order-2 sm:w-40 md:w-60 flex items-center gap-2 justify-center w-full rounded-lg bg-black text-textW h-14'>
+                            <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
+                            <p className='font-[400] text-[16px]'>Post Job</p>
+                        </Link>}
+                </div>
                 <RequiredTextLabel text="Your Company Name?" />
                 <TextInput placeHolder="" errorMessage={companyNameError} value={companyName} setFunction={setCompanyName} />
                 <RequiredTextLabel text="Your Name?" />
@@ -255,12 +267,8 @@ const EmployerProfile = (props: any) => {
             </div>
             <div className='w-full flex mt-5 flex justify-between max-sm:flex-wrap gap-5'>
                 <div className='w-full md:w-52'>
-                    <SubmitButton loading={loading} buttonText="Save" />
+                    <SubmitButton loading={loading} buttonText="Save Profile" />
                 </div>
-                <Link href="/users/employer/post" className='w-full cursor-pointer md:w-60 flex items-center justify-center w-full rounded-xl bg-black text-textW h-14'>
-                    Post Job
-                </Link>
-
             </div>
         </form>
     );

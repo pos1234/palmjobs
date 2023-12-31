@@ -10,6 +10,8 @@ import { addSocials } from '@/backend/candidateBackend';
 import { updateUserName } from '@/backend/employerBackend';
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import FormModal from './FormModal';
+import Modal from '../Modal';
 const SocialForm = (props: any) => {
     /*     const { userData, userDetail } = useGlobalContext()
      */
@@ -135,10 +137,9 @@ const SocialForm = (props: any) => {
         userDatas()
     }, [])
     return (
-        <ConfirmModal isOpen={props.openProfile} handleClose={() => props.setOpenProfile(false)}>
-            <div className="mx-2 w-full pl-5 bg-textW rounded-2xl grid grid-cols-12 pt-6 pb-14 md:pt-4 md:pl-14 md:w-2/3 lg:w-1/2 md:mx-0">
-                <form onSubmit={hanleLinkUpdate} className="col-span-12 max-sm:pl-1 order-1 flex flex-wrap grid-cols-12 pr-4">
-                    <div className='w-full flex justify-between pb-5'>
+        <Modal openModal={props.openProfile} setOpenModal={() => props.setOpenProfile(false)} modalTitle={'Bio'}>
+            <form onSubmit={hanleLinkUpdate} className="flex flex-wrap w-full">
+                {/* <div className='w-full flex justify-between pb-5'>
                         <p className="font-[600] text-2xl leading-shL  ">Bio</p>
                         <button onClick={() => props.setOpenProfile(false)}>
                             <CloseIcon
@@ -146,118 +147,117 @@ const SocialForm = (props: any) => {
                                 className="w-8 h-8 p-2 "
                             />
                         </button>
-                    </div>
-                    <div className="w-full grid grid-cols-12 h-96 overflow-y-auto thinScrollBar pr-4" >
-                        <p className='col-span-12 font-[500] mb-5'>Let's get started with some personal details</p>
-                        <div className="col-span-12 flex gap-3 pb-3 h-[100%] grid grid-cols-1 md:grid-cols-2">
-                            <div className="flex flex-col gap-3">
-                                <p className="font-fhW w-full text-smS leading-shL">Full Name</p>
-                                <TextInput
-                                    placeHolder="Phone"
-                                    value={name}
-                                    setFunction={setName}
-                                    class="full"
+                    </div> */}
+                <div className="w-full grid grid-cols-12 h-96 overflow-y-auto thinScrollBar pr-4" >
+                    <p className='col-span-12 font-[500] mb-5'>Let's get started with some personal details</p>
+                    <div className="col-span-12 flex gap-3 pb-3 h-[100%] grid grid-cols-1 md:grid-cols-2">
+                        <div className="flex flex-col gap-3">
+                            <p className="font-fhW w-full text-smS leading-shL">Full Name</p>
+                            <TextInput
+                                placeHolder="Phone"
+                                value={name}
+                                setFunction={setName}
+                                class="full"
 
-                                />
-                                {nameError && <p className='text-red-500 text-[13px]'>name cannot be empty</p>}
-                            </div>
+                            />
+                            {nameError && <p className='text-red-500 text-[13px]'>name cannot be empty</p>}
                         </div>
-                        <div className="col-span-12 flex gap-3 h-[100%] grid grid-cols-1 md:grid-cols-2">
-                            <div className="flex flex-col gap-3">
-                                <p className="font-fhW w-full text-smS leading-shL">Phone</p>
-                                <PhoneInput
-                                    defaultCountry="ET" placeholder="Enter phone number"
-                                    value={phone}
-                                    onChange={setPhone}
-                                    className='h-12 px-3 phoneInput bg-white rounded-xl border border-gray-200 focus:border-gradientSecond focus:ring-0 w-full hideIncrease'
-                                />
-                                {/*   <input
+                    </div>
+                    <div className="col-span-12 flex gap-3 h-[100%] grid grid-cols-1 md:grid-cols-2">
+                        <div className="flex flex-col gap-3">
+                            <p className="font-fhW w-full text-smS leading-shL">Phone</p>
+                            <PhoneInput
+                                defaultCountry="ET" placeholder="Enter phone number"
+                                value={phone}
+                                onChange={setPhone}
+                                className='h-12 px-3 phoneInput bg-white rounded-xl border border-gray-200 focus:border-gradientSecond focus:ring-0 w-full hideIncrease'
+                            />
+                            {/*   <input
                                     type='text'
                                     placeholder="Phone"
                                     value={phone}
                                     onChange={(e) => setPhone(e.currentTarget.value)}
                                     className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientSecond focus:ring-0 w-full hideIncrease' />
                                  */}
-                                {phoneError && <p className='text-red-500 text-[13px]'>{phoneError}</p>}
-                            </div>
-                            <div className="flex flex-col gap-3">
-                                <p className="w-full font-fhW text-smS leading-shL">Address</p>
-                                <TextInput
-                                    class="full"
-                                    placeHolder="Address"
-                                    value={address}
-                                    setFunction={setAddress}
-                                />
-                            </div>
+                            {phoneError && <p className='text-red-500 text-[13px]'>{phoneError}</p>}
                         </div>
-                        <div className='col-span-12 font-[500] my-5 text-[24px]'>Your online profiles</div>
-                        <div className="col-span-12 flex gap-3 h-[100%] grid grid-cols-1 md:grid-cols-2">
-                            <div className="flex flex-col gap-2">
-                                <p className="font-fhW w-full flex gap-1 items-center text-smS leading-shL">
-                                    <span className='text-gradientFirst'>
-                                        <LinkedInIcon sx={{ fontSize: '1.2rem' }} />
-                                    </span>
-                                    LinkedIn</p>
-                                <TextInput
-                                    errorMessage={linkedError}
-                                    placeHolder="Behance Link"
-                                    value={linked}
-                                    setFunction={setLinked}
-                                    class="full"
-                                />
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="w-full font-fhW text-smS flex items-center gap-1 leading-shL">
-                                    <span className='text-gradientFirst'>
-                                        <GitHubIcon sx={{ fontSize: '1.2rem' }} />
-                                    </span>
-                                    Github</p>
-                                <TextInput
-                                    class="full"
-                                    placeHolder="Behance Link"
-                                    value={githubLink}
-                                    setFunction={setGithubLink}
-                                    errorMessage={githubError}
-                                />
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="w-full font-fhW text-smS flex items-center gap-1 leading-shL">
-                                    <span className='text-gradientFirst'>
-                                        Be
-                                    </span>
-                                    Behance</p>
-                                <TextInput
-                                    placeHolder="Behance Link"
-                                    value={behan}
-                                    errorMessage={behanceError}
-                                    setFunction={setBehan}
-                                    class="full"
-                                />
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="w-full font-fhW text-smS flex items-center gap-1 leading-shL">
-                                    <span className='text-gradientFirst'>
-                                        <LanguageIcon sx={{ fontSize: '1.2rem' }} />
-                                    </span>
-                                    Portfolio</p>
-                                <TextInput
-                                    class="full"
-                                    placeHolder="Portfolio Link"
-                                    value={portfolio}
-                                    setFunction={setPortfolio}
-                                    errorMessage={portfolioError}
-                                />
-                            </div>
+                        <div className="flex flex-col gap-3">
+                            <p className="w-full font-fhW text-smS leading-shL">Address</p>
+                            <TextInput
+                                class="full"
+                                placeHolder="Address"
+                                value={address}
+                                setFunction={setAddress}
+                            />
                         </div>
                     </div>
-                    <div className='col-span-12 mt-10 w-full flex md:justify-end'>
-                        <div className='w-full md:w-60'>
-                            <SubmitButton loading={loading} buttonText="Save" />
+                    <div className='col-span-12 font-[500] my-5 text-[24px]'>Your online profiles</div>
+                    <div className="col-span-12 flex gap-3 h-[100%] grid grid-cols-1 md:grid-cols-2">
+                        <div className="flex flex-col gap-2">
+                            <p className="font-fhW w-full flex gap-1 items-center text-smS leading-shL">
+                                <span className='text-gradientFirst'>
+                                    <LinkedInIcon sx={{ fontSize: '1.2rem' }} />
+                                </span>
+                                LinkedIn</p>
+                            <TextInput
+                                errorMessage={linkedError}
+                                placeHolder="Behance Link"
+                                value={linked}
+                                setFunction={setLinked}
+                                class="full"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <p className="w-full font-fhW text-smS flex items-center gap-1 leading-shL">
+                                <span className='text-gradientFirst'>
+                                    <GitHubIcon sx={{ fontSize: '1.2rem' }} />
+                                </span>
+                                Github</p>
+                            <TextInput
+                                class="full"
+                                placeHolder="Behance Link"
+                                value={githubLink}
+                                setFunction={setGithubLink}
+                                errorMessage={githubError}
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <p className="w-full font-fhW text-smS flex items-center gap-1 leading-shL">
+                                <span className='text-gradientFirst'>
+                                    Be
+                                </span>
+                                Behance</p>
+                            <TextInput
+                                placeHolder="Behance Link"
+                                value={behan}
+                                errorMessage={behanceError}
+                                setFunction={setBehan}
+                                class="full"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <p className="w-full font-fhW text-smS flex items-center gap-1 leading-shL">
+                                <span className='text-gradientFirst'>
+                                    <LanguageIcon sx={{ fontSize: '1.2rem' }} />
+                                </span>
+                                Portfolio</p>
+                            <TextInput
+                                class="full"
+                                placeHolder="Portfolio Link"
+                                value={portfolio}
+                                setFunction={setPortfolio}
+                                errorMessage={portfolioError}
+                            />
                         </div>
                     </div>
-                </form>
-            </div>
-        </ConfirmModal>
+                </div>
+                <div className='col-span-12 mt-10 w-full flex md:justify-end'>
+                    <div className='w-full md:w-60'>
+                        <SubmitButton loading={loading} buttonText="Save" />
+                    </div>
+                </div>
+            </form>
+        </Modal>
     )
 }
 

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+'use client'
+import React, { useState } from 'react';
 import styles from '@/styles/navigation.module.css';
 import Link from 'next/link';
 import { Popover } from '@headlessui/react';
@@ -10,13 +11,14 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { ProfilePic } from './JobImage';
 import Logout from './Logout';
 import { useGlobalContext } from '@/contextApi/userData';
+import { usePathname } from 'next/navigation'
+
 const Navigation = (props: any) => {
     const { loading, userDetail, userData, userRole } = useGlobalContext()
     const logo = 'https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images/logo.svg';
-    /*     const logo = '/images/logo.svg';
-     */
     const [menu, setMenu] = useState(false);
     const [openLogout, setOpenLogout] = useState(false);
+    const pathname = usePathname()
     return (
         <div>
             <div className={`flex flex-wrap items-center gap-5 relative md:border-[1px] md:border-t-0 xl:px-40 xl:h-[73px] ${menu ? ' max-md:h-screen md:pt-3' : 'pt-3'}`}>
@@ -37,10 +39,12 @@ const Navigation = (props: any) => {
                                     />
                                 </div>
                             )}
-                            {userData && (
+                            {userData && userDetail && !userDetail.profilePictureId && (
                                 <div className="flex flex-col">
-                                    {userRole == 'candidate' ? <p className="text-[1.2rem] font-[500]">{userData.name}</p> : null}
-                                </div>
+                                    {/*                                     {userRole == 'candidate' ?
+ */}                                        <p className="text-[14px] font-[600] bg-gradientFirst text-textW border-2 border-textW ring-2 ring-gradientFirst rounded-full w-10 h-10 flex items-center justify-center">{userData.name.charAt(0).toLocaleUpperCase()}</p>
+                                    {/*                                         : null}
+ */}                                </div>
                             )}
                         </div>
                         <div className="flex justify-left px-3">
@@ -131,16 +135,18 @@ const Navigation = (props: any) => {
                         <img src={logo} alt="Image description" className="w-[100px] h-[40px] sm:w-[160px] sm:h-[60px]" />
                     </Link>
                 </div>
-                <div className="hidden flex-grow items-center lg:text-bigS lg:font-bigW lg:leading-bigL lg:text-textR md:flex md:items-center md:gap-x-7 xl:ml-10 xl:gap-x-10">
-                    <Link href="/jobs" className="border-b-[3px] h-full border-b-textW font-[600] flex items-center hover:border-b-gradientFirst">
+                <div className="hidden h-[40px] sm:h-[60px] flex-grow items-center lg:text-bigS lg:font-bigW lg:leading-bigL lg:text-textR md:flex md:items-center md:gap-x-7 xl:ml-10 xl:gap-x-10">
+                    <Link href="/jobs"
+                        className={`border-b-[3px] h-full font-[600] flex items-center hover:border-b-gradientFirst ${pathname == '/jobs' ? 'border-b-gradientFirst' : 'border-b-textW'}`}>
                         Find a Job
                     </Link>
                     <p className="border-b-[3px] border-b-textW h-full flex items-center font-[600] hover:border-b-gradientFirst">Craft Resume</p>
-                    <Link href="/salaries" className="border-b-[3px] border-b-textW h-full flex font-[600] items-center hover:border-b-gradientFirst">
+                    <Link href="/salaries"
+                        className={`border-b-[3px] h-full flex font-[600] items-center hover:border-b-gradientFirst ${pathname == '/salaries' ? 'border-b-gradientFirst' : 'border-b-textW'}`}>
                         Salaries
                     </Link>
                     {userRole == 'candidate' ? (
-                        <Link href="/users/candidate" className="border-b-[3px] border-b-textW font-[600] h-full flex items-center hover:border-b-gradientFirst">
+                        <Link href="/users/candidate" className={`border-b-[3px] font-[600] h-full flex items-center hover:border-b-gradientFirst ${pathname == '/users/candidate' ? 'border-b-gradientFirst' : 'border-b-textW'}`}>
                             My Jobs
                         </Link>
                     ) : userRole == 'employer' ? (
@@ -170,26 +176,26 @@ const Navigation = (props: any) => {
                         </div>
                     </div>
                     <div className="flex pt-2 gap-10">
-                        {(!userData || userData == 'failed') && !loading && (
-                            <>
-                                <div className="max-md:hidden flex items-center">
-                                    <div className="font-[500] text-[16px] text-[#0E121D] ">
-                                        <Link href="/account">Sign In</Link>
-                                    </div>
+                        {/* {(!userData || userData == 'failed') && !loading && ( */}
+                        <>
+                            {(!userData || userData == 'failed') && !loading && <div className="max-md:hidden flex items-center">
+                                <div className="font-[500] text-[16px] text-[#0E121D] ">
+                                    <Link href="/account">Sign In</Link>
                                 </div>
-                                <div className="hidden justify-items-end md:flex md:items-center mb-[2px]">
-                                    <div className='bg-gradientFirst rounded-[3px]'>
-                                        <Link
-                                            href="/account"
-                                            className="text-textW flex items-center gap-2 justify-center bg-black h-[42px] w-[166px] rounded-[3px] buttonBounce"
-                                        >
-                                            <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
-                                            <p className='font-[400] text-[16px]'>Post Job</p>
-                                        </Link>
-                                    </div>
+                            </div>}
+                            {(!userData || userData == 'failed' || userRole == 'employer') && !loading && <div className="hidden justify-items-end md:flex md:items-center mb-[2px]">
+                                <div className='bg-gradientFirst rounded-[3px]'>
+                                    <Link
+                                        href={userData && userRole == 'employer' ? 'users/employer/post' : "/account"}
+                                        className="text-textW flex items-center gap-2 justify-center bg-black h-[42px] w-[166px] rounded-[3px] buttonBounce"
+                                    >
+                                        <img src="/icons/HireLeaf.svg" alt="icon" className='w-5 h-5' />
+                                        <p className='font-[400] text-[16px]'>Post Job</p>
+                                    </Link>
                                 </div>
-                            </>
-                        )}
+                            </div>}
+                        </>
+                        {/* )} */}
                         {
                             loading && <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
                                 <div className="text-neutral-900  text-opacity-70 text-xl font-normal leading-7">
@@ -208,9 +214,9 @@ const Navigation = (props: any) => {
                                                     />
                                                 </div>
                                             )}
-                                            {userData && (
+                                            {userData && userDetail && !userDetail.profilePictureId && (
                                                 <div className="flex text-left ml-3 justify-center items-center ">
-                                                    <p className="text-[14px] font-[600]">{userData.name}</p>
+                                                    <p className="text-[14px] font-[600] bg-gradientFirst text-textW border-2 border-textW ring-2 ring-gradientFirst rounded-full w-8 h-8 flex items-center justify-center">{userData.name.charAt(0).toLocaleUpperCase()}</p>
                                                     {/*  {userRole == 'candidate' ? <p className="text-[14px] font-[600]">{userData.name}</p> : null}
                                                     {userRole == 'employer' ? (
                                                         <>
@@ -224,8 +230,8 @@ const Navigation = (props: any) => {
 
                                                 </div>
                                             )}
-                                            <KeyboardArrowDownOutlinedIcon sx={{ marginLeft: '1rem', fontSize: '1.2rem' }} />
-                                        </Popover.Button>
+                                            {/*                                             <KeyboardArrowDownOutlinedIcon sx={{ marginLeft: '1rem', fontSize: '1.2rem' }} />
+ */}                                        </Popover.Button>
                                         <Popover.Panel className="absolute right-0 top-10 border-2 rounded-md flex flex-col gap-y-3 p-3 bg-textW shadow z-10 w-[8rem] md:mt-3 lg:mt-8">
                                             {userRole == 'candidate' ? (
                                                 <>

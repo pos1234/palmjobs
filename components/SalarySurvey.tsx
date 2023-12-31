@@ -4,6 +4,7 @@ import RadioInput from './RadioInput';
 import { createSalarySurvey } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
 import { SendSurveyEmail } from './SendEmail';
+import Notification from './Notification';
 const FlexDiv = ({ children }: { children: ReactNode }) => {
     return <div className='flex flex-wrap gap-x-5'>
         {children}
@@ -23,24 +24,24 @@ const CheckBoxInput = (props: any) => {
                 name={props.radioName}
                 className="form-checkbox text-gradientFirst ring-green-500 cursor-pointer"
             />
-            <span className="text-neutral-900 text-opacity-40 text-lg font-medium ">{props.radioText}</span>
+            <span className={`text-neutral-900 text-opacity-70 text-lg font-medium `}>{props.radioText}</span>
         </div>
     );
 };
 const SalarySurvey = () => {
     const [gender, setGender] = useState('');
-    const [ageRange, setAgeRange] = useState('18-24')
+    const [ageRange, setAgeRange] = useState('')
     const [jobTitle, setJobTitle] = useState('')
-    const [sector, setSector] = useState('Private')
-    const [industry, setIndustry] = useState('Agriculture')
-    const [employmentStatus, setEmploymentStatus] = useState('Full Time')
+    const [sector, setSector] = useState('')
+    const [industry, setIndustry] = useState('')
+    const [employmentStatus, setEmploymentStatus] = useState('')
     const [yearsInCurrentPostion, setYearsInCurrentPostion] = useState('')
     const [yearsInProfessionalPosition, setYearsInProfessionalPosition] = useState('')
-    const [location, setLocation] = useState('Addis Ababa')
+    const [location, setLocation] = useState('')
     const [monthlySalary, setMonthlySalary] = useState('')
     const [bonus, setBonus] = useState('');
     const [benefitsIncluded, setBenefitsIncluded] = useState('')
-    const [educationLevel, setEducationLevel] = useState('High School')
+    const [educationLevel, setEducationLevel] = useState('')
     const [fieldOfStudy, setFieldOfStudy] = useState('')
     const [additionalInsight, setAdditionalInsight] = useState('')
     const [emailAddress, setEmailAddress] = useState('')
@@ -49,6 +50,7 @@ const SalarySurvey = () => {
     const [errorCode, setErrorCode] = useState(0)
     const [loading, setLoading] = useState(false)
     const [selectedValues, setSelectedValues] = useState<string[]>([]);
+    const [openNotify, setOpenNotify] = useState(false)
     const handleCheckboxChange = (value: string) => {
         if (selectedValues.includes(value)) {
             setSelectedValues(selectedValues.filter((val) => val !== value));
@@ -59,6 +61,28 @@ const SalarySurvey = () => {
     function validateEmail(email: string): boolean {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
+    }
+    const resetForm = () => {
+        setGender('');
+        setAgeRange('');
+        setJobTitle('')
+        setSector('');
+        setIndustry('')
+        setEmploymentStatus('')
+        setYearsInCurrentPostion('')
+        setYearsInProfessionalPosition('')
+        setLocation('')
+        setMonthlySalary('')
+        setBonus('');
+        setBenefitsIncluded('')
+        setEducationLevel('')
+        setFieldOfStudy('');
+        setAdditionalInsight('');
+        setEmailAddress('');
+        setCurrency('ETB');
+        setErrorCode(0);
+        setErrorMessage('');
+        setSelectedValues([])
     }
     const handleSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
@@ -81,10 +105,10 @@ const SalarySurvey = () => {
         } else if (employmentStatus == '') {
             setErrorCode(6);
             setErrorMessage('Please select employment status');
-        } else if (yearsInCurrentPostion == '') {
+        } else if (!yearsInCurrentPostion) {
             setErrorCode(7);
             setErrorMessage('Please add years in current position');
-        } else if (yearsInProfessionalPosition == '') {
+        } else if (!yearsInProfessionalPosition) {
             setErrorCode(8);
             setErrorMessage('PleaseAdd years in professional position ');
         } else if (location == '') {
@@ -111,8 +135,8 @@ const SalarySurvey = () => {
                 sector,
                 industry,
                 employmentStatus,
-                yearsInCurrentPostion,
-                yearsInProfessionalPosition,
+                yearsInCurrentPostion.toString(),
+                yearsInProfessionalPosition.toString(),
                 location,
                 monthlySalary.toString(),
                 bonus,
@@ -123,27 +147,9 @@ const SalarySurvey = () => {
                 emailAddress,
             ).then((res) => {
                 setLoading(false);
-                toast.success('Successfully Submited Form')
-                setGender('');
-                setAgeRange('18-24');
-                setJobTitle('')
-                setSector('Private');
-                setIndustry('Agriculture')
-                setEmploymentStatus('Full Time')
-                setYearsInCurrentPostion('')
-                setYearsInProfessionalPosition('')
-                setLocation('Addis Abeba')
-                setMonthlySalary('')
-                setBonus('');
-                setBenefitsIncluded('')
-                setEducationLevel('High School')
-                setFieldOfStudy('');
-                setAdditionalInsight('');
-                setEmailAddress('');
-                setCurrency('ETB');
-                setErrorCode(0);
-                setErrorMessage('');
-                setSelectedValues([])
+                setOpenNotify(true)
+/*                 toast.success('Successfully Submited Form')
+ */                resetForm()
                 if (validateEmail(emailAddress)) {
                     SendSurveyEmail(emailAddress)
                 }
@@ -156,7 +162,7 @@ const SalarySurvey = () => {
         }
     }
     return (
-        <form className='w-full h-full py-10 pl-5 flex flex-col gap-8' onSubmit={handleSubmit}>
+        <form className='w-full h-full thinScrollBar overflow-y-auto py-10 pl-5 flex flex-col gap-8' onSubmit={handleSubmit}>
             <p className='flex font-[600] text-[27px]'>Salary Survey</p>
             <HeadLines text='Basic Information' />
             <div className='flex flex-col justify-between gap-5'>
@@ -167,22 +173,23 @@ const SalarySurvey = () => {
                             radioName="gender"
                             radioText="Male"
                             radioValue="Male"
+                            checked={gender == 'Male'}
                             setFunction={setGender}
                         />
                         <RadioInput
+                            checked={gender == 'Female'}
                             radioName="gender"
                             radioText="Female"
                             radioValue="Female"
                             setFunction={setGender}
                         />
                         {errorMessage && errorCode == 1 && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
-
                     </FlexDiv>
                 </div>
                 <div className='flex flex-col gap-5'>
                     <p className='font-[600] text-[18px]'>Age Range</p>
                     <FlexDiv>
-                        <select className='pl-5 w-96 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setAgeRange(e.currentTarget.value)}>
+                        <select value={ageRange} className='pl-5 w-96 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setAgeRange(e.currentTarget.value)}>
                             <option value="">Select age</option>
                             <option value="18-24">18-24</option>
                             <option value="25-34">25-34</option>
@@ -204,7 +211,7 @@ const SalarySurvey = () => {
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Employment Sector</p>
                     <FlexDiv>
-                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setSector(e.currentTarget.value)}>
+                        <select value={sector} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setSector(e.currentTarget.value)}>
                             <option value="">Select sector</option>
                             <option value="Private">Private</option>
                             <option value="Public">Public</option>
@@ -219,7 +226,7 @@ const SalarySurvey = () => {
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Industry</p>
                     <FlexDiv>
-                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setIndustry(e.currentTarget.value)}>
+                        <select value={industry} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setIndustry(e.currentTarget.value)}>
                             <option value="">Select industry</option>
                             <option value="Agriculture">Agriculture</option>
                             <option value="Construction">Construction</option>
@@ -242,7 +249,7 @@ const SalarySurvey = () => {
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Employment Status</p>
                     <FlexDiv>
-                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEmploymentStatus(e.currentTarget.value)}>
+                        <select value={employmentStatus} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEmploymentStatus(e.currentTarget.value)}>
                             <option value="">Select status</option>
                             <option value="Full Time">Full Time</option>
                             <option value="Part-Time">Part-Time</option>
@@ -253,27 +260,42 @@ const SalarySurvey = () => {
                     </FlexDiv>
                 </div>
                 <div className='gap-5 flex flex-col'>
-                    <p className='font-[600] text-[18px]'>Number of Years in Current Postion</p>
-                    <input value={yearsInCurrentPostion} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => {
-                        if (e.currentTarget.value.length <= 2) {
-                            setYearsInCurrentPostion(e.currentTarget.value)
-                        }
-
-                    }} />
+                    <p className='font-[600] text-[18px]'>Number of Years in Current Position</p>
+                    <input
+                        className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease'
+                        type='number'
+                        value={yearsInCurrentPostion?.toString() == "" ? '' : yearsInCurrentPostion?.toString()}
+                        onChange={(e) => {
+                            if (e.currentTarget.value == '-' || e.currentTarget.value.startsWith('-') || e.currentTarget.value.includes('-')) {
+                                setYearsInCurrentPostion('')
+                            } else if (e.currentTarget.value.length <= 2) {
+                                setYearsInCurrentPostion(e.currentTarget.value)
+                            }
+                        }}
+                        maxLength={2}
+                    />
                     {errorMessage && errorCode == 7 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
                 </div>
                 <div className='gap-5 flex flex-col'>
-                    <p className='font-[600] text-[18px]'>Number of Years in Professional Feild</p>
-                    <input value={yearsInProfessionalPosition} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => {
-                        if (e.currentTarget.value.length <= 2) {
-                            setYearsInProfessionalPosition(e.currentTarget.value)
-                        }
-                    }} />
+                    <p className='font-[600] text-[18px]'>Number of Years in Professional Field</p>
+                    <input
+                        className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease'
+                        type='number'
+                        value={yearsInProfessionalPosition?.toString() == "" ? '' : yearsInProfessionalPosition?.toString()}
+                        onChange={(e) => {
+                            if (e.currentTarget.value == '-' || e.currentTarget.value.startsWith('-') || e.currentTarget.value.includes('-')) {
+                                setYearsInProfessionalPosition('')
+                            } else if (e.currentTarget.value.length <= 2) {
+                                setYearsInProfessionalPosition(e.currentTarget.value)
+                            }
+                        }}
+                        maxLength={2}
+                    />
                     {errorMessage && errorCode == 8 && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
                 </div>
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Location of Employment</p>
-                    <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEmploymentStatus(e.currentTarget.value)}>
+                    <select value={location} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setLocation(e.currentTarget.value)}>
                         <option value="">Select location</option>
                         <option value="Addis Ababa">Addis Ababa</option>
                         <option value="Dire Dawa">Dire Dawa</option>
@@ -298,8 +320,18 @@ const SalarySurvey = () => {
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Monthly Salary</p>
                     <div className='flex gap-x-3'>
-                        <input className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number' onChange={(e) => setMonthlySalary(e.currentTarget.value)} />
-                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setCurrency(e.currentTarget.value)}>
+                        <input className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96 hideIncrease' type='number'
+                            value={monthlySalary?.toString() == "" ? '' : monthlySalary?.toString()}
+                            onChange={(e) => {
+                                if (e.currentTarget.value == '-' || e.currentTarget.value.startsWith('-') || e.currentTarget.value.includes('-')) {
+                                    setMonthlySalary('')
+                                } else if (e.currentTarget.value.length <= 7) {
+                                    setMonthlySalary(e.currentTarget.value)
+                                }
+                            }}
+                            maxLength={7}
+                        />
+                        <select value={currency} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer' onChange={(e) => setCurrency(e.currentTarget.value)}>
                             <option value="ETB">ETB</option>
                             <option value="USD">USD</option>
                             <option value="EUR">EUR</option>
@@ -312,7 +344,16 @@ const SalarySurvey = () => {
                 </div>
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Additional Monthly Allowances and Bonuses <span className='font-[400] text-sm'>(if any)</span> </p>
-                    <input className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96' type='number' onChange={(e) => setBonus(e.currentTarget.value)} />
+                    <input value={bonus} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 w-full md:w-96' type='number'
+                        onChange={(e) => {
+                            if (e.currentTarget.value == '-' || e.currentTarget.value.startsWith('-') || e.currentTarget.value.includes('-')) {
+                                setBonus('')
+                            } else if (e.currentTarget.value.length <= 7) {
+                                setBonus(e.currentTarget.value)
+                            }
+                        }}
+                        maxLength={7}
+                    />
                 </div>
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Benefits Included <span className='font-[400] text-sm'>(Check all that apply)</span> </p>
@@ -357,7 +398,7 @@ const SalarySurvey = () => {
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Highest Level of Education Completed</p>
                     <FlexDiv>
-                        <select className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEducationLevel(e.currentTarget.value)}>
+                        <select value={educationLevel} className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 cursor-pointer md:w-96' onChange={(e) => setEducationLevel(e.currentTarget.value)}>
                             <option value="">Select educaton</option>
                             <option value="High School">High School</option>
                             <option value="Diploma/Certificate" className='hover:bg-red-500 cursor-pointer'>Diploma/Certificate</option>
@@ -378,6 +419,7 @@ const SalarySurvey = () => {
                 <div className='gap-5 flex flex-col'>
                     <p className='font-[600] text-[18px]'>Additional Insights <span className='font-[400] text-sm'>(optional)</span> </p>
                     <textarea
+                        value={additionalInsight}
                         placeholder=''
                         className='resize-none w-11/12 rounded-xl h-40 focus:ring-gradientFirst focus:border-0' onChange={(e) => setAdditionalInsight(e.currentTarget.value)}>
                     </textarea>
@@ -395,14 +437,25 @@ const SalarySurvey = () => {
                 </div>
                 {errorCode == 13 && errorMessage && <p className="text-red-500 text-[13px] w-full mt-2">{errorMessage}</p>}
             </div>
+            {errorMessage && <p className="text-red-500 w-full text-[13px] mt-2">{errorMessage}</p>}
             <div className='flex justify-between items-center w-full gap-5 max-md:flex-col xl:pr-14 pb-24'>
-                <button type='reset' className='w-full sm:w-[247px] h-[56px] rounded-[12px] bg-[#F4F4F4]' >Clear</button>
+                <button type='reset' onClick={() => {
+                    resetForm()
+                }} className='w-full sm:w-[247px] h-[56px] rounded-[12px] bg-[#F4F4F4]' >Clear</button>
                 <div className='flex max-sm:w-full'>
                     <div className='w-full md:w-52'>
                         <SubmitButton loading={loading} buttonText="Submit" />
                     </div>
                 </div>
             </div>
+            <Notification
+                openNotify={openNotify}
+                setOpenNotify={setOpenNotify}
+                successWord="Salary Survey Submitted Successfully"
+                successText="success"
+                imageSrc="images/analytics.svg"
+                fromSurvey={true}
+            />
         </form >
     )
 }

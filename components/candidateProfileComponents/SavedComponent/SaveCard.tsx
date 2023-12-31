@@ -10,12 +10,12 @@ import AttachMoneyOutlined from '@mui/icons-material/AttachMoneyOutlined';
 import EuroIcon from '@mui/icons-material/Euro';
 import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ShareIcon from '@mui/icons-material/Share';
 import Share from '@/components/Share';
 import { SmallLists } from '@/components/TextInput';
 import ReturnName from './ReturnName';
 import DeleteIcon from '@mui/icons-material/Delete';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 interface SaveType {
     view: boolean
     datas: any,
@@ -122,7 +122,7 @@ const SaveCard = ({ view, datas, RefetchSaved }: SaveType) => {
                 />
             </div>
             <div className='flex text-gradientFirst pt-3' >
-                <BookmarkIcon sx={{ fontSize: '2rem' }}
+                <FavoriteIcon sx={{ fontSize: '2rem' }}
                 />
             </div>
             <div className='bg-black h-14 rounded-lg'>

@@ -75,9 +75,9 @@ const RegisterComponent = (props: any) => {
 /*             setPasswordError('Password must be more than 8 charachters');
  */        } /* else if (register.password.length < 8) {
             setPasswordError('Password must be more than 8 charachters');
-        } */ else if (!checked) {
+        }  else if (!checked) {
             setCheckError('Please Agree to Terms and Condition');
-        } else {
+        }*/ else {
             if (validateEmail(register.email)) {
                 setLoading(true);
                 const fullName = register.firstName + ' ' + register.lastName;
@@ -120,28 +120,15 @@ const RegisterComponent = (props: any) => {
     };
     const getColorClass = (score: number/* , isTyping: boolean */) => {
         if (score <= 0.2) {
-            return "red-500";
+            return "bg-red-500";
         } else if (score <= 0.6) {
-            return "yellow-500";
+            return "bg-yellow-500";
         } else if (score >= 0.8 && score < 1) {
-            return "green-300";
+            return "bg-green-300";
         } else if (score == 1) {
-            return "green-500";
+            return "bg-green-500";
         } else {
-            return "green-500";
-        }
-    };
-    const getColorText = (score: number/* , isTyping: boolean */) => {
-        if (score <= 0.2) {
-            return "Weak";
-        } else if (score <= 0.4) {
-            return "Fair";
-        } else if (score <= 0.8) {
-            return "Medium";
-        } else if (score == 1) {
-            return "Strong";
-        } else {
-            return "Weak";
+            return "bg-green-500";
         }
     };
     return (
@@ -228,23 +215,21 @@ const RegisterComponent = (props: any) => {
                             }
                         />
                     </div>
+
+                </div>
+                <div className='w-full'>
+                    <p className='text-sm text-gray-500'>The Password must contain at least 8 charachters. It must include atleast 1 number, 1 special charachter, uppercase and lowercase letters.</p>
                 </div>
                 <div className='w-full'>
                     <div className='bg-gray-100 w-full'>
                         <div style={{ width: `${getPasswordStrength() * 100}%` }}
-                            className={`flex h-2 rounded-[3px] flex-col whitespace-nowrap transition-all duration-500 ease-in-out bg-${getColorClass(
+                            className={`flex h-2 rounded-[3px] flex-col whitespace-nowrap transition-all duration-500 ease-in-out ${getColorClass(
                                 getPasswordStrength()).toString()}`}
                         ></div>
                     </div>
-                    <div>
-                        <div className={`flex w-full justify-end mt-3 text-${getColorClass(
-                            getPasswordStrength()).toString()}`}>
-                            {getColorText(getPasswordStrength())}</div >
-                    </div>
                 </div>
-
                 {passwordError && <p className="text-[13px] w-full text-red-500">{passwordError}</p>}
-                <div className="w-full">
+                {/* <div className="w-full">
                     <input
                         onChange={(e) => setChecked(e.currentTarget.checked)}
                         type="checkbox"
@@ -252,7 +237,7 @@ const RegisterComponent = (props: any) => {
                     />
                     <span className="font-addW text-addS leading-addL pl-2">To continue please accept our Terms and Conditions. Thanks!</span>
                     {checkError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{checkError}</p>}
-                </div>
+                </div> */}
                 <div className='w-full flex md:justify-end'>
                     <div className='w-full md:w-60 pt-5'>
                         <SubmitButton loading={loading} buttonText="Continue" />

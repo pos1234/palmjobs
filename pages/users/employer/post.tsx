@@ -38,6 +38,7 @@ const PostAJob = (props: any) => {
     useEffect(() => {
         if (!allEmployerJobs) {
             setAllLoading(true)
+
             fetchAllEmployerJob().then((res: any) => {
                 if (res?.total > 0) {
                     setPostingTabs({
@@ -51,7 +52,20 @@ const PostAJob = (props: any) => {
                         first: true
                     })
                 }
-                setAllLoading(false)
+                if (typeof window !== 'undefined') {
+                    import('localforage').then((localforage) => {
+                        localforage.getItem('userDetail').then((value: any) => {
+                            if (value) {
+                                setUserDetail(value)
+                                setAllLoading(false)
+
+                            }
+                            if (!value) {
+                                useEmployerDocument()
+                            }
+                        });
+                    })
+                }
                 setAllEmployerJobs(res?.documents)
             }).catch((error) => {
                 setAllLoading(false)
@@ -126,7 +140,7 @@ const PostAJob = (props: any) => {
                     if (jobPostTabs.third == true) {
                         setProfileFilled(false);
                         setLoading(false)
-
+                        setAllLoading(false)
                     }
                 }
             }
@@ -189,7 +203,7 @@ const PostAJob = (props: any) => {
                 <div className={jobPostTabs.fourth == true ? '' : 'hidden'}>
                     <FourthForm setOpenPreview={setOpenPreview} />
                 </div>
-                {!profileFilled && !loading && <EmployerProfile setFilled={setProfileFilled} />}
+                {!profileFilled && !loading && <EmployerProfile post={true} setFilled={setProfileFilled} />}
                 <PreviewJob openModal={openPreview} setOpenModal={setOpenPreview} companyData={companyData}
                 />
             </div>

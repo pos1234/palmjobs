@@ -221,7 +221,7 @@ const Jobs = ({ documents }: any) => {
                                     handleDatePosted(e.currentTarget.value)
                                 }} name="dateposted" id="dateposted" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
                                     <option value="">Date Posted</option>
-                                    <option value="">Any time</option>
+                                    <option value="">Anytime</option>
                                     <option value="Past 24hrs">Past 24hrs</option>
                                     <option value="Past week">Past week</option>
                                     <option value="Past month">Past month</option>

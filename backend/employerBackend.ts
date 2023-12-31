@@ -255,7 +255,7 @@ export const updateJobs = (
     return promise;
 };
 export const fetchCandidateDetail = (id: string) => {
-    const promise = databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('Id', id)]);
+    const promise = databases.listDocuments(DATABASE_ID, CANDIDATE_DATA, [Query.equal('$id', id)]);
     return promise;
 };
 export const fetchActivePostedJobs = async () => {
