@@ -84,7 +84,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className='flex  w-full border-y-2 py-10 flex-col gap-10'>
-                        <div className='text-[20px] flex justify-center leading-[22px] font-[400] w-full'>See what's trending on <span onClick={() => setOpenDetail(!openDetail)} className='text-gradientFirst font-[600] cursor-pointer pl-1'> Palm Jobs <KeyboardArrowDownIcon sx={{ fontSize: '1.5rem' }} /></span></div>
+                        <div className={`text-[20px] flex justify-center leading-[22px] font-[400] w-full ${openDetail ? 'border-b-2 pb-10' : ''}`}>See what's trending on <span onClick={() => setOpenDetail(!openDetail)} className='text-gradientFirst font-[600] cursor-pointer pl-1'> Palm Jobs <KeyboardArrowDownIcon sx={{ fontSize: '1.5rem' }} /></span></div>
                         {
                             openDetail &&
                             <div className='flex w-full justify-around max-md:flex-col max-md:gap-5'>

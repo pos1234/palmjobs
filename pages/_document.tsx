@@ -13,6 +13,7 @@ export default function Document() {
                 name="keywords"
                 content="job search engine, jobs, job listings, jobs in ethiopia, employment opportunity, safaricom ethiopia vacancy, NGO jobs, online job sites,resumes, salaries, simple hire,job search, indeed, jobs,search engine for jobs, search jobs, career, employment, work, find jobs, rss job feed xml"
             />
+            <link rel="icon" type="image/svg+xml" href="/images/logo.svg" />
             <body>
                 <div id="portal-root"></div>
                 <Main />
