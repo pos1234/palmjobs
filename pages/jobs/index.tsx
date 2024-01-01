@@ -2,7 +2,7 @@ import Footer from '@/components/Footer';
 import Navigation from '@/components/Navigation';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { searchJobs, } from '@/backend/employerBackend'
 import 'react-toastify/dist/ReactToastify.css';
@@ -188,7 +188,6 @@ const Jobs = ({ documents }: any) => {
                                     </div>
                                 </div>
                             </div>
-
                             <Filter openFilter={openFilter}
                                 setOpenfilter={setOpenfilter}
                                 jobType={jobTypeHolder}
@@ -227,6 +226,7 @@ const Jobs = ({ documents }: any) => {
                                     <option value="Past month">Past month</option>
                                 </select>
                             </div>
+
                             {
                                 data && data.length == 0 && <div className='w-full items-center h-60 flex justify-center'>
                                     <p className='text-xl font-[500] w-full text-center leading-[40px] flex justify-center flex-wrap xl:w-[70%]'> Looks like there aren't any matches right now. <br /> Why not try some different keywords or tweak your filters?</p>
@@ -338,6 +338,7 @@ const Jobs = ({ documents }: any) => {
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                     </div>
@@ -350,10 +351,7 @@ const Jobs = ({ documents }: any) => {
 export default Jobs;
 export async function getStaticProps() {
     const promise = searchJobs(8, 0, '', '', '', '', '')
-
     const { documents } = await promise;
-    console.log(documents);
-
     return {
         props: {
             documents
