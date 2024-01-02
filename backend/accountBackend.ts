@@ -69,7 +69,7 @@ export const defineRole = async (id: string, role: string, name?: string) => {
 
 export const sendEmailVerification = async (email: string, password: string) => {
     await account.createEmailSession(email, password);
-    await account.createVerification(`https://palmtesting.vercel.app/account/verify`);
+    await account.createVerification(`${VERIFY}/account/verify`);
 };
 export const verfiyAccount = (userId: string, secret: string) => {
     try {
