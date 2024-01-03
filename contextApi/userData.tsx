@@ -162,19 +162,19 @@ export const GlobalContextProvider = ({ children }: any) => {
             setLoading(false)
         })
     };
-    /* useEffect(() => {
-          if (typeof window !== 'undefined') {
-             import('localforage').then((localforage) => {
-                 localforage.getItem('userRole').then((value: any) => {
-                     if (value == 'employer') {
-                     }
-                 });
-             })
-         }
-         userDetails()
- 
-         useAccount()
-     }, []) */
+    useEffect(() => {
+        /* if (typeof window !== 'undefined') {
+            import('localforage').then((localforage) => {
+                localforage.getItem('userRole').then((value: any) => {
+                    if (value == 'employer') {
+                    }
+                });
+            })
+        } */
+        userDetails()
+
+        useAccount()
+    }, [])
     const useAccount = async () => {
         userDatas()
         haveRole()
