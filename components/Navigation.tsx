@@ -208,13 +208,13 @@ const Navigation = (props: any) => {
                                 <div>
                                     <Popover className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 bg-gray-50 rounded-full h-10">
                                         <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex items-center ">
-                                            {userDetail && userDetail.profilePictureId && (
+                                            {userData && userDetail && userDetail.profilePictureId && (
                                                 <div className="w-7 h-7 ">
                                                     <ProfilePic id={userDetail.profilePictureId} className="w-full h-full border-0 rounded-full outline-0 ring-none"
                                                     />
                                                 </div>
                                             )}
-                                            {userData && userDetail && !userDetail.profilePictureId && (
+                                            {userData && (!userDetail || !userDetail.profilePictureId) && (
                                                 <div className="flex text-left ml-3 justify-center items-center ">
                                                     <p className="text-[14px] font-[600] bg-gradientFirst text-textW border-2 border-textW ring-2 ring-gradientFirst rounded-full w-8 h-8 flex items-center justify-center">{userData.name.charAt(0).toLocaleUpperCase()}</p>
                                                     {/*  {userRole == 'candidate' ? <p className="text-[14px] font-[600]">{userData.name}</p> : null}
