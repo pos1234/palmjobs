@@ -60,7 +60,6 @@ const Candidates = (props: any) => {
     };
     useEffect(() => {
         getPosted();
-        console.log(allEmployerJobs)
     }, [allEmployerJobs, router.query]);
     return (
         <div className="flex gap-x-3 max-md:flex-wrap bg-textW">

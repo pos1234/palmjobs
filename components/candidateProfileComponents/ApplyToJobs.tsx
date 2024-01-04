@@ -392,7 +392,7 @@ const ApplyToJob = (props: any) => {
                                 </div>
                             )}
                             {
-                                !appliedJob && !loading && userDetail && (!phone || !userDetail.coverLetter || !userDetail.educations) &&
+                                !appliedJob && !loading && userDetail && (/* !phone || */ !userDetail.coverLetter || !userDetail.educations) &&
                                 <div className="flex w-full justify-center items-center w-full h-full flex-wrap"
                                 >
                                     <div className='flex flex-col items-center gap-5'>
@@ -409,7 +409,7 @@ const ApplyToJob = (props: any) => {
                                     </div>
                                 </div>
                             }
-                            {!appliedJob && !loading && userDetail && (phone || userDetail.coverLetter || userDetail.educations) && (
+                            {!appliedJob && !loading && userDetail && (/* phone || */ userDetail.coverLetter || userDetail.educations) && (
                                 <form
                                     onSubmit={apply}
                                     className="flex w-full justify-between w-full h-full flex-wrap"
