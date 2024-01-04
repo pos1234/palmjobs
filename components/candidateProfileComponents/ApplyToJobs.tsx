@@ -128,21 +128,28 @@ const ApplyToJob = (props: any) => {
                         }
                     }
                     if (!value) {
-                        getCandidateDocument().then((res: any) => {
-                            res && setUserDetail(res.documents[0]);
-                            res && setPhone(res.documents[0].phoneNumber);
-                            res && setLinked(res.documents[0].linkedIn);
-                            res && setCover(res.documents[0].coverLetter);
-                            if (res && res.documents[0].skills == null || res.documents[0].skills && res.documents[0].skills.length == 0) {
-                                setSkillLength(0)
-                            }
-                            if (res && res.documents[0].educations == null || res.documents[0].educations && JSON.parse(res.documents[0].educations).length == 0) {
-                                setEducationLength(0)
-                            }
-                            import('localforage').then((localforage) => {
-                                res && localforage.setItem('userDetail', res.documents[0]).then(() => {
-                                });
-                            });
+                        import('localforage').then((localforage) => {
+                            localforage.getItem('userRole').then((value: any) => {
+                                if (value == 'candidate') {
+                                    getCandidateDocument().then((res: any) => {
+                                        res && setUserDetail(res.documents[0]);
+                                        res && setPhone(res.documents[0].phoneNumber);
+                                        res && setLinked(res.documents[0].linkedIn);
+                                        res && setCover(res.documents[0].coverLetter);
+                                        if (res && res.documents[0].skills == null || res.documents[0].skills && res.documents[0].skills.length == 0) {
+                                            setSkillLength(0)
+                                        }
+                                        if (res && res.documents[0].educations == null || res.documents[0].educations && JSON.parse(res.documents[0].educations).length == 0) {
+                                            setEducationLength(0)
+                                        }
+                                        import('localforage').then((localforage) => {
+                                            res && localforage.setItem('userDetail', res.documents[0]).then(() => {
+                                            });
+                                        });
+                                    })
+                                }
+                            })
+
                         })
                     }
                 })
@@ -184,36 +191,43 @@ const ApplyToJob = (props: any) => {
                     }
                     if (!value) {
                         setLoading(true);
-                        getCandidateDocument().then((res: any) => {
-                            res && alreadyApplied(res.documents[0].$id, props.jobId).then((applied) => {
-                                setLoading(false);
-                                if (applied.total !== 0) {
-                                    setAppliedJob(true);
+                        import('localforage').then((localforage) => {
+                            localforage.getItem('userRole').then((value: any) => {
+                                if (value == 'candidate') {
+                                    getCandidateDocument().then((res: any) => {
+                                        res && alreadyApplied(res.documents[0].$id, props.jobId).then((applied) => {
+                                            setLoading(false);
+                                            if (applied.total !== 0) {
+                                                setAppliedJob(true);
+                                            }
+                                            if (applied.total == 0) {
+                                                setLoading(false);
+                                                setAppliedJob(false);
+                                            }
+                                        });
+                                        res && res.documents && res.documents[0].resumeId && getResumeName(res.documents[0].resumeId).then((res: any) => {
+                                            res && setFileName(res.name);
+                                            res && setCurrentResumeId(res.$id);
+                                        });
+                                        res && setUserDetail(res.documents[0]);
+                                        res && setPhone(res.documents[0].phoneNumber);
+                                        res && setLinked(res.documents[0].linkedIn);
+                                        res && setCover(res.documents[0].coverLetter);
+                                        if (res && res.documents[0].skills == null || res.documents[0].skills && res.documents[0].skills.length == 0) {
+                                            setSkillLength(0)
+                                        }
+                                        if (res && res.documents[0].educations == null || res.documents[0].educations && JSON.parse(res.documents[0].educations).length == 0) {
+                                            setEducationLength(0)
+                                        }
+                                        import('localforage').then((localforage) => {
+                                            res && localforage.setItem('userDetail', res.documents[0]).then(() => {
+                                            });
+                                        });
+                                    })
                                 }
-                                if (applied.total == 0) {
-                                    setLoading(false);
-                                    setAppliedJob(false);
-                                }
-                            });
-                            res && res.documents && res.documents[0].resumeId && getResumeName(res.documents[0].resumeId).then((res: any) => {
-                                res && setFileName(res.name);
-                                res && setCurrentResumeId(res.$id);
-                            });
-                            res && setUserDetail(res.documents[0]);
-                            res && setPhone(res.documents[0].phoneNumber);
-                            res && setLinked(res.documents[0].linkedIn);
-                            res && setCover(res.documents[0].coverLetter);
-                            if (res && res.documents[0].skills == null || res.documents[0].skills && res.documents[0].skills.length == 0) {
-                                setSkillLength(0)
-                            }
-                            if (res && res.documents[0].educations == null || res.documents[0].educations && JSON.parse(res.documents[0].educations).length == 0) {
-                                setEducationLength(0)
-                            }
-                            import('localforage').then((localforage) => {
-                                res && localforage.setItem('userDetail', res.documents[0]).then(() => {
-                                });
-                            });
+                            })
                         })
+
 
                     }
                 })

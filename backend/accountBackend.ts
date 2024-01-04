@@ -53,13 +53,13 @@ export const defineRole = async (id: string, role: string, name?: string) => {
         userRole: role
     };
     if (role == 'candidate') {
-        const createId = await databases.createDocument(DATABASE_ID, CANDIDATE_DATA, ID.unique(), {
+        await databases.createDocument(DATABASE_ID, CANDIDATE_DATA, ID.unique(), {
             Id: id,
             name
         });
     }
     if (role == 'employer') {
-        const createId = await databases.createDocument(DATABASE_ID, COMPANY_DATA, ID.unique(), {
+        await databases.createDocument(DATABASE_ID, COMPANY_DATA, ID.unique(), {
             employerId: id
         });
     }
