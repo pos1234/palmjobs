@@ -10,11 +10,9 @@ const check = () => {
     const [userRole, setUserRole] = useState('')
     const [getJob, setGetJob] = useState(false)
     const [hireTalent, setHireTalent] = useState(false)
-    const [userId, setUserId] = useState('')
     const router = useRouter()
     useEffect(() => {
         getRole().then((res) => {
-            res && res.documents[0] && setUserId(res?.documents[0].userId)
             if (res?.total == 0) {
                 setLoading(false)
             } else {
@@ -23,11 +21,12 @@ const check = () => {
         })
     }, [])
     const handleRoleUpdate = () => {
-        console.log(userId, userRole);
-        defineRole(userId, userRole).then((res) => {
-            res && router.push('/jobs')
-        }).catch((error) => {
-            console.log(error);
+        getRole().then((res) => {
+            defineRole(res?.documents[0].userId, userRole).then((res) => {
+                res && router.push('/jobs')
+            }).catch((error) => {
+                console.log(error);
+            })
         })
     }
     return (

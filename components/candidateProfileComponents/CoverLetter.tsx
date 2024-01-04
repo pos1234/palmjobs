@@ -88,10 +88,9 @@ const CoverLetter = (props: any) => {
                     <p className="absolute w-full"> {coverLetter}</p>
                 }
             </div>
-
             <FormModal tipText='Crafting a compelling cover letter? Start with a warm greeting, express your enthusiasm for the role, and highlight key experiences that align with the job description. Show how your unique skills can contribute to the company’s success. End with a courteous closing and an invitation for further discussion. Remember, your cover letter is your personal story—make it resonate with your future employer'
-                text='CoverLetter' icon={<TextSnippetIcon />}
-                addText='Add CoverLetter' openModal={openCover} setOpenModal={setOpenCover}>
+                text='Cover Letter' icon={<TextSnippetIcon />}
+                addText='Add Cover Letter' openModal={openCover} setOpenModal={setOpenCover}>
                 <form onSubmit={handleCoverLetter} className='w-full flex flex-col gap-5'>
                     <span className='text-fadedText self-end'>{`${coverLetter.length} / ${coverLetterLength}`}</span>
                     <textarea
@@ -103,7 +102,6 @@ const CoverLetter = (props: any) => {
                                 setCoverLetter(e.currentTarget.value)
                             }
                         }}
-
                     />
                     <div className='w-full flex md:justify-end'>
                         <div className='w-full md:w-80'>
