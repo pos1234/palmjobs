@@ -29,8 +29,8 @@ const ChooseJob = (props: any) => {
         <div className="text-neutral-900 h-32 flex items-center overflow-hidden justify-between pl-5 md:h-32 jobsBack">
           <div className='flex flex-col gap-2'>
             <p className='font-[700] sm:text-[24px]'>Develop the Job Description using AI</p>
-            <p className='font-[400] text-[14px] text-gray-500'>Lorem ipsum sit amet consectetur. Accumsan</p>
-          </div>
+{/*             <p className='font-[400] text-[14px] text-gray-500'>Lorem ipsum sit amet consectetur. Accumsan</p>
+ */}          </div>
           <div className='p-5 pr-10'>
             <img src="/images/bigSearch.svg" alt="" className='w-28' />
           </div>

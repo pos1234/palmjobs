@@ -122,7 +122,7 @@ const Home = () => {
                                 </div>
                             </div>}
                     </div>
-                    <div className='w-full homeSurvey px-10 mt-10 flex sm:h-[129px] items-center justify-between flex-wrap max-sm:pb-5'>
+                    <div className='w-full rounded-xl homeSurvey px-10 mt-10 flex sm:h-[129px] items-center justify-between flex-wrap max-sm:pb-5'>
                         <div className='flex flex-col'>
                             <p className='font-[600] text-[27px]'>Salary Survey</p>
                             <p className='font-[400]'>Find and compare salary information</p>
