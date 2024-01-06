@@ -244,7 +244,6 @@ const JobListCard = (props: any) => {
                     {removeHtmlTags(props.items.jobDescription)}....
                 </div>
             </div>
-            { }
             {isWithinWeek ? days == 0
                 ? <p className='text-[12px]'>Posted Today</p> : days == 1 ? <p className='text-[12px]'>Posted {days} day ago</p> : <p className='text-[12px]'>Posted {days} days ago</p>
                 : weeks <= 3 ? weeks == 1 ? <p className='text-[12px]'>Posted {weeks} week ago</p> : <p className='text-[12px]'>Posted {weeks} weeks ago</p>

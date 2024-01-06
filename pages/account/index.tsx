@@ -201,7 +201,7 @@ const Login = () => {
                                     <button
                                         onClick={() => {
                                             if (!checked) {
-                                                setCheckError('Please Agree to Terms and Condition');
+                                                setCheckError('Please agree to terms and conditions.');
                                             }
                                             if (checked) {
                                                 setCheckError('');

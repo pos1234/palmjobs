@@ -83,7 +83,7 @@ const SocialForm = (props: any) => {
         if (name == '') {
             setNameError(true)
         } else if (phone && !isValidPhone(phone)) {
-            setPhoneError('Ivalid phone');
+            setPhoneError('Invalid phone');
         } else if (linked !== '' && !isValidUrl(linked)) {
             setLinkedError(linkText);
         } else if (githubLink !== '' && !isValidUrl(githubLink)) {
@@ -201,7 +201,7 @@ const SocialForm = (props: any) => {
                                 LinkedIn</p>
                             <TextInput
                                 errorMessage={linkedError}
-                                placeHolder="Behance Link"
+                                placeHolder=""
                                 value={linked}
                                 setFunction={setLinked}
                                 class="full"
@@ -215,7 +215,7 @@ const SocialForm = (props: any) => {
                                 Github</p>
                             <TextInput
                                 class="full"
-                                placeHolder="Behance Link"
+                                placeHolder=""
                                 value={githubLink}
                                 setFunction={setGithubLink}
                                 errorMessage={githubError}
@@ -228,7 +228,7 @@ const SocialForm = (props: any) => {
                                 </span>
                                 Behance</p>
                             <TextInput
-                                placeHolder="Behance Link"
+                                placeHolder=""
                                 value={behan}
                                 errorMessage={behanceError}
                                 setFunction={setBehan}

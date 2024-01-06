@@ -11,8 +11,7 @@ interface ConfirmModalProps {
     text: string,
     tipText: string
 }
-const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tipText }: ConfirmModalProps) => {
-    const leaf = '/images/modalTipLeaf.svg'
+const FormModal = ({ children, openModal, setOpenModal, addText, tipText }: ConfirmModalProps) => {
     const [tip, setTip] = useState(false)
     const parentRef = useRef<HTMLDivElement>(null);
     const handleParentClick = () => {

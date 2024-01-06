@@ -6,6 +6,20 @@ const ChooseJob = (props: any) => {
   const [selectedRadio, setSelectedRadio] = useState('empty');
   const [postedJobs, setPostedJobs] = useState<any>()
   const [draftedJobs, setDraftedJobs] = useState<any>()
+  const sentences = [
+    'Develop the Job Description using AI.',
+    'Post jobs for one month free trial.',
+  ];
+  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // Move to the next sentence
+      setCurrentSentenceIndex((prevIndex) => (prevIndex + 1) % sentences.length);
+    }, 4000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [currentSentenceIndex]);
   useEffect(() => {
     const active = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus !== 'Draft');
     active && active.length > 0 && setPostedJobs(active)
@@ -28,8 +42,8 @@ const ChooseJob = (props: any) => {
       >
         <div className="text-neutral-900 h-32 flex items-center overflow-hidden justify-between pl-5 md:h-32 jobsBack">
           <div className='flex flex-col gap-2'>
-            <p className='font-[700] sm:text-[24px]'>Develop the Job Description using AI</p>
-{/*             <p className='font-[400] text-[14px] text-gray-500'>Lorem ipsum sit amet consectetur. Accumsan</p>
+            <p className='font-[700] sm:text-[24px]'>{sentences[currentSentenceIndex]}</p>
+            {/*             <p className='font-[400] text-[14px] text-gray-500'>Lorem ipsum sit amet consectetur. Accumsan</p>
  */}          </div>
           <div className='p-5 pr-10'>
             <img src="/images/bigSearch.svg" alt="" className='w-28' />
