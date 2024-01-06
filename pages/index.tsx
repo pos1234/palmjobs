@@ -83,11 +83,39 @@ const Home = () => {
                             <img src="https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images/man-working-from-home-2194237-0.svg" alt="employees" />
                         </div>
                     </div>
-                    <div className='flex  w-full border-y-2 py-10 flex-col gap-10'>
-                        <div className={`text-[20px] flex justify-center leading-[22px] font-[400] w-full ${openDetail ? 'border-b-2 pb-10' : ''}`}>See what's trending on <span onClick={() => setOpenDetail(!openDetail)} className='text-gradientFirst font-[600] cursor-pointer pl-1'> Palm Jobs <KeyboardArrowDownIcon sx={{ fontSize: '1.5rem' }} /></span></div>
+                    <div className='flex w-full py-10 flex-col gap-3'>
+                        <div className={`text-[20px] flex justify-center leading-[22px] font-[400] w-full`}>See what's trending on <span onClick={() => setOpenDetail(!openDetail)} className='text-gradientFirst font-[600] cursor-pointer pl-1'> Palm Jobs <KeyboardArrowDownIcon sx={{ fontSize: '1.5rem' }} /></span></div>
+                        <div className={`w-full bg-gray-300 h-px transition-all duration-300 ease-in-out  ${openDetail ? 'mt-2' : '-mt-2 opacity-0'}`}></div>
                         {
-                            openDetail &&
-                            <div className='flex w-full justify-around max-md:flex-col max-md:gap-5'>
+                            openDetail && <div className='flex gap-3 flex-col items-center mt-5'>
+                                <p className='font-[500] text-lg'>We're working on your personalized job feed</p>
+                                <p>In the meantime, run a search to find your next job</p>
+                                <Link href="/jobs" className='bg-black text-textW px-5 py-2 rounded-lg mt-3'>
+                                    Find Jobs
+                                </Link>
+                            </div>
+                        }
+                    </div>
+                    <div className='w-full rounded-xl homeSurvey px-10 mt-10 flex sm:h-[129px] items-center justify-between flex-wrap max-sm:pb-5'>
+                        <div className='flex flex-col'>
+                            <p className='font-[600] text-[27px]'>Salary Survey</p>
+                            <p className='font-[400]'>Find and compare salary information</p>
+                        </div>
+                        <div className='bg-gradientFirst rounded-[3px]'>
+                            <Link href="/salaries" className='bg-black text-textW w-[225px] h-[56px] p-5 cursor-pointer rounded-[3px] flex gap-3 items-center justify-center buttonBounce'>
+                                <img src="https://raw.githubusercontent.com/pos1234/palmjobs/main/public/icons/HomeHand.svg" alt="hand" />
+                                <p className='flex items-end'>Explore More</p>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        </>
+    );
+};
+export default Home;
+{/* <div className='flex w-full justify-around max-md:flex-col max-md:gap-5'>
                                 <div className='flex flex-col items-center'>
                                     <p className='font-[600] text-[18px] text-[#0E121D] w-full flex max-md:justify-center'>Trending Jobs</p>
                                     <div className='list-disc text-gradientFirst underline mt-5 flex flex-col gap-3 w-full flex max-md:items-center'>
@@ -120,24 +148,4 @@ const Home = () => {
                                         ))}
                                     </div>
                                 </div>
-                            </div>}
-                    </div>
-                    <div className='w-full rounded-xl homeSurvey px-10 mt-10 flex sm:h-[129px] items-center justify-between flex-wrap max-sm:pb-5'>
-                        <div className='flex flex-col'>
-                            <p className='font-[600] text-[27px]'>Salary Survey</p>
-                            <p className='font-[400]'>Find and compare salary information</p>
-                        </div>
-                        <div className='bg-gradientFirst rounded-[3px]'>
-                            <Link href="/salaries" className='bg-black text-textW w-[225px] h-[56px] p-5 cursor-pointer rounded-[3px] flex gap-3 items-center justify-center buttonBounce'>
-                                <img src="https://raw.githubusercontent.com/pos1234/palmjobs/main/public/icons/HomeHand.svg" alt="hand" />
-                                <p className='flex items-end'>Explore More</p>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-                <Footer />
-            </div>
-        </>
-    );
-};
-export default Home;
+                            </div> */}

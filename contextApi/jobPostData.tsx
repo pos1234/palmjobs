@@ -194,7 +194,6 @@ export const JobPostContextProvider = ({ children }: any) => {
     const handleJobSelection = (id: string, postType?: string) => {
         postType && postType == 'duplicate' ? null : setPostingJobId(id)
         const selectedJob = allEmployerJobs && allEmployerJobs.filter((job: any) => job.$id == id)
-        console.log(selectedJob[0]);
         const remoteLocation = selectedJob[0].jobLocation == "Remote" ? true : false
         const hybridLocation = selectedJob[0].jobLocation == "Hybrid" ? true : false
         const locationAdded = selectedJob[0].jobLocation !== "Remote" && selectedJob[0].jobLocation !== "Hybrid" ? true : false

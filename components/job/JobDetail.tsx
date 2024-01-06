@@ -273,10 +273,15 @@ const JobDetail = (props: any) => {
                                 />
                             )}
                             {props.jobDetails.datePosted && (
-                                <div className="inline bg-[#FAFAFA] flex items-center gap-1 text-xs text-gradientFirst rounded-[4px] p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:h-[28px]">
+                                <div className="inline bg-[#FAFAFA] text-[#20262E] flex items-center gap-1 text-xs text-gradientFirst rounded-[4px] p-2 px-3 sm:px-2 sm:py-1 md:max-lg:px-1.5 md:max-lg:py-2 xl:h-[28px]">
                                     <img src='/icons/hourGlassUp.svg' alt='hourGlassUp' />
-                                    <span className='text-[#20262E]'>{/* isToday && isToday ? <p className='text-[12px]'>posted today</p> : */ isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
-                                    </span>
+                                    {isWithinWeek ? days == 0
+                                        ? <p className='text-[12px]'>Posted Today</p> : days == 1 ? <p className='text-[12px]'>Posted {days} day ago</p> : <p className='text-[12px]'>Posted {days} days ago</p>
+                                        : weeks <= 3 ? weeks == 1 ? <p className='text-[12px]'>Posted {weeks} week ago</p> : <p className='text-[12px]'>Posted {weeks} weeks ago</p>
+                                            : <p className='text-[12px]'>Posted {Math.floor(weeks / 4)} month ago</p>
+                                    }
+                                    {/*   <span className='text-[#20262E]'> isWithinWeek ? days == 0 ? <p className='text-[12px]'>posted today</p> : <p className='text-[12px]'>posted {days} days ago</p> : weeks <= 3 ? <p className='text-[12px]'>posted {weeks} weeks ago</p> : <p className='text-[12px]'>posted {Math.floor(weeks / 4)} month ago</p>}
+                                    </span> */}
                                 </div>
                             )}
                         </div>

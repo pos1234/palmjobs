@@ -8,6 +8,7 @@ const USER_ROLE = process.env.NEXT_PUBLIC_USER_ROLE || '';
 const CANDIDATE_DATA = process.env.NEXT_PUBLIC_CANDIDATE_DATA || '';
 const COMPANY_DATA = process.env.NEXT_PUBLIC_COMPANY_DATA || '';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
+const PAYMENT = process.env.NEXT_PUBLIC_PAYMENT as string;
 
 const { client, databases, account } = appwriteConfig();
 client
@@ -48,6 +49,28 @@ export const Register = async (email: string, password: string, userName: string
     return promise;
 };
 export const defineRole = async (id: string, role: string, name?: string) => {
+    const currentDate = new Date();
+
+    // Extract day, month, and year for today
+    const todayDay = currentDate.getDate();
+    const todayMonth = currentDate.getMonth() + 1; // Months are zero-indexed, so add 1
+    const todayYear = currentDate.getFullYear();
+
+    // Format today's date as 'MM/DD/YYYY'
+    const formattedToday = `${todayMonth < 10 ? '0' : ''}${todayMonth}/${todayDay < 10 ? '0' : ''}${todayDay}/${todayYear}`;
+
+    // Get the date after 30 days
+    const futureDate = new Date(currentDate);
+    futureDate.setDate(currentDate.getDate() + 30);
+
+    // Extract day, month, and year for the future date
+    const futureDay = futureDate.getDate();
+    const futureMonth = futureDate.getMonth() + 1; // Months are zero-indexed, so add 1
+    const futureYear = futureDate.getFullYear();
+
+    // Format the future date as 'MM/DD/YYYY'
+    const formattedFutureDate = `${futureMonth < 10 ? '0' : ''}${futureMonth}/${futureDay < 10 ? '0' : ''}${futureDay}/${futureYear}`;
+
     const sendRole = {
         userId: id,
         userRole: role
@@ -62,11 +85,17 @@ export const defineRole = async (id: string, role: string, name?: string) => {
         await databases.createDocument(DATABASE_ID, COMPANY_DATA, ID.unique(), {
             employerId: id
         });
+        await databases.createDocument(DATABASE_ID, PAYMENT, ID.unique(), {
+            userId: id,
+            startingDate: formattedToday,
+            endDate: formattedFutureDate,
+            remainingJobPosts: 15,
+            remainingJobsPerDay: 5
+        });
     }
     const Role = await databases.createDocument(DATABASE_ID, USER_ROLE, ID.unique(), sendRole);
     return Role;
 };
-
 export const sendEmailVerification = async (email: string, password: string) => {
     await account.createEmailSession(email, password);
     await account.createVerification(`${VERIFY}/account/verify`);

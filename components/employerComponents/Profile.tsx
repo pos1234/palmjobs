@@ -175,7 +175,6 @@ const EmployerProfile = (props: any) => {
                         <EmployerProfilePicture />
                     </div>
                     {
-
                         !props.post &&
                         <Link href="/users/employer/post"
                             className='w-full cursor-pointer order-1 sm:order-2 sm:w-40 md:w-60 flex items-center gap-2 justify-center w-full rounded-lg bg-black text-textW h-14'>
@@ -183,6 +182,8 @@ const EmployerProfile = (props: any) => {
                             <p className='font-[400] text-[16px]'>Post Job</p>
                         </Link>}
                 </div>
+                <p className='text-gray-600 py-5'>{userData && userData.email}</p>
+
                 <RequiredTextLabel text="Your Company Name?" />
                 <TextInput placeHolder="" errorMessage={companyNameError} value={companyName} setFunction={setCompanyName} />
                 <RequiredTextLabel text="Your Name?" />

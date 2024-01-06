@@ -11,6 +11,7 @@ const COMPANY_DATA = process.env.NEXT_PUBLIC_COMPANY_DATA || '';
 const SHORT_LISTED = process.env.NEXT_PUBLIC_SHORT_LISTED || '';
 const SURVEY = process.env.NEXT_PUBLIC_SURVEY || '';
 const IMAGE = process.env.NEXT_PUBLIC_IMAGE || '';
+const PAYMENT = process.env.NEXT_PUBLIC_PAYMENT as string;
 const updateDocuments = async (datas: any) => {
     const data: any = await getEmployerDocument();
     const fileId = data && data.documents[0].$id;
@@ -56,12 +57,10 @@ export const getUserDetail = async () => {
     const data: any = await getEmployerDocument();
     return data && data.documents[0];
 };
-
 export const updateUserName = (name: string) => {
     const promise = account.updateName(name);
     return promise;
 };
-
 export const searchJobs = async (
     limit: number,
     offset: number,
@@ -437,6 +436,38 @@ export const createSalarySurvey = async (
         additionalInsight,
         emailAddress
     });
-
     return promise;
+};
+export const getPaymentDetail = async () => {
+    const userAccount = await getAccount();
+    const currentDate = new Date();
+
+    // Extract day, month, and year for today
+    const todayDay = currentDate.getDate();
+    const todayMonth = currentDate.getMonth() + 1; // Months are zero-indexed, so add 1
+    const todayYear = currentDate.getFullYear();
+
+    // Format today's date as 'MM/DD/YYYY'
+    const formattedToday = `${todayMonth < 10 ? '0' : ''}${todayMonth}/${todayDay < 10 ? '0' : ''}${todayDay}/${todayYear}`;
+    if (userAccount !== 'failed') {
+        const promise = databases.listDocuments(DATABASE_ID, PAYMENT, [
+            Query.equal('userId', userAccount.$id),
+            Query.greaterThanEqual('remainingJobPosts', 1),
+            Query.greaterThanEqual('remainingJobsPerDay', 1),
+            Query.lessThanEqual('endDate', formattedToday)
+        ]);
+        return promise;
+    }
+};
+export const setPaymentDetail = async (id: string, remainingJobPost: number, remainingJobPerDay: number) => {
+    const userAccount = await getAccount();
+    const datas = {
+        remainingJobPosts: remainingJobPost - 1,
+        remainingJobsPerDay: remainingJobPerDay - 1
+    };
+    //databases.updateDocument(DATABASE_ID, COMPANY_DATA, res.documents[0].$id, datas)
+    if (userAccount !== 'failed') {
+        const promise = databases.updateDocument(DATABASE_ID, PAYMENT, id, datas);
+        return promise;
+    }
 };

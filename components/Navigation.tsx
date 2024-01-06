@@ -206,7 +206,7 @@ const Navigation = (props: any) => {
                         {!loading && userData && userData !== 'failed' && (
                             <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
                                 <div>
-                                    <Popover className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 bg-gray-50 rounded-full h-10">
+                                    <Popover className="flex items-center lg:text-[0.9rem] px-2 py-2 gap-3 rounded-full h-10">
                                         <Popover.Button className="focus:ring-0 focus:border-0 focus:outline-0 flex items-center ">
                                             {userData && userDetail && userDetail.profilePictureId && (
                                                 <div className="w-7 h-7 ">
