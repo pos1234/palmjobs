@@ -372,20 +372,6 @@ const JobCard = (props: any) => {
                                         <SubmitButton loading={loading} buttonText="Update Job" />
                                     </div>
                                 </div>
-                                {/* {!loading && (
-                                    <button
-                                        type="submit"
-                                        className="text-textW bg-gradient-to-r flex self-end items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-xl w-full md:w-5/12 lg:w-3/12"
-                                    >
-                                        Update Job
-                                    </button>
-                                )}
-                                {loading && (
-                                    <img
-                                        src={loadingIn}
-                                        className="text-textW bg-gradient-to-r self-end flex items-center from-gradientFirst to-gradientSecond justify-center cursor-pointer h-16 rounded-xl w-full md:w-5/12 lg:w-3/12"
-                                    />
-                                )} */}
                             </form>
                         </div>
                     </div>

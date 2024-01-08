@@ -8,8 +8,6 @@ interface Data {
     word: string;
 }
 const Skills = (props: any) => {
-    /*     const { userDetail } = useGlobalContext()
-     */
     const [userDetail, setUserDetail] = useState(props.userDetail)
     const [array, setArray] = useState<string[]>([]);
     const [inputSkill, setInputSkill] = useState(false);
@@ -22,14 +20,10 @@ const Skills = (props: any) => {
             import('localforage').then((localforage) => {
                 localforage.getItem('userDetail')
                     .then((existingData: any) => {
-                        // Modify the existing data
-
                         const updatedData = {
-                            // Update the specific properties you want to change
                             ...existingData,
                             skills: value,
                         };
-                        // Set the updated data back to the same key
                         return localforage.setItem('userDetail', updatedData);
                     })
                     .then(() => {
@@ -73,8 +67,7 @@ const Skills = (props: any) => {
         })
     };
     const userData = async () => {
-/*         const userInfo = await getUserDetail()
- */        userDetail && setArray(userDetail.skills || '');
+        userDetail && setArray(userDetail.skills || '');
     }
     useEffect(() => {
         userData()

@@ -54,17 +54,13 @@ const ThirdForm = (props: any) => {
                 });
         }
     };
-    const generateJobDescription = async ({ jobTitle, /* skills, */ yearsOfExperience }: Record<'jobTitle' | /* 'skills' | */ 'yearsOfExperience', string>) => {
-        console.log('Generating job description...', `${window.location.hostname}/api/oai/jobDescription`);
+    const generateJobDescription = async ({ jobTitle, yearsOfExperience }: Record<'jobTitle' | 'yearsOfExperience', string>) => {
         try {
             if (typeof window === 'undefined') return;
             const url = new URL(`${window.location.origin}/api/oai/jobDescription`);
             if (firstTabData.jobTitle) {
                 url.searchParams.append('j', firstTabData.jobTitle);
             }
-            /* if (skills) {
-                url.searchParams.append('s', secondTabData.skills);
-            } */
             if (secondTabData.expRequired) {
                 url.searchParams.append('y', secondTabData.expRequired);
             }
@@ -81,7 +77,7 @@ const ThirdForm = (props: any) => {
     };
     const handleAIJobDescription = () => {
         setLoadingAi(true)
-        generateJobDescription({ jobTitle: firstTabData.jobTitle, /* skills: requiredSkills, */ yearsOfExperience: secondTabData.expRequired }).then((res) => {
+        generateJobDescription({ jobTitle: firstTabData.jobTitle, yearsOfExperience: secondTabData.expRequired }).then((res) => {
             setLoadingAi(false)
         }).catch((error) => {
             console.log(error);

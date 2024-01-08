@@ -56,14 +56,11 @@ const Certificate = (props: any) => {
             import('localforage').then((localforage) => {
                 localforage.getItem('userDetail')
                     .then((existingData: any) => {
-                        // Modify the existing data
                         const converted = JSON.stringify(value)
                         const updatedData = {
-                            // Update the specific properties you want to change
                             ...existingData,
                             certificates: converted,
                         };
-                        // Set the updated data back to the same key
                         return localforage.setItem('userDetail', updatedData);
                     })
                     .then(() => {

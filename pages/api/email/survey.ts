@@ -15,7 +15,6 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     sgMail
         .send(msg)
         .then(() => {
-            console.log('Email sent');
             return res.json({ status: true });
         })
         .catch((error: any) => {

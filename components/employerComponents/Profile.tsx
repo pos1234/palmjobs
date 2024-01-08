@@ -13,8 +13,6 @@ const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const EmployerProfile = (props: any) => {
-    /*     const { userData, userDetail } = useGlobalContext()
-     */
     const [userData, setUserData] = useState<any>()
     const [userDetail, setUserDetail] = useState<any>()
     const [companyName, setCompanyName] = useState('');
@@ -56,9 +54,6 @@ const EmployerProfile = (props: any) => {
                         setUserData(value)
                         setLoading(false)
                     }
-                    /*  if (!value) {
-                         getDetails()
-                     } */
                 });
             });
         }
@@ -67,7 +62,6 @@ const EmployerProfile = (props: any) => {
     const userDatas = () => {
         if (typeof window !== 'undefined') {
             import('localforage').then((localforage) => {
-                // Your client-side code here using localforage
                 localforage.getItem('userDetail').then((value: any) => {
                     if (value) {
                         setUserDetail(value)
@@ -79,11 +73,7 @@ const EmployerProfile = (props: any) => {
                         setPhone(value.phoneNumber);
                         setWebLink(value.websiteLink);
                         setCompDescription(value.description);
-                        /* initialData() */
                     }
-                    /*  if (!value) {
-                         getDetails()
-                     } */
                 });
             });
         }
@@ -127,7 +117,6 @@ const EmployerProfile = (props: any) => {
                     updateUserName(userName).then((res) => {
                         if (typeof window !== 'undefined') {
                             import('localforage').then((localforage) => {
-                                // Your client-side code here using localforage
                                 localforage.getItem('userData').then((value: any) => {
 
                                     const updatedData = {
@@ -140,7 +129,6 @@ const EmployerProfile = (props: any) => {
                     })
                     if (typeof window !== 'undefined') {
                         import('localforage').then((localforage) => {
-                            // Your client-side code here using localforage
                             localforage.getItem('userDetail').then((value: any) => {
                                 const updatedData = {
                                     ...value,
@@ -234,12 +222,6 @@ const EmployerProfile = (props: any) => {
                     <option value="501 to 1,000 Employees">501 to 1,000 Employees</option>
                     <option value="1,000+ Employees">1,000+ Employees</option>
                 </select>
-                {/* <input
-                    type="number"
-                    className=" h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientFirst focus:ring-0 hideIncrease w-full md:w-96"
-                    value={parseInt(noEmployee, 10)}
-                    onChange={(e) => setNoEmployee(e.currentTarget.value.toString())}
-                /> */}
                 {noEmployeeError && <p className="text-red-500 text-[13px] mt-2">{noEmployeeError}</p>}
                 <RequiredTextLabel text="Your Phone Number?" />
                 <PhoneInput

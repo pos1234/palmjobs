@@ -25,30 +25,20 @@ const RegisterComponent = (props: any) => {
     });
     const getPasswordStrength = () => {
         const password = register.password;
-
-        // Check for minimum length (at least 8 characters)
         const hasMinLength = password.length >= 8;
-
-        // Regular expressions to check for other criteria
         const hasUppercase = /[A-Z]/.test(password);
         const hasLowercase = /[a-z]/.test(password);
         const hasDigit = /\d/.test(password);
         const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password);
-
-        // Calculate a numeric value based on the criteria
         const strengthValue =
             (hasMinLength ? 1 : 0) +
             (hasUppercase ? 1 : 0) +
             (hasLowercase ? 1 : 0) +
             (hasDigit ? 1 : 0) +
             (hasSpecialChar ? 1 : 0);
-
-        // Normalize the value to a range between 0 and 1
-        const normalizedStrength = strengthValue / 5; // Now divided by 5 as we added one more criteria
-
+        const normalizedStrength = strengthValue / 5;
         return normalizedStrength;
     };
-
     function validateEmail(email: string): boolean {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -72,12 +62,7 @@ const RegisterComponent = (props: any) => {
         } else if (register.password !== retypedPassword) {
             setPasswordError("Password doesn't match");
         } else if (getPasswordStrength() !== 1) {
-/*             setPasswordError('Password must be more than 8 charachters');
- */        } /* else if (register.password.length < 8) {
-            setPasswordError('Password must be more than 8 charachters');
-        }  else if (!checked) {
-            setCheckError('Please Agree to Terms and Condition');
-        }*/ else {
+        } else {
             if (validateEmail(register.email)) {
                 setLoading(true);
                 const fullName = register.firstName + ' ' + register.lastName;
@@ -118,7 +103,7 @@ const RegisterComponent = (props: any) => {
             }
         }
     };
-    const getColorClass = (score: number/* , isTyping: boolean */) => {
+    const getColorClass = (score: number) => {
         if (score <= 0.2) {
             return "bg-red-500";
         } else if (score <= 0.6) {
@@ -229,15 +214,6 @@ const RegisterComponent = (props: any) => {
                     </div>
                 </div>
                 {passwordError && <p className="text-[13px] w-full text-red-500">{passwordError}</p>}
-                {/* <div className="w-full">
-                    <input
-                        onChange={(e) => setChecked(e.currentTarget.checked)}
-                        type="checkbox"
-                        className="text-addS h-4 rounded-sm focus:ring-gradientSecond focus:bg-gradientFirst checked:bg-gradientFirst active:bg-gradientFirst"
-                    />
-                    <span className="font-addW text-addS leading-addL pl-2">To continue please accept our Terms and Conditions. Thanks!</span>
-                    {checkError && <p className="col-span-12 pt-3 text-[13px] text-red-500">{checkError}</p>}
-                </div> */}
                 <div className='w-full flex md:justify-end'>
                     <div className='w-full md:w-60 pt-5'>
                         <SubmitButton loading={loading} buttonText="Continue" />

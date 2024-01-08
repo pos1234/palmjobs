@@ -17,19 +17,14 @@ import { getRole } from '@/backend/accountBackend';
 import dynamic from 'next/dynamic';
 const UploadResume = dynamic(() => import('@/components/candidateProfileComponents/uploadResume'));
 const Profile = () => {
-/*     const { userDetail } = useGlobalContext()
- */    const [about, setAbout] = useState(true);
+    const [about, setAbout] = useState(true);
     const [allLoading, setAllLoading] = useState(false)
     const [userDetail, setUserDetail] = useState<any>()
     const userData = async () => {
         if (typeof window !== 'undefined') {
             import('localforage').then((localforage) => {
-                // Your client-side code here using localforage
                 localforage.getItem('userDetail').then((value) => {
                     if (value) {
-                        const result = JSON.stringify(value)
-                        /*                 console.log(result);
-                         */
                         setUserDetail(value)
                         setAllLoading(false)
                     }
@@ -45,7 +40,6 @@ const Profile = () => {
     const getDetails = async () => {
         if (typeof window !== 'undefined') {
             import('localforage').then((localforage) => {
-                // Your client-side code here using localforage
                 localforage.getItem('userRole').then((value: any) => {
                     if (!value) {
                         useRole()
@@ -61,7 +55,6 @@ const Profile = () => {
         const role = await getRole();
         if (typeof window !== 'undefined') {
             import('localforage').then((localforage) => {
-                // Your client-side code here using localforage
                 role && localforage.setItem('userRole', role.documents[0].userRole).then(() => {
                 });
             });
@@ -75,7 +68,6 @@ const Profile = () => {
         candidate && setUserDetail(candidate.documents[0]);
         if (typeof window !== 'undefined') {
             import('localforage').then((localforage) => {
-                // Your client-side code here using localforage
                 candidate && localforage.setItem('userDetail', candidate.documents[0]).then(() => {
                 });
             });

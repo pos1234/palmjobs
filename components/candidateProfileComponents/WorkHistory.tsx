@@ -13,8 +13,6 @@ const ReactQuill = dynamic(() => import('react-quill'), {
     ssr: false
 });
 const WorkHitory = (props: any) => {
-    /*     const { userDetail } = useGlobalContext()
-     */
     const [userDetail, setUserDetail] = useState(props.userDetail)
     const [openWork, setOpenWork] = useState(false);
     const [displayWorkHistory, setDisplayWorkHistory] = useState(false);
@@ -42,14 +40,11 @@ const WorkHitory = (props: any) => {
             import('localforage').then((localforage) => {
                 localforage.getItem('userDetail')
                     .then((existingData: any) => {
-                        // Modify the existing data
                         const converted = JSON.stringify(value)
                         const updatedData = {
-                            // Update the specific properties you want to change
                             ...existingData,
                             workHistory: converted,
                         };
-                        // Set the updated data back to the same key
                         return localforage.setItem('userDetail', updatedData);
                     })
                     .then(() => {
@@ -115,8 +110,7 @@ const WorkHitory = (props: any) => {
             setErrorMessage('please enter job description');
         } else {
             setLoadings(true);
-/*             workHistoryArray.push(workHistoryData);
- */            const updatedWrokHitoryArray = [...workHistoryArray, workHistoryData];
+            const updatedWrokHitoryArray = [...workHistoryArray, workHistoryData];
             updateWorkHistory(convertToString(updatedWrokHitoryArray)).then((res: any) => {
                 setLoadings(false);
                 setOpenWork(false);
@@ -158,11 +152,6 @@ const WorkHitory = (props: any) => {
         setIsChecked(event.target.checked);
     };
     const userData = async () => {
-        /*         const userInfo = await getUserDetail()
-         */        /* if (userDetail) {
-const workhistory = convertToArray(userDetail.workHistory) || [];
-setWorkHistoryArray(workhistory || '');
-} */
         if (userDetail) {
             const result = JSON.parse(userDetail.workHistory)
             userDetail && setWorkHistoryArray(result || []);

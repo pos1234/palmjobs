@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import RadioInput from '../RadioInput'
 import { getProfileData, updateEmailNotification } from '@/backend/employerBackend';
 import { toast } from 'react-toastify';
 import { SubmitButton } from '../TextInput';
@@ -51,15 +50,12 @@ const ChooseEmail = () => {
                             onChange={(e) => setReceive(!receive)}
                             type="checkbox"
                             checked={receive}
-/*                             value={receive}
- */                            name={'checker'}
+                            name={'checker'}
                             className="form-checkbox text-gradientFirst ring-green-500 cursor-pointer"
                         />
                         <span className={`text-neutral-900 text-opacity-70 text-lg font-medium `}>{receive ? <span>Unsubscribed</span> : <span>Subscribed</span>} </span>
                     </div>
-                    {/*   <RadioInput setFunction={setReceive} checked={receive == 'true' ? 'checked' : ''} radioValue="true" radioName="emailReceive" radioText="I agree to receive email notifications" />
-                    <RadioInput setFunction={setReceive} checked={receive == 'false' ? 'checked' : ''} radioValue="false" radioName="emailReceive" radioText="I do not agree to receive email notifications" />
-                   */}  <div className="w-full justify-end flex mt-10">
+                    <div className="w-full justify-end flex mt-10">
                         <div className='w-full md:w-60'>
                             <SubmitButton loading={loading} buttonText={'Update'} />
                         </div>

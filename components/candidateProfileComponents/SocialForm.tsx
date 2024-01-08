@@ -139,15 +139,6 @@ const SocialForm = (props: any) => {
     return (
         <Modal openModal={props.openProfile} setOpenModal={() => props.setOpenProfile(false)} modalTitle={'Bio'}>
             <form onSubmit={hanleLinkUpdate} className="flex flex-wrap w-full">
-                {/* <div className='w-full flex justify-between pb-5'>
-                        <p className="font-[600] text-2xl leading-shL  ">Bio</p>
-                        <button onClick={() => props.setOpenProfile(false)}>
-                            <CloseIcon
-                                sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }}
-                                className="w-8 h-8 p-2 "
-                            />
-                        </button>
-                    </div> */}
                 <div className="w-full grid grid-cols-12 h-96 overflow-y-auto thinScrollBar pr-4" >
                     <p className='col-span-12 font-[500] mb-5'>Let's get started with some personal details</p>
                     <div className="col-span-12 flex gap-3 pb-3 h-[100%] grid grid-cols-1 md:grid-cols-2">
@@ -172,13 +163,6 @@ const SocialForm = (props: any) => {
                                 onChange={setPhone}
                                 className='h-12 px-3 phoneInput bg-white rounded-xl border border-gray-200 focus:border-gradientSecond focus:ring-0 w-full hideIncrease'
                             />
-                            {/*   <input
-                                    type='text'
-                                    placeholder="Phone"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.currentTarget.value)}
-                                    className='h-12 pl-5 bg-white rounded-xl border border-gray-200 focus:border-gradientSecond focus:ring-0 w-full hideIncrease' />
-                                 */}
                             {phoneError && <p className='text-red-500 text-[13px]'>{phoneError}</p>}
                         </div>
                         <div className="flex flex-col gap-3">

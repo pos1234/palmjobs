@@ -440,21 +440,11 @@ export const createSalarySurvey = async (
 };
 export const getPaymentDetail = async () => {
     const userAccount = await getAccount();
-    const currentDate = new Date();
-
-    // Extract day, month, and year for today
-    const todayDay = currentDate.getDate();
-    const todayMonth = currentDate.getMonth() + 1; // Months are zero-indexed, so add 1
-    const todayYear = currentDate.getFullYear();
-
-    // Format today's date as 'MM/DD/YYYY'
-    const formattedToday = `${todayMonth < 10 ? '0' : ''}${todayMonth}/${todayDay < 10 ? '0' : ''}${todayDay}/${todayYear}`;
     if (userAccount !== 'failed') {
         const promise = databases.listDocuments(DATABASE_ID, PAYMENT, [
             Query.equal('userId', userAccount.$id),
             Query.greaterThanEqual('remainingJobPosts', 1),
-            Query.greaterThanEqual('remainingJobsPerDay', 1),
-            Query.lessThanEqual('endDate', formattedToday)
+            Query.greaterThanEqual('remainingJobsPerDay', 1)
         ]);
         return promise;
     }
@@ -465,7 +455,6 @@ export const setPaymentDetail = async (id: string, remainingJobPost: number, rem
         remainingJobPosts: remainingJobPost - 1,
         remainingJobsPerDay: remainingJobPerDay - 1
     };
-    //databases.updateDocument(DATABASE_ID, COMPANY_DATA, res.documents[0].$id, datas)
     if (userAccount !== 'failed') {
         const promise = databases.updateDocument(DATABASE_ID, PAYMENT, id, datas);
         return promise;

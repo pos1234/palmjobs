@@ -9,10 +9,7 @@ const CheckProfileCompletion = () => {
     const [profilePercent, setProfilePercent] = useState(0);
     const { userDetail, userRole } = useGlobalContext()
     useEffect(() => {
-/*         getCandidateDocument().then((res: any) => {
- */            var percent = 0;
-
-
+        var percent = 0;
         if (userDetail) {
             if (userDetail.phoneNumber) {
                 percent += 20;
@@ -36,11 +33,6 @@ const CheckProfileCompletion = () => {
             }
             percent > 0 && percent < 100 && setVisible(true)
         }
-        /* phoneNumber, skills, education,resumeid,address */
-
-        /*  }).catch((error) => {
-             setVisible(false)
-         }) */
     }, [userDetail])
     return (
         <div className={visible ? 'cursor-pointer max-h-[20rem] bg-textW flex flex-wrap py-1 px-4 border-2 rounded-xl xl:px-7 xl:py-3 pb-5' : 'hidden'}>

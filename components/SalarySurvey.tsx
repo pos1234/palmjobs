@@ -148,8 +148,7 @@ const SalarySurvey = () => {
             ).then((res) => {
                 setLoading(false);
                 setOpenNotify(true)
-/*                 toast.success('Successfully Submited Form')
- */                resetForm()
+                resetForm()
                 if (validateEmail(emailAddress)) {
                     SendSurveyEmail(emailAddress)
                 }

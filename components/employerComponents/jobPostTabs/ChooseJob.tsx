@@ -13,11 +13,8 @@ const ChooseJob = (props: any) => {
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   useEffect(() => {
     const intervalId = setInterval(() => {
-      // Move to the next sentence
       setCurrentSentenceIndex((prevIndex) => (prevIndex + 1) % sentences.length);
     }, 4000);
-
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, [currentSentenceIndex]);
   useEffect(() => {
@@ -43,8 +40,7 @@ const ChooseJob = (props: any) => {
         <div className="text-neutral-900 h-32 flex items-center overflow-hidden justify-between pl-5 md:h-32 jobsBack">
           <div className='flex flex-col gap-2'>
             <p className='font-[700] sm:text-[24px]'>{sentences[currentSentenceIndex]}</p>
-            {/*             <p className='font-[400] text-[14px] text-gray-500'>Lorem ipsum sit amet consectetur. Accumsan</p>
- */}          </div>
+          </div>
           <div className='p-5 pr-10'>
             <img src="/images/bigSearch.svg" alt="" className='w-28' />
           </div>

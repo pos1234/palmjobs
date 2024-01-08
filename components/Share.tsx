@@ -29,15 +29,6 @@ const Share = (props: any) => {
     };
     return (
         <Modal modalTitle='Share Job' openModal={props.openShare} setOpenModal={() => props.setOpenShare(!props.openShare)} >
-            {/* <div className="grid grid-cols-12"> */}
-            {/* <div className="col-span-12 grid grid-cols-12">
-                    <div className="col-span-10  flex items-center text-2xl font-[600] text-gradientFirst">Share Job</div>
-                    <div className="col-span-2 md:col-span-1 grid pr-2 justify-items-end">
-                        <button onClick={() => props.setOpenShare(!props.openShare)}>
-                            <CloseIcon sx={{ color: 'green', background: '#E5ECEC', borderRadius: '50%' }} className="w-8 h-8 p-2 " />
-                        </button>
-                    </div>
-                </div> */}
             <div className="flex flex-col">
                 <div className="flex border-2 p-3 rounded-2xl justify-between items-center">
                     <input
@@ -74,7 +65,6 @@ const Share = (props: any) => {
                     </div>
                 </div>
             </div>
-            {/* </div> */}
         </Modal>
     );
 };

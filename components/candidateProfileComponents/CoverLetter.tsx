@@ -6,30 +6,23 @@ import EditIcon from '@mui/icons-material/Edit';
 import FormModal from './FormModal';
 import { SubmitButton } from '../TextInput';
 const CoverLetter = (props: any) => {
-    /*     const { userDetail } = useGlobalContext()
-     */
     const [userDetail, setUserDetail] = useState(props.userDetail)
     const [coverLetter, setCoverLetter] = useState('');
     const [openCover, setOpenCover] = useState(false);
     const [loadings, setLoadings] = useState(false)
     const coverLetterLength = 500
     const userData = async () => {
-/*         const userInfo = await getUserDetail()
- */        userDetail && userDetail.coverLetter && setCoverLetter(userDetail.coverLetter)
+        userDetail && userDetail.coverLetter && setCoverLetter(userDetail.coverLetter)
     }
     const updateLocal = (value: any) => {
         if (typeof window !== 'undefined') {
             import('localforage').then((localforage) => {
                 localforage.getItem('userDetail')
                     .then((existingData: any) => {
-                        // Modify the existing data
                         const updatedData = {
-                            // Update the specific properties you want to change
                             ...existingData,
                             coverLetter: value,
                         };
-
-                        // Set the updated data back to the same key
                         return localforage.setItem('userDetail', updatedData);
                     })
                     .then(() => {

@@ -69,10 +69,9 @@ const Login = () => {
                     console.log(error.message);
                     setLoading(false);
                     toast.error(error.message);
-                }); // Email is valid, proceed with form submission or other logic
+                });
             } else {
                 setEmailError('Invalid Email');
-                // Email is invalid, display an error message or take appropriate action
             }
         }
     };
@@ -92,7 +91,7 @@ const Login = () => {
             <div className="flex max-md:flex-wrap overflow-y-auto sm:pb-5 ">
                 <div className="w-full h-screen md:w-1/2 flex flex-col max-md:gap-10 items-center max-md:mt-10 order-2 md:order-1 ">
                     <div className='md:fixed md:w-1/2 accountBack h-full'>
-                        <div className={/* forgotPassword == false ? 'w-full flex justify-center' : */ 'w-full flex justify-center mt-10 sm:mt-28'}>
+                        <div className={'w-full flex justify-center mt-10 sm:mt-28'}>
                             <Link href="/">
                                 <img src={logo} className=" w-[15rem]" />
                             </Link>

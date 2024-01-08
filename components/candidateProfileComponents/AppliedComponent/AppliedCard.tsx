@@ -16,10 +16,6 @@ interface SaveType {
 }
 const AppliedCard = ({ view, datas, RefetchSaved }: SaveType) => {
     const [appliedJobs, setAppliedJobs] = useState<any>();
-    const [jobId, setJobId] = useState();
-    const [employerId, setEmployerId] = useState();
-    const [companyName, setCompanyName] = useState('');
-    const [jobTitle, setJobTitle] = useState('');
     const fetch = () => {
         fetchAppliedJobsData(datas.jobId)
             .then((res: any) => {

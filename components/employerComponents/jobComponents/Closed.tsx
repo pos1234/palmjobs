@@ -8,19 +8,10 @@ const Closed = () => {
     const { allEmployerJobs } = useJobPostContext()
     const [closedJobs, setClosedJobs] = useState<any>();
     const [allLoading, setAllLoading] = useState(false);
-   /*  const getClosedJobs = async () => {
-        setAllLoading(true);
-        const result = await fetchClosedPostedJobs();
-        if (result && result.documents) {
-            setClosedJobs(result.documents);
-            setAllLoading(false);
-        }
-    }; */
     useEffect(() => {
         const closed = allEmployerJobs && allEmployerJobs.filter((draft: any) => draft.jobStatus === 'Close');
         closed && closed.length > 0 && setClosedJobs(closed)
-/*         getClosedJobs();
- */    }, [allEmployerJobs]);
+    }, [allEmployerJobs]);
     return (
         <>
             {allLoading && (

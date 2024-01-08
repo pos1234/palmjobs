@@ -9,8 +9,7 @@ import SocialForm from './SocialForm';
 const SocialLinks = (props: any) => {
     const [userData, setUserData] = useState<any>()
     const [userDetail, setUserDetail] = useState<any>(props.userDetail)
-/*     const { userDetail, userData } = useGlobalContext()
- */    const [locate, setLocate] = useState('')
+    const [locate, setLocate] = useState('')
     const [call, setCall] = useState('');
     const [linked, setLinked] = useState('');
     const [githubLink, setGithubLink] = useState('');
