@@ -7,7 +7,6 @@ export function candidateAuth(WrappedComponent: React.ComponentType<any>) {
         const checkAuth = async () => {
             if (typeof window !== 'undefined') {
                 import('localforage').then((localforage) => {
-                    // Your client-side code here using localforage
                     localforage.getItem('userRole').then((value: any) => {
                         if (!value) {
                             typeof window !== 'undefined' && router.push('/account');
@@ -20,8 +19,6 @@ export function candidateAuth(WrappedComponent: React.ComponentType<any>) {
                 });
             }
         }
-        /*             const loggedIn = await getAccount();
-         */
         checkAuth();
         return <WrappedComponent {...props} />;
     };
@@ -38,7 +35,6 @@ export function employeeAuth(WrappedComponent: React.ComponentType<any>) {
                     typeof window !== 'undefined' && router.push('/account');
                 }
             }
-            // Check if user is authenticated
             if (loggedIn == 'failed') {
                 typeof window !== 'undefined' && router.push('/account');
             }

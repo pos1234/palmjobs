@@ -5,9 +5,6 @@ import { FileUploader } from 'react-drag-drop-files';
 import { deleteResume, updateResumeId, uploadResume } from '@/backend/candidateBackend';
 import { toast } from 'react-toastify';
 const FileUploadForm = (props: any) => {
-    /*     const { userDetail } = useGlobalContext()
-     */
-    const [userData, setUserData] = useState<any>()
     const [userDetail, setUserDetail] = useState<any>(props.userDetail)
     const pdfIcon = '/images/pdfIcon.svg';
     const [resumeId, setResumeId] = useState('');
@@ -84,8 +81,7 @@ const FileUploadForm = (props: any) => {
             });
     };
     const userDatas = async () => {
-/*         const userInfo = await getUserDetail()
- */        userDetail && setResumeId(userDetail.resumeId || '');
+        userDetail && setResumeId(userDetail.resumeId || '');
     }
     useEffect(() => {
         userDatas()

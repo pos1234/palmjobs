@@ -5,8 +5,7 @@ import SavedJobs from '@/components/candidateProfileComponents/Saved';
 import dynamic from 'next/dynamic';
 import ProfilePicture, { ProfileLinker } from '@/components/candidateProfileComponents/ProfilePicture';
 const Applied = dynamic(() => import('@/components/candidateProfileComponents/Applied'))
-/* import Applied from 
- */const CandidateJobs = () => {
+const CandidateJobs = () => {
     const [saved, setSaved] = useState(true);
     const [applied, setApplied] = useState(false);
     return (

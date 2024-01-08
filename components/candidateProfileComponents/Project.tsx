@@ -17,8 +17,7 @@ const ReactQuill = dynamic(() => import('react-quill'), {
 });
 const Project = (props: any) => {
     const [userDetail, setUserDetail] = useState(props.userDetail)
-/*     const { userDetail } = useGlobalContext()
- */    const [openProject, setOpenProject] = useState(false);
+    const [openProject, setOpenProject] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [projectIndex, setProjectIndex] = useState(Number);
     const [projectEdit, setProjectEdit] = useState<boolean>(false);
@@ -40,14 +39,11 @@ const Project = (props: any) => {
             import('localforage').then((localforage) => {
                 localforage.getItem('userDetail')
                     .then((existingData: any) => {
-                        // Modify the existing data
                         const converted = JSON.stringify(value)
                         const updatedData = {
-                            // Update the specific properties you want to change
                             ...existingData,
                             projects: converted,
                         };
-                        // Set the updated data back to the same key
                         return localforage.setItem('userDetail', updatedData);
                     })
                     .then(() => {
@@ -167,8 +163,7 @@ const Project = (props: any) => {
             });
     };
     const userData = async () => {
-/*         const userInfo = await getUserDetail()
- */        if (userDetail) {
+        if (userDetail) {
             const projects = JSON.parse(userDetail.projects);
             setProjectsArray(projects || []);
         }

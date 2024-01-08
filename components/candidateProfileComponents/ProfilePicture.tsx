@@ -71,9 +71,7 @@ const ProfilePicture = () => {
                 })
             });
         }
-   /*      const promise = await getCandidateDocument()
-        promise && promise.documents[0] && promise.documents[0].profilePictureId && setProfileId(promise.documents[0].profilePictureId)
-    */ }
+    }
     useEffect(() => {
         getProfilePic()
         if (typeof window !== 'undefined') {
@@ -83,22 +81,17 @@ const ProfilePicture = () => {
                 })
             });
         }
-        /* getAccount().then((res: any) => {
-            res && res.name && setFirstLetter(res.name.charAt(0))
-        }) */
+
     }, [])
     const updateLocal = (value: any) => {
         if (typeof window !== 'undefined') {
             import('localforage').then((localforage) => {
                 localforage.getItem('userDetail')
                     .then((existingData: any) => {
-                        // Modify the existing data
                         const updatedData = {
-                            // Update the specific properties you want to change
                             ...existingData,
                             profilePictureId: value,
                         };
-                        // Set the updated data back to the same key
                         return localforage.setItem('userDetail', updatedData);
                     })
                     .then(() => {

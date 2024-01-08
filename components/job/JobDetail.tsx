@@ -130,9 +130,7 @@ const JobDetail = (props: any) => {
                         setSaveLoading(false)
                     })
 
-                } /* else {
-                    toast.error('Job Already saved');
-                } */
+                }
             });
         }
         if (!userRole) {

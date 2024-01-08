@@ -8,8 +8,6 @@ const CandSmall = (props: any) => {
     const [imageHref, setImageHref] = useState('');
     useEffect(() => {
         props.itemDetail.candidateId && fetchCandidateDetail(props.itemDetail.candidateId).then((res) => {
-            console.log(res);
-
             setCandidateData(res.documents.length > 0 && res.documents[0]);
             props.detailHolder(res.total > 0 && res.documents[0]);
             const parsed = res.documents[0] && res.documents[0].skills && res.documents[0].skills;

@@ -171,13 +171,10 @@ export const unSaveJobs = (id: string) => {
     return results;
 };
 export const fetchSavedJobsData = async (id: string) => {
-    // Fetch data from Appwrite for the given ID
     const response = await databases.getDocument(DATABASE_ID, POSTED_JOBS, id);
     return response;
-    // Wait for all promises to resolve and return the data
 };
 export const getSavedJobId = async (id: string) => {
-    const userAccount = await account.get();
     const results = databases.listDocuments(DATABASE_ID, SAVED_JOBS, [Query.orderDesc('$createdAt'), Query.equal('jobId', id)]);
     return results;
 };
@@ -185,8 +182,6 @@ export const fetchAppliedJobIds = async (id: string) => {
     const results = await databases.listDocuments(DATABASE_ID, APPLIED_JOBS, [
         Query.orderDesc('$createdAt'),
         Query.equal('candidateId', id)
-        /*         Query.equal('candidateDelete', false)
-         */
     ]);
     return results;
 };

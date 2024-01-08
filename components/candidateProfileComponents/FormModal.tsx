@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react'
 import ConfirmModal from '../ConfirmModal'
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import CloseIcon from '@mui/icons-material/Close';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 interface ConfirmModalProps {
@@ -17,7 +16,6 @@ const FormModal = ({ children, openModal, setOpenModal, addText, icon, text, tip
     const [tip, setTip] = useState(false)
     const parentRef = useRef<HTMLDivElement>(null);
     const handleParentClick = () => {
-        console.log('Parent div clicked');
         setOpenModal(false)
     };
     const handleChildClick = (event: React.MouseEvent<HTMLDivElement>) => {

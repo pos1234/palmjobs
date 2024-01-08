@@ -26,8 +26,7 @@ const JobListCard = (props: any) => {
     const router = useRouter()
     const [openShare, setOpenShare] = useState(false)
     const [userId, setUserId] = useState('')
-/*     const [userRole, setUserRole] = useState('')
- */    const [openReport, setOpenReport] = useState(false)
+    const [openReport, setOpenReport] = useState(false)
     const [reportCode, setReportCode] = useState(0)
     const [reportLoading, setReportLoading] = useState(false)
     const [saved, setSaved] = useState(false)
@@ -77,9 +76,7 @@ const JobListCard = (props: any) => {
                 if (rem.total == 0) {
                     toast.success('Successfully Saved Job');
                     saveJobs(userId, id);
-                }/*  else {
-                    toast.error('Job Already saved');
-                } */
+                }
             });
         }
         if (!userRole) {
@@ -126,11 +123,8 @@ const JobListCard = (props: any) => {
         }
     }
     const removeHtmlTags = (text: string) => {
-        // Create a regular expression to match all HTML tags.
         const htmlTagPattern = /<[^>]+>/g;
-        // Remove all HTML tags from the text.
         const result = text.replace(htmlTagPattern, " ");
-        // Return the text without HTML tags.
         return result.split(" ").slice(0, 15).join(" ");
     }
     const { imageUrl, companyName } = jobImages(props.items.employerId)

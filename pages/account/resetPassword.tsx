@@ -56,7 +56,7 @@ const sendReset = ({ queryParams }: MyPageProps) => {
                     setLoading(false);
                     setPassword('');
                     setConfrimPassword('');
-                    typeof window !== 'undefined' &&  router.push('/account/')
+                    typeof window !== 'undefined' && router.push('/account/')
                 })
                 .catch((error) => {
                     setLoading(false);
@@ -65,22 +65,7 @@ const sendReset = ({ queryParams }: MyPageProps) => {
                 });
         }
     };
-    /*  const changeHide = () => {
-        setHide(!hide);
-    }; */
     return (
-        /*  <form onSubmit={handleReset}>
-            <input
-                type={hide ? 'password' : 'text'}
-                onChange={(e: React.FormEvent<HTMLInputElement>) => setPassword(e.currentTarget.value)}
-            />
-            <input
-                type={hide ? 'password' : 'text'}
-                onChange={(e: React.FormEvent<HTMLInputElement>) => setConfrimPassword(e.currentTarget.value)}
-            />
-            <button type="submit">update password</button>
-            <button onClick={changeHide}>{hide ? 'unhide' : 'hide'}</button>
-        </form> */
         <div className="grid grid-cols-12 overflow-y-auto  sm:pb-5 h-screen">
             <div className="col-span-12 md:col-span-6 order-2 md:order-1 flex items-center bg-skillColor rounded-tr-[5.75rem] rounded-br-[5.75rem] ">
                 <div className="loginCoursel w-full  lg:pt-[15%] flex item-center justify-center md:h-[45%] lg:h-[75%] xl:h-[80%]">
@@ -111,7 +96,7 @@ const sendReset = ({ queryParams }: MyPageProps) => {
                         }
                     />
                     <span onClick={() => setVisible(!visible)} className="flex items-center -ml-10 text-stone-400 cursor-pointer">
-                        {visible ? <VisibilityIcon sx={{fontSize:'1.2rem'}}/> : <VisibilityOffIcon sx={{fontSize:'1.2rem'}}/>}
+                        {visible ? <VisibilityIcon sx={{ fontSize: '1.2rem' }} /> : <VisibilityOffIcon sx={{ fontSize: '1.2rem' }} />}
                     </span>
                 </div>
                 <p className="col-span-12 float-left font-thW text-smS mt-5 mb-0 leading-shL">Confirm Password</p>

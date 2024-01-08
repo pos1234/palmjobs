@@ -112,8 +112,7 @@ const Filter = (props: any) => {
                     </div>
                     <div
                         onClick={() => {
-/*                             props.handleFilter();
- */                            props.setOpenfilter(false);
+                            props.setOpenfilter(false);
                             props.handleDate(props.datePosted)
                         }}
                         className="w-full bg-black text-textW cursor-pointer from-gradientFirst to-gradientSecond rounded-xl h-[3.5rem] flex items-center justify-center"

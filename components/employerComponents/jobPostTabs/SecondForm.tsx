@@ -82,13 +82,7 @@ const SecondForm = (props: any) => {
                     <option value="RMB">RMB</option>
                 </select>
                 <input
-/*                     value={Number(secondTabData.minSalary)}
- */                    type="number"
-                    /* onChange={(e) => {
-                        setSecondTabData({
-                            ...secondTabData, minSalary: e.currentTarget.value.toString()
-                        });
-                    }} */
+                    type="number"
                     value={secondTabData.minSalary?.toString() == "" ? '' : secondTabData.minSalary?.toString()}
                     onChange={(e) => {
                         if (e.currentTarget.value == '-' || e.currentTarget.value.startsWith('-') || e.currentTarget.value.includes('-')) {
@@ -105,13 +99,7 @@ const SecondForm = (props: any) => {
                     className="pl-5 w-40 rounded-xl border border-gray-200 focus:ring-gradientFirst focus:border-0 hideIncrease"
                 />
                 <input
-/*                     value={Number(secondTabData.maxSalary)}
- */                    type="number"
-                    /* onChange={(e) => {
-                        setSecondTabData({
-                            ...secondTabData, maxSalary: e.currentTarget.value.toString()
-                        });
-                    }} */
+                    type="number"
                     value={secondTabData.maxSalary?.toString() == "" ? '' : secondTabData.maxSalary?.toString()}
                     onChange={(e) => {
                         if (e.currentTarget.value == '-' || e.currentTarget.value.startsWith('-') || e.currentTarget.value.includes('-')) {

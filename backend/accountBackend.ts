@@ -1,6 +1,5 @@
 import { ID, Query } from 'appwrite';
 import appwriteConfig from './appwrite';
-
 const ENDPOINT = process.env.NEXT_PUBLIC_ENDPOINT || '';
 const PROJECT_ID = process.env.NEXT_PUBLIC_PROJECT_ID || '';
 const DATABASE_ID = process.env.NEXT_PUBLIC_DATABASE_ID || '';
@@ -9,16 +8,12 @@ const CANDIDATE_DATA = process.env.NEXT_PUBLIC_CANDIDATE_DATA || '';
 const COMPANY_DATA = process.env.NEXT_PUBLIC_COMPANY_DATA || '';
 const VERIFY = process.env.NEXT_PUBLIC_VERIFY || '';
 const PAYMENT = process.env.NEXT_PUBLIC_PAYMENT as string;
-
 const { client, databases, account } = appwriteConfig();
-client
-    .setEndpoint(ENDPOINT) // Your API Endpoint
-    .setProject(PROJECT_ID);
+client.setEndpoint(ENDPOINT).setProject(PROJECT_ID);
 
 export const googleSignIn = async () => {
     account.createOAuth2Session('google', `${VERIFY}/account/check`, `${VERIFY}/account/`);
 };
-// Handle the code exchange on the server side
 export const googleRegister = async (userRole: string) => {
     account.createOAuth2Session('google', `${VERIFY}/account/check`, `${VERIFY}/account/`);
     await new Promise<void>((resolve) => {
@@ -27,13 +22,11 @@ export const googleRegister = async (userRole: string) => {
             if (userAccount !== 'failed') {
                 resolve();
             } else {
-                setTimeout(checkAccount, 1000); // Check again after 1 second
+                setTimeout(checkAccount, 1000);
             }
         };
         checkAccount();
     });
-
-    // After the OAuth2 session is complete, fetch the user account
     const userAccount = await getAccount();
 
     if (userAccount !== 'failed') {
@@ -50,25 +43,15 @@ export const Register = async (email: string, password: string, userName: string
 };
 export const defineRole = async (id: string, role: string, name?: string) => {
     const currentDate = new Date();
-
-    // Extract day, month, and year for today
     const todayDay = currentDate.getDate();
-    const todayMonth = currentDate.getMonth() + 1; // Months are zero-indexed, so add 1
+    const todayMonth = currentDate.getMonth() + 1; 
     const todayYear = currentDate.getFullYear();
-
-    // Format today's date as 'MM/DD/YYYY'
     const formattedToday = `${todayMonth < 10 ? '0' : ''}${todayMonth}/${todayDay < 10 ? '0' : ''}${todayDay}/${todayYear}`;
-
-    // Get the date after 30 days
     const futureDate = new Date(currentDate);
     futureDate.setDate(currentDate.getDate() + 30);
-
-    // Extract day, month, and year for the future date
     const futureDay = futureDate.getDate();
-    const futureMonth = futureDate.getMonth() + 1; // Months are zero-indexed, so add 1
+    const futureMonth = futureDate.getMonth() + 1;
     const futureYear = futureDate.getFullYear();
-
-    // Format the future date as 'MM/DD/YYYY'
     const formattedFutureDate = `${futureMonth < 10 ? '0' : ''}${futureMonth}/${futureDay < 10 ? '0' : ''}${futureDay}/${futureYear}`;
 
     const sendRole = {

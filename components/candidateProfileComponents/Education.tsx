@@ -9,8 +9,6 @@ import FormModal from './FormModal';
 import CloseIcon from '@mui/icons-material/Close';
 import { DeleteConfirmation, SubmitButton } from '../TextInput';
 const Education = (props: any) => {
-    /*     const { userDetail } = useGlobalContext()
-     */
     const [userDetail, setUserDetail] = useState(props.userDetail)
     const [openEducation, setOpenEducation] = useState(false);
     const [displayEducation, setDisplayEducation] = useState(false);
@@ -35,14 +33,11 @@ const Education = (props: any) => {
             import('localforage').then((localforage) => {
                 localforage.getItem('userDetail')
                     .then((existingData: any) => {
-                        // Modify the existing data
                         const converted = JSON.stringify(value)
                         const updatedData = {
-                            // Update the specific properties you want to change
                             ...existingData,
                             educations: converted,
                         };
-                        // Set the updated data back to the same key
                         return localforage.setItem('userDetail', updatedData);
                     })
                     .then(() => {
@@ -70,8 +65,7 @@ const Education = (props: any) => {
             setErrorCode(3);
             setErrorMessage('please eneter year issued')
         } else {
-/*             educationArray.push(education);
- */            setLoadings(true);
+            setLoadings(true);
             const updatedEducationArray = [...educationArray, education];
             const result = updateEducation(convertToString(updatedEducationArray));
             result
@@ -158,11 +152,6 @@ const Education = (props: any) => {
         setEditEducation(false);
     };
     const userData = async () => {
-        /*         const userInfo = await getUserDetail()
-         */        /* if (userDetail) {
-const education = convertToArray(userDetail.educations) || [];
-setEducationArray(education || '');
-} */
         if (userDetail) {
             const result = JSON.parse(userDetail.educations)
             userDetail && setEducationArray(result || []);

@@ -45,17 +45,28 @@ const FourthForm = (props: any) => {
             setFourthTabData({
                 ...fourthTabData, loading: true
             })
-            getPaymentDetail().then((res) => {
+            getPaymentDetail().then((res: any) => {
+                const currentDate = new Date();
+                const parseDate = (dateString: string): Date => {
+                    const [day, month, year] = dateString.split('/').map(Number);
+                    return new Date(year, month - 1, day);
+                };
+                const todayDay = currentDate.getDate();
+                const todayMonth = currentDate.getMonth() + 1;
+                const todayYear = currentDate.getFullYear();
+                const formattedToday = `${todayMonth < 10 ? '0' : ''}${todayMonth}/${todayDay < 10 ? '0' : ''}${todayDay}/${todayYear}`;
                 if (res?.total == 0) {
                     setPay(true);
                     setFourthTabData({
                         ...fourthTabData, loading: false
                     })
                 }
-                if (res?.total !== 0) {
+                const date1 = parseDate(res?.documents[0].endDate);
+                const date2 = parseDate(formattedToday);
+                if (res?.total !== 0 && date1 <= date2) {
                     postFourthTab(postingJobId, fourthTabData.deadline, '', fourthTabData.emailSent, validateLink(fourthTabData.externalLink))
                         .then((rem: any) => {
-                            setPaymentDetail(res?.documents[0].$id as string, res?.documents[0].remainingJobPosts, res?.documents[0].remainingJobsPerDay).then(res => {
+                            setPaymentDetail(res?.documents[0].$id, res?.documents[0].remainingJobPosts, res?.documents[0].remainingJobsPerDay).then(res => {
                                 setFourthTabData({
                                     ...fourthTabData, loading: false
                                 })
@@ -75,7 +86,12 @@ const FourthForm = (props: any) => {
                                         fourthTabData.emailNotify !== 'false' && SendJobPostedEmail(result.email, firstTabData.jobTitle, `${VERIFY}/jobs/${rem.$id}`, result.name);
                                 });
                                 typeof window !== 'undefined' && router.push(`/jobs/${rem.$id}`);
-                            })
+                            }).catch((error) => {
+                                setFourthTabData({
+                                    ...fourthTabData, loading: false
+                                })
+                                console.log(error);
+                            });
                         })
                         .catch((error) => {
                             setFourthTabData({

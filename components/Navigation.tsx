@@ -15,7 +15,7 @@ import { usePathname } from 'next/navigation'
 
 const Navigation = (props: any) => {
     const { loading, userDetail, userData, userRole } = useGlobalContext()
-    const logo = 'https://raw.githubusercontent.com/pos1234/palmjobs/main/public/images/logo.svg';
+    const logo = '/images/logo.svg';
     const [menu, setMenu] = useState(false);
     const [openLogout, setOpenLogout] = useState(false);
     const pathname = usePathname()
@@ -176,7 +176,6 @@ const Navigation = (props: any) => {
                         </div>
                     </div>
                     <div className="flex pt-2 gap-10">
-                        {/* {(!userData || userData == 'failed') && !loading && ( */}
                         <>
                             {(!userData || userData == 'failed') && !loading && <div className="max-md:hidden flex items-center">
                                 <div className="font-[500] text-[16px] text-[#0E121D] ">
@@ -195,7 +194,6 @@ const Navigation = (props: any) => {
                                 </div>
                             </div>}
                         </>
-                        {/* )} */}
                         {
                             loading && <div className="hidden sm:relative md:flex items-center justify-end gap-x-2 col-span-3 md:col-span-12">
                                 <div className="text-neutral-900  text-opacity-70 text-xl font-normal leading-7">
@@ -217,21 +215,9 @@ const Navigation = (props: any) => {
                                             {userData && (!userDetail || !userDetail.profilePictureId) && (
                                                 <div className="flex text-left ml-3 justify-center items-center ">
                                                     <p className="text-[14px] font-[600] bg-gradientFirst text-textW border-2 border-textW ring-2 ring-gradientFirst rounded-full w-8 h-8 flex items-center justify-center">{userData.name.charAt(0).toLocaleUpperCase()}</p>
-                                                    {/*  {userRole == 'candidate' ? <p className="text-[14px] font-[600]">{userData.name}</p> : null}
-                                                    {userRole == 'employer' ? (
-                                                        <>
-                                                            {userData && (
-                                                                <p className="text-[14px] font-[600]">
-                                                                    <span>{userData.name}</span>
-                                                                </p>
-                                                            )}
-                                                        </>
-                                                    ) : null} */}
-
                                                 </div>
                                             )}
-                                            {/*                                             <KeyboardArrowDownOutlinedIcon sx={{ marginLeft: '1rem', fontSize: '1.2rem' }} />
- */}                                        </Popover.Button>
+                                        </Popover.Button>
                                         <Popover.Panel className="absolute right-0 top-10 border-2 rounded-md flex flex-col gap-y-3 p-3 bg-textW shadow z-10 w-[8rem] md:mt-3 lg:mt-8">
                                             {userRole == 'candidate' ? (
                                                 <>

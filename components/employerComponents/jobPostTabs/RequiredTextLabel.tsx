@@ -14,9 +14,7 @@ export const RequredExp = (props: any) => {
     return (
         <div
             onClick={(e) => props.setFuntioner({ ...dataDistruct, [change]: props.text })}
-
-/*             onClick={() => props.setFuntioner(props.text)}
- */            className={`h-9 w-auto px-3 flex gap-x-2 items-center justify-center rounded-full ${props.value == props.text ? 'bg-gradientFirst text-textW' : 'cursor-pointer bg-textW text-gray-400 border-[1px] border-gray-200 hover:bg-gradientFirst hover:text-textW'}`}
+            className={`h-9 w-auto px-3 flex gap-x-2 items-center justify-center rounded-full ${props.value == props.text ? 'bg-gradientFirst text-textW' : 'cursor-pointer bg-textW text-gray-400 border-[1px] border-gray-200 hover:bg-gradientFirst hover:text-textW'}`}
         >
             <AddIcon sx={{ fontSize: '1.3rem' }} />
             <p className="text-[0.9rem]"> {props.text}</p>

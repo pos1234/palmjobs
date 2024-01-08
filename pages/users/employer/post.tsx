@@ -100,8 +100,6 @@ const PostAJob = (props: any) => {
             ) {
                 if (jobPostTabs.third == true) {
                     setProfileFilled(false);
-                    console.log(profileFilled);
-
                 }
             }
         }
@@ -117,8 +115,6 @@ const PostAJob = (props: any) => {
             ) {
                 if (jobPostTabs.third == true) {
                     setProfileFilled(false);
-                    console.log(profileFilled);
-
                 }
             }
         }
@@ -135,8 +131,6 @@ const PostAJob = (props: any) => {
                     !res.documents[0].description ||
                     !res.documents[0].companyName
                 ) {
-                    console.log(res.documents[0].location);
-
                     if (jobPostTabs.third == true) {
                         setProfileFilled(false);
                         setLoading(false)

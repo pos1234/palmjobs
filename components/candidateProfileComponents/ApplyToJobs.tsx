@@ -106,10 +106,6 @@ const ApplyToJob = (props: any) => {
                 })
             });
         }
-        /* if (userData) {
-            setNewName(userData.name);
-            setNewEmail(userData.email);
-        } */
     };
     const getCanInfo = async () => {
         if (typeof window !== 'undefined') {
@@ -155,17 +151,6 @@ const ApplyToJob = (props: any) => {
                 })
             });
         }
-        /*  if (userDetail) {
-             setPhone(userDetail.phoneNumber);
-             setLinked(userDetail.linkedIn);
-             setCover(userDetail.coverLetter);
-             if (userDetail.skills == null || userDetail.skills && userDetail.skills.length == 0) {
-                 setSkillLength(0)
-             }
-             if (userDetail.educations == null || userDetail.educations && JSON.parse(userDetail.educations).length == 0) {
-                 setEducationLength(0)
-             }
-         } */
     };
     const checkApplied = async () => {
         if (typeof window !== 'undefined') {
@@ -256,8 +241,6 @@ const ApplyToJob = (props: any) => {
                     if (typeof window !== 'undefined') {
                         import('localforage').then((localforage) => {
                             localforage.removeItem('appliedJobIds')
-                                .then(() => console.log(`Item with key has been reset in localForage`))
-                                .catch(error => console.error(`Error resetting item with key':`, error));
                         });
                     }
                     setFailed(false);
@@ -280,8 +263,7 @@ const ApplyToJob = (props: any) => {
                     });
                 })
                     .catch((error) => {
-/*                         setOpenNotify(true);
- */                        setLoadingApply(false);
+                        setLoadingApply(false);
                         console.log(error);
                         toast.error(error)
                     });
@@ -295,8 +277,6 @@ const ApplyToJob = (props: any) => {
                     if (typeof window !== 'undefined') {
                         import('localforage').then((localforage) => {
                             localforage.removeItem('appliedJobIds')
-                                .then(() => console.log(`Item with key has been reset in localForage`))
-                                .catch(error => console.error(`Error resetting item with key':`, error));
                         });
                     }
 
@@ -334,7 +314,6 @@ const ApplyToJob = (props: any) => {
     }, [props]);
     const parentRef = useRef<HTMLDivElement>(null);
     const handleParentClick = () => {
-        console.log('Parent div clicked');
         props.setterFunction(!props.openApply)
     };
     const handleChildClick = (event: React.MouseEvent<HTMLDivElement>) => {

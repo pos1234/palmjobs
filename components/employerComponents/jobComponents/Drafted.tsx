@@ -12,8 +12,7 @@ const DraftedJobs = (props: any) => {
     const { handleJobSelection, setPostingTabs, jobPostTabs } = useJobPostContext()
     const handleSelection = (id: string) => {
         handleJobSelection(id)
-/*         props.handleFullEdit()
- */        typeof window !== 'undefined' && router.push('/users/employer/post')
+        typeof window !== 'undefined' && router.push('/users/employer/post')
 
         setPostingTabs({
             ...jobPostTabs,

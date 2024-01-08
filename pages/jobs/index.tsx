@@ -204,8 +204,7 @@ const Jobs = ({ documents }: any) => {
                                     <option value="Internship">Internship</option>
                                     <option value="Full-Time">Full-Time</option>
                                     <option value="Part-Time">Part-Time</option>
-                                    {/*                                         <option value="Remote">Remote</option>
- */}                                        <option value="Contract">Contract</option>
+                                    <option value="Contract">Contract</option>
                                 </select>
                                 <select value={expLevelHolder} onChange={(e) => setExpLevelHolder(e.currentTarget.value)} name="experience" id="experience" className='w-[135px] border-[1px] border-[#F4F4F4] h-[32px] focus:border-[1px] hover:border-gradientFirst cursor-pointer focus:ring-0 focus:outline-0 hover:ring-0 focus:border-[#F4F4F4] text-sm rounded-full px-[16px] py-[4px] bg-[#F4F4F4]'>
                                     <option value="">Experience</option>

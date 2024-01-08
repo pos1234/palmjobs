@@ -166,7 +166,6 @@ const Footer = () => {
                         </div>
                     </div>
                     <div className="cursor-pointer md:cursor-default flex-grow flex flex-col">
-                        {/*   {(!userRole || userRole == 'employer') && ( */}
                         <div className='flex justify-between' onClick={openForEmp}>
                             <p className="font-[700] leading-thL text-[20px] leading-dfhL">
                                 Employers
@@ -179,7 +178,6 @@ const Footer = () => {
                                 )}
                             </p>
                         </div>
-                        {/*   )} */}
                         {userRole !== 'employer' && (
                             <div className="hidden md:flex flex-col gap-3 mt-3">
                                 <LinkList link="/account" text="Post Job" />
@@ -206,7 +204,6 @@ const Footer = () => {
                         )}
                     </div>
                     <div className="cursor-pointer md:cursor-default flex-grow">
-                        {/*  {!userRole || userRole == 'candidate' ? ( */}
                         <div className='flex justify-between' onClick={openForCan}>
                             <p className="font-[700] leading-thL text-[20px] leading-dfhL">
                                 Job Seekers
@@ -273,7 +270,7 @@ const Footer = () => {
                             <p className='font-bold text-2xl flex justify-center items-center'>f</p>
                         </Link>
                         <Link className='border-[1px] rounded-full w-[40px] h-[40px] flex items-center justify-center border-black hover:border-gradientFirst' href="https://twitter.com/Palmjobset" target="_blank" aria-label="Palm Jobs Twitter page">
-                            <img src="https://raw.githubusercontent.com/pos1234/palmjobs/main/public/icons/TwitterX.svg" alt="twitterIcon" className='w-7' />
+                            <img src="/icons/TwitterX.svg" alt="twitterIcon" className='w-7' />
                         </Link>
                         <Link className='border-[1px] rounded-full w-[40px] h-[40px] flex items-center justify-center border-black hover:border-gradientFirst' href="https://www.linkedin.com/company/palm-jobs/" target="_blank" aria-label="Palm Jobs LinkedIn page">
                             <LinkedInIcon sx={{ fontSize: '1.2rem' }} />

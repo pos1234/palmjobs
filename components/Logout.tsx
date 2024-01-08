@@ -12,13 +12,11 @@ const Logout = (props: any) => {
         signOut().then((res) => {
             if (typeof window !== 'undefined') {
                 import('localforage').then((localforage) => {
-                    // Your client-side code here using localforage
                     localforage.clear().then((res) => {
                         setLoading(false);
                         toast.success("You've been logged out. See you again soon!");
                         typeof window !== 'undefined' &&
                             router.push('/').then(() => {
-                                // The reload function is executed after the redirection is completed
                                 reload()
                             });
                         const reload = () => {

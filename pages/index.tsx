@@ -17,37 +17,37 @@ const Home = () => {
             query: { param1: searchText, param2: address }
         });
     };
-    const jobTitles = [
-        'Maintenance Technician',
-        'Administrative Assistant',
-        'Outside Sales Representative',
-        'Warehouse Package Handler',
-        'Warehouse Worker',
-        'Senior Software Engineer',
-        'Associate Attorney',
-        'Account Manager',
-        'Dental Assistant',
-        'Licensed Vocational Nurse',
-        'Therapist',
-        'Dentist',
-    ];
-    const jobData = [
-        { location: 'New York', jobType: 'Remote Jobs' },
-        { location: 'New York', jobType: 'Work From Home Jobs' },
-        { location: 'New York', jobType: 'Part Time Jobs' },
-        { location: 'Phoenix', jobType: 'Remote Jobs' },
-        { location: 'Phoenix', jobType: 'Work From Home Jobs' },
-        { location: 'Phoenix', jobType: 'Part Time Jobs' },
-        { location: 'Houston', jobType: 'Remote Jobs' },
-        { location: 'Houston', jobType: 'Work From Home Jobs' },
-        { location: 'Houston', jobType: 'Part Time Jobs' },
-        { location: 'San Antonio', jobType: 'Remote Jobs' },
-        { location: 'San Antonio', jobType: 'Work From Home Jobs' },
-        { location: 'San Antonio', jobType: 'Part Time Jobs' },
-        { location: 'Atlanta', jobType: 'Remote Jobs' },
-        { location: 'Atlanta', jobType: 'Work From Home Jobs' },
-        { location: 'Atlanta', jobType: 'Part Time Jobs' },
-    ];
+    // const jobTitles = [
+    //     'Maintenance Technician',
+    //     'Administrative Assistant',
+    //     'Outside Sales Representative',
+    //     'Warehouse Package Handler',
+    //     'Warehouse Worker',
+    //     'Senior Software Engineer',
+    //     'Associate Attorney',
+    //     'Account Manager',
+    //     'Dental Assistant',
+    //     'Licensed Vocational Nurse',
+    //     'Therapist',
+    //     'Dentist',
+    // ];
+    // const jobData = [
+    //     { location: 'New York', jobType: 'Remote Jobs' },
+    //     { location: 'New York', jobType: 'Work From Home Jobs' },
+    //     { location: 'New York', jobType: 'Part Time Jobs' },
+    //     { location: 'Phoenix', jobType: 'Remote Jobs' },
+    //     { location: 'Phoenix', jobType: 'Work From Home Jobs' },
+    //     { location: 'Phoenix', jobType: 'Part Time Jobs' },
+    //     { location: 'Houston', jobType: 'Remote Jobs' },
+    //     { location: 'Houston', jobType: 'Work From Home Jobs' },
+    //     { location: 'Houston', jobType: 'Part Time Jobs' },
+    //     { location: 'San Antonio', jobType: 'Remote Jobs' },
+    //     { location: 'San Antonio', jobType: 'Work From Home Jobs' },
+    //     { location: 'San Antonio', jobType: 'Part Time Jobs' },
+    //     { location: 'Atlanta', jobType: 'Remote Jobs' },
+    //     { location: 'Atlanta', jobType: 'Work From Home Jobs' },
+    //     { location: 'Atlanta', jobType: 'Part Time Jobs' },
+    // ];
     return (
         <>
             <Head>
@@ -115,37 +115,3 @@ const Home = () => {
     );
 };
 export default Home;
-{/* <div className='flex w-full justify-around max-md:flex-col max-md:gap-5'>
-                                <div className='flex flex-col items-center'>
-                                    <p className='font-[600] text-[18px] text-[#0E121D] w-full flex max-md:justify-center'>Trending Jobs</p>
-                                    <div className='list-disc text-gradientFirst underline mt-5 flex flex-col gap-3 w-full flex max-md:items-center'>
-                                        {jobTitles.map((title, index) => (
-                                            <Link key={index} href={`/jobs?param1=${encodeURIComponent(title)}&param2=`}>
-                                                {title}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className='flex flex-col items-center'>
-                                    <p className='font-[600] text-[18px] text-[#0E121D] w-full flex max-md:justify-center'>Trending Job Searches</p>
-                                    <div className='list-disc text-gradientFirst underline mt-5 flex flex-col gap-3 w-full flex max-md:items-center'>
-                                        {jobData.map((job, index) => (
-                                            <div key={index}>
-                                                <Link href={`/jobs?param1=${encodeURIComponent(job.location)}&param2=${encodeURIComponent(job.jobType)}`}>
-                                                    {`${job.jobType} in ${job.location}`}
-                                                </Link>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className='flex flex-col items-center'>
-                                    <p className='font-[600] text-[18px] text-[#0E121D] w-full flex max-md:justify-center'>Browse Jobs by Company</p>
-                                    <div className='list-disc text-gradientFirst underline mt-5 flex flex-col gap-3 w-full flex max-md:items-center'>
-                                        {jobTitles.map((title, index) => (
-                                            <Link key={index} href={`/jobs?param1=${encodeURIComponent(title)}&param2=`}>
-                                                {title}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div> */}
